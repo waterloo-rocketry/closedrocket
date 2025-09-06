@@ -1,125 +1,132 @@
-% Path to your data
-datapath = "analysis/benchtests/test/";
-
-% --- File groups ---
-imu_files = [ ...
-    "movella_pt1.csv", "movella_pt2.csv", "movella_pt3.csv", ...
-    "pololu_pt1.csv",  "pololu_pt2.csv",  "pololu_pt3.csv" ];
-
-ekf_control_files = [ ...
-    "ekf_ctx_pt1.csv", "ekf_ctx_pt2.csv", "ekf_ctx_pt3.csv", ...
-    "controller_input" ];
-
-% --- Helper function: read table -> remove timestamp -> timetable ---
-function tt = importCSV(fname)
-    [~,base,~] = fileparts(fname);                 % filename without .csv
-    tbl = readtable(fname,'PreserveVariableNames',true);
-
-    % Convert ms → seconds, then round to nearest millisecond
-    t = duration( round( seconds(tbl.timestamp/1000), 3 ), 0, 0 );  
-    % now t is a duration vector, rounded to 0.001 s
-
-    tbl.timestamp = [];                            % drop timestamp column
-
-    % Prefix each variable with the filename
-    tbl = renamevars(tbl, tbl.Properties.VariableNames, ...
-                          strcat(base,"_",tbl.Properties.VariableNames));
-
-    % Build timetable
-    tt  = table2timetable(tbl,'RowTimes',t);
-end
-
-
-% --- Import and synchronize Movella + Pololu ---
-TTs_MP = cellfun(@(f) importCSV(datapath+f), imu_files, 'UniformOutput', false);
-imu_tt = synchronize(TTs_MP{:});
-
-% --- Import and synchronize EKF + Control ---
-TTs_EC = cellfun(@(f) importCSV(datapath+f), ekf_control_files, 'UniformOutput', false);
-est_tt = synchronize(TTs_EC{:});
-
+% Read data (if not already in workspace)
+% T_long = readtable('analysis/aurora/aurora_flight_data.xlsx'); 
+T_est = readtable('analysis/aurora/aurora_flight_data.xlsx', 'Sheet', 'state_est_data'); 
+T_cmd = readtable('analysis/aurora/aurora_flight_data.xlsx', 'Sheet', 'proc_cmd'); 
+T_enc = readtable('analysis/aurora/aurora_flight_data.xlsx', 'Sheet', 'mcb_encoder'); 
 %%
 
-T_pad_start = 24820 / 1000;
-T_efk_start = 49195 / 1000;
+% relevant times only
+% keep only times between time_start and time_end
+time_start = 0;
+time_end = 150;
+time_proc_offset = 10863;
+time_mcb_offset = 30644 -2e3;
 
-sensor_select = [0,1,1]';
+% Convert long to wide format
+T = unstack(T_est, 'data', 'state_id');
+% format names
+oldNames = T.Properties.VariableNames;
+newNames = strrep(oldNames, 'STATE_ID_', '');
+T.Properties.VariableNames = newNames;
 
-xhat = zeros(13,1); Phat = zeros(13); bias_1 = zeros(10, 1); bias_2 = zeros(10, 1);
-x = xhat; P = Phat; b.bias_1 = bias_1; b.bias_2 = bias_2;
-x_array = nan(13, length(timestamps));
-x_array(:,1) = xhat;
+% replace NaN with previous 
+TF = fillmissing(T, 'linear');
 
-t = timestamps(1);
-for k = 2:length(timestamps)
+% Convert from milliseconds to seconds
+function T = retimer(T, time_offset, time_start, time_end)
+    T.time_s = (T.time_ms - time_offset)/ 1000;
+    T.time_ms = [];
+    % T = T(T.time_s >= time_start & T.time_s <= time_end, :);
+    % T.time_s = T.time_s - T.time_s(1);
+end
+T = retimer(T, time_proc_offset, time_start, time_end);
+TF = retimer(TF, time_proc_offset, time_start, time_end);
+T_cmd = retimer(T_cmd, time_proc_offset, time_start, time_end);
+T_enc = retimer(T_enc, time_mcb_offset, time_start, time_end);
 
-    dt = timestamps(k) - t;
-    t = timestamps(k);
 
-    IMU_2 = IMU_array(k,:)';
-    
-    if t >= T_pad_start && t < T_efk_start
-        [xhat, bias_1, bias_2] = pad_filter(IMU_1, IMU_2, sensor_select(1:2));
-        x = xhat; b.bias_1 = bias_1; b.bias_2 = bias_2;
-    end
-    if t >= T_efk_start
-        [xhat, Phat] = ekf_algorithm(x, P, b, t, dt, IMU_1, IMU_2, cmd, encoder, sensor_select);
-        x = xhat; P = Phat;
-    end
-    x_array(:,k) = x;
+%% process data
+%%% euler angles
+for i=1:height(T)
+    q = [T.ATT_Q0(i), T.ATT_Q1(i), T.ATT_Q2(i), T.ATT_Q3(i)]';
+    euler = quaternion_to_euler(q);
+    T.euler_roll(i) = euler(1);
+    T.euler_pitch(i) = euler(2);
+    T.euler_yaw(i) = euler(3);
 end
 
-x_array(:,end)
+%%% command, encoder
+T_cmd.data = (T_cmd.data - 32768) / 1000;
+T_enc.data = (T_enc.data - 32768) / 1000;
 
-% %% Plot
 
-% figure(1)
-% plot(timestamps, x_array(1:4,:)');
-% xlabel("Time [s]")
-% legend(["w", "x", "y", "z"]);
+%% plot est
 
-% %%
-% 
-% figure(2)
-% stairs(timestamps, T.euler_roll, 'DisplayName', 'roll'); hold on;
-% stairs(timestamps, T.euler_pitch, 'DisplayName', 'pitch');
-% stairs(timestamps, T.euler_yaw, 'DisplayName', 'yaw');
-% xlabel("Time [s]")
-% ylabel("Angle [rad]")
-% % title("Relative Euler angles")
-% legend('Location','southwest'); hold off;
-% 
-% figure(3)
-% stairs(timestamps, T.RATE_WX, 'DisplayName', '$\omega_x$'); hold on;
-% stairs(timestamps, T.RATE_WY, 'DisplayName', '$\omega_y$')
-% stairs(timestamps, T.RATE_WZ, 'DisplayName', '$\omega_z$')
-% xlabel("Time [s]")
-% ylabel("Anglular rate [rad/s]")
-% % title("Angular rates")
-% legend('Location','northwest'); hold off;
-% 
-% figure(4)
-% stairs(timestamps, T.VEL_VX, 'DisplayName', '$v_x$'); hold on;
-% stairs(timestamps, T.VEL_VY, 'DisplayName', '$v_y$');
-% stairs(timestamps, T.VEL_VZ, 'DisplayName', '$v_z$');
-% xlabel("Time [s]")
-% ylabel("Velocity [m/s]")
-% % title("Velocity")
-% legend('Location','best'); hold off;
-% 
-% figure(5)
-% stairs(timestamps, T.ALT, 'DisplayName', 'alt')
-% xlabel("Time [s]")
-% ylabel("Altitude [m]")
-% % title("Altitude")
-% %legend(); 
-% hold off;
-% 
-% figure(6)
-% stairs(timestamps, rad2deg(T.CANARD_ANGLE), 'DisplayName', '$\delta$'); hold on;
-% stairs(timestamps, T.COEFF_CL, 'DisplayName', '$C_L$')
-% xlabel("Time [s]")
-% ylabel("Angle [deg], Coefficient [ ]")
+f_q = figure(1);
+plot(T.time_s, T.ATT_Q0, 'o:', 'DisplayName', 'w'); hold on;
+plot(T.time_s, T.ATT_Q1, 'o:', 'DisplayName', 'x');
+plot(T.time_s, T.ATT_Q2, 'o:', 'DisplayName', 'y');
+plot(T.time_s, T.ATT_Q3, 'o:', 'DisplayName', 'z');
+% plot(TF.time_s, TF.ATT_Q0, 'o:', 'DisplayName', 'w'); hold on;
+% plot(TF.time_s, TF.ATT_Q1, 'o:', 'DisplayName', 'x');
+% plot(TF.time_s, TF.ATT_Q2, 'o:', 'DisplayName', 'y');
+% plot(TF.time_s, TF.ATT_Q3, 'o:', 'DisplayName', 'z');
+xlabel("Time [s]")
+ylabel("Quaternion [ ]")
+ylim([-1, 1])
+% title("Attitude quaternion") 
+legend('Location','southeast'); hold off;
+
+f_e = figure(2);
+plot(T.time_s, T.euler_roll, 'o:', 'DisplayName', 'roll'); hold on;
+plot(T.time_s, T.euler_pitch, 'o:', 'DisplayName', 'pitch');
+plot(T.time_s, T.euler_yaw, 'o:', 'DisplayName', 'yaw');
+xlabel("Time [s]")
+ylabel("Angle [rad]")
+% title("Relative Euler angles")
+legend('Location','southwest'); hold off;
+
+f_w = figure(3);
+plot(T.time_s, T.RATE_WX, 'o:', 'DisplayName', 'x'); hold on;
+plot(T.time_s, T.RATE_WY, 'o:', 'DisplayName', 'y')
+plot(T.time_s, T.RATE_WZ, 'o:', 'DisplayName', 'z')
+xlabel("Time [s]")
+ylabel("Anglular rate [rad/s]")
+% title("Angular rates")
+legend('Location','northwest'); hold off;
+
+f_v = figure(4);
+plot(T.time_s, T.VEL_VX, 'o:', 'DisplayName', 'x'); hold on;
+plot(T.time_s, T.VEL_VY, 'o:', 'DisplayName', 'y');
+plot(T.time_s, T.VEL_VZ, 'o:', 'DisplayName', 'z');
+xlabel("Time [s]")
+ylabel("Velocity [m/s]")
+% title("Velocity")
+legend('Location','best'); hold off;
+
+f_a = figure(5);
+plot(T.time_s, T.ALT, 'o:', 'DisplayName', 'alt')
+xlabel("Time [s]")
+ylabel("Altitude [m]")
+% title("Altitude")
+%legend(); 
+hold off;
+
+f_c = figure(6);
+plot(T.time_s, rad2deg(T.CANARD_ANGLE), 'o:', 'DisplayName', '\delta'); hold on;
+plot(T.time_s, T.COEFF_CL, 'o:', 'DisplayName', 'C_L')
+xlabel("Time [s]")
+ylabel("Angle [deg], Coefficient [ ]")
 % ylim([-1,5])
-% % title("Canard")
-% legend('Location','best'); hold off;
+% title("Canard")
+legend('Location','best'); hold off;
+
+%% plot control
+
+f_cmd = figure(7);
+plot(T_cmd.time_s, T_cmd.data, '.:', 'DisplayName', 'cmd'); hold on;
+plot(T_enc.time_s, T_enc.data, 'o-', 'DisplayName', 'enc')
+xlabel("Time [s]")
+ylabel("Command [deg], Encoder [deg]")
+ylim([-12,12])
+% title("Canard")
+legend('Location','best'); hold off;
+
+
+%% export
+% exportgraphics(f_q, 'analysis/testflight/testflight_q.png')
+% exportgraphics(f_e, 'analysis/testflight/testflight_euler.png')
+% exportgraphics(f_w, 'analysis/testflight/testflight_w.png')
+% exportgraphics(f_v, 'analysis/testflight/testflight_v.png')
+% exportgraphics(f_a, 'analysis/testflight/testflight_alt.png')
+% exportgraphics(f_c, 'analysis/testflight/testflight_canard.png')
