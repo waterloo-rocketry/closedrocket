@@ -1,3 +1,4 @@
+clear
 % Read data (if not already in workspace)
 T_long = readtable('analysis/testflight/testflightomnibusloganal.xlsx', 'Sheet', 'proc_state_est'); 
 
