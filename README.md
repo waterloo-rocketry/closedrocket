@@ -14,13 +14,10 @@ It probably isn't, so at that point you should ask someone for help.
 0. run Simulinkcanards.prj (if the folders and subfolders are not yet added to your path)
 
 #### Option A 
-1. open the `CC_Flight_Simulation.slx` in the `plant-model` folder \
-   a. Open as model and project \
-   b. Click on "continue" in the pop-up window   
-
-2. run `configure_plant_model`
-3. When everything has loaded and simulink is open, click the big green start button in center of the top header
-4. Plot access: scope blocks in subsystems `/visualization_estimator`, or `/plant_combined/visualization_sim`
+1. run `configure_plant_model`
+2. open the `CC_Flight_Simulation.slx` in the `plant-model` folder 
+3. when everything has loaded and simulink is open, click the big green start button in center of the top header
+4. plot access: scope blocks in subsystems `/visualization_estimator`, or `/plant_combined/visualization_sim`
 
 #### Option B
 1. run `sim_call` (in `monte-carlo/`) to simulate a single sim and plot
