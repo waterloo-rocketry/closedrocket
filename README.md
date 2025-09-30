@@ -31,14 +31,14 @@ It probably isn't, so at that point you should ask someone for help.
 1. Clone the repo `git clone https://github.com/waterloo-rocketry/simulink-canards.git`
 2. Make sure you have MATLAB **2024b** installed (The specific version matters cause Simulink ;-;)
 3. Install (do this with Matlab install when you can select multiple at once, if possible):
-    - Simulink
-    - Signal Processing Toolbox
-    - DSP System Toolbox
-    - Aerospace Toolbox
     - Aerospace Blockset
+    - Aerospace Toolbox
     - Control System Toolbox
+    - DSP System Toolbox
     - Instrument Control Toolbox
     - MATLAB Support for MinGW-w64 C/C++/Fortran Compiler
+    - Signal Processing Toolbox
+    - Simulink
 4. In Matlab run `mex -setup C` and `mex -setup C++`
 
 
