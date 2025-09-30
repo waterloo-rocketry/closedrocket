@@ -1,6 +1,6 @@
 # Summary
 
-This project contains the estimator and controller for the canards that will fly on the 2025 rocket, Aurora. 
+This project contains the estimator and controller for the canards that flew on the 2025 rocket, Aurora, and further development towards the 2026 Waterloo Rocketry flight. 
 Additionally, it contains a 6DOF rocket plant model designed to enable closed loop simulation, including sensor dynamics. 
 There are a number of setup and support scripts for the main model (such as evaluating the Barrowman equations from input geometry). 
 
@@ -29,7 +29,7 @@ It probably isn't, so at that point you should ask someone for help.
 
 ## Setup
 1. Clone the repo `git clone https://github.com/waterloo-rocketry/simulink-canards.git`
-2. Make sure you have MATLAB **2024b** installed (The specific version matters cause Simulink ;-;)
+2. Make sure you have MATLAB **2025b** installed (The specific version matters cause Simulink ;-;)
 3. Install (do this with Matlab install when you can select multiple at once, if possible):
     - Aerospace Blockset
     - Aerospace Toolbox
