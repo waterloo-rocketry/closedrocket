@@ -1,7 +1,8 @@
 %% Choose rocket
 % run('plant-model/Data/Borealis/borealis.m')
 % run('plant-model/Data/testflight/testflight.m')
-run('plant-model/Data/Aurora/aurora.m')
+% run('plant-model/Data/Aurora/aurora.m')
+run('plant-model/Data/unnamed_2026/unnamed_2026.m')
 
 %%% Settings
 chute_enable = [1, 1]; % no recovery is = 0
