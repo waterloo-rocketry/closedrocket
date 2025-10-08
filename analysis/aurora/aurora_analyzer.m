@@ -89,6 +89,13 @@ for k = 1:22
     T_imu.accel_z(k) = accel(3);
 end
 
+%%% dispersion and recovery
+q_apo = [T.ATT_Q0(12); T.ATT_Q1(12); T.ATT_Q2(12); T.ATT_Q3(12)];
+vel_apo_b = [T.VEL_VX(12); T.VEL_VY(12); T.VEL_VZ(12)];
+vel_apo_g = quaternion_rotmatrix(q_apo) * vel_apo_b;
+vel_apo_vert = vel_apo_g(1);
+vel_apo_hor = norm(vel_apo_g(2:3));
+
 %% plot est
 
 f_q = figure(1);
@@ -192,6 +199,10 @@ plot(T.time_s, T.RATE_WZ, 'bo:', 'DisplayName', 'z');
 xlabel("Time [s]")
 ylabel("Anglular rate [rad/s]")
 legend('Location','best'); hold off;
+
+
+%% print Recovery
+fprintf("Recovery: at %f s and %f m altitude \n the velocity was %f m/s vertical, %f m/s lateral.\n", T.time_s(12), T.ALT(12), vel_apo_vert, vel_apo_hor);
 
 %% export
 exportgraphics(f_q, 'analysis/aurora/aurora_q.png')
