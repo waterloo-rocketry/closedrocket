@@ -45,6 +45,7 @@ function [airdata] = model_airdata(altitude)
 
     % return values
     airdata.pressure = pressure;
+    airdata.temperature = temperature;
     airdata.density = density;
     airdata.mach = mach;
 end
