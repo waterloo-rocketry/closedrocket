@@ -112,6 +112,7 @@ ylabel("Quaternion [ ]")
 ylim([-1, 1])
 % title("Attitude quaternion") 
 legend('Location','southeast'); hold off;
+grid on
 
 f_e = figure(2);
 plot(T.time_s, T.euler_roll, 'o:', 'DisplayName', 'roll'); hold on;
@@ -121,6 +122,7 @@ xlabel("Time [s]")
 ylabel("Angle [rad]")
 % title("Relative Euler angles")
 legend('Location','southwest'); hold off;
+grid on
 
 f_w = figure(3);
 plot(T.time_s, T.RATE_WX, 'o:', 'DisplayName', 'x'); hold on;
@@ -130,6 +132,7 @@ xlabel("Time [s]")
 ylabel("Anglular rate [rad/s]")
 % title("Angular rates")
 legend('Location','northwest'); hold off;
+grid on
 
 f_v = figure(4);
 plot(T.time_s, T.VEL_VX, 'o:', 'DisplayName', 'x'); hold on;
@@ -139,6 +142,7 @@ xlabel("Time [s]")
 ylabel("Velocity [m/s]")
 % title("Velocity")
 legend('Location','best'); hold off;
+grid on
 
 f_a = figure(5);
 plot(T.time_s, T.ALT, 'o:', 'DisplayName', 'alt')
@@ -147,6 +151,7 @@ ylabel("Altitude [m]")
 % title("Altitude")
 %legend(); 
 hold off;
+grid on
 
 f_c = figure(6);
 plot(T.time_s, rad2deg(T.CANARD_ANGLE), 'o:', 'DisplayName', '\delta'); hold on;
@@ -156,40 +161,52 @@ ylabel("Angle [deg], Coefficient [ ]")
 % ylim([-1,5])
 % title("Canard")
 legend('Location','best'); hold off;
+grid on
 
 %% plot control
 
 f_cmd = figure(7);
-plot(T_cmd.time_s, T_cmd.data, '.:', 'DisplayName', 'cmd'); hold on;
-plot(T_enc.time_s, T_enc.data, 'o-', 'DisplayName', 'enc')
+plot(T_cmd.time_s, T_cmd.data, '.:', 'DisplayName', 'cmd');
 xlabel("Time [s]")
-ylabel("Command [deg], Encoder [deg]")
+ylabel("Command [deg]")
 ylim([-12,12])
 % title("Canard")
-legend('Location','best'); hold off;
+%legend('Location','best'); hold off;
+grid on
+
+f_enc = figure(8);
+plot(T_enc.time_s, T_enc.data, 'o-', 'DisplayName', 'enc')
+xlabel("Time [s]")
+ylabel("Encoder [deg]")
+ylim([-12,12])
+% title("Canard")
+%legend('Location','best'); hold off;
+grid on
 
 
 %% plot IMU
 
-f_imu_rate = figure(8);
+f_imu_rate = figure(9);
 plot(T_imu.time_s, T_imu.vel_x, 'o:', 'DisplayName', 'x'); hold on;
 plot(T_imu.time_s, T_imu.vel_y, 'o:', 'DisplayName', 'y')
 plot(T_imu.time_s, T_imu.vel_z, 'o:', 'DisplayName', 'z')
 xlabel("Time [s]")
 ylabel("Anglular rate [rad/s]")
 legend('Location','best'); hold off;
+grid on
 
-f_imu_accel = figure(9);
+f_imu_accel = figure(10);
 plot(T_imu.time_s, T_imu.accel_x, 'o:', 'DisplayName', 'x'); hold on;
 plot(T_imu.time_s, T_imu.accel_y, 'o:', 'DisplayName', 'y')
 plot(T_imu.time_s, T_imu.accel_z, 'o:', 'DisplayName', 'z')
 xlabel("Time [s]")
 ylabel("Acceleration [m/s^2]")
 legend('Location','best'); hold off;
+grid on
 
 
 %% plot rates
-f_rates = figure(10);
+f_rates = figure(11);
 plot(T_imu.time_s, T_imu.vel_x, 'ro:', 'DisplayName', 'x'); hold on;
 plot(T_imu.time_s, T_imu.vel_y, 'go:', 'DisplayName', 'y')
 plot(T_imu.time_s, T_imu.vel_z, 'bo:', 'DisplayName', 'z')
@@ -199,19 +216,21 @@ plot(T.time_s, T.RATE_WZ, 'bo:', 'DisplayName', 'z');
 xlabel("Time [s]")
 ylabel("Anglular rate [rad/s]")
 legend('Location','best'); hold off;
+grid on
 
 
 %% print Recovery
 fprintf("Recovery: at %f s and %f m altitude \n the velocity was %f m/s vertical, %f m/s lateral.\n", T.time_s(12), T.ALT(12), vel_apo_vert, vel_apo_hor);
 
 %% export
-exportgraphics(f_q, 'analysis/aurora/aurora_q.png')
-exportgraphics(f_e, 'analysis/aurora/aurora_euler.png')
-exportgraphics(f_w, 'analysis/aurora/aurora_w.png')
-exportgraphics(f_v, 'analysis/aurora/aurora_v.png')
-exportgraphics(f_a, 'analysis/aurora/aurora_alt.png')
-exportgraphics(f_c, 'analysis/aurora/aurora_canard.png')
-exportgraphics(f_cmd, 'analysis/aurora/aurora_cmd.png')
-exportgraphics(f_imu_rate, 'analysis/aurora/aurora_imu_rate.png')
-exportgraphics(f_imu_accel, 'analysis/aurora/aurora_imu_accel.png')
-exportgraphics(f_rates, 'analysis/aurora/aurora_rates.png')
+exportgraphics(f_q, 'analysis/aurora/aurora_q.pdf')
+exportgraphics(f_e, 'analysis/aurora/aurora_euler.pdf')
+exportgraphics(f_w, 'analysis/aurora/aurora_w.pdf')
+exportgraphics(f_v, 'analysis/aurora/aurora_v.pdf')
+exportgraphics(f_a, 'analysis/aurora/aurora_alt.pdf')
+exportgraphics(f_c, 'analysis/aurora/aurora_canard.pdf')
+exportgraphics(f_cmd, 'analysis/aurora/aurora_cmd.pdf')
+exportgraphics(f_enc, 'analysis/aurora/aurora_enc.pdf')
+exportgraphics(f_imu_rate, 'analysis/aurora/aurora_imu_rate.pdf')
+exportgraphics(f_imu_accel, 'analysis/aurora/aurora_imu_accel.pdf')
+exportgraphics(f_rates, 'analysis/aurora/aurora_rates.pdf')
