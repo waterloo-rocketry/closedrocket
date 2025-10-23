@@ -2,7 +2,7 @@ function [u, r] = controller_module(timestamp, input)
     % Top-level controller module. Calls controller algorithm. Sets reference signal.
     
     %% settings
-    time_launch = 5; % pad delay time
+    time_launch = 8; % pad delay time
     time_coast = 10; % time from launch to burnout
     u_max = deg2rad(10); % cap output to this angle
 
