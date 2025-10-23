@@ -1,11 +1,11 @@
 %% OR Simulation Output Data
-or_data = readtable('plant-model/Data/Aurora/aurora_cycle_3.csv');
+or_data = readtable('plant-model/Data/Aurora/aurora_cycle_3_staticfire.csv');
 % or_override_aoa_cna = readtable('plant-model/Data/Aurora/aurora_cycle_2_cna_aoa.csv');
 % or_override_mach_cna = readtable('plant-model/Data/Aurora/aurora_cycle_2_cna_mach.csv');
 
 %% Initial values
 location = [420; 43.47; -80.54]; % launch location on earth. Altitude, Latitude, Longitude
-rail_angle_pitch = deg2rad(-5); % Rail pitch angle. Negative is pitched downrange
+rail_angle_pitch = deg2rad(-8); % Rail pitch angle. Negative is pitched downrange
 rail_angle_yaw = deg2rad(0); % Rail yaw angle. Negative is yawed downrange
 rail_angle_roll = deg2rad(0); % Rocket clocking angle. 
 rail_length = 11.28; % [m]
@@ -29,7 +29,8 @@ act_anglelimit = 12; % max deflection in deg
 act_ratelimit = 480; % max rate in deg/s
 
 %% Misc Rocket parameters
-engine_thrust_factor = 1; % perfomance gain
+engine_thrust_factor = 0.98; % perfomance gain
+drag_factor = 1.05; % drag gain
 canard_roll_reversal_factor = 1; % coefficient gain
 
 %% Aerodynamics Reference Geometry
@@ -41,6 +42,7 @@ rocket_length = 5.11; % rocket length [m]
 %Parachutes
 chute_pos_x = -1.1; % chute attachment [m]
 chute_drogue_drag = 0.55 * 0.82; % Cd * A [m^2]
+chute_drogue_drag = chute_drogue_drag * 0.05; % failure modifier
 chute_drogue_time = 2; % time after apogee [s]
 chute_main_drag = 1.23 * 8.36; % Cd * A [m^2]
 chute_main_time = 0; % time after threshold altitude [s]
