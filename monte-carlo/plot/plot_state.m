@@ -20,48 +20,54 @@ function [plots] = plot_state(dataset, varargin)
         stairs(plots.q, dataset.Time, dataset.q(:,i), 'DisplayName', names(i));
         hold(plots.q, 'on')
     end
-    %legend(plots.q, 'show', 'FontSize', 7)
+    legend(plots.q, 'show', 'FontSize', 7)
     title(plots.q, "Quaternion",'FontWeight','Normal')
+    grid on
 
     names = append(["wx","wy","wz"],name);
     for i = 1:3
         stairs(plots.w, dataset.Time, dataset.w(:,i), 'DisplayName', names(i))
         hold(plots.w, 'on')
     end
-    %legend(plots.w, 'show')
+    legend(plots.w, 'show')
     title(plots.w, "Rates [rad/s]",'FontWeight','Normal')
+    grid on
 
     names = append(["vx","vy","vz"],name);
     for i = 1:3
         stairs(plots.v, dataset.Time, dataset.v(:,i), 'DisplayName', names(i))
         hold(plots.v, 'on')
     end
-    %legend(plots.v, 'show')
+    legend(plots.v, 'show')
     title(plots.v, "Velocity [m/s]",'FontWeight','Normal')
+    grid on
 
     names = append("alt",name);
     for i = 1
         stairs(plots.alt, dataset.Time, dataset.alt(:,i) / 1000, 'DisplayName', names(i))
         hold(plots.alt, 'on')
     end
-    %legend(plots.alt, 'show')
+    % legend(plots.alt, 'show')
     title(plots.alt, "Altitude [km]",'FontWeight','Normal')
+    grid on
 
     names = append("CL",name);
     for i = 1
         stairs(plots.cl, dataset.Time, dataset.cl(:,i), 'DisplayName', names(i))
         hold(plots.cl, 'on')
     end
-    %legend(plots.cl, 'show')
+    % legend(plots.cl, 'show')
     title(plots.cl, "Canard Coefficient",'FontWeight','Normal')
+    grid on
 
     names = append("delta",name);
     for i = 1
         stairs(plots.delta, dataset.Time, rad2deg(dataset.delta(:,i)), 'DisplayName', names(i))
         hold(plots.delta, 'on')
     end
-    %legend(plots.delta, 'show')
+    % legend(plots.delta, 'show')
     title(plots.delta, "Canard Angle [deg]",'FontWeight','Normal')
+    grid on
 
     if  nargin == 3 || nargin == 4
         enablehold = varargin{2};
