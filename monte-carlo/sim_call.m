@@ -9,7 +9,7 @@ simin = Simulink.SimulationInput(model_name);
 
 %%% Stop time
 % 55 is apogee, 240 is after main deploy
-simin = setModelParameter(simin,"StopTime","130");
+simin = setModelParameter(simin,"StopTime","150");
 
 %%% Load parameters
 simin = simin.loadVariablesFromMATFile('monte-carlo/single/plant_model_baseline.mat');
