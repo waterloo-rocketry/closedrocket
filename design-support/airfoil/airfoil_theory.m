@@ -85,16 +85,17 @@ title("CL_{\alpha}");
 
 %% Plot L
 figure(2)
-semilogy(Ma_vector, L_alpha_avg,"k--");
+loglog(Ma_vector, L_alpha_avg,"k--");
 hold on;
-semilogy(Ma_vector, L_vector(1,:));
-semilogy(Ma_vector, L_vector(2,:));
-semilogy(Ma_vector, L_vector(3,:));
-semilogy(Ma_vector, L_vector(4,:));
-semilogy(Ma_vector, L_vector(5,:));
-semilogy(Ma_vector, L_vector(6,:));
-semilogy(Ma_vector, L_vector(7,:));
+loglog(Ma_vector, L_vector(1,:));
+loglog(Ma_vector, L_vector(2,:));
+loglog(Ma_vector, L_vector(3,:));
+loglog(Ma_vector, L_vector(4,:));
+loglog(Ma_vector, L_vector(5,:));
+loglog(Ma_vector, L_vector(6,:));
+loglog(Ma_vector, L_vector(7,:));
 hold off
+xlim([0.3; 10])
 %ylim([0,10]);
 xlabel("Ma");
 legend("Average","Incompressible", "Compressible", "Compressible2","Delta Supersonic Lead", "LowAR Subsonic","LowAR Supersonic","LowAR const")
