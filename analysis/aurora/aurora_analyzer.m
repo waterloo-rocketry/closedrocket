@@ -98,11 +98,15 @@ vel_apo_hor = norm(vel_apo_g(2:3));
 
 %% plot est
 
+set(groot, 'defaultAxesTickLabelInterpreter','latex')
+set(groot, 'defaultLegendInterpreter','latex')
+set(groot, 'DefaultTextInterpreter', 'latex')
+
 f_q = figure(1);
-plot(T.time_s, T.ATT_Q0, 'o:', 'DisplayName', 'w'); hold on;
-plot(T.time_s, T.ATT_Q1, 'o:', 'DisplayName', 'x');
-plot(T.time_s, T.ATT_Q2, 'o:', 'DisplayName', 'y');
-plot(T.time_s, T.ATT_Q3, 'o:', 'DisplayName', 'z');
+plot(T.time_s, T.ATT_Q0, 'o:', 'DisplayName', '$q_w$'); hold on;
+plot(T.time_s, T.ATT_Q1, 'o:', 'DisplayName', '$q_x$');
+plot(T.time_s, T.ATT_Q2, 'o:', 'DisplayName', '$q_y$');
+plot(T.time_s, T.ATT_Q3, 'o:', 'DisplayName', '$q_z$');
 % plot(TF.time_s, TF.ATT_Q0, 'o:', 'DisplayName', 'w'); hold on;
 % plot(TF.time_s, TF.ATT_Q1, 'o:', 'DisplayName', 'x');
 % plot(TF.time_s, TF.ATT_Q2, 'o:', 'DisplayName', 'y');
@@ -115,9 +119,9 @@ legend('Location','southeast'); hold off;
 grid on
 
 f_e = figure(2);
-plot(T.time_s, T.euler_roll, 'o:', 'DisplayName', 'roll'); hold on;
-plot(T.time_s, T.euler_pitch, 'o:', 'DisplayName', 'pitch');
-plot(T.time_s, T.euler_yaw, 'o:', 'DisplayName', 'yaw');
+plot(T.time_s, T.euler_roll, 'o:', 'DisplayName', '$\phi$'); hold on;
+plot(T.time_s, T.euler_pitch, 'o:', 'DisplayName', '$\theta$');
+plot(T.time_s, T.euler_yaw, 'o:', 'DisplayName', '$\psi$');
 xlabel("Time [s]")
 ylabel("Angle [rad]")
 % title("Relative Euler angles")
@@ -125,9 +129,9 @@ legend('Location','southwest'); hold off;
 grid on
 
 f_w = figure(3);
-plot(T.time_s, T.RATE_WX, 'o:', 'DisplayName', 'x'); hold on;
-plot(T.time_s, T.RATE_WY, 'o:', 'DisplayName', 'y')
-plot(T.time_s, T.RATE_WZ, 'o:', 'DisplayName', 'z')
+plot(T.time_s, T.RATE_WX, 'o:', 'DisplayName', '$\omega_x$'); hold on;
+plot(T.time_s, T.RATE_WY, 'o:', 'DisplayName', '$\omega_y$')
+plot(T.time_s, T.RATE_WZ, 'o:', 'DisplayName', '$\omega_z$')
 xlabel("Time [s]")
 ylabel("Anglular rate [rad/s]")
 % title("Angular rates")
@@ -135,9 +139,9 @@ legend('Location','northwest'); hold off;
 grid on
 
 f_v = figure(4);
-plot(T.time_s, T.VEL_VX, 'o:', 'DisplayName', 'x'); hold on;
-plot(T.time_s, T.VEL_VY, 'o:', 'DisplayName', 'y');
-plot(T.time_s, T.VEL_VZ, 'o:', 'DisplayName', 'z');
+plot(T.time_s, T.VEL_VX, 'o:', 'DisplayName', '$v_x$'); hold on;
+plot(T.time_s, T.VEL_VY, 'o:', 'DisplayName', '$v_y$');
+plot(T.time_s, T.VEL_VZ, 'o:', 'DisplayName', '$v_z$');
 xlabel("Time [s]")
 ylabel("Velocity [m/s]")
 % title("Velocity")
@@ -145,17 +149,17 @@ legend('Location','best'); hold off;
 grid on
 
 f_a = figure(5);
-plot(T.time_s, T.ALT, 'o:', 'DisplayName', 'alt')
+plot(T.time_s, T.ALT, 'o:', 'DisplayName', '$r_x$')
 xlabel("Time [s]")
 ylabel("Altitude [m]")
 % title("Altitude")
-%legend(); 
+legend('Location','best'); 
 hold off;
 grid on
 
 f_c = figure(6);
-plot(T.time_s, rad2deg(T.CANARD_ANGLE), 'o:', 'DisplayName', '\delta'); hold on;
-plot(T.time_s, T.COEFF_CL, 'o:', 'DisplayName', 'C_L')
+plot(T.time_s, rad2deg(T.CANARD_ANGLE), 'o:', 'DisplayName', '$\delta$'); hold on;
+plot(T.time_s, T.COEFF_CL, 'o:', 'DisplayName', '$C_L$')
 xlabel("Time [s]")
 ylabel("Angle [deg], Coefficient [ ]")
 % ylim([-1,5])
@@ -187,20 +191,20 @@ grid on
 %% plot IMU
 
 f_imu_rate = figure(9);
-plot(T_imu.time_s, T_imu.vel_x, 'o:', 'DisplayName', 'x'); hold on;
-plot(T_imu.time_s, T_imu.vel_y, 'o:', 'DisplayName', 'y')
-plot(T_imu.time_s, T_imu.vel_z, 'o:', 'DisplayName', 'z')
+plot(T_imu.time_s, T_imu.vel_x, 'o:', 'DisplayName', '$\omega_x$'); hold on;
+plot(T_imu.time_s, T_imu.vel_y, 'o:', 'DisplayName', '$\omega_y$')
+plot(T_imu.time_s, T_imu.vel_z, 'o:', 'DisplayName', '$\omega_z$')
 xlabel("Time [s]")
 ylabel("Anglular rate [rad/s]")
 legend('Location','best'); hold off;
 grid on
 
 f_imu_accel = figure(10);
-plot(T_imu.time_s, T_imu.accel_x, 'o:', 'DisplayName', 'x'); hold on;
-plot(T_imu.time_s, T_imu.accel_y, 'o:', 'DisplayName', 'y')
-plot(T_imu.time_s, T_imu.accel_z, 'o:', 'DisplayName', 'z')
+plot(T_imu.time_s, T_imu.accel_x, 'o:', 'DisplayName', '$a_x$'); hold on;
+plot(T_imu.time_s, T_imu.accel_y, 'o:', 'DisplayName', '$a_y$')
+plot(T_imu.time_s, T_imu.accel_z, 'o:', 'DisplayName', '$a_z$')
 xlabel("Time [s]")
-ylabel("Acceleration [m/s^2]")
+ylabel("Acceleration [m/s$^2$]")
 legend('Location','best'); hold off;
 grid on
 
@@ -217,6 +221,10 @@ xlabel("Time [s]")
 ylabel("Anglular rate [rad/s]")
 legend('Location','best'); hold off;
 grid on
+
+set(groot, 'defaultAxesTickLabelInterpreter','remove')
+set(groot, 'defaultLegendInterpreter','remove')
+set(groot, 'DefaultTextInterpreter', 'remove')
 
 
 %% print Recovery
