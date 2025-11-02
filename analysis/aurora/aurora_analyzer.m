@@ -89,13 +89,24 @@ for k = 1:22
     T_imu.accel_z(k) = accel(3);
 end
 
+%%% dispersion and recovery
+q_apo = [T.ATT_Q0(12); T.ATT_Q1(12); T.ATT_Q2(12); T.ATT_Q3(12)];
+vel_apo_b = [T.VEL_VX(12); T.VEL_VY(12); T.VEL_VZ(12)];
+vel_apo_g = quaternion_rotmatrix(q_apo) * vel_apo_b;
+vel_apo_vert = vel_apo_g(1);
+vel_apo_hor = norm(vel_apo_g(2:3));
+
 %% plot est
 
+set(groot, 'defaultAxesTickLabelInterpreter','latex')
+set(groot, 'defaultLegendInterpreter','latex')
+set(groot, 'DefaultTextInterpreter', 'latex')
+
 f_q = figure(1);
-plot(T.time_s, T.ATT_Q0, 'o:', 'DisplayName', 'w'); hold on;
-plot(T.time_s, T.ATT_Q1, 'o:', 'DisplayName', 'x');
-plot(T.time_s, T.ATT_Q2, 'o:', 'DisplayName', 'y');
-plot(T.time_s, T.ATT_Q3, 'o:', 'DisplayName', 'z');
+plot(T.time_s, T.ATT_Q0, 'o:', 'DisplayName', '$q_w$'); hold on;
+plot(T.time_s, T.ATT_Q1, 'o:', 'DisplayName', '$q_x$');
+plot(T.time_s, T.ATT_Q2, 'o:', 'DisplayName', '$q_y$');
+plot(T.time_s, T.ATT_Q3, 'o:', 'DisplayName', '$q_z$');
 % plot(TF.time_s, TF.ATT_Q0, 'o:', 'DisplayName', 'w'); hold on;
 % plot(TF.time_s, TF.ATT_Q1, 'o:', 'DisplayName', 'x');
 % plot(TF.time_s, TF.ATT_Q2, 'o:', 'DisplayName', 'y');
@@ -105,84 +116,101 @@ ylabel("Quaternion [ ]")
 ylim([-1, 1])
 % title("Attitude quaternion") 
 legend('Location','southeast'); hold off;
+grid on
 
 f_e = figure(2);
-plot(T.time_s, T.euler_roll, 'o:', 'DisplayName', 'roll'); hold on;
-plot(T.time_s, T.euler_pitch, 'o:', 'DisplayName', 'pitch');
-plot(T.time_s, T.euler_yaw, 'o:', 'DisplayName', 'yaw');
+plot(T.time_s, T.euler_roll, 'o:', 'DisplayName', '$\phi$'); hold on;
+plot(T.time_s, T.euler_pitch, 'o:', 'DisplayName', '$\theta$');
+plot(T.time_s, T.euler_yaw, 'o:', 'DisplayName', '$\psi$');
 xlabel("Time [s]")
 ylabel("Angle [rad]")
 % title("Relative Euler angles")
 legend('Location','southwest'); hold off;
+grid on
 
 f_w = figure(3);
-plot(T.time_s, T.RATE_WX, 'o:', 'DisplayName', 'x'); hold on;
-plot(T.time_s, T.RATE_WY, 'o:', 'DisplayName', 'y')
-plot(T.time_s, T.RATE_WZ, 'o:', 'DisplayName', 'z')
+plot(T.time_s, T.RATE_WX, 'o:', 'DisplayName', '$\omega_x$'); hold on;
+plot(T.time_s, T.RATE_WY, 'o:', 'DisplayName', '$\omega_y$')
+plot(T.time_s, T.RATE_WZ, 'o:', 'DisplayName', '$\omega_z$')
 xlabel("Time [s]")
 ylabel("Anglular rate [rad/s]")
 % title("Angular rates")
 legend('Location','northwest'); hold off;
+grid on
 
 f_v = figure(4);
-plot(T.time_s, T.VEL_VX, 'o:', 'DisplayName', 'x'); hold on;
-plot(T.time_s, T.VEL_VY, 'o:', 'DisplayName', 'y');
-plot(T.time_s, T.VEL_VZ, 'o:', 'DisplayName', 'z');
+plot(T.time_s, T.VEL_VX, 'o:', 'DisplayName', '$v_x$'); hold on;
+plot(T.time_s, T.VEL_VY, 'o:', 'DisplayName', '$v_y$');
+plot(T.time_s, T.VEL_VZ, 'o:', 'DisplayName', '$v_z$');
 xlabel("Time [s]")
 ylabel("Velocity [m/s]")
 % title("Velocity")
 legend('Location','best'); hold off;
+grid on
 
 f_a = figure(5);
-plot(T.time_s, T.ALT, 'o:', 'DisplayName', 'alt')
+plot(T.time_s, T.ALT, 'o:', 'DisplayName', '$r_x$')
 xlabel("Time [s]")
 ylabel("Altitude [m]")
 % title("Altitude")
-%legend(); 
+legend('Location','best'); 
 hold off;
+grid on
 
 f_c = figure(6);
-plot(T.time_s, rad2deg(T.CANARD_ANGLE), 'o:', 'DisplayName', '\delta'); hold on;
-plot(T.time_s, T.COEFF_CL, 'o:', 'DisplayName', 'C_L')
+plot(T.time_s, rad2deg(T.CANARD_ANGLE), 'o:', 'DisplayName', '$\delta$'); hold on;
+plot(T.time_s, T.COEFF_CL, 'o:', 'DisplayName', '$C_L$')
 xlabel("Time [s]")
 ylabel("Angle [deg], Coefficient [ ]")
 % ylim([-1,5])
 % title("Canard")
 legend('Location','best'); hold off;
+grid on
 
 %% plot control
 
 f_cmd = figure(7);
-plot(T_cmd.time_s, T_cmd.data, '.:', 'DisplayName', 'cmd'); hold on;
-plot(T_enc.time_s, T_enc.data, 'o-', 'DisplayName', 'enc')
+plot(T_cmd.time_s, T_cmd.data, '.:', 'DisplayName', 'cmd');
 xlabel("Time [s]")
-ylabel("Command [deg], Encoder [deg]")
+ylabel("Command [deg]")
 ylim([-12,12])
 % title("Canard")
-legend('Location','best'); hold off;
+%legend('Location','best'); hold off;
+grid on
+
+f_enc = figure(8);
+plot(T_enc.time_s, T_enc.data, 'o-', 'DisplayName', 'enc')
+xlabel("Time [s]")
+ylabel("Encoder [deg]")
+ylim([-12,12])
+% title("Canard")
+%legend('Location','best'); hold off;
+grid on
 
 
 %% plot IMU
 
-f_imu_rate = figure(8);
-plot(T_imu.time_s, T_imu.vel_x, 'o:', 'DisplayName', 'x'); hold on;
-plot(T_imu.time_s, T_imu.vel_y, 'o:', 'DisplayName', 'y')
-plot(T_imu.time_s, T_imu.vel_z, 'o:', 'DisplayName', 'z')
+f_imu_rate = figure(9);
+plot(T_imu.time_s, T_imu.vel_x, 'o:', 'DisplayName', '$\omega_x$'); hold on;
+plot(T_imu.time_s, T_imu.vel_y, 'o:', 'DisplayName', '$\omega_y$')
+plot(T_imu.time_s, T_imu.vel_z, 'o:', 'DisplayName', '$\omega_z$')
 xlabel("Time [s]")
 ylabel("Anglular rate [rad/s]")
 legend('Location','best'); hold off;
+grid on
 
-f_imu_accel = figure(9);
-plot(T_imu.time_s, T_imu.accel_x, 'o:', 'DisplayName', 'x'); hold on;
-plot(T_imu.time_s, T_imu.accel_y, 'o:', 'DisplayName', 'y')
-plot(T_imu.time_s, T_imu.accel_z, 'o:', 'DisplayName', 'z')
+f_imu_accel = figure(10);
+plot(T_imu.time_s, T_imu.accel_x, 'o:', 'DisplayName', '$a_x$'); hold on;
+plot(T_imu.time_s, T_imu.accel_y, 'o:', 'DisplayName', '$a_y$')
+plot(T_imu.time_s, T_imu.accel_z, 'o:', 'DisplayName', '$a_z$')
 xlabel("Time [s]")
-ylabel("Acceleration [m/s^2]")
+ylabel("Acceleration [m/s$^2$]")
 legend('Location','best'); hold off;
+grid on
 
 
 %% plot rates
-f_rates = figure(10);
+f_rates = figure(11);
 plot(T_imu.time_s, T_imu.vel_x, 'ro:', 'DisplayName', 'x'); hold on;
 plot(T_imu.time_s, T_imu.vel_y, 'go:', 'DisplayName', 'y')
 plot(T_imu.time_s, T_imu.vel_z, 'bo:', 'DisplayName', 'z')
@@ -192,15 +220,25 @@ plot(T.time_s, T.RATE_WZ, 'bo:', 'DisplayName', 'z');
 xlabel("Time [s]")
 ylabel("Anglular rate [rad/s]")
 legend('Location','best'); hold off;
+grid on
+
+set(groot, 'defaultAxesTickLabelInterpreter','remove')
+set(groot, 'defaultLegendInterpreter','remove')
+set(groot, 'DefaultTextInterpreter', 'remove')
+
+
+%% print Recovery
+fprintf("Recovery: at %f s and %f m altitude \n the velocity was %f m/s vertical, %f m/s lateral.\n", T.time_s(12), T.ALT(12), vel_apo_vert, vel_apo_hor);
 
 %% export
-exportgraphics(f_q, 'analysis/aurora/aurora_q.png')
-exportgraphics(f_e, 'analysis/aurora/aurora_euler.png')
-exportgraphics(f_w, 'analysis/aurora/aurora_w.png')
-exportgraphics(f_v, 'analysis/aurora/aurora_v.png')
-exportgraphics(f_a, 'analysis/aurora/aurora_alt.png')
-exportgraphics(f_c, 'analysis/aurora/aurora_canard.png')
-exportgraphics(f_cmd, 'analysis/aurora/aurora_cmd.png')
-exportgraphics(f_imu_rate, 'analysis/aurora/aurora_imu_rate.png')
-exportgraphics(f_imu_accel, 'analysis/aurora/aurora_imu_accel.png')
-exportgraphics(f_rates, 'analysis/aurora/aurora_rates.png')
+exportgraphics(f_q, 'analysis/aurora/aurora_q.pdf')
+exportgraphics(f_e, 'analysis/aurora/aurora_euler.pdf')
+exportgraphics(f_w, 'analysis/aurora/aurora_w.pdf')
+exportgraphics(f_v, 'analysis/aurora/aurora_v.pdf')
+exportgraphics(f_a, 'analysis/aurora/aurora_alt.pdf')
+exportgraphics(f_c, 'analysis/aurora/aurora_canard.pdf')
+exportgraphics(f_cmd, 'analysis/aurora/aurora_cmd.pdf')
+exportgraphics(f_enc, 'analysis/aurora/aurora_enc.pdf')
+exportgraphics(f_imu_rate, 'analysis/aurora/aurora_imu_rate.pdf')
+exportgraphics(f_imu_accel, 'analysis/aurora/aurora_imu_accel.pdf')
+exportgraphics(f_rates, 'analysis/aurora/aurora_rates.pdf')
