@@ -1,5 +1,7 @@
 %% Winds
 
+T = readtable('plant-model\Data\historical_wind_data\winddata.csv', 'Sheet', 'sim_parameters_historical_aug20'); 
+
 %%% Constant wind
 wind_const_direction = deg2rad(180);
 wind_const_strength = 10; % m/s
