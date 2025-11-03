@@ -1,10 +1,29 @@
 %% Winds
 
-T = readtable('plant-model\Data\historical_wind_data\winddata.csv', 'Sheet', 'sim_parameters_historical_aug20'); 
+%%% Adding the data set to be available 
+%%%T = readtable('plant-model\Data\historical_wind_data\winddata.csv'); 
+
+%get the folder script is in
+thisFilePath = mfilename('plant-model\Data\historical_wind_data\winddata.csv');
+[thisFolder, ~, ~] = fileparts(thisFilePath);
+
+%build a path to CSV relative to this script
+dataPath = fullfile(thisFolder, '..', 'historical_wind_data', 'winddata.csv');
+
+%read the CSV
+T = readtable(dataPath, 'VariableNamingRule', 'preserve');
+
+
+%hand calc stdev here
+
+
+% Extract relevant wind data from the table
+windData = T{:, {'temperature', 'pressure'}};
+
 
 %%% Constant wind
-wind_const_direction = deg2rad(180);
-wind_const_strength = 10; % m/s
+%wind_const_direction = deg2rad(180);
+%wind_const_strength = 10; % m/s
 
 %%% discrete gusts
 wind_gust1_start = 10; % s
