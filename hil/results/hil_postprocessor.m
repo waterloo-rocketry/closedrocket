@@ -13,7 +13,7 @@ function [sdt, sdt_vars] = hil_postprocessor(simout)
     %%% Controller data
     % sdt_vars.ref = sim_getdata(simout, "ref", 1);
     % sdt_vars.control = sim_getdata(simout, "controlinput", 5);
-    % sdt_vars.cmd = sim_getdata(simout, "cmd", 1);
+    sdt_vars.cmd = sim_getdata(simout, "cmd", 1);
     
     % sdt_vars.roll = timetable(sdt_vars.control.Time, sdt_vars.control.controlinput(:,1), 'VariableNames', "roll");
     % sdt_vars.rollerr = sim_ttdiff(sdt_vars.ref, sdt_vars.roll, "err");
@@ -21,7 +21,7 @@ function [sdt, sdt_vars] = hil_postprocessor(simout)
     % sdt_vars.delta = timetable(sdt_vars.control.Time, sdt_vars.control.controlinput(:,3), 'VariableNames', "delta");
 
     % sdt.control = synchronize(sdt_vars.ref, sdt_vars.rollerr, sdt_vars.cmd, sdt_vars.roll, sdt_vars.delta, sdt_vars.rate);
-    % sdt.control = synchronize(sdt_vars.cmd);
+    sdt.control = sdt_vars.cmd;
     
     %%% Rocket data
     sdt_vars.q = sim_getdata(simout, "q", 4);
