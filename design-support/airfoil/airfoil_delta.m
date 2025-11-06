@@ -67,29 +67,40 @@ plot(Mas, CL);
 xlabel("Mach number")
 ylabel("Coefficient of Lift")
 hold on
-plot(Mas, CLinear);
 % yyaxis right
 % plot(Mas, rad2deg(cone));
 % yline(rad2deg(sweep), 'r--');
-legend("$C_L$","$C_{L, linear}$", "Mach cone angle","Sweep angle")
+legend("$C_{L_\delta}$") %, "Mach cone angle","Sweep angle")
 grid on
-% ylabel("Angles [deg]")
 hold off
 
-f_sweeps = figure(2);
-for j=1:length(sweeps)
-    name = strcat(num2str(rad2deg(sweeps(:,j))), "$^\circ$ Sweep");
-    plot(Mas, CL_sweeps(:,j), 'DisplayName',name);
-    hold on
-end
+f_linear = figure(2);
+plot(Mas, CL);
 xlabel("Mach number")
 ylabel("Coefficient of Lift")
+hold on
+plot(Mas, CLinear);
+legend("$C_{L_\delta}$" , "$C_{L, linear}$")
 grid on
-legend
 hold off
 
-exportgraphics(f_model, 'design-support/airfoil/plot_airfoil-model.pdf')
-exportgraphics(f_sweeps, 'design-support/airfoil/plot_airfoil-sweeps.pdf')
+% f_sweeps = figure(2);
+% for j=1:length(sweeps)
+%     name = strcat(num2str(rad2deg(sweeps(:,j))), "$^\circ$ Sweep");
+%     plot(Mas, CL_sweeps(:,j), 'DisplayName',name);
+%     hold on
+% end
+% xlabel("Mach number")
+% ylabel("Coefficient of Lift")
+% grid on
+% legend
+% hold off
+
+fontsize(f_model, 12, "points")
+fontsize(f_linear, 12, "points")
+exportgraphics(f_model, 'plots/plot_airfoil-model.pdf')
+exportgraphics(f_linear, 'plots/plot_airfoil-model-linear.pdf')
+% exportgraphics(f_sweeps, 'plots/lot_airfoil-sweeps.pdf')
 
 
 set(groot, 'defaultAxesTickLabelInterpreter','remove')

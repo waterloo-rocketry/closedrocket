@@ -23,7 +23,7 @@ ylabel("Altitude $\ell, \: [\mathrm{km}]$")
 xlabel("Pressure $p, \: [\mathrm{kPa}]$")
 ax = gca;
 ax.XGrid = 'on';
-xticks(0:20:100);
+xticks(0:25:100);
 fontsize(14,"points")
  
 f_t = figure(2);
@@ -34,7 +34,7 @@ ylabel("Altitude $\ell, \: [\mathrm{km}]$")
 xlabel("Temperature $T, \: [\mathrm{K}]$")
 ax = gca;
 ax.XGrid = 'on';
-xticks(200:20:300);
+xticks(200:25:300);
 fontsize(14,"points")
 
 f_d = figure(3);
@@ -45,7 +45,7 @@ ylabel("Altitude $\ell, \: [\mathrm{km}]$")
 xlabel("Density $\rho, \: [\mathrm{kg}/\mathrm{m}^3]$")
 ax = gca;
 ax.XGrid = 'on';
-xticks(0:0.3:1.5);
+xticks(0:0.4:1.5);
 fontsize(14,"points")
 
 % figure(4)
@@ -56,6 +56,10 @@ fontsize(14,"points")
 % xlabel("Speed of sound $$c$$ [m/s]")
 
 %%
+
+fontsize(f_p, 12, "points")
+fontsize(f_t, 12, "points")
+fontsize(f_d, 12, "points")
 
 exportgraphics(f_p, 'plots/plot_atmosphere-pressure.pdf')
 exportgraphics(f_t, 'plots/plot_atmosphere-temperature.pdf')
