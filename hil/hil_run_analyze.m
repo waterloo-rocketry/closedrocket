@@ -1,18 +1,18 @@
 %% Configure
 clear 
 run('configure_plant_model');
-% save('hil/results/plant_model_baseline.mat');
-% clear
+save('hil/results/plant_model_baseline.mat');
+clear
 
 model_name = 'hil/hil';
 simin = Simulink.SimulationInput(model_name);
 
 %%% Stop time
 %%% 55 is apogee, 240 is after main deploy
-% simin = setModelParameter(simin,"StopTime","120");
+simin = setModelParameter(simin,"StopTime","120");
 
 %%% Load parameters
-% simin = simin.loadVariablesFromMATFile('hil/results/plant_model_baseline.mat');
+simin = simin.loadVariablesFromMATFile('hil/results/plant_model_baseline.mat');
 % simin = simin.setVariable('wind_const_strength', 5);
 % simin = simin.setVariable('canard_cant_zero', 0.1);
 % simin = simin.setVariable('engine_thrust_factor', 1);
