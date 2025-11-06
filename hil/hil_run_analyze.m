@@ -52,15 +52,15 @@ figure(2)
 plots_1 = plot_state(sdt.est);
 sgtitle("Estimation")
 
-% figure(3)
-% plot_state(sdt.error);
-% sgtitle("Estimation Error")
+figure(3)
+plot_state(sdt.error);
+sgtitle("Estimation Error")
 
-% figure(4)
-% title("Control")
-% stairs(sdt.control.Time, rad2deg([sdt.control.(1), sdt.control.(4), sdt.control.(3)]))
-% legend("Reference", "Roll angle", "Command")
-% ylabel("Angle [deg]")
+figure(4)
+title("Control")
+plot(sdt.control.Time, rad2deg(sdt.control.(1)) )
+legend("Command")
+ylabel("Angle [deg]")
 
 
 % figure(5)
