@@ -1,6 +1,6 @@
 # Summary
 
-This project contains the estimator and controller for the canards that will fly on the 2025 rocket, Aurora. 
+This project contains the estimator and controller for the canards that flew on the 2025 rocket, Aurora, and further development towards the 2026 Waterloo Rocketry flight. 
 Additionally, it contains a 6DOF rocket plant model designed to enable closed loop simulation, including sensor dynamics. 
 There are a number of setup and support scripts for the main model (such as evaluating the Barrowman equations from input geometry). 
 
@@ -14,13 +14,10 @@ It probably isn't, so at that point you should ask someone for help.
 0. run Simulinkcanards.prj (if the folders and subfolders are not yet added to your path)
 
 #### Option A 
-1. open the `CC_Flight_Simulation.slx` in the `plant-model` folder \
-   a. Open as model and project \
-   b. Click on "continue" in the pop-up window   
-
-2. run `configure_plant_model`
-3. When everything has loaded and simulink is open, click the big green start button in center of the top header
-4. Plot access: scope blocks in subsystems `/visualization_estimator`, or `/plant_combined/visualization_sim`
+1. run `configure_plant_model`
+2. open the `CC_Flight_Simulation.slx` in the `plant-model` folder 
+3. when everything has loaded and simulink is open, click the big green start button in center of the top header
+4. plot access: scope blocks in subsystems `/visualization_estimator`, or `/plant_combined/visualization_sim`
 
 #### Option B
 1. run `sim_call` (in `monte-carlo/`) to simulate a single sim and plot
@@ -32,16 +29,16 @@ It probably isn't, so at that point you should ask someone for help.
 
 ## Setup
 1. Clone the repo `git clone https://github.com/waterloo-rocketry/simulink-canards.git`
-2. Make sure you have MATLAB **2024b** installed (The specific version matters cause Simulink ;-;)
+2. Make sure you have MATLAB **2025b** installed (The specific version matters cause Simulink ;-;)
 3. Install (do this with Matlab install when you can select multiple at once, if possible):
-    - Simulink
-    - Signal Processing Toolbox
-    - DSP System Toolbox
-    - Aerospace Toolbox
     - Aerospace Blockset
+    - Aerospace Toolbox
     - Control System Toolbox
+    - DSP System Toolbox
     - Instrument Control Toolbox
     - MATLAB Support for MinGW-w64 C/C++/Fortran Compiler
+    - Signal Processing Toolbox
+    - Simulink
 4. In Matlab run `mex -setup C` and `mex -setup C++`
 
 
