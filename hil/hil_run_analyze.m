@@ -44,23 +44,47 @@ load("hil/results/result.mat", "sdt");
 % sdt.rocket_dt = retime(sdt.rocket_dt, timecode_overwrite, 'linear');
 % sdt.error = retime(sdt.error, timecode_overwrite, 'linear');
 
-figure(1)
+set(groot, 'defaultAxesTickLabelInterpreter','latex')
+set(groot, 'defaultLegendInterpreter','latex')
+set(groot, 'DefaultTextInterpreter', 'latex')
+
+f_sim = figure(1);
 plot_state(sdt.rocket_dt);
-sgtitle("Simulation")
+% sgtitle("Simulation")
 
-figure(2)
+
+f_est = figure(2);
 plots_1 = plot_state(sdt.est);
-sgtitle("Estimation")
+% sgtitle("Estimation")
 
-figure(3)
+
+f_err = figure(3);
 plot_state(sdt.error);
-sgtitle("Estimation Error")
+% sgtitle("Estimation Error")
 
-figure(4)
-title("Control")
-plot(sdt.control.Time, rad2deg(sdt.control.(1)) )
-legend("Command")
-ylabel("Angle [deg]")
+
+fontsize(f_sim, 12, "points")
+fontsize(f_est, 12, "points")
+fontsize(f_err, 12, "points")
+
+set(f_sim,'units','centimeters','position',[1,1,25,18])
+set(f_est,'units','centimeters','position',[1,1,25,18])
+set(f_err,'units','centimeters','position',[1,1,25,18])
+
+
+set(groot, 'defaultAxesTickLabelInterpreter','remove')
+set(groot, 'defaultLegendInterpreter','remove')
+set(groot, 'DefaultTextInterpreter', 'remove')
+
+exportgraphics(f_sim, 'hil/results/sim_hil_sim.pdf', 'ContentType', 'vector')
+exportgraphics(f_est, 'hil/results/sim_hil_est.pdf', 'ContentType', 'vector')
+exportgraphics(f_err, 'hil/results/sim_hil_err.pdf', 'ContentType', 'vector')
+
+% figure(4)
+% title("Control")
+% plot(sdt.control.Time, rad2deg(sdt.control.(1)) )
+% legend("Command")
+% ylabel("Angle [deg]")
 
 
 % figure(5)
