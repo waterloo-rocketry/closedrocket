@@ -15,16 +15,18 @@ function [plots] = plot_state(dataset, varargin)
         name = "";
     end
     
-    names = append(["qw","qx","qy","qz"],name);
+    % names = append(["qw","qx","qy","qz"],name);
+    names = ["qw","qx","qy","qz"];
     for i = 1:4
         plot(plots.q, dataset.Time, dataset.q(:,i), 'DisplayName', names(i));
         hold(plots.q, 'on')
     end
-    legend(plots.q, 'show', 'FontSize', 7)
+    legend(plots.q, 'show')
     title(plots.q, "Quaternion",'FontWeight','Normal')
     grid(plots.q, 'on')
 
-    names = append(["wx","wy","wz"],name);
+    % names = append(["wx","wy","wz"],name);
+    names = ["wx","wy","wz"];
     for i = 1:3
         plot(plots.w, dataset.Time, dataset.w(:,i), 'DisplayName', names(i))
         hold(plots.w, 'on')
@@ -33,7 +35,8 @@ function [plots] = plot_state(dataset, varargin)
     title(plots.w, "Rates [rad/s]",'FontWeight','Normal')
     grid(plots.w, 'on')
 
-    names = append(["vx","vy","vz"],name);
+    % names = append(["vx","vy","vz"],name);
+    names = ["vx","vy","vz"];
     for i = 1:3
         plot(plots.v, dataset.Time, dataset.v(:,i), 'DisplayName', names(i))
         hold(plots.v, 'on')
@@ -42,30 +45,35 @@ function [plots] = plot_state(dataset, varargin)
     title(plots.v, "Velocity [m/s]",'FontWeight','Normal')
     grid(plots.v, 'on')
 
-    names = append("alt",name);
+    % names = append("alt",name);
+    names = "alt";
     for i = 1
         plot(plots.alt, dataset.Time, dataset.alt(:,i), 'DisplayName', names(i))
         hold(plots.alt, 'on')
     end
+    legend(plots.alt, 'show')
+    title(plots.alt, "Altitude [km]",'FontWeight','Normal')
     % legend(plots.alt, 'show')
     title(plots.alt, "Altitude [m]",'FontWeight','Normal')
     grid(plots.alt, 'on')
 
     names = append("CL",name);
+    names = "CL";
     for i = 1
         plot(plots.cl, dataset.Time, dataset.cl(:,i), 'DisplayName', names(i))
         hold(plots.cl, 'on')
     end
-    % legend(plots.cl, 'show')
+    legend(plots.cl, 'show')
     title(plots.cl, "Canard Coefficient",'FontWeight','Normal')
     grid(plots.cl, 'on')
 
-    names = append("delta",name);
+    % names = append("delta",name);
+    names = "delta";
     for i = 1
         plot(plots.delta, dataset.Time, rad2deg(dataset.delta(:,i)), 'DisplayName', names(i))
         hold(plots.delta, 'on')
     end
-    % legend(plots.delta, 'show')
+    legend(plots.delta, 'show')
     title(plots.delta, "Canard Angle [deg]",'FontWeight','Normal')
     grid(plots.delta, 'on')
 
