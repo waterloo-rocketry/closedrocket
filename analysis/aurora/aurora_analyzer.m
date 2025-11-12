@@ -1,48 +1,84 @@
 clear
-% Read data (if not already in workspace)
-% T_long = readtable('analysis/aurora/aurora_flight_data.xlsx'); 
-T_est = readtable('analysis/aurora/aurora_flight_data.xlsx', 'Sheet', 'state_est_data'); 
-T_cmd = readtable('analysis/aurora/aurora_flight_data.xlsx', 'Sheet', 'proc_cmd'); 
-T_enc = readtable('analysis/aurora/aurora_flight_data.xlsx', 'Sheet', 'mcb_encoder'); 
-T_imu = readtable('analysis/aurora/aurora_flight_data.xlsx', 'Sheet', 'altimu_meas'); 
+%% Read files (if not already in workspace)
+T1_est = readtable('analysis/aurora/aurora_flight_data.xlsx', 'Sheet', 'state_est_data'); 
+T1_cmd = readtable('analysis/aurora/aurora_flight_data.xlsx', 'Sheet', 'proc_cmd'); 
+T1_enc = readtable('analysis/aurora/aurora_flight_data.xlsx', 'Sheet', 'mcb_encoder'); 
+T1_imu = readtable('analysis/aurora/aurora_flight_data.xlsx', 'Sheet', 'altimu_meas'); 
 
-%%
+T2_est = readtable('analysis/aurora/aurora_estimator_controller_complete.xlsx', 'Sheet', 'state_est_data'); 
+T2_enc = readtable('analysis/aurora/aurora_estimator_controller_complete.xlsx', 'Sheet', 'mcb_encoder'); 
+T2_imu = readtable('analysis/aurora/aurora_estimator_controller_complete.xlsx', 'Sheet', 'altimu_meas'); 
 
+%% unpack tables
+% Convert long to wide format
+T1 = unstack(T1_est, 'data', 'state_id');
+T2 = unstack(T2_est, 'data', 'state_id');
+% format names
+oldNames = T1.Properties.VariableNames;
+newNames = strrep(oldNames, 'STATE_ID_', '');
+T1.Properties.VariableNames = newNames;
+oldNames = T2.Properties.VariableNames;
+newNames = strrep(oldNames, 'STATE_ID_', '');
+T2.Properties.VariableNames = newNames;
+
+
+%% synchronize
 % relevant times only
 % keep only times between time_start and time_end
-time_start = 0;
-time_end = 150;
-time_proc_offset = 10863;
-time_mcb_offset = 30644;% -2e3;
+time1_start = 0;
+time1_end = 1500;
+time1_proc_offset = 10863;
+time1_mcb_offset = 30644;% -2e3;
 
-% Convert long to wide format
-T = unstack(T_est, 'data', 'state_id');
-% format names
-oldNames = T.Properties.VariableNames;
-newNames = strrep(oldNames, 'STATE_ID_', '');
-T.Properties.VariableNames = newNames;
-
-% replace NaN with previous 
-TF = fillmissing(T, 'linear');
+time2_start = 0;
+time2_end = 1500;
+time2_proc_offset = 169219983 + 592000;
+time2_mcb_offset = 656625343;% -2e3;
 
 % Convert from milliseconds to seconds
 function T = retimer(T, time_offset, time_start, time_end)
-    T.time_s = (T.time_ms - time_offset)/ 1000;
+    
+    T.time_s = seconds((T.time_ms - time_offset)/ 1000 );
     T.time_ms = [];
-    % T = T(T.time_s >= time_start & T.time_s <= time_end, :);
+    T = T(T.time_s >= time_start & T.time_s <= time_end, :);
     % T.time_s = T.time_s - T.time_s(1);
 end
-T = retimer(T, time_proc_offset, time_start, time_end);
-TF = retimer(TF, time_proc_offset, time_start, time_end);
-T_cmd = retimer(T_cmd, time_proc_offset, time_start, time_end);
-T_enc = retimer(T_enc, time_mcb_offset, time_start, time_end);
-T_imu = retimer(T_imu, time_proc_offset, time_start, time_end);
+
+T1 = table2timetable(retimer(T1, time1_proc_offset, time1_start, time1_end), 'RowTimes','time_s');
+T1_imu = table2timetable(retimer(T1_imu, time1_proc_offset, time1_start, time1_end), 'RowTimes','time_s');
+T1_cmd = table2timetable(retimer(T1_cmd, time1_proc_offset, time1_start, time1_end), 'RowTimes','time_s');
+T1_enc = table2timetable(retimer(T1_enc, time1_mcb_offset, time1_start, time1_end), 'RowTimes','time_s');
+
+T2 = table2timetable(retimer(T2, time2_proc_offset, time2_start, time2_end), 'RowTimes','time_s');
+T2_imu = table2timetable(retimer(T2_imu, time2_proc_offset, time2_start, time2_end), 'RowTimes','time_s');
+T2_enc = table2timetable(retimer(T2_enc, time2_mcb_offset, time2_start, time2_end), 'RowTimes','time_s');
+
+
+T = sortrows([T1; T2]);
+T_enc = sortrows([T1_enc; T2_enc]);
+T_imu = sortrows([T1_imu; T2_imu(1:28,:)]);
+T_cmd = T1_cmd;
 
 
 %% process data
+
+% replace NaN with interpolation
+TF = fillmissing(T, 'previous');
+TF_imu = fillmissing(T_imu, 'previous');
+% TF_enc = fillmissing(T_enc, 'previous');
+
+TL = fillmissing(T, 'linear');
+TL_imu = fillmissing(T_imu, 'linear');
+% TL_enc = fillmissing(T_enc, 'linear');
+
+
+% patch telemetry issues
+T.ALT(33) = T.ALT(33)/2;
+
+
 %%% euler angles
 for i=1:height(T)
-    q = [T.ATT_Q0(i), T.ATT_Q1(i), T.ATT_Q2(i), T.ATT_Q3(i)]';
+    q = [TF.ATT_Q0(i), TF.ATT_Q1(i), TF.ATT_Q2(i), TF.ATT_Q3(i)]';
     euler = quaternion_to_euler(q);
     T.euler_roll(i) = euler(1);
     T.euler_pitch(i) = euler(2);
@@ -106,7 +142,7 @@ f_q = figure(1);
 plot(T.time_s, T.ATT_Q0, 'o:', 'DisplayName', '$q_w$'); hold on;
 plot(T.time_s, T.ATT_Q1, 'o:', 'DisplayName', '$q_x$');
 plot(T.time_s, T.ATT_Q2, 'o:', 'DisplayName', '$q_y$');
-plot(T.time_s, T.ATT_Q3, 'o:', 'DisplayName', '$q_z$');
+plot(T.time_s, T.ATT_Q3, 'o:', 'DisplayName', '$q_z$'); 
 % plot(TF.time_s, TF.ATT_Q0, 'o:', 'DisplayName', 'w'); hold on;
 % plot(TF.time_s, TF.ATT_Q1, 'o:', 'DisplayName', 'x');
 % plot(TF.time_s, TF.ATT_Q2, 'o:', 'DisplayName', 'y');
@@ -131,7 +167,7 @@ grid on
 f_w = figure(3);
 plot(T.time_s, T.RATE_WX, 'o:', 'DisplayName', '$\omega_x$'); hold on;
 plot(T.time_s, T.RATE_WY, 'o:', 'DisplayName', '$\omega_y$')
-plot(T.time_s, T.RATE_WZ, 'o:', 'DisplayName', '$\omega_z$')
+plot(T.time_s, T.RATE_WZ, 'o:', 'DisplayName', '$\omega_z$') 
 xlabel("Time [s]")
 ylabel("Anglular rate [rad/s]")
 % title("Angular rates")
