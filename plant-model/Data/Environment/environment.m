@@ -1,8 +1,8 @@
 %% Winds
 
-%%% Constant wind
-% wind_const_direction = deg2rad(180);
-% wind_const_strength = 10; % m/s
+%%% Constant wind [old]
+wind_const_direction = deg2rad(180);
+wind_const_strength = 10; % m/s
 
 %%% discrete gusts
 wind_gust1_start = 10; % s
@@ -16,7 +16,7 @@ wind_gust2_amplitude = 10; % m/s
 wind_gust2_distribution = rand(3,1); % factor of gust on each axis
 
 
-%%% windspeed wrt height from csv
+%%% windspeed wrt height from csv [new! and shinier!!]
 wind_data = readtable("plant-model/Data/environment/sim_parameters_historical_aug2023+aug2024_no-clouds_2025-06-03.csv", ...
     ReadVariableNames=true, VariableNamingRule="preserve");
 
