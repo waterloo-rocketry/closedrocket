@@ -11,8 +11,8 @@ T2_imu = readtable('analysis/aurora/aurora_estimator_controller_complete.xlsx', 
 
 %% unpack tables
 % Convert long to wide format
-T1 = unstack(T1_est, 'data', 'state_id');
-T2 = unstack(T2_est, 'data', 'state_id');
+T1 = unstack(T1_est, 'data', 'state_id', AggregationFunction=@mean);
+T2 = unstack(T2_est, 'data', 'state_id', AggregationFunction=@mean);
 % format names
 oldNames = T1.Properties.VariableNames;
 newNames = strrep(oldNames, 'STATE_ID_', '');
@@ -69,24 +69,6 @@ TF_imu = fillmissing(T_imu, 'previous');
 % TF_enc = fillmissing(T_enc, 'previous');
 
 % TL_enc = fillmissing(T_enc, 'linear');
-
-
-% patch telemetry issues
-T.ATT_Q0(33) = T.ATT_Q0(33)/2;
-T.RATE_WX(33) = T.RATE_WX(33)/2;
-T.VEL_VX(33) = T.VEL_VX(33)/2;
-T.VEL_VZ(33) = T.VEL_VZ(33)/2;
-T.ALT(33) = T.ALT(33)/2;
-T.ATT_Q2(39) = T.ATT_Q2(39)/2;
-T.ATT_Q2(40) = T.ATT_Q2(40)/2;
-T.ATT_Q0(41) = T.ATT_Q0(41)/2;
-T.ATT_Q2(41) = T.ATT_Q2(41)/4;
-T.ATT_Q3(54) = T.ATT_Q3(54)/2;
-T.ATT_Q3(55) = T.ATT_Q3(55)/2;
-T.ALT(57) = T.ALT(57)/2;
-T.ATT_Q2(61) = T.ATT_Q2(61)/2;
-T.ATT_Q3(61) = T.ATT_Q3(61)/2;
-T.RATE_WX(61) = T.RATE_WX(61)/2;
 
 
 
