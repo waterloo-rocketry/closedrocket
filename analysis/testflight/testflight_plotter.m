@@ -8,10 +8,10 @@ set(groot, 'defaultLegendInterpreter','latex')
 set(groot, 'DefaultTextInterpreter', 'latex')
 
 f_q = figure(1);
-stairs(T.timestamp_s, T.ATT_Q0, 'k', 'DisplayName', '$q_w$'); hold on;
-stairs(T.timestamp_s, T.ATT_Q1, 'r', 'DisplayName', '$q_x$');
-stairs(T.timestamp_s, T.ATT_Q2, 'g', 'DisplayName', '$q_y$');
-stairs(T.timestamp_s, T.ATT_Q3, 'b', 'DisplayName', '$q_z$');
+plot(T.timestamp_s, T.ATT_Q0, 'k', 'DisplayName', '$q_w$'); hold on;
+plot(T.timestamp_s, T.ATT_Q1, 'r', 'DisplayName', '$q_x$');
+plot(T.timestamp_s, T.ATT_Q2, 'g', 'DisplayName', '$q_y$');
+plot(T.timestamp_s, T.ATT_Q3, 'b', 'DisplayName', '$q_z$');
 xlabel("Time [s]")
 ylabel("Quaternion")
 ylim([-1, 1])
@@ -21,9 +21,9 @@ legend('Location','southwest'); hold off;
 
 
 f_e = figure(2);
-stairs(T.timestamp_s, T.euler_roll, 'r', 'DisplayName', '$\phi$'); hold on;
-stairs(T.timestamp_s, T.euler_pitch, 'g', 'DisplayName', '$\theta$');
-stairs(T.timestamp_s, T.euler_yaw, 'b', 'DisplayName', '$\psi$');
+plot(T.timestamp_s, T.euler_roll, 'r', 'DisplayName', '$\phi$'); hold on;
+plot(T.timestamp_s, T.euler_pitch, 'g', 'DisplayName', '$\theta$');
+plot(T.timestamp_s, T.euler_yaw, 'b', 'DisplayName', '$\psi$');
 xlabel("Time [s]")
 ylabel("Angle [rad]")
 grid on
@@ -31,9 +31,9 @@ grid on
 legend('Location','southwest'); hold off;
 
 f_w = figure(3);
-stairs(T.timestamp_s, T.RATE_WX, 'r', 'DisplayName', '$\omega_x$'); hold on;
-stairs(T.timestamp_s, T.RATE_WY, 'g', 'DisplayName', '$\omega_y$')
-stairs(T.timestamp_s, T.RATE_WZ, 'b', 'DisplayName', '$\omega_z$')
+plot(T.timestamp_s, T.RATE_WX, 'r', 'DisplayName', '$\omega_x$'); hold on;
+plot(T.timestamp_s, T.RATE_WY, 'g', 'DisplayName', '$\omega_y$')
+plot(T.timestamp_s, T.RATE_WZ, 'b', 'DisplayName', '$\omega_z$')
 xlabel("Time [s]")
 ylabel("Angular velocity [rad/s]")
 grid on
@@ -41,9 +41,9 @@ grid on
 legend('Location','northwest'); hold off;
 
 f_v = figure(4);
-stairs(T.timestamp_s, T.VEL_VX, 'r', 'DisplayName', '$v_x$'); hold on;
-stairs(T.timestamp_s, T.VEL_VY, 'g', 'DisplayName', '$v_y$');
-stairs(T.timestamp_s, T.VEL_VZ, 'b', 'DisplayName', '$v_z$');
+plot(T.timestamp_s, T.VEL_VX, 'r', 'DisplayName', '$v_x$'); hold on;
+plot(T.timestamp_s, T.VEL_VY, 'g', 'DisplayName', '$v_y$');
+plot(T.timestamp_s, T.VEL_VZ, 'b', 'DisplayName', '$v_z$');
 xlabel("Time [s]")
 ylabel("Velocity [m/s]")
 grid on
@@ -51,7 +51,7 @@ grid on
 legend('Location','best'); hold off;
 
 f_a = figure(5);
-stairs(T.timestamp_s, T.ALT, 'b', 'DisplayName', '$r_x$')
+plot(T.timestamp_s, T.ALT, 'b', 'DisplayName', '$r_x$')
 xlabel("Time [s]")
 ylabel("Altitude [m]")
 grid on
@@ -60,8 +60,8 @@ legend('Location','best');
 hold off;
 
 f_c = figure(6);
-stairs(T.timestamp_s, rad2deg(T.CANARD_ANGLE), 'r', 'DisplayName', '$\delta$'); hold on;
-stairs(T.timestamp_s, T.COEFF_CL, 'b', 'DisplayName', '$C_L$')
+plot(T.timestamp_s, rad2deg(T.CANARD_ANGLE), 'r', 'DisplayName', '$\delta$'); hold on;
+plot(T.timestamp_s, T.COEFF_CL, 'b', 'DisplayName', '$C_L$')
 xlabel("Time [s]")
 ylabel("Angle [deg], Coefficient")
 ylim([-1,5])

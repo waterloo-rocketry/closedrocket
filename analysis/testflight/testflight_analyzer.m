@@ -20,7 +20,7 @@ newNames = strrep(oldNames, 'STATE_ID_', '');
 T.Properties.VariableNames = newNames;
 
 % replace NaN with previous 
-T = fillmissing(T, 'previous');
+T = fillmissing(T, 'linear');
 
 % % Convert from milliseconds to seconds
 T.timestamp_s = T.timestamp_ms / 1000;
