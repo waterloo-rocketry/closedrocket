@@ -3,7 +3,8 @@ function [u, r] = controller_module(timestamp, input)
     
     %% settings
     time_launch = 9; % pad delay time
-    time_coast = 10; % time from launch to burnout
+    time_coast = 0; % time from launch to burnout
+    time_program = 10; % time from launch to start of roll program
     u_max = deg2rad(10); % cap output to this angle
 
     %% Reference signal
@@ -12,14 +13,14 @@ function [u, r] = controller_module(timestamp, input)
     
     t = timestamp - time_launch;
     r = 0;
-    if t > (time_coast + 7)
-        if t < (time_coast + 12)
+    if t > (time_program + 7)
+        if t < (time_program + 12)
             r = 0.5;
-        elseif t < (time_coast + 17)
+        elseif t < (time_program + 17)
             r = -0.5;
-        elseif t < (time_coast + 24)
+        elseif t < (time_program + 24)
             r = 0.5;
-        elseif t > (time_coast + 31)
+        elseif t > (time_program + 31)
             r = 0;
         end
     end
