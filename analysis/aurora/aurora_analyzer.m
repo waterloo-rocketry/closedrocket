@@ -56,7 +56,7 @@ T2_enc = table2timetable(retimer(T2_enc, time2_mcb_offset, time2_start, time2_en
 
 T = sortrows([T1; T2]);
 T_enc = sortrows([T1_enc; T2_enc]);
-% T_imu = sortrows([T1_imu; T2_imu(1:28,:)]);
+% T_imu = sortrows([T1_imu; T2_imu]);
 T_imu = T1_imu; 
 T_cmd = T1_cmd;
 
