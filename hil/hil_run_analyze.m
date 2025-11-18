@@ -49,17 +49,17 @@ set(groot, 'defaultLegendInterpreter','latex')
 set(groot, 'DefaultTextInterpreter', 'latex')
 
 f_sim = figure(1);
-plot_state(sdt.rocket_dt);
+plot_state(sdt.rocket_dt, [0, 50, 0], 1:6);
 % sgtitle("Simulation")
 
 
 f_est = figure(2);
-plots_1 = plot_state(sdt.est);
+plots_1 = plot_state(sdt.est, [0, 50, 0], 1:6);
 % sgtitle("Estimation")
 
 
 f_err = figure(3);
-plot_state(sdt.error);
+plot_state(sdt.error, [0, 50, 0], 1:6);
 % sgtitle("Estimation Error")
 
 
@@ -67,9 +67,9 @@ fontsize(f_sim, 12, "points")
 fontsize(f_est, 12, "points")
 fontsize(f_err, 12, "points")
 
-set(f_sim,'units','centimeters','position',[1,1,25,18])
-set(f_est,'units','centimeters','position',[1,1,25,18])
-set(f_err,'units','centimeters','position',[1,1,25,18])
+% set(f_sim,'units','centimeters','position',[1,1,25,18])
+% set(f_est,'units','centimeters','position',[1,1,25,18])
+% set(f_err,'units','centimeters','position',[1,1,25,18])
 
 
 set(groot, 'defaultAxesTickLabelInterpreter','remove')
