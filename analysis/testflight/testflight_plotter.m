@@ -3,15 +3,21 @@ load("analysis\testflight\testflight_flight.mat")
 
 %% plot
 
+%%% Colors (same as plot_state)
+colors(1,:) = [0, 0, 0];      % Black
+colors(2,:) = [0.9, 0.3, 0.1];% Red
+colors(3,:) = [0.2, 0.8, 0.1];% Green
+colors(4,:) = [0.1, 0.2, 0.8];% Blue
+
 set(groot, 'defaultAxesTickLabelInterpreter','latex')
 set(groot, 'defaultLegendInterpreter','latex')
 set(groot, 'DefaultTextInterpreter', 'latex')
 
 f_q = figure(1);
-plot(T.timestamp_s, T.ATT_Q0, 'k', 'DisplayName', '$q_w$'); hold on;
-plot(T.timestamp_s, T.ATT_Q1, 'r', 'DisplayName', '$q_x$');
-plot(T.timestamp_s, T.ATT_Q2, 'g', 'DisplayName', '$q_y$');
-plot(T.timestamp_s, T.ATT_Q3, 'b', 'DisplayName', '$q_z$');
+plot(T.timestamp_s, T.ATT_Q0,  'Color', colors(1,:), 'DisplayName', '$q_w$'); hold on;
+plot(T.timestamp_s, T.ATT_Q1,  'Color', colors(2,:), 'DisplayName', '$q_x$');
+plot(T.timestamp_s, T.ATT_Q2,  'Color', colors(3,:), 'DisplayName', '$q_y$');
+plot(T.timestamp_s, T.ATT_Q3,  'Color', colors(4,:), 'DisplayName', '$q_z$');
 xlabel("Time [s]")
 ylabel("Quaternion")
 ylim([-1, 1])
@@ -21,9 +27,9 @@ legend('Location','southwest'); hold off;
 
 
 f_e = figure(2);
-plot(T.timestamp_s, T.euler_roll, 'r', 'DisplayName', '$\phi$'); hold on;
-plot(T.timestamp_s, T.euler_pitch, 'g', 'DisplayName', '$\theta$');
-plot(T.timestamp_s, T.euler_yaw, 'b', 'DisplayName', '$\psi$');
+plot(T.timestamp_s, T.euler_roll, 'Color', colors(2,:), 'DisplayName', '$\phi$'); hold on;
+plot(T.timestamp_s, T.euler_pitch, 'Color', colors(3,:), 'DisplayName', '$\theta$');
+plot(T.timestamp_s, T.euler_yaw, 'Color', colors(4,:), 'DisplayName', '$\psi$');
 xlabel("Time [s]")
 ylabel("Angle [rad]")
 grid on
@@ -31,9 +37,9 @@ grid on
 legend('Location','southwest'); hold off;
 
 f_w = figure(3);
-plot(T.timestamp_s, T.RATE_WX, 'r', 'DisplayName', '$\omega_x$'); hold on;
-plot(T.timestamp_s, T.RATE_WY, 'g', 'DisplayName', '$\omega_y$')
-plot(T.timestamp_s, T.RATE_WZ, 'b', 'DisplayName', '$\omega_z$')
+plot(T.timestamp_s, T.RATE_WX,  'Color', colors(2,:), 'DisplayName', '$\omega_x$'); hold on;
+plot(T.timestamp_s, T.RATE_WY,  'Color', colors(3,:), 'DisplayName', '$\omega_y$')
+plot(T.timestamp_s, T.RATE_WZ,  'Color', colors(4,:), 'DisplayName', '$\omega_z$')
 xlabel("Time [s]")
 ylabel("Angular velocity [rad/s]")
 grid on
@@ -41,9 +47,9 @@ grid on
 legend('Location','northwest'); hold off;
 
 f_v = figure(4);
-plot(T.timestamp_s, T.VEL_VX, 'r', 'DisplayName', '$v_x$'); hold on;
-plot(T.timestamp_s, T.VEL_VY, 'g', 'DisplayName', '$v_y$');
-plot(T.timestamp_s, T.VEL_VZ, 'b', 'DisplayName', '$v_z$');
+plot(T.timestamp_s, T.VEL_VX,  'Color', colors(2,:), 'DisplayName', '$v_x$'); hold on;
+plot(T.timestamp_s, T.VEL_VY,  'Color', colors(3,:), 'DisplayName', '$v_y$');
+plot(T.timestamp_s, T.VEL_VZ,  'Color', colors(4,:), 'DisplayName', '$v_z$');
 xlabel("Time [s]")
 ylabel("Velocity [m/s]")
 grid on
@@ -60,8 +66,8 @@ legend('Location','best');
 hold off;
 
 f_c = figure(6);
-plot(T.timestamp_s, rad2deg(T.CANARD_ANGLE), 'r', 'DisplayName', '$\delta$'); hold on;
-plot(T.timestamp_s, T.COEFF_CL, 'b', 'DisplayName', '$C_L$')
+plot(T.timestamp_s, rad2deg(T.CANARD_ANGLE),  'Color', colors(2,:), 'DisplayName', '$\delta$'); hold on;
+plot(T.timestamp_s, T.COEFF_CL,  'Color', colors(4,:), 'DisplayName', '$C_L$')
 xlabel("Time [s]")
 ylabel("Angle [deg], Coefficient")
 ylim([-1,5])

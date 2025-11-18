@@ -3,19 +3,25 @@ load("analysis\aurora\aurora_flight.mat");
 
 %% plot est
 
+%%% Colors (same as plot_state)
+colors(1,:) = [0, 0, 0];      % Black
+colors(2,:) = [0.9, 0.3, 0.1];% Red
+colors(3,:) = [0.2, 0.8, 0.1];% Green
+colors(4,:) = [0.1, 0.2, 0.8];% Blue
+
 set(groot, 'defaultAxesTickLabelInterpreter','latex')
 set(groot, 'defaultLegendInterpreter','latex')
 set(groot, 'DefaultTextInterpreter', 'latex')
 
 f_q = figure(1);
-plot(seconds(T.time_s), T.ATT_Q0, 'k.-', 'DisplayName', '$q_w$'); hold on;
-plot(seconds(T.time_s), T.ATT_Q1, 'r.-', 'DisplayName', '$q_x$');
-plot(seconds(T.time_s), T.ATT_Q2, 'g.-', 'DisplayName', '$q_y$');
-plot(seconds(T.time_s), T.ATT_Q3, 'b.-', 'DisplayName', '$q_z$'); 
-plot(seconds(TL.time_s), TL.ATT_Q0, 'k','HandleVisibility', 'off'); hold on;
-plot(seconds(TL.time_s), TL.ATT_Q1, 'r','HandleVisibility', 'off');
-plot(seconds(TL.time_s), TL.ATT_Q2, 'g','HandleVisibility', 'off');
-plot(seconds(TL.time_s), TL.ATT_Q3, 'b','HandleVisibility', 'off');
+plot(seconds(T.time_s), T.ATT_Q0, '.-', 'Color', colors(1,:), 'DisplayName', '$q_w$'); hold on;
+plot(seconds(T.time_s), T.ATT_Q1, '.-', 'Color', colors(2,:), 'DisplayName', '$q_x$');
+plot(seconds(T.time_s), T.ATT_Q2, '.-', 'Color', colors(3,:), 'DisplayName', '$q_y$');
+plot(seconds(T.time_s), T.ATT_Q3, '.-', 'Color', colors(4,:), 'DisplayName', '$q_z$'); 
+plot(seconds(TL.time_s), TL.ATT_Q0, 'Color', colors(1,:), 'HandleVisibility', 'off'); hold on;
+plot(seconds(TL.time_s), TL.ATT_Q1, 'Color', colors(2,:), 'HandleVisibility', 'off');
+plot(seconds(TL.time_s), TL.ATT_Q2, 'Color', colors(3,:), 'HandleVisibility', 'off');
+plot(seconds(TL.time_s), TL.ATT_Q3, 'Color', colors(4,:), 'HandleVisibility', 'off');
 % plot(seconds(TL.time_s), sqrt(TL.ATT_Q0.^2+TL.ATT_Q1.^2+TL.ATT_Q2.^2+TL.ATT_Q3.^2), 'k','HandleVisibility', 'off');
 xlabel("Time [s]")
 xlim([0, 140])
@@ -26,9 +32,9 @@ legend('Location','southeast'); hold off;
 grid on
 
 f_e = figure(2);
-plot(seconds(TL.time_s), TL.euler_roll, 'r', 'DisplayName', '$\phi$'); hold on;
-plot(seconds(TL.time_s), TL.euler_pitch, 'g', 'DisplayName', '$\theta$');
-plot(seconds(TL.time_s), TL.euler_yaw, 'b', 'DisplayName', '$\psi$');
+plot(seconds(TL.time_s), TL.euler_roll, 'Color', colors(2,:), 'DisplayName', '$\phi$'); hold on;
+plot(seconds(TL.time_s), TL.euler_pitch, 'Color', colors(3,:), 'DisplayName', '$\theta$');
+plot(seconds(TL.time_s), TL.euler_yaw, 'Color', colors(4,:), 'DisplayName', '$\psi$');
 xlabel("Time [s]")
 xlim([0, 140])
 ylabel("Angle [rad]")
@@ -37,12 +43,12 @@ legend('Location','southwest'); hold off;
 grid on
 
 f_w = figure(3);
-plot(seconds(T.time_s), T.RATE_WX, 'r.-', 'DisplayName', '$\omega_x$'); hold on;
-plot(seconds(T.time_s), T.RATE_WY, 'g.-', 'DisplayName', '$\omega_y$')
-plot(seconds(T.time_s), T.RATE_WZ, 'b.-', 'DisplayName', '$\omega_z$') 
-plot(seconds(TL.time_s), TL.RATE_WX, 'r','HandleVisibility', 'off');
-plot(seconds(TL.time_s), TL.RATE_WY, 'g','HandleVisibility', 'off');
-plot(seconds(TL.time_s), TL.RATE_WZ, 'b','HandleVisibility', 'off');
+plot(seconds(T.time_s), T.RATE_WX, '.-', 'Color', colors(2,:), 'DisplayName', '$\omega_x$'); hold on;
+plot(seconds(T.time_s), T.RATE_WY, '.-', 'Color', colors(3,:), 'DisplayName', '$\omega_y$')
+plot(seconds(T.time_s), T.RATE_WZ, '.-', 'Color', colors(4,:), 'DisplayName', '$\omega_z$') 
+plot(seconds(TL.time_s), TL.RATE_WX, 'Color', colors(2,:),'HandleVisibility', 'off');
+plot(seconds(TL.time_s), TL.RATE_WY, 'Color', colors(3,:),'HandleVisibility', 'off');
+plot(seconds(TL.time_s), TL.RATE_WZ, 'Color', colors(4,:),'HandleVisibility', 'off');
 xlabel("Time [s]")
 xlim([0, 140])
 ylabel("Anglular velocity [rad/s]")
@@ -51,12 +57,12 @@ legend('Location','northwest'); hold off;
 grid on
 
 f_v = figure(4);
-plot(seconds(T.time_s), T.VEL_VX, 'r.-', 'DisplayName', '$v_x$'); hold on;
-plot(seconds(T.time_s), T.VEL_VY, 'g.-', 'DisplayName', '$v_y$');
-plot(seconds(T.time_s), T.VEL_VZ, 'b.-', 'DisplayName', '$v_z$');
-plot(seconds(TL.time_s), TL.VEL_VX, 'r','HandleVisibility', 'off');
-plot(seconds(TL.time_s), TL.VEL_VY, 'g','HandleVisibility', 'off');
-plot(seconds(TL.time_s), TL.VEL_VZ, 'b','HandleVisibility', 'off');
+plot(seconds(T.time_s), T.VEL_VX, '.-', 'Color', colors(2,:),'DisplayName', '$v_x$'); hold on;
+plot(seconds(T.time_s), T.VEL_VY, '.-', 'Color', colors(3,:),'DisplayName', '$v_y$');
+plot(seconds(T.time_s), T.VEL_VZ, '.-', 'Color', colors(4,:),'DisplayName', '$v_z$');
+plot(seconds(TL.time_s), TL.VEL_VX, 'Color', colors(2,:),'HandleVisibility', 'off');
+plot(seconds(TL.time_s), TL.VEL_VY, 'Color', colors(3,:),'HandleVisibility', 'off');
+plot(seconds(TL.time_s), TL.VEL_VZ, 'Color', colors(4,:),'HandleVisibility', 'off');
 xlabel("Time [s]")
 xlim([0, 140])
 ylabel("Velocity [m/s]")
@@ -65,8 +71,8 @@ legend('Location','best'); hold off;
 grid on
 
 f_a = figure(5);
-plot(seconds(T.time_s), T.ALT/1000, 'b.-', 'DisplayName', '$r_x$'); hold on;
-plot(seconds(TL.time_s), TL.ALT/1000, 'b','HandleVisibility', 'off');
+plot(seconds(T.time_s), T.ALT/1000, '.-', 'Color', colors(4,:), 'DisplayName', '$r_x$'); hold on;
+plot(seconds(TL.time_s), TL.ALT/1000, 'Color', colors(4,:),'HandleVisibility', 'off');
 xlabel("Time [s]")
 xlim([0, 140])
 ylabel("Altitude [km]")
@@ -76,10 +82,10 @@ hold off;
 grid on
 
 f_c = figure(6);
-plot(seconds(T.time_s), rad2deg(T.CANARD_ANGLE), 'r.-', 'DisplayName', '$\delta$'); hold on;
-plot(seconds(TL.time_s),  rad2deg(TL.CANARD_ANGLE), 'r','HandleVisibility', 'off');
-plot(seconds(T.time_s), T.COEFF_CL, 'b.-', 'DisplayName', '$C_L$'), hold on;
-plot(seconds(TL.time_s), TL.COEFF_CL, 'b','HandleVisibility', 'off');
+plot(seconds(T.time_s), rad2deg(T.CANARD_ANGLE), '.-', 'Color', colors(2,:), 'DisplayName', '$\delta$'); hold on;
+plot(seconds(TL.time_s),  rad2deg(TL.CANARD_ANGLE), 'Color', colors(2,:),'HandleVisibility', 'off');
+plot(seconds(T.time_s), T.COEFF_CL, '.-', 'Color', colors(4,:), 'DisplayName', '$C_L$'), hold on;
+plot(seconds(TL.time_s), TL.COEFF_CL,'Color', colors(4,:), 'HandleVisibility', 'off');
 xlabel("Time [s]")
 xlim([0, 140])
 ylabel("Angle [deg], Coefficient")

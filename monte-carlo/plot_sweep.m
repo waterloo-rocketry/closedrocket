@@ -1,6 +1,6 @@
 %% Configure
-batch_name = '_chute_100';
-number_plots = 100;
+batch_name = '_ascent_200';
+number_plots = 200;
 % exclude = [88, 177]; %indices
 % limit_filesize = 4000; %kB
 % limit_velocity = 1000;
@@ -23,89 +23,41 @@ end
 
 
 %% Plot statistical
+
+set(groot, 'defaultAxesTickLabelInterpreter','latex')
+set(groot, 'defaultLegendInterpreter','latex')
+set(groot, 'DefaultTextInterpreter', 'latex')
+
+
 f_sim = figure(1);
-plot_stats_state(sdt_array, 'rocket_dt', 'Simulation', percentiles);
-f_est = figure(2);
-plot_stats_state(sdt_array, 'est', 'Estimation', percentiles);
-f_error = figure(3);
-plot_stats_state(sdt_array, 'error', 'Estimation error', percentiles);
+plot_stats_state(sdt_array, 'rocket_dt', [80, 95], [0, 50], 2);
+% f_est = figure(2);
+% plot_stats_state(sdt_array, 'est', 'Estimation', percentiles, [0, 250]);
+f_err = figure(3);
+plot_stats_state(sdt_array, 'error', [0, 95], [0, 50], 1:6);
 f_cov = figure(4);
-plot_stats_covariance(sdt_array, 'P_norm', 'Covariance', percentiles);
-f_control = figure(5);
-plot_stats_control(sdt_array, 'control', 'Controller', percentiles);
+plot_stats_covariance(sdt_array, 'P_norm', [80, 95], [0, 50], 3);
+% f_control = figure(5);
+% plot_stats_control(sdt_array, 'control', 'Controller
+% ', percentiles, [0, 250]);
+
+fontsize(f_sim, 12, "points")
+% fontsize(f_est, 12, "points")
+fontsize(f_err, 12, "points")
+fontsize(f_cov, 12, "points")
+
+set(groot, 'defaultAxesTickLabelInterpreter','remove')
+set(groot, 'defaultLegendInterpreter','remove')
+set(groot, 'DefaultTextInterpreter', 'remove')
 
 %% save statistical
-set(f_sim, 'Units', 'normalized', 'WindowState', 'maximized');
-exportgraphics(f_sim, sprintf('monte-carlo/batch%s/result_stats_sim%s.png', batch_name, batch_name))
-set(f_est, 'Units', 'normalized', 'WindowState', 'maximized');
-exportgraphics(f_est, sprintf('monte-carlo/batch%s/result_stats_est%s.png', batch_name, batch_name))
-set(f_error, 'Units', 'normalized', 'WindowState', 'maximized');
-exportgraphics(f_error, sprintf('monte-carlo/batch%s/result_stats_error%s.png', batch_name, batch_name))
-set(f_control, 'Units', 'normalized', 'WindowState', 'maximized');
-exportgraphics(f_control, sprintf('monte-carlo/batch%s/result_stats_control%s.png', batch_name, batch_name))
-exportgraphics(f_cov, sprintf('monte-carlo/batch%s/result_stats_cov%s.png', batch_name, batch_name))
-
-%% Plot individual
-if 0
-    for k = 1:number_plots
-        k
-        filename = sprintf('monte-carlo/batch%s/sim_%d.mat', batch_name, k);
-    
-        if ismember(k, exclude)
-            continue  % skip excluded simulations
-        elseif dir(filename).bytes / 1024 > limit_filesize
-            continue  % skip excluded simulations
-        end
-    
-        load(filename, "sdt");
-    
-        if any(sdt.est.v(:,1) > limit_velocity) 
-            continue    
-        end
-    
-        if k == 1
-            figure(1)
-            plots_err = plot_state(sdt.error, "", 'on');
-            sgtitle("Estimation Error")
-    
-            figure(2)
-            stairs(sdt.control.Time, rad2deg([sdt.control.ref, sdt.control.roll]))
-            hold on
-            % legend("Reference", "Roll angle", "Roll control error")
-            ylabel("Angle [deg]")
-            
-            figure(3)
-            plots_est = plot_state(sdt.est, "\_est", 'on');
-            plot_state(sdt.rocket_dt, "\_sim", 'on', plots_est);
-    
-        elseif k == number_plots
-            figure(1)
-            plot_state(sdt.error, "", 'off', plots_err);
-            sgtitle("Estimation Error")
-            
-            figure(2)
-            stairs(sdt.control.Time, rad2deg([sdt.control.ref, sdt.control.roll]))
-            hold off
-            % legend("Reference", "Roll angle", "Roll control error")
-            ylabel("Angle [deg]")
-            
-            figure(3)
-            plot_state(sdt.est, "\_est", 'on', plots_est);
-            plot_state(sdt.rocket_dt, "\_sim", 'off', plots_est);
-            
-        else
-            figure(1)
-            plot_state(sdt.error, "", 'on', plots_err);
-            sgtitle("Estimation Error")
-            
-            figure(2)
-            stairs(sdt.control.Time, rad2deg([sdt.control.ref, sdt.control.roll]))
-            % legend("Reference", "Roll angle", "Roll control error")
-            ylabel("Angle [deg]")
-            
-            figure(3)
-            plot_state(sdt.est, "\_est", 'on', plots_est);
-            plot_state(sdt.rocket_dt, "\_sim", 'on', plots_est);
-        end
-    end
-end
+% set(f_sim, 'Units', 'normalized', 'WindowState', 'maximized');
+exportgraphics(f_sim, sprintf('monte-carlo/batch%s/sim_mc_stats_sim%s.pdf', batch_name, batch_name), 'ContentType', 'vector')
+% set(f_est, 'Units', 'normalized', 'WindowState', 'maximized');
+% exportgraphics(f_est, sprintf('monte-carlo/batch%s/sim_mc_stats_est%s.pdf', batch_name, batch_name), 'ContentType', 'vector')
+% set(f_err, 'Units', 'normalized', 'WindowState', 'maximized');
+exportgraphics(f_err, sprintf('monte-carlo/batch%s/sim_mc_stats_error%s.pdf', batch_name, batch_name), 'ContentType', 'vector')
+% set(f_control, 'Units', 'normalized', 'WindowState', 'maximized');
+% exportgraphics(f_control, sprintf('monte-carlo/batch%s/sim_mc_stats_control%s.pdf', batch_name, batch_name), 'ContentType', 'vector')
+exportgraphics(f_cov, sprintf('monte-carlo/batch%s/sim_mc_stats_cov%s.pdf', batch_name, batch_name), 'ContentType', 'vector');
+% f_control = figure(5);
