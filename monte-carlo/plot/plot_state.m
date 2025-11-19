@@ -6,6 +6,8 @@ function [plots] = plot_state(dataset, varargin)
     colors(3,:) = [0.2, 0.8, 0.1];  % Green
     colors(4,:) = [0.1, 0.2, 0.8];  % Blue
 
+    ticknumber = 11;
+
     time = seconds(dataset.Time);
     tlim = [time(1), time(end)];
 
@@ -25,9 +27,11 @@ function [plots] = plot_state(dataset, varargin)
 
     if isscalar(idx)
         tiledlayout(1,1,'TileSpacing','Compact');
-    elseif length(idx) >= 1 && length(idx) <= 2
-        tiledlayout(1,2,'TileSpacing','Compact');
-    elseif length(idx) >= 3 && length(idx) <= 4
+    elseif length(idx) == 2
+        tiledlayout(2,1,'TileSpacing','Compact');
+    elseif length(idx) == 3
+        tiledlayout(3,1,'TileSpacing','Compact');
+    elseif length(idx) == 4
         tiledlayout(2,2,'TileSpacing','Compact');
     else
         tiledlayout(3,2,'TileSpacing','Compact');
@@ -63,7 +67,9 @@ function [plots] = plot_state(dataset, varargin)
     title(plots.q, "Quaternion",'FontWeight','Normal')
     xlabel(plots.q, "Time [s]")
     xlim(plots.q, tlim)
+    xticks(plots.q, linspace(tlim(1), tlim(end), ticknumber) );
     grid(plots.q, 'on')
+    plots.q.YAxis.Exponent = 0;
     end
 
 
@@ -77,7 +83,9 @@ function [plots] = plot_state(dataset, varargin)
     title(plots.w, "Angular velocity [rad/s]",'FontWeight','Normal')
     xlabel(plots.w, "Time [s]")
     xlim(plots.w, tlim)
+    xticks(plots.w, linspace(tlim(1), tlim(end), ticknumber) );
     grid(plots.w, 'on')
+    plots.w.YAxis.Exponent = 0;
     end
 
     if ismember(3, idx)
@@ -90,7 +98,9 @@ function [plots] = plot_state(dataset, varargin)
     title(plots.v, "Velocity [m/s]",'FontWeight','Normal')
     xlabel(plots.v, "Time [s]")
     xlim(plots.v, tlim)
+    xticks(plots.v, linspace(tlim(1), tlim(end), ticknumber) );
     grid(plots.v, 'on')
+    plots.v.YAxis.Exponent = 0;
     end
 
     if ismember(4, idx)
@@ -105,7 +115,9 @@ function [plots] = plot_state(dataset, varargin)
     title(plots.alt, "Altitude [km]",'FontWeight','Normal')
     xlabel(plots.alt, "Time [s]")
     xlim(plots.alt, tlim)
+    xticks(plots.alt, linspace(tlim(1), tlim(end), ticknumber) );
     grid(plots.alt, 'on')
+    plots.alt.YAxis.Exponent = 0;
     end
 
     if ismember(5, idx)
@@ -118,7 +130,9 @@ function [plots] = plot_state(dataset, varargin)
     title(plots.cl, "Canard Coefficient",'FontWeight','Normal')
     xlabel(plots.cl, "Time [s]")
     xlim(plots.cl, tlim)
+    xticks(plots.cl, linspace(tlim(1), tlim(end), ticknumber) );
     grid(plots.cl, 'on')
+    plots.cl.YAxis.Exponent = 0;
     end
 
     if ismember(6, idx)
@@ -131,6 +145,8 @@ function [plots] = plot_state(dataset, varargin)
     title(plots.delta, "Canard Angle [deg]",'FontWeight','Normal')
     xlabel(plots.delta, "Time [s]")
     xlim(plots.delta, tlim)
+    xticks(plots.delta, linspace(tlim(1), tlim(end), ticknumber) );
     grid(plots.delta, 'on')
+    plots.delta.YAxis.Exponent = 0;
     end
 end

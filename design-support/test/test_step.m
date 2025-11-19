@@ -1,3 +1,4 @@
+clear
 %% initials
 CL = 4; % canard coefficient
 alt = 1000; % altitude for dyn pressure
@@ -5,7 +6,6 @@ rho = model_airdata(alt).density;
 
 V = linspace(30, 900, 20);
 P = 0.5 * rho * V.^2;
-steptime = 5;
 T_sample = 0.005; % sampling time of the loop
 
 clear control_scheduler
@@ -26,7 +26,9 @@ for i=1:length(P)
     lowpass = c2d(tf(f_rolloff, [1, f_rolloff]), T_sample);
 
     sys_ol = - K_pre * ss(phi, gamma, K, 0, T_sample);
+    % sys_ol = - K_pre * ss(A, B, K, 0);
     sys_cl = K_pre * ss(phi+gamma*K, gamma, eye(3), 0, T_sample);
+    % sys_cl = K_pre * ss(A+B*K, B, eye(3), 0);
     
 
     sys_array(:,:,1,i) = sys_cl;
@@ -49,7 +51,8 @@ set(groot, 'defaultLegendInterpreter','latex')
 set(groot, 'DefaultTextInterpreter', 'latex')
 
 
-t = 0:T_sample:steptime;
+t = 0:T_sample:3;
+
 u = ones(length(t),1);
 yout = zeros(length(t), 3, length(P));
 for i = 1:length(P)
@@ -68,7 +71,8 @@ for k = 1:3
     plot(t, yout(:,k,length(P)), "Color", col.red, "LineWidth",1);
     xlabel("Time [s]")
     ylabel(names(k))
-    % grid on
+    grid on
+    hold off
 end
 fontsize(f_step, 12, "points")
 
