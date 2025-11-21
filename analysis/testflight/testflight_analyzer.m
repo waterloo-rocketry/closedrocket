@@ -4,7 +4,7 @@ T_long = readtable('analysis/testflight/testflightomnibusloganal.xlsx', 'Sheet',
 
 % relevant times only
 % keep only times between time_start and time_end
-time_start = 1455; % ekf starts at 1403, liftoff around 1463
+time_start = 1458; % ekf starts at 1403, liftoff around 1463
 time_end = 1486;
 time_end = 1500;
 time_end = time_start + 40;
