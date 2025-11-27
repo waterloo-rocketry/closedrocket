@@ -110,7 +110,7 @@ tiledlayout(3,2,'TileSpacing','Compact');
 
 % f_cmd = figure(7);
 nexttile;
-plot(seconds(T_cmd.time_s), T_cmd.data, 'b-', 'DisplayName', 'cmd');
+plot(seconds(T_cmd.time_s), T_cmd.data, '-', 'Color', [colors(4,:), 0.7], 'DisplayName', '$\delta_\mathrm{cmd}$');
 xlabel("Time [s]")
 xlim([0, 140])
 title("Command [deg]")
@@ -121,7 +121,7 @@ grid on
 
 % f_enc = figure(8);
 nexttile;
-plot(seconds(T_enc.time_s), T_enc.data, 'b.-', 'DisplayName', 'enc')
+plot(seconds(T_enc.time_s), T_enc.data, '.-', 'Color', [colors(4,:)], 'DisplayName', '$\underline \delta$')
 xlabel("Time [s]")
 xlim([0, 140])
 title("Encoder [deg]")
@@ -135,9 +135,9 @@ grid on
 
 % f_imu_rate = figure(9);
 nexttile;
-plot(seconds(T_imu.time_s), T_imu.vel_x, 'r.-', 'DisplayName', '$\omega_x$'); hold on;
-plot(seconds(T_imu.time_s), T_imu.vel_y, 'g.-', 'DisplayName', '$\omega_y$'); hold on;
-plot(seconds(T_imu.time_s), T_imu.vel_z, 'b.-', 'DisplayName', '$\omega_z$'); hold on;
+plot(seconds(T_imu.time_s), T_imu.vel_x, 'r.-', 'DisplayName', '$\underline \omega_x$'); hold on;
+plot(seconds(T_imu.time_s), T_imu.vel_y, 'g.-', 'DisplayName', '$\underline \omega_y$'); hold on;
+plot(seconds(T_imu.time_s), T_imu.vel_z, 'b.-', 'DisplayName', '$\underline \omega_z$'); hold on;
 plot(seconds(TL_imu.time_s), TL_imu.vel_x, 'r','HandleVisibility', 'off');
 plot(seconds(TL_imu.time_s), TL_imu.vel_y, 'g','HandleVisibility', 'off');
 plot(seconds(TL_imu.time_s), TL_imu.vel_z, 'b','HandleVisibility', 'off');
@@ -149,9 +149,9 @@ grid on
 
 % f_imu_accel = figure(10);
 nexttile;
-plot(seconds(T_imu.time_s), T_imu.accel_x, 'r.-', 'DisplayName', '$a_x$'); hold on;
-plot(seconds(T_imu.time_s), T_imu.accel_y, 'g.-', 'DisplayName', '$a_y$'); hold on;
-plot(seconds(T_imu.time_s), T_imu.accel_z, 'b.-', 'DisplayName', '$a_z$'); hold on;
+plot(seconds(T_imu.time_s), T_imu.accel_x, 'r.-', 'DisplayName', '$\underline a_x$'); hold on;
+plot(seconds(T_imu.time_s), T_imu.accel_y, 'g.-', 'DisplayName', '$\underline a_y$'); hold on;
+plot(seconds(T_imu.time_s), T_imu.accel_z, 'b.-', 'DisplayName', '$\underline a_z$'); hold on;
 plot(seconds(TL_imu.time_s), TL_imu.accel_x, 'r','HandleVisibility', 'off');
 plot(seconds(TL_imu.time_s), TL_imu.accel_y, 'g','HandleVisibility', 'off');
 plot(seconds(TL_imu.time_s), TL_imu.accel_z, 'b','HandleVisibility', 'off');
@@ -184,7 +184,7 @@ fontsize(f_raw, 12, "points")
 %% export
 
 exportgraphics(f_est, 'analysis/aurora/aurora_est.pdf')
-exportgraphics(f_raw, 'analysis/aurora/aurora_raw.pdf')
+% exportgraphics(f_raw, 'analysis/aurora/aurora_raw.pdf')
 
 % exportgraphics(f_q, 'analysis/aurora/aurora_q.pdf')
 % exportgraphics(f_e, 'analysis/aurora/aurora_euler.pdf')
