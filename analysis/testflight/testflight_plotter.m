@@ -101,6 +101,26 @@ grid on
 legend('Orientation','vertical', Location='eastoutside', IconColumnWidth=12)
 hold off;
 
+f_descent = figure(2);
+for t=1:height(T)
+    q = table2array(T(t,2:5))';
+    v = table2array(T(t,11:13))';
+    S = quaternion_rotmatrix(q);
+    v_G = S'*v;
+    T.VEL_VERT(t) = v_G(1);
+end
+tiledlayout(2,1,'TileSpacing','Compact');
+nexttile
+plot(T.timestamp_s, smooth(T.VEL_VERT, 10));
+hold on
+plot(T.timestamp_s, smooth([0;diff(T.ALT)*15], 10));
+hold off
+nexttile
+plot(T.timestamp_s, T.ALT) 
+hold on
+plot(T.timestamp_s, cumtrapz(smooth(T.VEL_VERT, 10)/15)+250);
+hold off
+
 set(groot, 'defaultAxesTickLabelInterpreter','remove')
 set(groot, 'defaultLegendInterpreter','remove')
 set(groot, 'DefaultTextInterpreter', 'remove')

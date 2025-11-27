@@ -41,7 +41,7 @@ function plot_stats_covariance(sdt_array, type, percentiles, varargin)
     
     %% fields and dimensions
     fields = {'P_norm'};
-    names = {"det(P)", "cond(P)", "norm(\textit{\textbf{P}})"};
+    names = {"det(P)", "cond(P)", "max norm(\textit{\textbf{P}})"};
     dims = 3;
 
   

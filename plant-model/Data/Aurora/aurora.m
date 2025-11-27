@@ -5,7 +5,7 @@ or_data = readtable('plant-model/Data/Aurora/aurora_cycle_3_staticfire.csv');
 
 %% Initial values
 location = [420; 43.47; -80.54]; % launch location on earth. Altitude, Latitude, Longitude
-rail_angle_pitch = deg2rad(-5); % Rail pitch angle. Negative is pitched downrange
+rail_angle_pitch = deg2rad(-6); % Rail pitch angle. Negative is pitched downrange
 rail_angle_yaw = deg2rad(0); % Rail yaw angle. Negative is yawed downrange
 rail_angle_roll = deg2rad(0); % Rocket clocking angle. 
 rail_length = 11.28; % [m]
@@ -84,4 +84,4 @@ canard_sweep_angle = deg2rad(60.3); % angle from radial normal [rad]
 canard_delta_max = deg2rad(12); % Canard maximum angle of attack
 canard_pos_x_roottip = - (nosecone_length + 0.241 + 0.518 + 0.102 - 0.0254); % position of the most forward tip of the canards
 % canard_cant_zero = deg2rad(-0.7); % zero roll not perfect
-canard_cant_zero = deg2rad(0.3); % zero roll not perfect
+canard_cant_zero = deg2rad(0.5); % zero roll not perfect

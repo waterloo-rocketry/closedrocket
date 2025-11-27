@@ -1,6 +1,6 @@
 %% Configure
 clear 
-folderpath = 'monte-carlo/single_expected/';
+folderpath = 'monte-carlo/single_uncontrolled/';
 run('configure_plant_model');
 save(append(folderpath, 'plant_model_baseline.mat'));
 clearvars -except folderpath
@@ -10,7 +10,7 @@ simin = Simulink.SimulationInput(model_name);
 
 %%% Stop time
 % 55 is apogee, 240 is after main deploy
-simin = setModelParameter(simin,"StopTime","120");
+simin = setModelParameter(simin,"StopTime","50");
 
 %%% Load parameters
 simin = simin.loadVariablesFromMATFile(append(folderpath, 'plant_model_baseline.mat'));
