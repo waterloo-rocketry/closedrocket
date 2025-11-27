@@ -45,26 +45,25 @@ sys_est = c2d(tf(1, [tau, 1], 'InputDelay', sampling_time), sampling_time, "zoh"
 % dead_time = 0.02;
 % sys_sim = 20*tf(omega^2, [1, 2*zeta*omega, omega^2], 'InputDelay', dead_time);
 
-hold on
 t = 0:sampling_time:0.2;
 y = lsim(sys_est, ones(length(t), 1), t);
-stairs(t, y, "k")
-% step(sys_sim, "k--")#
-hold off
-xlim([0,0.15]);
-grid on
-fontsize(12,"points")
-
-
 
 set(groot, 'defaultAxesTickLabelInterpreter','latex')
 set(groot, 'defaultLegendInterpreter','latex')
 set(groot, 'DefaultTextInterpreter', 'latex')
 
+hold on
+stairs(t, y, "k")
+% step(sys_sim, "k--")#
+hold off
+xlim([0,0.15]);
+grid on
 title("");
 xlabel("Time [s]")
 ylabel("Angle (normalized)")
-legend("Run 1", "Run 2", "Run 3", "Run 4", "Model", "Location","best")
+legend("Run 1", "Run 2", "Run 3", "Run 4", "Model", "Location","eastoutside")
+fontsize(12,"points")
+
 exportgraphics(fig, 'plots/plot_actuator.pdf')
 
 set(groot, 'defaultAxesTickLabelInterpreter','remove')

@@ -67,6 +67,7 @@ function [plots] = plot_state(dataset, varargin)
     title(plots.q, "Quaternion",'FontWeight','Normal')
     xlabel(plots.q, "Time [s]")
     xlim(plots.q, tlim)
+    % ylim(plots.q,[-1,1])
     xticks(plots.q, linspace(tlim(1), tlim(end), ticknumber) );
     grid(plots.q, 'on')
     plots.q.YAxis.Exponent = 0;
@@ -101,6 +102,7 @@ function [plots] = plot_state(dataset, varargin)
     xticks(plots.v, linspace(tlim(1), tlim(end), ticknumber) );
     grid(plots.v, 'on')
     plots.v.YAxis.Exponent = 0;
+    % ylim([-200, 800])
     end
 
     if ismember(4, idx)
@@ -118,6 +120,7 @@ function [plots] = plot_state(dataset, varargin)
     xticks(plots.alt, linspace(tlim(1), tlim(end), ticknumber) );
     grid(plots.alt, 'on')
     plots.alt.YAxis.Exponent = 0;
+    % ylim([0, 20])
     end
 
     if ismember(5, idx)

@@ -138,8 +138,10 @@ end
 g = gain{1}; g = squeeze(g(1,1,:));
 semilogx(w, 20*log10(g), "Color", col.green, "LineWidth",1)
 g = gain{end}; g = squeeze(g(1,1,:));
+[~, w_co_idx] = min(g-1, [], ComparisonMethod = "abs");
 semilogx(w, 20*log10(g), "Color", col.red, "LineWidth",1)
 yline(0, "k-")
+xline(w(w_co_idx), "k--")
 xlim([1e-2, pi/T_sample])
 xlabel("Frequency [rad/s]")
 ylabel("Gain [dB]")
@@ -159,6 +161,8 @@ p = phase{1}; p = squeeze(p(1,1,:));
 semilogx(w, p, "Color", col.green, "LineWidth",1)
 p = phase{end}; p = squeeze(p(1,1,:));
 semilogx(w, p, "Color", col.red, "LineWidth",1)
+semilogx(w, (p-w*0.05*180/pi), "Color", col.orange, "LineWidth",1)
+xline(w(w_co_idx), "k--")
 xlim([1e-2, pi/T_sample])
 ylim([-180, -90])
 yticks(-180:45:-90)

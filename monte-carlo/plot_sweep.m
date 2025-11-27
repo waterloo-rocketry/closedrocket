@@ -10,7 +10,7 @@ percentiles = [80, 95];
 sdt_array = cell(1, number_plots);
 filename = sprintf('monte-carlo/batch%s/result_summary.mat', batch_name);
 load(filename);
-unstable_id
+%unstable_id
 for k = 1:number_plots
     filename = sprintf('monte-carlo/batch%s/sim_%d.mat', batch_name, k);
     load(filename);  % loads variables: sdt, in_vars
@@ -29,21 +29,20 @@ set(groot, 'defaultLegendInterpreter','latex')
 set(groot, 'DefaultTextInterpreter', 'latex')
 
 
-f_sim = figure(1);
-plot_stats_state(sdt_array, 'rocket_dt', [80, 95], [0, 50], 2);
+% f_sim = figure(1);
+% plot_stats_state(sdt_array, 'rocket_dt', [80, 95], [0, 50], [2, 2]);
 % f_est = figure(2);
 % plot_stats_state(sdt_array, 'est', 'Estimation', percentiles, [0, 250]);
-f_err = figure(3);
-plot_stats_state(sdt_array, 'error', [0, 95], [0, 50], 1:6);
-f_cov = figure(4);
-plot_stats_covariance(sdt_array, 'P_norm', [80, 95], [0, 50], 3);
-% f_control = figure(5);
-% plot_stats_control(sdt_array, 'control', 'Controller
-% ', percentiles, [0, 250]);
+% f_err = figure(3);
+% plot_stats_state(sdt_array, 'error', [80, 95], [0, 50], 1:6);
+% f_cov = figure(4);
+% plot_stats_covariance(sdt_array, 'P_norm', [80, 95], [0, 50], 3);
+f_control = figure(5);
+plot_stats_control(sdt_array, 'control', 'Controller', [80, 95]);
 
-fontsize(f_sim, 12, "points")
+% fontsize(f_sim, 12, "points")
 % fontsize(f_est, 12, "points")
-fontsize(f_err, 12, "points")
+% fontsize(f_err, 12, "points")
 fontsize(f_cov, 12, "points")
 
 set(groot, 'defaultAxesTickLabelInterpreter','remove')
@@ -52,12 +51,11 @@ set(groot, 'DefaultTextInterpreter', 'remove')
 
 %% save statistical
 % set(f_sim, 'Units', 'normalized', 'WindowState', 'maximized');
-exportgraphics(f_sim, sprintf('monte-carlo/batch%s/sim_mc_stats_sim%s.pdf', batch_name, batch_name), 'ContentType', 'vector')
+% exportgraphics(f_sim, sprintf('monte-carlo/batch%s/sim_mc_stats_sim%s.pdf', batch_name, batch_name), 'ContentType', 'vector')
 % set(f_est, 'Units', 'normalized', 'WindowState', 'maximized');
 % exportgraphics(f_est, sprintf('monte-carlo/batch%s/sim_mc_stats_est%s.pdf', batch_name, batch_name), 'ContentType', 'vector')
 % set(f_err, 'Units', 'normalized', 'WindowState', 'maximized');
-exportgraphics(f_err, sprintf('monte-carlo/batch%s/sim_mc_stats_error%s.pdf', batch_name, batch_name), 'ContentType', 'vector')
+% exportgraphics(f_err, sprintf('monte-carlo/batch%s/sim_mc_stats_error%s.pdf', batch_name, batch_name), 'ContentType', 'vector')
 % set(f_control, 'Units', 'normalized', 'WindowState', 'maximized');
 % exportgraphics(f_control, sprintf('monte-carlo/batch%s/sim_mc_stats_control%s.pdf', batch_name, batch_name), 'ContentType', 'vector')
-exportgraphics(f_cov, sprintf('monte-carlo/batch%s/sim_mc_stats_cov%s.pdf', batch_name, batch_name), 'ContentType', 'vector');
-% f_control = figure(5);
+% exportgraphics(f_cov, sprintf('monte-carlo/batch%s/sim_mc_stats_cov%s.pdf', batch_name, batch_name), 'ContentType', 'vector');

@@ -90,6 +90,7 @@ function [plots] = plot_stats_state(sdt_array, type, percentiles, varargin)
     end
 
     %% Tile mapping
+    dims_plot = 1;
     for i = idx
         switch i
             case 1, plots.q     = nexttile;
@@ -99,10 +100,9 @@ function [plots] = plot_stats_state(sdt_array, type, percentiles, varargin)
             case 5, plots.cl    = nexttile;
             case 6, plots.delta = nexttile;
         end
-    end
 
-    %% Plot for each selected field
-    for i = idx
+
+        %% Plot for each selected field
         fld = fields{i};
         ax = plots.(fld);
         hold(ax, 'on');
@@ -115,8 +115,7 @@ function [plots] = plot_stats_state(sdt_array, type, percentiles, varargin)
             case 4, color = colors(1:4,:);
         end
 
-
-        for d = 1:dim
+        for  d = 1:dim % 1:dims_plot
 
             skip_every = 10;
 
@@ -149,7 +148,13 @@ function [plots] = plot_stats_state(sdt_array, type, percentiles, varargin)
         legend(ax, 'show', 'Orientation','vertical', Location='eastoutside', IconColumnWidth=12 )
         grid(ax,'on');
         xlim(ax, tlim);
+        % xticks(ax, linspace(tlim(1), tlim(2), 6))
         xlabel(ax, "Time [s]");
         ax.YAxis.Exponent = 0;
+        %%% only plot some values
+        % if dims_plot == 3
+        %     ylim(ax, [-2, 2])
+        % end
+        % dims_plot = dims_plot +2
     end
 end
