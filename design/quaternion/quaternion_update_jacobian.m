@@ -18,6 +18,6 @@ function [qnew_q, qnew_w] = quaternion_update_jacobian(q_un, w, dt)
          w(3), w(2), -w(1), 0];
 
     % quaternion derivative Jacobians
-    qnew_q = eye(4) + 0.5 * dt * W;
+    qnew_q = eye(4) + 0.5 * dt * W + 1/8 * W^2 * dt^2;
     qnew_w = 0.5 * dt * Q(:, 2:4);
 end
