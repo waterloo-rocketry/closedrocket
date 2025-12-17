@@ -3,7 +3,7 @@ function [u, r] = controller_module(timestamp, input)
     
     %% settings
     time_launch = 10; % pad delay time
-    time_coast = 0; % time from launch to burnout
+    time_coast = 100; % time from launch to burnout
     time_program = 10; % time from launch to start of roll program
     u_max = deg2rad(10); % cap output to this angle
 

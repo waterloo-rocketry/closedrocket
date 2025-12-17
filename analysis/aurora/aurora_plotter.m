@@ -14,7 +14,7 @@ set(groot, 'defaultLegendInterpreter','latex')
 set(groot, 'DefaultTextInterpreter', 'latex')
 
 f_est = figure(1);
-tiledlayout(3,2,'TileSpacing','Compact');
+tiledlayout(2,2,'TileSpacing','Compact');
 
 % f_q = figure(1);
 nexttile;
@@ -36,16 +36,16 @@ legend(Location='eastoutside', IconColumnWidth=12); hold off;
 grid on
 
 % f_e = figure(2);
-nexttile;
-plot(seconds(TL.time_s), TL.euler_roll, 'Color', colors(2,:), 'DisplayName', '$\phi$'); hold on;
-plot(seconds(TL.time_s), TL.euler_pitch, 'Color', colors(3,:), 'DisplayName', '$\theta$');
-plot(seconds(TL.time_s), TL.euler_yaw, 'Color', colors(4,:), 'DisplayName', '$\psi$');
-xlabel("Time [s]")
-xlim([0, 140])
-title("Angle [rad]")
-% title("Relative Euler angles")
-legend(Location='eastoutside', IconColumnWidth=12);  hold off;
-grid on
+% nexttile;
+% plot(seconds(TL.time_s), TL.euler_roll, 'Color', colors(2,:), 'DisplayName', '$\phi$'); hold on;
+% plot(seconds(TL.time_s), TL.euler_pitch, 'Color', colors(3,:), 'DisplayName', '$\theta$');
+% plot(seconds(TL.time_s), TL.euler_yaw, 'Color', colors(4,:), 'DisplayName', '$\psi$');
+% xlabel("Time [s]")
+% xlim([0, 140])
+% title("Angle [rad]")
+% % title("Relative Euler angles")
+% legend(Location='eastoutside', IconColumnWidth=12);  hold off;
+% grid on
 
 % f_w = figure(3);
 nexttile;
@@ -90,23 +90,23 @@ hold off;
 grid on
 
 % f_c = figure(6);
-nexttile;
-plot(seconds(T.time_s), rad2deg(T.CANARD_ANGLE), '.-', 'Color', colors(2,:), 'DisplayName', '$\delta$'); hold on;
-plot(seconds(TL.time_s),  rad2deg(TL.CANARD_ANGLE), 'Color', colors(2,:),'HandleVisibility', 'off');
-plot(seconds(T.time_s), T.COEFF_CL, '.-', 'Color', colors(4,:), 'DisplayName', '$C_L$'), hold on;
-plot(seconds(TL.time_s), TL.COEFF_CL,'Color', colors(4,:), 'HandleVisibility', 'off');
-xlabel("Time [s]")
-xlim([0, 140])
-title("Angle [deg], Coefficient")
-% ylim([-1,5])
-% title("Canard")
-legend(Location='eastoutside', IconColumnWidth=12);  hold off;
-grid on
+% nexttile;
+% plot(seconds(T.time_s), rad2deg(T.CANARD_ANGLE), '.-', 'Color', colors(2,:), 'DisplayName', '$\delta$'); hold on;
+% plot(seconds(TL.time_s),  rad2deg(TL.CANARD_ANGLE), 'Color', colors(2,:),'HandleVisibility', 'off');
+% plot(seconds(T.time_s), T.COEFF_CL, '.-', 'Color', colors(4,:), 'DisplayName', '$C_L$'), hold on;
+% plot(seconds(TL.time_s), TL.COEFF_CL,'Color', colors(4,:), 'HandleVisibility', 'off');
+% xlabel("Time [s]")
+% xlim([0, 140])
+% title("Angle [deg], Coefficient")
+% % ylim([-1,5])
+% % title("Canard")
+% legend(Location='eastoutside', IconColumnWidth=12);  hold off;
+% grid on
 
 %%% plot control
 
 f_raw = figure(2);
-tiledlayout(3,2,'TileSpacing','Compact');
+tiledlayout(2,2,'TileSpacing','Compact');
 
 % f_cmd = figure(7);
 nexttile;
@@ -183,7 +183,7 @@ fontsize(f_raw, 12, "points")
 
 %% export
 
-exportgraphics(f_est, 'analysis/aurora/aurora_est.pdf')
+exportgraphics(f_est, 'analysis/aurora/aurora_est_compact.pdf')
 % exportgraphics(f_raw, 'analysis/aurora/aurora_raw.pdf')
 
 % exportgraphics(f_q, 'analysis/aurora/aurora_q.pdf')

@@ -14,7 +14,7 @@ set(groot, 'defaultLegendInterpreter','latex')
 set(groot, 'DefaultTextInterpreter', 'latex')
 
 f_tf = figure(1);
-tiledlayout(3,2,'TileSpacing','Compact');
+tiledlayout(2,2,'TileSpacing','Compact');
 
 % f_q = figure(1);
 p_q = nexttile;
@@ -34,18 +34,18 @@ hold off;
 
 
 % f_e = figure(2);
-nexttile;
-plot(T.timestamp_s, T.euler_roll, 'Color', colors(2,:), 'DisplayName', '$\phi$'); hold on;
-plot(T.timestamp_s, T.euler_pitch, 'Color', colors(3,:), 'DisplayName', '$\theta$');
-plot(T.timestamp_s, T.euler_yaw, 'Color', colors(4,:), 'DisplayName', '$\psi$');
-xlabel("Time [s]")
-% ylabel("Angle [rad]")
-title("Euler angle [rad]")
-grid on
-% title("Relative Euler angles")
-% legend('Location','southwest'); 
-legend('Orientation','vertical', Location='eastoutside', IconColumnWidth=12)
-hold off;
+% nexttile;
+% plot(T.timestamp_s, T.euler_roll, 'Color', colors(2,:), 'DisplayName', '$\phi$'); hold on;
+% plot(T.timestamp_s, T.euler_pitch, 'Color', colors(3,:), 'DisplayName', '$\theta$');
+% plot(T.timestamp_s, T.euler_yaw, 'Color', colors(4,:), 'DisplayName', '$\psi$');
+% xlabel("Time [s]")
+% % ylabel("Angle [rad]")
+% title("Euler angle [rad]")
+% grid on
+% % title("Relative Euler angles")
+% % legend('Location','southwest'); 
+% legend('Orientation','vertical', Location='eastoutside', IconColumnWidth=12)
+% hold off;
 
 % f_w = figure(3);
 nexttile;
@@ -88,18 +88,18 @@ legend('Orientation','vertical', Location='eastoutside', IconColumnWidth=12)
 hold off;
 
 % f_c = figure(6);
-nexttile;
-plot(T.timestamp_s, rad2deg(T.CANARD_ANGLE),  'Color', colors(2,:), 'DisplayName', '$\delta$'); hold on;
-plot(T.timestamp_s, T.COEFF_CL,  'Color', colors(4,:), 'DisplayName', '$C_L$')
-xlabel("Time [s]")
-% ylabel("Angle [deg], Coefficient")
-title("Angle [deg], Coefficient")
-ylim([-1,5])
-grid on
-% title("Canard")
-% legend('Location','best'); 
-legend('Orientation','vertical', Location='eastoutside', IconColumnWidth=12)
-hold off;
+% nexttile;
+% plot(T.timestamp_s, rad2deg(T.CANARD_ANGLE),  'Color', colors(2,:), 'DisplayName', '$\delta$'); hold on;
+% plot(T.timestamp_s, T.COEFF_CL,  'Color', colors(4,:), 'DisplayName', '$C_L$')
+% xlabel("Time [s]")
+% % ylabel("Angle [deg], Coefficient")
+% title("Angle [deg], Coefficient")
+% ylim([-1,5])
+% grid on
+% % title("Canard")
+% % legend('Location','best'); 
+% legend('Orientation','vertical', Location='eastoutside', IconColumnWidth=12)
+% hold off;
 
 f_descent = figure(2);
 for t=1:height(T)
@@ -134,7 +134,7 @@ fontsize(f_tf, 12, "points")
 % fontsize(f_c, 12, "points")
 
 %% export
-exportgraphics(f_tf, 'analysis/testflight/testflight.pdf')
+exportgraphics(f_tf, 'analysis/testflight/testflight_compact.pdf')
 % exportgraphics(f_q, 'analysis/testflight/testflight_q.pdf')
 % exportgraphics(f_e, 'analysis/testflight/testflight_euler.pdf')
 % exportgraphics(f_w, 'analysis/testflight/testflight_w.pdf')
