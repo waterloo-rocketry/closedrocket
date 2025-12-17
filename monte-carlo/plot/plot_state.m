@@ -6,7 +6,7 @@ function [plots] = plot_state(dataset, varargin)
     colors(3,:) = [0.2, 0.8, 0.1];  % Green
     colors(4,:) = [0.1, 0.2, 0.8];  % Blue
 
-    ticknumber = 11;
+    ticknumber = 9;
 
     time = seconds(dataset.Time);
     tlim = [time(1), time(end)];
