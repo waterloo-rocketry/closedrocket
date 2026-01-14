@@ -35,23 +35,23 @@ for k=1:length(Mas)
     end
 end
 
-% CL_sweeps = zeros(length(Mas), length(sweeps));
-% for j = 1:length(sweeps)
-%     for k=1:length(Mas)
-%         if Mas(k) <= 1
-%             cone(k) = 0;
-%         else
-%             cone(k) = acos(1/Mas(k));
-%         end
-%         if cone(k) > sweeps(j)
-%             CL_sweeps(k,j) = 4 / sqrt(Mas(k)^2 - 1);
-%         else
-%             m = cot(sweeps(j))/cot(cone(k));
-%             a = m*(0.38+2.26*m-0.86*m^2);
-%             CL_sweeps(k,j) = 2*pi^2*cot(sweeps(j)) / (pi + a);
-%         end
-%     end
-% end
+CL_sweeps = zeros(length(Mas), length(sweeps));
+for j = 1:length(sweeps)
+    for k=1:length(Mas)
+        if Mas(k) <= 1
+            cone(k) = 0;
+        else
+            cone(k) = acos(1/Mas(k));
+        end
+        if cone(k) > sweeps(j)
+            CL_sweeps(k,j) = 4 / sqrt(Mas(k)^2 - 1);
+        else
+            m = cot(sweeps(j))/cot(cone(k));
+            a = m*(0.38+2.26*m-0.86*m^2);
+            CL_sweeps(k,j) = 2*pi^2*cot(sweeps(j)) / (pi + a);
+        end
+    end
+end
 
 
 %% plot
@@ -62,29 +62,46 @@ set(groot, 'defaultLegendInterpreter','latex')
 set(groot, 'DefaultTextInterpreter', 'latex')
 
 clf
-figure(1)
+f_model = figure(1);
+plot(Mas, CL);
+xlabel("Mach number")
+ylabel("Coefficient of Lift")
+hold on
+% yyaxis right
+% plot(Mas, rad2deg(cone));
+% yline(rad2deg(sweep), 'r--');
+legend("$C_{L_\delta}$") %, "Mach cone angle","Sweep angle")
+grid on
+hold off
+
+f_linear = figure(2);
 plot(Mas, CL);
 xlabel("Mach number")
 ylabel("Coefficient of Lift")
 hold on
 plot(Mas, CLinear);
-% yyaxis right
-% plot(Mas, rad2deg(cone));
-% yline(rad2deg(sweep), 'r--');
-legend("$$C_L$$","$$C_{L, linear}$$", "Mach cone angle","Sweep angle")
-% ylabel("Angles [deg]")
+legend("$C_{L_\delta}$" , "$C_{L, linear}$")
+grid on
 hold off
 
-% figure(2)
+% f_sweeps = figure(2);
 % for j=1:length(sweeps)
-%     name = strcat("Sweep ", num2str(rad2deg(sweeps(:,j))), "$$^\circ$$");
+%     name = strcat(num2str(rad2deg(sweeps(:,j))), "$^\circ$ Sweep");
 %     plot(Mas, CL_sweeps(:,j), 'DisplayName',name);
 %     hold on
 % end
 % xlabel("Mach number")
 % ylabel("Coefficient of Lift")
+% grid on
 % legend
 % hold off
+
+fontsize(f_model, 12, "points")
+fontsize(f_linear, 12, "points")
+exportgraphics(f_model, 'plots/plot_airfoil-model.pdf')
+exportgraphics(f_linear, 'plots/plot_airfoil-model-linear.pdf')
+% exportgraphics(f_sweeps, 'plots/lot_airfoil-sweeps.pdf')
+
 
 set(groot, 'defaultAxesTickLabelInterpreter','remove')
 set(groot, 'defaultLegendInterpreter','remove')
