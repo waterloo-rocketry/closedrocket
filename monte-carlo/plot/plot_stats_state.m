@@ -1,132 +1,160 @@
-function plot_stats_state(sdt_array, type, commontitle, percentiles)
-    % Plot the mean and standard deviation across multiple simulations
-    % Input: sdt_array - cell array of sdt structs
+function [plots] = plot_stats_state(sdt_array, type, percentiles, varargin)
+% Plot statistical envelopes (median, percentile bounds) across multiple datasets
+% Follows the same structure and plotting style as plot_state()
 
+    %% Colors 
+    colors(1,:) = [0, 0, 0];      % Black
+    colors(2,:) = [0.9, 0.3, 0.1];% Red
+    colors(3,:) = [0.2, 0.8, 0.1];% Green
+    colors(4,:) = [0.1, 0.2, 0.8];% Blue
+
+    %% Extract valid datasets and reference time
     N = numel(sdt_array);
-    fields = {'q', 'w', 'v', 'alt', 'cl', 'delta'};
-    names = {'Attitude quaternion', 'Rates [rad/s]', 'Velocity [m/s]', 'Altitude [m]', 'Canard coefficient', 'Canard angle [rad]'};
-    dims = [4, 3, 3, 1, 1, 1];
+    valid_idx = [];
+    T_ref = [];
+    tlim = [0 0];
 
-    % Preallocate
-    T_length_max = 0;
-    valid_idx = [];  
     for n = 1:N
-        sdt = sdt_array{n};
-        if ~isstruct(sdt) || ~isfield(sdt, type) || isempty(sdt.(type)) || isfield(sdt.(type), 'Time') || isempty(sdt.(type).Time)
-            continue;
+        if ~isfield(sdt_array{n}, type) || isempty(sdt_array{n}.(type))
+            continue
         end
-        T_now = sdt.(type).Time;
-        T_length = length(T_now);
-        if T_length > T_length_max 
-            T_length_max = T_length;
+        T_now = seconds(sdt_array{n}.(type).Time);
+        if isempty(T_now), continue; end
+        valid_idx(end+1) = n;
+
+        if isempty(T_ref) || length(T_now) > length(T_ref)
             T_ref = T_now;
         end
-        valid_idx(end+1) = n;  %#ok<AGROW>
+        tlim(2) = max(tlim(2), T_now(end));
     end
-    
-    num_valid = numel(valid_idx);
-    if num_valid == 0
-        warning('No valid simulations found. Skipping plot.');
+
+    if isempty(valid_idx)
+        warning("No valid simulations for type '%s'.", type);
         return;
     end
 
-    % Initialize storage
-    for f = 1:numel(fields)
-        all_data.(fields{f}) = nan(num_valid, dims(f), N);
+    %% Override time limits if provided
+    if nargin >= 4 && ~isempty(varargin{1})
+        tlim = varargin{1};
     end
 
-    % Gather data
-    for i = 1:num_valid
+    %% Fields & dimensions
+    fields = {'q', 'w', 'v', 'alt', 'cl', 'delta'};
+    variables = {["$q_w$","$q_x$","$q_y$","$q_z$"], ["$\omega_x$","$\omega_y$","$\omega_z$"], ["$v_x$","$v_y$","$v_z$"], "$r_x$", "$C_{L_\delta}$", "$\delta$"}; 
+    names = {'Quaternion', 'Angular velocity [rad/s]', 'Velocity [m/s]', ...
+             'Altitude [km]', 'Canard Coefficient', 'Canard Angle [deg]'};
+    dims = [4,3,3,1,1,1];
+
+    %% Create storage
+    for i = 1:numel(fields)
+        all_data.(fields{i}) = nan(length(T_ref), dims(i), numel(valid_idx));
+    end
+
+    %% Collect data
+    for i = 1:numel(valid_idx)
         k = valid_idx(i);
-        sdt = sdt_array{k};
-        % Skip if not a struct or missing expected field
-        if ~isstruct(sdt) || ~isfield(sdt, type) || isempty(sdt.(type))
-            warning('Skipping sdt_array{%d} — invalid or empty', k);
-            continue;
-        end
-        data_ts = sdt.(type);
-        for f = 1:numel(fields)
-            field = fields{f};
-            data = data_ts.(field);
-            all_data.(field)(1:length(data),:,k) = data;
+        data = sdt_array{k}.(type);
+        for i = 1:numel(fields)
+            fld = fields{i};
+            D = data.(fld);
+            %%% Special unit conversions
+            if strcmp(fld,'alt')
+                % Convert m → km
+               D = D / 1000;
+            end
+            if strcmp(fld,'delta')
+                % rad → deg
+                D = rad2deg(D);
+            end
+            all_data.(fld)(1:length(D),:,k) = D;
         end
     end
+    
 
-    % Colors
-    var_colors(1,:) = [0.00, 0.45, 0.74];  % Deep Blue (unchanged)
-    var_colors(2,:) = [0.00, 0.60, 0.20];  % Clear Green
-    var_colors(3,:) = [1.00, 0.50, 0.00];  % True Orange
-    var_colors(4,:) = [0.60, 0.20, 0.50];  % Warmer Purple (less blue, more magenta)
+    %% Plot selection
+    if nargin >= 5
+        idx = varargin{2};
+    else
+        idx = 1:6;
+    end
 
-    % Plotting
-    tlo = tiledlayout(3, 2,'TileSpacing','Compact','Padding','Compact');
-    axes_list = [];
-    for f = 1:numel(fields)
-        ax = nexttile;
-        axes_list(end+1) = ax;
-        field = fields{f};
-        name = names{f};
-        dim = dims(f);
+    %% Tiled layout
+    if isscalar(idx)
+        tiledlayout(1,1,'TileSpacing','Compact');
+    elseif numel(idx) <= 2
+        tiledlayout(1,2,'TileSpacing','Compact');
+    elseif numel(idx) <= 4
+        tiledlayout(2,2,'TileSpacing','Compact');
+    else
+        tiledlayout(3,2,'TileSpacing','Compact');
+    end
 
+    %% Tile mapping
+    dims_plot = 1;
+    for i = idx
+        switch i
+            case 1, plots.q     = nexttile;
+            case 2, plots.w     = nexttile;
+            case 3, plots.v     = nexttile;
+            case 4, plots.alt   = nexttile;
+            case 5, plots.cl    = nexttile;
+            case 6, plots.delta = nexttile;
+        end
+
+
+        %% Plot for each selected field
+        fld = fields{i};
+        ax = plots.(fld);
         hold(ax, 'on');
-        for d = 1:dim
-            color = var_colors(d,:);
-            data = squeeze(all_data.(field)(:,d,:));  % [time x runs]
-            % mu = mean(data, 2);
-            mu = median(data, 2, "omitmissing");
-            sigma = std(data, 0, 2);
-            lower_mid = prctile(data, (100-percentiles(1))/2, 2);
-            upper_mid = prctile(data, 100-(100-percentiles(1))/2, 2);
-            lower = prctile(data, (100-percentiles(2))/2, 2);
-            upper = prctile(data, 100-(100-percentiles(2))/2, 2);
-            
-            
-            % Shaded area for ±1σ
-            fill([T_ref; flipud(T_ref)], ...
-                 [upper; flipud(lower)], ... % [mu+sigma; flipud(mu-sigma)],...
-                 color, 'FaceAlpha', 0.15, 'EdgeColor', 'none', 'Parent', ax);
+        dim = dims(i);
 
-            % Mean line
-            plot(ax, T_ref, mu, 'Color', color, 'LineWidth', 1.5);
-            plot(T_ref, lower_mid, ':', 'Color', color, 'LineWidth', 1, 'Parent', ax);
-            plot(T_ref, upper_mid, ':', 'Color', color, 'LineWidth', 1, 'Parent', ax);
+        switch dim
+            case 1, color = colors(4,:);
+            case 2, color = colors(3:4,:);
+            case 3, color = colors(2:4,:);
+            case 4, color = colors(1:4,:);
         end
-        title(ax, name,'FontWeight','Normal');
-        grid(ax, 'on');
-        % xlabel(ax, 'Time [s]');
+
+        for  d = 1:dim % 1:dims_plot
+
+            skip_every = 10;
+
+            data_every = squeeze(all_data.(fld)(:,d,:)); % [time × runs]
+            data = data_every(1:skip_every:end,:);
+            time = T_ref(1:skip_every:end);
+
+            med = median(data,2,"omitmissing");
+            Lmid = prctile(data,(100-percentiles(1))/2, 2);
+            Umid = prctile(data,100-(100-percentiles(1))/2, 2);
+            Lout = prctile(data,(100-percentiles(2))/2, 2);
+            Uout = prctile(data,100-(100-percentiles(2))/2, 2);
+
+            % Outer envelope
+            fill(ax, [time; flipud(time)], [Uout; flipud(Lout)], ...
+                color(d,:), 'FaceAlpha', 0.2, 'EdgeColor', 'none','HandleVisibility','off');
+            % Inner envelope
+            if percentiles(1) > 0
+                plot(ax, time, Umid, ':', 'Color', [color(d,:), 0.8],'HandleVisibility','off');
+                plot(ax, time, Lmid, ':', 'Color', [color(d,:), 0.8],'HandleVisibility','off');
+            end
+
+            % Median line
+            plot(ax, time, med, 'Color', [color(d,:), 0.5], 'LineWidth', 1, 'DisplayName', variables{i}(d));
+        end
+        hold(ax, 'off');
+
+        %% Labels & formatting
+        title(ax, names{i}, 'FontWeight','Normal');
+        legend(ax, 'show', 'Orientation','vertical', Location='eastoutside', IconColumnWidth=12 )
+        grid(ax,'on');
+        xlim(ax, tlim);
+        % xticks(ax, linspace(tlim(1), tlim(2), 6))
+        xlabel(ax, "Time [s]");
+        ax.YAxis.Exponent = 0;
+        %%% only plot some values
+        % if dims_plot == 3
+        %     ylim(ax, [-2, 2])
+        % end
+        % dims_plot = dims_plot +2
     end
-
-
-    % Add common
-    title(tlo, commontitle)
-
-    % legend
-    % Median & percentile handles (in black)
-    h_median = plot(nan, nan, '-', 'Color', [0 0 0], 'LineWidth', 1.5);
-    h_perc1 = plot(nan, nan, ':', 'Color', [0 0 0], 'LineWidth', 1);
-    h_fill = fill(nan, nan, [0 0 0], 'FaceAlpha', 0.15, 'EdgeColor', 'none');
-    
-    % Now create dummy lines for each var_colors entry (vector timeseries)
-    num_colors = size(var_colors, 1);
-    h_vec = gobjects(num_colors, 1); % preallocate graphic handles
-    for k = 1:num_colors
-        h_vec(k) = plot(nan, nan, '-', 'Color', var_colors(k,:), 'LineWidth', 1.5);
-    end
-    
-    % Combine all legend handles
-    all_handles = [h_vec', h_median, h_perc1, h_fill];
-    
-    % Create labels for the legend
-    labels = cell(1, num_colors + 3);
-    for k = 1:num_colors
-        labels{k} = sprintf('%d', k);
-    end
-    labels{num_colors + 1} = 'Med.';
-    labels{num_colors + 2} = sprintf('%d%%', percentiles(1));
-    labels{num_colors + 3} = sprintf('%d%%', percentiles(2));
-
-    % Create legend'
-    lgd = legend(ax, all_handles, labels, 'FontSize', 8, 'Orientation', 'horizontal', 'NumColumns', 7);
-    set(lgd, 'Units', 'normalized');
-    lgd.Position(1:2) = [0.56, 0.97];
 end

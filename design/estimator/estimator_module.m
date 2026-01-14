@@ -8,10 +8,10 @@ function [xhat, Phat, controller_input, bias_1, bias_2] = estimator_module(times
     
     %% settings
     % IMU_select = [1; 1]; % select IMUs, 1 is on, 0 is off
-    idle_time = 220; % wait time to handover
+    idle_time = 9; % wait time to handover
 
     %% initialize at beginning
-    xhat = zeros(13,1); Phat = zeros(13); bias_1 = zeros(10, 1); bias_2 = zeros(10, 1);
+    xhat = zeros(13,1); xhat(1) = 1; Phat = zeros(13); bias_1 = zeros(10, 1); bias_2 = zeros(10, 1);
     if isempty(x)
         x = xhat; P = Phat; b.bias_1 = bias_1; b.bias_2 = bias_2;
         flight_phase = 1;
