@@ -1,12 +1,12 @@
 %% initials
-CL = 4; % canard coefficient
+CL = 1; % canard coefficient
 alt = 1000; % altitude for dyn pressure
 rho = model_airdata(alt).density;
 
-V = linspace(20, 900, 40);
+V = linspace(25, 1000, 10);
 P = 0.5 * rho * V.^2;
 steptime = 20;
-T_sample = 0.01; % sampling time of the loop
+T_sample = 0.005; % sampling time of the loop
 
 clear control_scheduler
 clear model_roll
@@ -14,7 +14,7 @@ clear model_roll
 %% test lqr + step
 for i=1:length(P)   
     Ks = control_scheduler([P(i), CL]);
-    K_pre = Ks(end);
+    Kr = Ks(end);
     K = Ks(1:end-1);
 
     [A, B, C, ~] = model_roll(P(i), CL);
@@ -25,13 +25,15 @@ for i=1:length(P)
     f_rolloff = 100; % [rad/s] rolloff frequency
     lowpass = c2d(tf(f_rolloff, [1, f_rolloff]), T_sample);
 
-    sys_ol = K_pre * K * ss(phi, gamma, eye(3), 0, T_sample);
+    sys_ol = -K * ss(phi, gamma, eye(3), 0, T_sample); % * tf(1, 1, T_sample, 'IOdelay', 10) ;
+    sys_ol_mimo = ss(A, B, eye(3), 0) * (-K);
     % sys_ol = K_pre * K * ss(phi, gamma, eye(3), 0, T_sample) * lowpass;
-    sys_cl = K_pre * ss(phi+gamma*K, gamma, eye(3), 0, T_sample);
+    sys_cl = Kr * ss(phi+gamma*K, gamma, eye(3), 0, T_sample);
     
 
     sys_array(:,:,1,i) = sys_cl;
     sys_array_open(:,:,1,i) = sys_ol;
+    sys_array_open_mimo(:,:,1,i) = sys_ol_mimo;
 
     if i == 1
         sys_min = sys_cl;
@@ -52,9 +54,16 @@ L_low = 20;
 w_high = 2*pi*10;
 L_high = -20;
 
-figure(1)
-for i = 1 : 3 : length(P)   
-    checkloopshape(sys_array_open(1,1,1,i), L_low, w_low, L_high, w_high)
+load("plots\mumColors.mat")
+
+
+set(groot, 'defaultAxesTickLabelInterpreter','latex')
+set(groot, 'defaultLegendInterpreter','latex')
+set(groot, 'DefaultTextInterpreter', 'latex')
+
+f_loop = figure(1);
+for i = 1 : length(P)   
+    checkloopshape(sys_array_open(1,1,1,i), L_low, w_low, L_high, w_high, 'k')
     % checkloopshape(L,Llbd,wlbd,Lubd,wubd)
     % inputs:   L -> loop transfer function (must be siso!)
     %           Llbd -> in db, lower bound for the loop gain at low frequencies
@@ -63,11 +72,33 @@ for i = 1 : 3 : length(P)
     %           wubd -> in rad/s, frequency above which |L| shall be less than |Lubd|
     hold on
 end
-checkloopshape(ss(phi, gamma, [1,0,0], 0, T_sample),  L_low, w_low, L_high, w_high)
+checkloopshape(ss(phi, gamma, [1,0,0], 0, T_sample),  L_low, w_low, L_high, w_high, 'm')
+grid on
+yticks(-40:20:40)
 hold off
-% hold on
-% bode(sys_min(1,1), 'g', sys_max(1,1), 'r')
-% hold off
 
-% [margin1, margin2] = margin(sys_array(1,1))
-% [margin] = margin(sys_min(1,1), 'g', sys_max(1,1), 'r')
+f_margin = figure(2);
+for i = 1: length(P)
+    margin(sys_array_open(:,:,1,i), 'b') 
+    hold on;
+    % diskmarginplot(sys_array_open_mimo(:,:,1,i), 'r') 
+    % hold on;
+end
+hold off;
+
+f_margin_disk = figure(3);
+for i = 1: length(P)
+    diskmarginplot(sys_array_open(:,:,1,i), 'Color', col.blue) 
+    hold on;
+    % diskmarginplot(sys_array_open_mimo(:,:,1,i), 'r') 
+    % hold on;
+end
+hold off;
+% diskmarginplot((-lqg_comp)*rocket) 
+
+fontsize(f_loop, 12, "points")
+exportgraphics(f_loop, 'plots/plot_loopshape.pdf')
+
+set(groot, 'defaultAxesTickLabelInterpreter','remove')
+set(groot, 'defaultLegendInterpreter','remove')
+set(groot, 'DefaultTextInterpreter', 'remove')
