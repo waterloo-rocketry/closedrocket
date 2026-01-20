@@ -1,6 +1,6 @@
-function [airdata] = model_airdata(altitude)
-    % computes air data from altitude, according to US standard atmosphere 
-    % air data: static pressure, temperature, density, local speed of sound
+function [atmos_data_altitude, atmos_data] = model_atmos_jacobian(altitude)
+    % computes atmospheric data and gradient w.r.t. altitude from altitude, according to US standard atmosphere 
+    % atmospheric data: static pressure, temperature, density, local speed of sound
     % calculations found in Stengel 2004, pp. 30
 
     % parameters
@@ -15,7 +15,8 @@ function [airdata] = model_airdata(altitude)
     earth_g0 = 9.81; % zero height gravity
 
     % geopotential altitude
-    altitude = earth_r0*altitude / (earth_r0 -altitude);
+    altitude_ratio = earth_r0 / (earth_r0 - altitude);
+    altitude = altitude_ratio * altitude;
     
     % select atmosphere behaviour from table
     layer = air_atmosphere(1,:);
@@ -36,16 +37,23 @@ function [airdata] = model_airdata(altitude)
     
     if k == 0
         pressure = P_B * exp(-earth_g0*(altitude-b)/(air_R*T_B));
+        pressure_altitude = - P_B*earth_g0 / (T_B*air_R) * (altitude_ratio^2) * exp( - earth_g0*(altitude - b) / (T_B*air_R) );
     else
         pressure = P_B * (1 - k/T_B*(altitude-b))^(earth_g0/(air_R*k));
+        pressure_altitude = - P_B*earth_g0 / (T_B*air_R) * (altitude_ratio^2) * ( 1 - k/T_B*(altitude - b) )^(earth_g0/(air_R*k) - 1);
     end
-    temperature = T_B - k*(altitude-b);
+    temperature = T_B - k * (altitude - b);
+    temperature_altitude = - k * altitude_ratio^2;
     density = pressure / (air_R*temperature);
+    density_altitude = 1/air_R * (pressure_altitude * temperature - pressure * temperature_altitude) / temperature^2;
     mach = sqrt(air_gamma*air_R*temperature);
+    mach_altitude = 1/2 * temperature_altitude * sqrt(air_gamma*air_R / temperature);
 
     % return values
-    airdata.pressure = pressure;
-    airdata.temperature = temperature;
-    airdata.density = density;
-    airdata.mach = mach;
+    atmos_data.pressure = pressure;
+    atmos_data_altitude.pressure = pressure_altitude;
+    atmos_data.density = density;
+    atmos_data_altitude.density = density_altitude;
+    atmos_data.mach = mach;
+    atmos_data_altitude.mach = mach_altitude;
 end
