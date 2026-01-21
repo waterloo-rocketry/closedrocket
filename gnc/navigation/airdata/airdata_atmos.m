@@ -1,4 +1,4 @@
-function [atmos_data] = model_atmos(altitude)
+function [airdata] = airdata_atmos(altitude)
     % computes atmospheric stanadard data from altitude, according to US standard atmosphere 
     % atmosphere data: static pressure, temperature, density, local speed of sound
     % calculations found in Stengel 2004, pp. 30
@@ -41,11 +41,11 @@ function [atmos_data] = model_atmos(altitude)
     end
     temperature = T_B - k*(altitude-b);
     density = pressure / (air_R*temperature);
-    mach = sqrt(air_gamma*air_R*temperature);
+    sonic_speed = sqrt(air_gamma*air_R*temperature);
 
     % return values
-    atmos_data.pressure = pressure;
-    atmos_data.temperature = temperature;
-    atmos_data.density = density;
-    atmos_data.mach = mach;
+    airdata.pressure = pressure;
+    airdata.temperature = temperature;
+    airdata.density = density;
+    airdata.sonic_speed = sonic_speed;
 end
