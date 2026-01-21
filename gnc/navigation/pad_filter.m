@@ -80,11 +80,9 @@ function [x_init, bias_1, bias_2] = pad_filter(IMU_1, IMU_2, sensor_select)
     %%% set constant initials
     w = [0; 0; 0]; % stationary on rail
     v = [0; 0; 0]; % stationary on rail
-    Cl = param.Cl_alpha; % from model parameters
-    delta = 0; % controller sets canards to zero due to flight phase
 
     %%% conconct state vector
-    x_init = [q; w; v; alt; Cl; delta];
+    x_init = [q; w; v; alt];
 
     %% Bias determination
     
