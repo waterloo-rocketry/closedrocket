@@ -1,4 +1,4 @@
-function [atmos_data_altitude, atmos_data] = model_atmos_jacobian(altitude)
+function [airdata_altitude, airdata] = airdata_atmos_jacobian(altitude)
     % computes atmospheric data and gradient w.r.t. altitude from altitude, according to US standard atmosphere 
     % atmospheric data: static pressure, temperature, density, local speed of sound
     % calculations found in Stengel 2004, pp. 30
@@ -46,14 +46,14 @@ function [atmos_data_altitude, atmos_data] = model_atmos_jacobian(altitude)
     temperature_altitude = - k * altitude_ratio^2;
     density = pressure / (air_R*temperature);
     density_altitude = 1/air_R * (pressure_altitude * temperature - pressure * temperature_altitude) / temperature^2;
-    mach = sqrt(air_gamma*air_R*temperature);
-    mach_altitude = 1/2 * temperature_altitude * sqrt(air_gamma*air_R / temperature);
+    sonic_speed = sqrt(air_gamma*air_R*temperature);
+    sonic_speed_altitude = 1/2 * temperature_altitude * sqrt(air_gamma*air_R / temperature);
 
     % return values
-    atmos_data.pressure = pressure;
-    atmos_data_altitude.pressure = pressure_altitude;
-    atmos_data.density = density;
-    atmos_data_altitude.density = density_altitude;
-    atmos_data.mach = mach;
-    atmos_data_altitude.mach = mach_altitude;
+    airdata.pressure = pressure;
+    airdata_altitude.pressure = pressure_altitude;
+    airdata.density = density;
+    airdata_altitude.density = density_altitude;
+    airdata.sonic_speed = sonic_speed;
+    airdata_altitude.sonic_speed = sonic_speed_altitude;
 end
