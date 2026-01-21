@@ -1,4 +1,4 @@
-function [J_x] = model_dynamics_jacobian(dt, x, u)
+function [J_x] = dynamics_jacobian(dt, x, u)
     % Computes state derivative with predictive model. Use ODE solver to compute next state.
     
     %% decomp
