@@ -1,12 +1,9 @@
-function [x_new] = model_dynamics(dt, x, u)
+function [x_new] = dynamics(dt, x, u)
     % Computes state derivative with predictive model. Use ODE solver to compute next state.
     
     %% decomp
     % decompose state vector: [q(4); w(3); v(3); alt]
     q = x(1:4); w = x(5:7); v = x(8:10); alt = x(11);
-
-    % decompose input vector
-    a = u.accel;
 
     %% load parameters
     persistent param
@@ -32,7 +29,23 @@ function [x_new] = model_dynamics(dt, x, u)
     w_new = w + dt * param.Jinv * (torque - cross(w, param.J*w));
     
     % velocity update 
-    %%% acceleration specific force    
+    %%% average specific force
+    a = zeros(3,1);
+    a1 = a;
+    a2 = a;
+    a_number = 0;
+    if sensor_select(1) == 1 
+        a1 = u(:,1) - cross(w, cross(w, param.d1)); % correction for centrifugal force
+        a_number = a_number + 1;
+    end
+    if sensor_select(2) == 1
+        a2 = u(:,2) - cross(w, cross(w, param.d2));
+        a_number = a_number + 1;
+    end
+    if a_number ~= 0
+        a = a1 + a2 / a_number; % average if multiple IMUs are alive
+    end
+    %%% acceleration  
     v_new = v + dt * (a - cross(w,v) + S*param.g);
 
     % altitude update

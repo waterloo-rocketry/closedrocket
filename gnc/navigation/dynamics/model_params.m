@@ -17,26 +17,10 @@ c_aero = area_reference * (length_cp-length_cg);
 Cn_alpha = 10; % pitch forcing coefficent 
 Cn_omega = 0; % pitch damping coefficent 
 
-
-%% Actuator
-tau_est = 0.03; % time constant of first order actuator dynamics, in estimation
-tau_ctr = 0.03; % time constant of first order actuator dynamics, for controller tuning
-
-
 %% Canards
-%%% aerodynamics
 area_canard = 2 * 0.102 * 0.0508 / 2; % total canard area 
 length_canard = 0.203/2 + 0.0508/3; % lever arm of canard to x-axis 
 c_canard = area_canard*length_canard; % moment arm * area of canard
-
-%%% airfoil theory
-tau_cl_alpha = 50; % time constant to converge Cl back to theoretical value in filter
-canard_sweep = deg2rad(61);
-canard_sweep_cot = cot(canard_sweep);
-Cl_alpha = 2*pi*canard_sweep_cot; % estimated coefficient of lift, const with Ma
-canard_mach_supercrit = 1/cos(canard_sweep);
-canard_slope_linear = (2*pi - 4.01) * canard_sweep_cot / (1 - 1/cos(canard_sweep));
-
 
 %% Environment
 g = [-9.81; 0; 0]; % gravitational acceleration in the geographic inertial frame
