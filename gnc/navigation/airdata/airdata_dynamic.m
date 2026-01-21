@@ -2,7 +2,7 @@ function [airdata] = airdata_dynamic(alt, v)
     % computes static and dynamic air data from altitude and velocity vector, according to US standard atmosphere 
     % air data: density, dynamic pressure, mch number
 
-    airdata = airadta_atmos(alt);
+    airdata = airdata_atmos(alt);
     airspeed = norm(v);
 
     % return values

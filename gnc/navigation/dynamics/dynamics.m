@@ -64,8 +64,6 @@ function [torque] = aerodynamics(v, alt, param)
     airdata = model_airdata(alt, v);
     p_dyn = airdata.dynamic_pressure;
 
-    w = x(5:7); v = x(8:10);
-
     %%% angle of attack/sideslip
     sin_alpha = sin(atan2(v(3),v(1)));
     sin_beta =  - sin(atan2(v(2),v(1)));
