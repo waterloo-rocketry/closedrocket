@@ -14,7 +14,7 @@ function [x, P] = ekf_algorithm(x, P, b, t, T, IMU_1, IMU_2, sensor_select)
     u = zeros(3, 2);
     u(:,1) = IMU_1(1:3,1);
     u(:,2) = IMU_2(1:3,1);
-    [xhat, Phat] = ekf_predict(@dynamics, @dynamics_jacobian, x, P, u, Q, T);f
+    [xhat, Phat] = ekf_predict(@dynamics, @dynamics_jacobian, x, P, u, Q, T);
     x = xhat; P = Phat;
 
     %% Correction step(s), sequential for each IMU
