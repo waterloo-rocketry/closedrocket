@@ -8,7 +8,7 @@ P_size = 200; % dynamic pressure
 C_size = 30; % coefficient of lift
 
 %% tuning parameters
-Q = diag([10, 4, 2]);
+Q = diag([10, 4, 0]);
 R = 3e2; % constant R. Can be scaled by dynamic pressure in loop
 N = 0; % if desired cross term can be passed to lqr_tune
 T_sample = 0.005; % sampling time of the loop
@@ -64,60 +64,4 @@ run('schedule_file_creator.m')
 %% Test responses
 run("design-support\test\test_step.m")
 
-%% Plot
-if 0
-    load("controller/gains.mat", "Ks", "P_mesh", "C_mesh");
-
-    % samplep = 1e5; samplec = 1.5;
-    % for i=1:4
-    %     K(i) = interp2(P_mesh, C_mesh, Ks(:,:,i), samplec, samplep, 'linear');
-    % end
-    
-    figure(4)
-    subplot(2,2,1)
-    [P_plot,C_plot] = meshgrid(Cls,Ps);
-    surfl(P_plot,C_plot,Ks(:,:,1), 'FaceAlpha',0.5)
-    hold on
-    % scatter3(samplec, samplep ,K(1), 20, "k", "o", "filled")
-    hold off
-    xlabel("Coefficient")
-    ylabel("Dynamic pressure")
-    zlabel("K_\phi")
-    zlim([-1,1])
-    
-    % figure(2)
-    subplot(2,2,2)
-    [P_plot,C_plot] = meshgrid(Cls,Ps);
-    surfl(P_plot,C_plot,Ks(:,:,2), 'FaceAlpha',0.5)
-    hold on
-    % scatter3(samplec, samplep ,K(2), 20, "k", "o", "filled")
-    hold off
-    xlabel("Coefficient")
-    ylabel("Dynamic pressure")
-    zlabel("K_{\omega_x}")
-    zlim([-3,3])
-    
-    % figure(3)
-    subplot(2,2,3)
-    [P_plot,C_plot] = meshgrid(Cls,Ps);
-    surfl(P_plot,C_plot,Ks(:,:,3), 'FaceAlpha',0.5)
-    hold on
-    % scatter3(samplec, samplep ,K(3), 20, "k", "o", "filled")
-    hold off
-    xlabel("Coefficient")
-    ylabel("Dynamic pressure")
-    zlabel("K_\delta")
-    zlim([-4,0])
-    
-    % figure(4)
-    subplot(2,2,4)
-    [P_plot,C_plot] = meshgrid(Cls,Ps);
-    surfl(P_plot,C_plot,Ks(:,:,3), 'FaceAlpha',0.5)
-    hold on
-    % scatter3(samplec, samplep ,K(4), 20, "k", "o", "filled")
-    hold off
-    xlabel("Coefficient")
-    ylabel("Dynamic pressure")
-    zlabel("K_{pre}")
-    zlim([-1,1])
-end
+run("design-support\test\test_gaintable.m")

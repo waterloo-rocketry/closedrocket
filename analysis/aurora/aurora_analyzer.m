@@ -1,53 +1,76 @@
 clear
-% Read data (if not already in workspace)
-% T_long = readtable('analysis/aurora/aurora_flight_data.xlsx'); 
-T_est = readtable('analysis/aurora/aurora_flight_data.xlsx', 'Sheet', 'state_est_data'); 
-T_cmd = readtable('analysis/aurora/aurora_flight_data.xlsx', 'Sheet', 'proc_cmd'); 
-T_enc = readtable('analysis/aurora/aurora_flight_data.xlsx', 'Sheet', 'mcb_encoder'); 
-T_imu = readtable('analysis/aurora/aurora_flight_data.xlsx', 'Sheet', 'altimu_meas'); 
+%% Read files (if not already in workspace)
+T1_est = readtable('analysis/aurora/aurora_flight_data.xlsx', 'Sheet', 'state_est_data'); 
+T1_cmd = readtable('analysis/aurora/aurora_flight_data.xlsx', 'Sheet', 'proc_cmd'); 
+T1_enc = readtable('analysis/aurora/aurora_flight_data.xlsx', 'Sheet', 'mcb_encoder'); 
+T1_imu = readtable('analysis/aurora/aurora_flight_data.xlsx', 'Sheet', 'altimu_meas'); 
 
-%%
+T2_est = readtable('analysis/aurora/aurora_estimator_controller_complete.xlsx', 'Sheet', 'state_est_data'); 
+T2_enc = readtable('analysis/aurora/aurora_estimator_controller_complete.xlsx', 'Sheet', 'mcb_encoder'); 
+T2_imu = readtable('analysis/aurora/aurora_estimator_controller_complete.xlsx', 'Sheet', 'altimu_meas'); 
 
+%% unpack tables
+% Convert long to wide format
+T1 = unstack(T1_est, 'data', 'state_id', AggregationFunction=@mean);
+T2 = unstack(T2_est, 'data', 'state_id', AggregationFunction=@mean);
+% format names
+oldNames = T1.Properties.VariableNames;
+newNames = strrep(oldNames, 'STATE_ID_', '');
+T1.Properties.VariableNames = newNames;
+oldNames = T2.Properties.VariableNames;
+newNames = strrep(oldNames, 'STATE_ID_', '');
+T2.Properties.VariableNames = newNames;
+
+
+%% synchronize
 % relevant times only
 % keep only times between time_start and time_end
-time_start = 0;
-time_end = 150;
-time_proc_offset = 10863;
-time_mcb_offset = 30644;% -2e3;
+time1_start = 0;
+time1_end = 1500;
+time1_proc_offset = 10863;
+time1_mcb_offset = 30644;% -2e3;
 
-% Convert long to wide format
-T = unstack(T_est, 'data', 'state_id');
-% format names
-oldNames = T.Properties.VariableNames;
-newNames = strrep(oldNames, 'STATE_ID_', '');
-T.Properties.VariableNames = newNames;
-
-% replace NaN with previous 
-TF = fillmissing(T, 'linear');
+time2_start = 0;
+time2_end = 1500;
+time2_proc_offset = 169219983 + 592000;
+time2_mcb_offset = 656625343;% -2e3;
 
 % Convert from milliseconds to seconds
 function T = retimer(T, time_offset, time_start, time_end)
-    T.time_s = (T.time_ms - time_offset)/ 1000;
+    
+    T.time_s = seconds((T.time_ms - time_offset)/ 1000 );
     T.time_ms = [];
-    % T = T(T.time_s >= time_start & T.time_s <= time_end, :);
+    T = T(T.time_s >= time_start & T.time_s <= time_end, :);
     % T.time_s = T.time_s - T.time_s(1);
 end
-T = retimer(T, time_proc_offset, time_start, time_end);
-TF = retimer(TF, time_proc_offset, time_start, time_end);
-T_cmd = retimer(T_cmd, time_proc_offset, time_start, time_end);
-T_enc = retimer(T_enc, time_mcb_offset, time_start, time_end);
-T_imu = retimer(T_imu, time_proc_offset, time_start, time_end);
+
+T1 = table2timetable(retimer(T1, time1_proc_offset, time1_start, time1_end), 'RowTimes','time_s');
+T1_imu = table2timetable(retimer(T1_imu, time1_proc_offset, time1_start, time1_end), 'RowTimes','time_s');
+T1_cmd = table2timetable(retimer(T1_cmd, time1_proc_offset, time1_start, time1_end), 'RowTimes','time_s');
+T1_enc = table2timetable(retimer(T1_enc, time1_mcb_offset, time1_start, time1_end), 'RowTimes','time_s');
+
+T2 = table2timetable(retimer(T2, time2_proc_offset, time2_start, time2_end), 'RowTimes','time_s');
+T2_imu = table2timetable(retimer(T2_imu, time2_proc_offset, time2_start, time2_end), 'RowTimes','time_s');
+T2_enc = table2timetable(retimer(T2_enc, time2_mcb_offset, time2_start, time2_end), 'RowTimes','time_s');
+
+
+T = sortrows([T1; T2]);
+T_enc = sortrows([T1_enc; T2_enc]);
+% T_imu = sortrows([T1_imu; T2_imu]);
+T_imu = T1_imu; 
+T_cmd = T1_cmd;
 
 
 %% process data
-%%% euler angles
-for i=1:height(T)
-    q = [T.ATT_Q0(i), T.ATT_Q1(i), T.ATT_Q2(i), T.ATT_Q3(i)]';
-    euler = quaternion_to_euler(q);
-    T.euler_roll(i) = euler(1);
-    T.euler_pitch(i) = euler(2);
-    T.euler_yaw(i) = euler(3);
-end
+
+% replace NaN with interpolation
+TF = fillmissing(T, 'previous');
+TF_imu = fillmissing(T_imu, 'previous');
+% TF_enc = fillmissing(T_enc, 'previous');
+
+% TL_enc = fillmissing(T_enc, 'linear');
+
+
 
 %%% command, encoder
 T_cmd.data = (T_cmd.data - 32768) / 1000;
@@ -89,118 +112,32 @@ for k = 1:22
     T_imu.accel_z(k) = accel(3);
 end
 
-%% plot est
-
-f_q = figure(1);
-plot(T.time_s, T.ATT_Q0, 'o:', 'DisplayName', 'w'); hold on;
-plot(T.time_s, T.ATT_Q1, 'o:', 'DisplayName', 'x');
-plot(T.time_s, T.ATT_Q2, 'o:', 'DisplayName', 'y');
-plot(T.time_s, T.ATT_Q3, 'o:', 'DisplayName', 'z');
-% plot(TF.time_s, TF.ATT_Q0, 'o:', 'DisplayName', 'w'); hold on;
-% plot(TF.time_s, TF.ATT_Q1, 'o:', 'DisplayName', 'x');
-% plot(TF.time_s, TF.ATT_Q2, 'o:', 'DisplayName', 'y');
-% plot(TF.time_s, TF.ATT_Q3, 'o:', 'DisplayName', 'z');
-xlabel("Time [s]")
-ylabel("Quaternion [ ]")
-ylim([-1, 1])
-% title("Attitude quaternion") 
-legend('Location','southeast'); hold off;
-
-f_e = figure(2);
-plot(T.time_s, T.euler_roll, 'o:', 'DisplayName', 'roll'); hold on;
-plot(T.time_s, T.euler_pitch, 'o:', 'DisplayName', 'pitch');
-plot(T.time_s, T.euler_yaw, 'o:', 'DisplayName', 'yaw');
-xlabel("Time [s]")
-ylabel("Angle [rad]")
-% title("Relative Euler angles")
-legend('Location','southwest'); hold off;
-
-f_w = figure(3);
-plot(T.time_s, T.RATE_WX, 'o:', 'DisplayName', 'x'); hold on;
-plot(T.time_s, T.RATE_WY, 'o:', 'DisplayName', 'y')
-plot(T.time_s, T.RATE_WZ, 'o:', 'DisplayName', 'z')
-xlabel("Time [s]")
-ylabel("Anglular rate [rad/s]")
-% title("Angular rates")
-legend('Location','northwest'); hold off;
-
-f_v = figure(4);
-plot(T.time_s, T.VEL_VX, 'o:', 'DisplayName', 'x'); hold on;
-plot(T.time_s, T.VEL_VY, 'o:', 'DisplayName', 'y');
-plot(T.time_s, T.VEL_VZ, 'o:', 'DisplayName', 'z');
-xlabel("Time [s]")
-ylabel("Velocity [m/s]")
-% title("Velocity")
-legend('Location','best'); hold off;
-
-f_a = figure(5);
-plot(T.time_s, T.ALT, 'o:', 'DisplayName', 'alt')
-xlabel("Time [s]")
-ylabel("Altitude [m]")
-% title("Altitude")
-%legend(); 
-hold off;
-
-f_c = figure(6);
-plot(T.time_s, rad2deg(T.CANARD_ANGLE), 'o:', 'DisplayName', '\delta'); hold on;
-plot(T.time_s, T.COEFF_CL, 'o:', 'DisplayName', 'C_L')
-xlabel("Time [s]")
-ylabel("Angle [deg], Coefficient [ ]")
-% ylim([-1,5])
-% title("Canard")
-legend('Location','best'); hold off;
-
-%% plot control
-
-f_cmd = figure(7);
-plot(T_cmd.time_s, T_cmd.data, '.:', 'DisplayName', 'cmd'); hold on;
-plot(T_enc.time_s, T_enc.data, 'o-', 'DisplayName', 'enc')
-xlabel("Time [s]")
-ylabel("Command [deg], Encoder [deg]")
-ylim([-12,12])
-% title("Canard")
-legend('Location','best'); hold off;
+%%% dispersion and recovery
+q_apo = [T.ATT_Q0(12); T.ATT_Q1(12); T.ATT_Q2(12); T.ATT_Q3(12)];
+vel_apo_b = [T.VEL_VX(12); T.VEL_VY(12); T.VEL_VZ(12)];
+vel_apo_g = quaternion_rotmatrix(q_apo) * vel_apo_b;
+vel_apo_vert = vel_apo_g(1);
+vel_apo_hor = norm(vel_apo_g(2:3));
 
 
-%% plot IMU
-
-f_imu_rate = figure(8);
-plot(T_imu.time_s, T_imu.vel_x, 'o:', 'DisplayName', 'x'); hold on;
-plot(T_imu.time_s, T_imu.vel_y, 'o:', 'DisplayName', 'y')
-plot(T_imu.time_s, T_imu.vel_z, 'o:', 'DisplayName', 'z')
-xlabel("Time [s]")
-ylabel("Anglular rate [rad/s]")
-legend('Location','best'); hold off;
-
-f_imu_accel = figure(9);
-plot(T_imu.time_s, T_imu.accel_x, 'o:', 'DisplayName', 'x'); hold on;
-plot(T_imu.time_s, T_imu.accel_y, 'o:', 'DisplayName', 'y')
-plot(T_imu.time_s, T_imu.accel_z, 'o:', 'DisplayName', 'z')
-xlabel("Time [s]")
-ylabel("Acceleration [m/s^2]")
-legend('Location','best'); hold off;
+%%% Interpolation
+TL = fillmissing(T, 'linear', 'EndValues', 'none');
+TL_imu = fillmissing(T_imu, 'linear', 'EndValues', 'none');
 
 
-%% plot rates
-f_rates = figure(10);
-plot(T_imu.time_s, T_imu.vel_x, 'ro:', 'DisplayName', 'x'); hold on;
-plot(T_imu.time_s, T_imu.vel_y, 'go:', 'DisplayName', 'y')
-plot(T_imu.time_s, T_imu.vel_z, 'bo:', 'DisplayName', 'z')
-plot(T.time_s, T.RATE_WX, 'ro:', 'DisplayName', 'x');
-plot(T.time_s, T.RATE_WY, 'go:', 'DisplayName', 'y');
-plot(T.time_s, T.RATE_WZ, 'bo:', 'DisplayName', 'z');
-xlabel("Time [s]")
-ylabel("Anglular rate [rad/s]")
-legend('Location','best'); hold off;
+%%% euler angles
+for i=1:height(T)
+    q = [TL.ATT_Q0(i), TL.ATT_Q1(i), TL.ATT_Q2(i), TL.ATT_Q3(i)]';
+    euler = quaternion_to_euler(q);
+    TL.euler_roll(i) = euler(1);
+    TL.euler_pitch(i) = euler(2);
+    TL.euler_yaw(i) = euler(3);
+end
 
-%% export
-exportgraphics(f_q, 'analysis/aurora/aurora_q.png')
-exportgraphics(f_e, 'analysis/aurora/aurora_euler.png')
-exportgraphics(f_w, 'analysis/aurora/aurora_w.png')
-exportgraphics(f_v, 'analysis/aurora/aurora_v.png')
-exportgraphics(f_a, 'analysis/aurora/aurora_alt.png')
-exportgraphics(f_c, 'analysis/aurora/aurora_canard.png')
-exportgraphics(f_cmd, 'analysis/aurora/aurora_cmd.png')
-exportgraphics(f_imu_rate, 'analysis/aurora/aurora_imu_rate.png')
-exportgraphics(f_imu_accel, 'analysis/aurora/aurora_imu_accel.png')
-exportgraphics(f_rates, 'analysis/aurora/aurora_rates.png')
+%% print Recovery
+fprintf("Recovery: at %f s and %f m altitude \n the velocity was %f m/s vertical, %f m/s lateral.\n", seconds(T.time_s(12)), T.ALT(12), vel_apo_vert, vel_apo_hor);
+
+
+%% save
+save("analysis\aurora\aurora_flight.mat", "T", "TL", "T_imu", "TL_imu", "T_cmd", "T_enc");
+
