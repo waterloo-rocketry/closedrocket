@@ -12,7 +12,7 @@ time_idle = 10; % wait time on the rail before launch
 run('plant-model/Data/Environment/environment.m')
 % enable wind disturbances
 wind_dist_enable = 1; % no disturbances is = 0
-constant_wind_enable = 0;   % old constant wind model is = 1
+constant_wind_enable = 0;   % Toggle for type; old wind model is = 1
 
 %%% sensors
 run('plant-model/Data/Sensors/sensors_processing.m')
