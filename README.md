@@ -28,7 +28,7 @@ It probably isn't, so at that point you should ask someone for help.
 3. (edit and) run `plot_sweep` to plot results 
 
 ## Setup
-1. Clone the repo `git clone https://github.com/waterloo-rocketry/simulink-canards.git`
+1. Clone the repo `git clone https://github.com/waterloo-rocketry/closedrocket.git`
 2. Make sure you have MATLAB **2025b** installed (The specific version matters cause Simulink ;-;)
 3. Install (do this with Matlab install when you can select multiple at once, if possible):
     - Aerospace Blockset
