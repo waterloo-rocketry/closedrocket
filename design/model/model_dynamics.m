@@ -27,7 +27,9 @@ function [x_new] = model_dynamics(dt, x, u)
     %% time updates
 
     % quaternion update
-    q_new = quaternion_update(q, w, dt);
+    % q_new = quaternion_update(q, w, dt)
+    q_new = quaternion_increment(q, w, dt);
+    % q_err = q_new - quaternion_update(q, w, dt)
 
     % rate update
     w_new = w + dt * param.Jinv * (torque - cross(w, param.J*w));
