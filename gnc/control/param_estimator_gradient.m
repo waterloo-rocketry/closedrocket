@@ -13,7 +13,7 @@ function [params, K] = param_estimator_gradient(time, w, d)
         t = -0.01;
     end
     if isempty(p)
-        p = [-0.5; 0.2]; % parameters, initial guess of CL_delta and CL_0
+        p = [0.1; 0]; % parameters, initial guess of CL_delta and CL_0
     end
     if isempty(w_old)
         w_old = w;
@@ -25,12 +25,12 @@ function [params, K] = param_estimator_gradient(time, w, d)
     r = [d; 1]; % regressors, delta (cmd or encoder) and constant disturbance
 
     %%% measurement prediction
-    pdyn_area_arm_inertia = 10; % everything in L except coefficients. match with gain in sim
+    pdyn_area_arm_inertia = 1; % everything in L except coefficients. match with gain in sim
     dw_hat = r' * p * pdyn_area_arm_inertia;
 
     %%% correction
-    Q = diag([ 2, 1]) * 0.001; % weights
-    Q = Q / (norm(r)^2 + 0.1); % normalized gradient
+    Q = diag([2, 1]) * 0.1; % weights
+    Q = Q / (norm(r)^2 + 0.01); % normalized gradient
     K = Q * r; % gain
     p = p + K * (dw - dw_hat); % correct parameters
     
