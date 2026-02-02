@@ -1,4 +1,4 @@
-function [params, K] = param_estimator_gradient(time, w, d)
+function [params, K] = param_estimator_gradient(time, w, d, c)
     % w : angular rate measurement
     % d : canard angle measurement / command
     % p : parameters
@@ -13,7 +13,7 @@ function [params, K] = param_estimator_gradient(time, w, d)
         t = -0.01;
     end
     if isempty(p)
-        p = [0.1; 0]; % parameters, initial guess of CL_delta and CL_0
+        p = [2; 0]; % parameters, initial guess of CL_delta and CL_0
     end
     if isempty(w_old)
         w_old = w;
@@ -22,14 +22,13 @@ function [params, K] = param_estimator_gradient(time, w, d)
     %%% set up 
     dt = time - t;
     dw = (w - w_old) / dt; % actual roll acceleration  
-    r = [d; 1]; % regressors, delta (cmd or encoder) and constant disturbance
+    r = [d; 1]  * c; % regressors, delta (cmd or encoder) and constant disturbance
 
     %%% measurement prediction
-    pdyn_area_arm_inertia = 1; % everything in L except coefficients. match with gain in sim
-    dw_hat = r' * p * pdyn_area_arm_inertia;
+    dw_hat = r' * p;
 
     %%% correction
-    Q = diag([2, 1]) * 0.1; % weights
+    Q = diag([10, 0.01]); % weights
     Q = Q / (norm(r)^2 + 0.01); % normalized gradient
     K = Q * r; % gain
     p = p + K * (dw - dw_hat); % correct parameters
