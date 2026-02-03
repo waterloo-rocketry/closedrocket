@@ -1,4 +1,4 @@
-function [params, K] = param_estimator_kf(time, w, d, c)
+function [params, K] = param_estimator_kf(time, w, d, c, wdot)
 
     % wrote out entire KF math by hand to learn, will consolidate onto one
     % line as we move forward.
@@ -9,7 +9,7 @@ function [params, K] = param_estimator_kf(time, w, d, c)
     % Cl = canard lift coeff
     % C0 = rocket induced angular acceleration / (rho * area * arm)
 
-    persistent t p_k_minus1 P_k_minus1 w_old
+    persistent t p_k_minus1 P_k_minus1 w_old d_old
     if isempty(t)
         t = -0.01;
     end
@@ -22,14 +22,17 @@ function [params, K] = param_estimator_kf(time, w, d, c)
     if isempty(w_old)
         w_old = w;
     end
+    if isempty(d_old)
+        d_old = d;
+    end
     
     % KF constants
     dt = time - t;
     y_k = (w - w_old)/dt; % measurement
-    phi_k = c * [2 * d; 1];
+    phi_k = c * [2 * (d + d_old) / 2; 1];
     F = eye(2); 
     Q = zeros(2, 2); % used for forgetting factor
-    R = 0.1;   % scalar (rad/s^2)^2
+    R = 1;   % scalar (rad/s^2)^2
 
     % prediction
     p_k_minus = F * p_k_minus1;
@@ -50,6 +53,7 @@ function [params, K] = param_estimator_kf(time, w, d, c)
     p_k_minus1 = p_k_hat;
     P_k_minus1 = P_k;
     w_old = w;
+    d_old = d;
 
     params = p_k_hat;
     K = K_k;
