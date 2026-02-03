@@ -1,4 +1,4 @@
-function [params, K] = param_estimator_kf(time, w, d, c, wdot)
+function [params, K] = param_estimator_kf(time, w, d, c)
 
     % wrote out entire KF math by hand to learn, will consolidate onto one
     % line as we move forward.
@@ -31,7 +31,7 @@ function [params, K] = param_estimator_kf(time, w, d, c, wdot)
     y_k = (w - w_old)/dt; % measurement
     phi_k = c * [(d + d_old) / 2; 1]; % time aligned with y_k
     F = eye(2); 
-    Q = diag([6e-6 1e-7]); % used for forgetting factor
+    Q = diag([7e-6 3e-7]); % used for forgetting factor
     R = 1;   % scalar (rad/s^2)^2
 
     % prediction
