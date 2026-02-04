@@ -9,14 +9,14 @@ function [params, K] = param_estimator_kf(time, w, d, c)
     % Cl = canard lift coeff
     % C0 = rocket induced angular acceleration / (rho * area * arm)
 
-    Q = diag([1e-5 5e-8]);
+    Q = diag([1e-3 1e-6]);
 
     persistent t p_k_minus1 P_k_minus1 w_old d_old w_dot_old
     if isempty(t)
         t = -0.01;
     end
     if isempty(p_k_minus1)
-        p_k_minus1 = [1; 0];
+        p_k_minus1 = [2; 0];
     end
     if isempty(P_k_minus1)
         P_k_minus1 = Q;
@@ -39,7 +39,7 @@ function [params, K] = param_estimator_kf(time, w, d, c)
     y_k = 0.75 * w_dot_old + 0.25 * w_dot; % measurement
     phi_k = c * [d; 1]; % time aligned with y_k
     F = eye(2); 
-    R = 1;   % scalar (rad/s^2)^2
+    R = 5;   % scalar (rad/s^2)^2
 
     % prediction
     p_k_minus = F * p_k_minus1;
