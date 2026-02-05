@@ -1,69 +1,50 @@
 function [params, K] = param_estimator_kf(time, w, d, c)
 
-    % wrote out entire KF math by hand to learn, will consolidate onto one
-    % line as we move forward.
-
     % d = encoder angle (rad)
     % c = rho * area * arm / inertia
     % dw/dt = c * Cl * d + C0 * c = phi_k' * p
     % Cl = canard lift coeff
     % C0 = rocket induced angular acceleration / (rho * area * arm)
 
-    Q = diag([1e-3 1e-6]);
+    % tuning parameters
+    Q = diag([1e-3 1e-8]);
+    R = 10;
 
-    persistent t p_k_minus1 P_k_minus1 w_old d_old w_dot_old
+    persistent t p_k_minus P_k_minus w_old d_hat w_dot
     if isempty(t)
         t = -0.01;
     end
-    if isempty(p_k_minus1)
-        p_k_minus1 = [2; 0];
+    if isempty(p_k_minus)
+        p_k_minus = [2; 0];
     end
-    if isempty(P_k_minus1)
-        P_k_minus1 = Q;
+    if isempty(P_k_minus)
+        P_k_minus = Q;
     end
     if isempty(w_old)
         w_old = w;
     end
-    if isempty(d_old)
-        d_old = d;
+    if isempty(d_hat)
+        d_hat = 0;
     end
-    if isempty(w_dot_old)
-       w_dot_old = 0;
+    if isempty(w_dot)
+       w_dot = 0;
     end
 
-    d = 0.75 * d_old + 0.25 * d;
+    % lowpass command and measurement
+    d_hat = 0.75 * d_hat + 0.25 * d;
+    w_dot = 0.75 * w_dot + 0.25 * (w - w_old) / (time - t);
 
-    % KF constant
-    dt = time - t;
-    w_dot = (w - w_old)/dt;
-    y_k = 0.75 * w_dot_old + 0.25 * w_dot; % measurement
-    phi_k = c * [d; 1]; % time aligned with y_k
-    F = eye(2); 
-    R = 5;   % scalar (rad/s^2)^2
-
-    % prediction
-    p_k_minus = F * p_k_minus1;
-    P_k_minus = F * P_k_minus1 * F' + Q;
-    y_k_hat = phi_k' * p_k_minus;
-    
-    % prediction error
-    nu_k = y_k - y_k_hat;
-    S_k = phi_k' * P_k_minus * phi_k + R;
-
-    % kalman gain
-    K_k = P_k_minus * phi_k / S_k; % bless matlab i can divide matrices
-    p_k_hat = p_k_minus + K_k * nu_k;
-    P_k = (eye(2) - K_k * phi_k') * P_k_minus;
+    % Kalman filter
+    phi = c * [d_hat; 1];
+    P_k_minus = P_k_minus + Q;
+    K = P_k_minus * phi * inv(phi' * P_k_minus * phi + R);
+    params = p_k_minus + K * (w_dot - phi' * p_k_minus);
+    P_k = (eye(2) - K * phi') * P_k_minus * (eye(2) - K * phi')' + K * R * K'; % Joseph form for numerical stability
     
     % update for next cycle
     t = time;
-    p_k_minus1 = p_k_hat;
-    P_k_minus1 = P_k;
+    p_k_minus = params;
+    P_k_minus = P_k;
     w_old = w;
-    d_old = d;
-    w_dot_old = w_dot;
-
-    params = p_k_hat;
-    K = K_k;
 
 end
