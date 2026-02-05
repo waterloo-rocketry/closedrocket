@@ -37,7 +37,7 @@ function [params, K] = param_estimator_kf(time, w, d, c)
     % Kalman filter
     phi = c * [d_hat; 1];
     P_k_minus = P_k_minus + Q;
-    K = P_k_minus * phi * inv(phi' * P_k_minus * phi + R);
+    K = P_k_minus * phi / (phi' * P_k_minus * phi + R); % the stuff inside in brackets is just a scalar so you can just divide
     params = p_k_minus + K * (w_dot - phi' * p_k_minus);
     P_k = (eye(2) - K * phi') * P_k_minus * (eye(2) - K * phi')' + K * R * K'; % Joseph form for numerical stability
     
