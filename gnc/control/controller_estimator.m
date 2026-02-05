@@ -35,9 +35,9 @@ function [C_l_delta, C_l_0] = controller_estimator(time, w, delta, pdyn_params)
     end
 
     %% lowpass command and measurement
-    alpha = 0.25;
-    delta = (1-alpha) * d_old + alpha * delta;
-    w_dot = (1-alpha) * w_dot_old + alpha * (w - w_old) / (time - t);
+    tau = 0.25;
+    delta = (1 - tau) * d_old + tau * delta;
+    w_dot = (1 - tau) * w_dot_old + tau * (w - w_old) / (time - t);
 
     %% Kalman filter
     r = pdyn_params * [delta; 1]; % regression 
@@ -55,4 +55,5 @@ function [C_l_delta, C_l_0] = controller_estimator(time, w, delta, pdyn_params)
     w_dot_old = w_dot; 
     C_l_delta = coeffs(1);
     C_l_0 = coeffs(2);
+
 end
