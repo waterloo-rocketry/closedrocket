@@ -1,17 +1,29 @@
-function [u, r] = controller_module(timestamp, input)
-    % Top-level controller module. Calls controller algorithm. Sets reference signal.
-    
+function [u, r] = controller_module(time, xR, pdyn)
+    % Top-level controller module.
+    % u : control command, desired canard angle (rad)
+    % r : roll angle target (rad)
+    % time : current time stamp (s)    
+    % xR : roll state [roll angle (rad), roll rate (rad/s)]
+    % pdyn : dynamic pressure (Pa)
+
     %% settings
     time_launch = 10; % pad delay time
     time_coast = 10; % time from launch to burnout
     time_program = 10; % time from launch to start of roll program
-    u_max = deg2rad(10); % cap output to this angle
+    u_max = deg2rad(10); % limit output to this angle
+    L_min = 0.1; % limit roll control derivative for low authority conditions
+
+    %% parameters
+    persistent param
+    if isempty(param)
+        param = coder.load("model_params.mat");
+    end
 
     %% Reference signal
-    % Generates reference signal for roll program
-    % includes multiple roll angle steps. Reference r [rad].
+    % Generates reference signal r (rad) for roll program
+    % includes multiple roll angle steps
     
-    t = timestamp - time_launch;
+    t = time - time_launch;
     r = 0;
     if t > (time_program + 7)
         if t < (time_program + 12)
@@ -26,26 +38,20 @@ function [u, r] = controller_module(timestamp, input)
     end
 
     %% controller algorithm
-    % Computes control output. Uses gain schedule table and simplified roll model
-    % Inputs: roll state input(1:3), flight conditions input(4:5), reference signal r
-    % Outputs: control input u
+    % Computes control signal of the adaptive LQR controller.
 
-    roll_state = input(1:3); 
-    flight_cond = input(4:5);
+    %%% Coefficient Estimation
+    pdyn_params = pdyn * params.c_canard;
+    C_l_delta = controller_estimator(time, w, delta, pdyn_params);
+       
+    L_delta = C_l_delta * pdyn_params;
+    L_delta = 1 / (max(min(1/L_delta, 1/L_min), -1/L_min)); % lower bounds
 
-    %%% Gain scheduling
-    Ks = zeros(1,4);
-    % get gain from schedule
-    Ks = control_scheduler(flight_cond);
-    K = Ks(1:3);
-    K_pre = Ks(4);
-    
     %%% Feedback law
-    % two degree of freedom, full state feedback + feedforward
-    u = K*roll_state + K_pre*r; 
+    u = controller_law(xR, r, L_delta);
 
     %%% limit output to allowable angle
-    u = min(max(u, -u_max), u_max);
+    u = min(max(u, -u_max), u_max); % upper bounds
 
     if t < time_coast % disable during boost
         u = 0;
