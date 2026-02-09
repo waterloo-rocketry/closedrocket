@@ -1,4 +1,4 @@
-function [x_new, P_new] = ekf_correct(model_measurement, model_jacobian, x, P, y, b, R)
+function [x_new, P_new] = ekf_correct_gyro(x, P, y, b, R)
     % Computes EKF correction step.
     % Inputs: estimates x, P; measurement y; sensor bias b;
     % Input parameters: weighting R; 
@@ -9,17 +9,23 @@ function [x_new, P_new] = ekf_correct(model_measurement, model_jacobian, x, P, y
     % Uses discrete-time measurement model and analytical Jacobian
 
     %%% compute expected measurement and difference to measured values
-    y_expected = model_measurement(0,x,b);
+    % y_expected = meas_gyro(0,x,b); % hardcoded this
+    % decompose state vector: [q(4); w(3); v(3); alt]
+    w = x(5:7); 
+    % decompose bias matrix: [b_A(3,i); b_W(3, i); M_E(3, i); b_P(1, i)]
+    b_W = b(4:6);
+    y_expected = w + b_W; 
     innovation = y - y_expected;
 
     %%% compute Jacobian: H = dh/dx
-    % H = jacobian(@model_measurement, 0, x, b); 
-    H = model_jacobian(0, x, b);
+    % H = meas_gyro_jacobian(0, x, b); % hardcoded this
+    H = zeros(3, 11);
+    H(:, 5:7) = eye(3);
 
     %%% compute Kalman gain (and helper matrices)
-    L = H * P * H' + R;
-    K = P * H' * inv(L);
-    E = eye(length(x)) - K * H;
+    L = P(5:7, 5:7) + R;
+    K = P(:, 5:7) * inv(L);
+    E = eye(11) - [zeros(11,4), K, zeros(11,4)];
     
     %%% correct covariance estimate
     P_corr = E * P * E' + K * R * K'; % joseph stabilized
