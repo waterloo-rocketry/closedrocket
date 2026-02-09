@@ -1,4 +1,4 @@
-function [x, P] = ekf_algorithm(x, P, b, t, T, IMU_1, IMU_2, sensor_select)
+function [x, P] = ekf_algorithm(x, P, b, t, dt, IMU_1, IMU_2, sensor_select)
     % Computes EKF iteration. Uses model_f for prediction and model_h for correction.
     % Inputs: estimates x, P; control u; measurement y; sensor bias b; timecode t
     % Input parameters: weighting Q, R; time difference to last compute T; 
@@ -14,7 +14,7 @@ function [x, P] = ekf_algorithm(x, P, b, t, T, IMU_1, IMU_2, sensor_select)
     u = zeros(3, 2);
     u(:,1) = IMU_1(1:3,1);
     u(:,2) = IMU_2(1:3,1);
-    [xhat, Phat] = ekf_predict(@dynamics, @dynamics_jacobian, x, P, u, Q, T);
+    [xhat, Phat] = ekf_predict(@dynamics, @dynamics_jacobian, x, P, u, Q, dt);
     x = xhat; P = Phat;
 
     %% Correction step(s), sequential for each IMU
@@ -33,7 +33,7 @@ function [x, P] = ekf_algorithm(x, P, b, t, T, IMU_1, IMU_2, sensor_select)
         %%% y = [   W(3),          Mag(3),      P(1)]
         R = diag([[1, 1, 1]*1e-6, [1, 1, 1]*0.01, 1]);
 
-        [xhat, Phat] = ekf_correct(@model_meas_imu, @model_meas_imu_jacobian, x, P, IMU_1(4:6), b.bias_1, R);
+        [xhat, Phat] = ekf_correct_general(@model_meas_imu, @model_meas_imu_jacobian, x, P, IMU_1(4:6), b.bias_1, R);
         x = xhat; P = Phat;
     end
 
