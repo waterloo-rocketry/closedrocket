@@ -1,4 +1,4 @@
-function [x_new, P_new] = ekf_predict(model_dynamics, model_jacobian, x, P, u, Q, dt)
+function [x_new, P_new] = ekf_predict(x, P, u, Q, dt)
     % Computes EKF prediction step.
     % Inputs: estimates x, P; control u; 
     % Input parameters: weighting Q; time difference to last compute step; 
@@ -9,11 +9,11 @@ function [x_new, P_new] = ekf_predict(model_dynamics, model_jacobian, x, P, u, Q
     % Uses discrete-time dynamics and analytical Jacobian
     
     %%% discrete dynamics update
-    [x_pred] = model_dynamics(dt, x, u); 
+    [x_pred] = dynamics(dt, x, u); 
 
     %%% discrete Jacobian: F = df/dx
     % F = jacobian(@model_dynamics, dt, x, u);
-    F = model_jacobian(dt, x, u);
+    F = dynamics_jacobian(dt, x, u);
 
     %%% discrete covariance
     P_pred = F * P * F' + Q; 
