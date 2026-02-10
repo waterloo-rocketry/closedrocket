@@ -4,8 +4,13 @@ function [a, w] = ekf_prefilter_imu(dt, A1, W1, A2, W2, A3, W3)
     % Inputs: time step dt, accelerometer Ai, gyroscope Wi 
     % Outputs: specific acceleration a, angular rates w
 
-   %%% average specific force
     a = zeros(3,1);
+    w = zeros(3,1);
+
+    %%% average angular rates
+    %w = ...
+
+    %%% average acceleration
     a1 = a;
     a2 = a;
     a_number = 0;
