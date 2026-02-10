@@ -1,12 +1,10 @@
 function [x, P] = flight_filter(x, P, b, t, dt, IMU_1, IMU_2, sensor_select)
-    % Computes EKF iteration. Uses model_f for prediction and model_h for correction.
     % Inputs: estimates x, P; control u; measurement y; sensor bias b; timecode t
     % Input parameters: weighting Q, R; time difference to last compute T; 
     % Outputs: new estimates x, P
     %#codegen
 
-
-    %% Prediction step
+    %% IMU Prediction + Correction steps
     %%% x = [   q(4),           w(3),         v(3),    alt(1)]
     %%% Q is a square 11 matrix, tuning for prediction E(noise)
     %%% R is a square 3 matrix, tuning for measurement E(noise) of the gyroscope
@@ -26,23 +24,22 @@ function [x, P] = flight_filter(x, P, b, t, dt, IMU_1, IMU_2, sensor_select)
     %%% Correction with barometer, magnetometer
     %%% R is a square matrix (size depending on amount of sensors), tuning for measurement E(noise)
  
-
-    % IMU 1 (MTi630)
+    % Barometer
     if sensor_select(1) == 1 % only correct with alive IMUs
-        %%% y = [   W(3),          Mag(3),      P(1)]
-        R = diag([[1, 1, 1]*1e-6, [1, 1, 1]*0.01, 1]);
+        %%% y = [ P(1) ]
+        R = 1;
 
-        [xhat, Phat] = ekf_correct(@model_meas_imu, @model_meas_imu_jacobian, x, P, IMU_1(4:6), b.bias_1, R);
+        [xhat, Phat] = ekf_correct(@meas_baro, @meas_baro_jacobian, x, P, IMU_1(10), b.bias_1, R);
         x = xhat; P = Phat;
     end
 
 
-    % IMU 2 (AltIMU)
+    % Magnetometer
     if sensor_select(2) == 1
-        %%% y = [   W(3),          Mag(3),      P(1)]
-        R = diag([[1, 1, 1]*1e-6, [1, 1, 1]*0.01, 1]);
+        %%% y = [  Mag(3) ]
+        R = diag([1, 1, 1])*0.01;
 
-        [xhat, Phat] = ekf_correct(@model_meas_imu, @model_meas_imu_jacobian, x, P, IMU_2(4:end), b.bias_2, R);
+        [xhat, Phat] = ekf_correct(@meas_mag, @meas_mag_jacobian, x, P, IMU_2(7:9), b.bias_2, R);
         x = xhat; P = Phat;
     end 
 
