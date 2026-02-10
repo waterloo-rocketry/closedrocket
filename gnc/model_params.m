@@ -43,4 +43,4 @@ b1 = [0;0;0]; % Hard iron compensation
 b2 = [0;0;0]; % Hard iron compensation
 
 %% save and export
-save("design/model/model_params.mat");
+save("gnc/model_params.mat");
