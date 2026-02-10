@@ -2,7 +2,7 @@ function [torque] = dynamics_aero(v, alt, param)
     % aerodynamics model
 
     %%% air data  
-    airdata = model_airdata(alt, v);
+    airdata = airdata_dynamic(alt, v);
     p_dyn = airdata.dynamic_pressure;
 
     %%% angle of attack/sideslip
