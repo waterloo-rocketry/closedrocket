@@ -1,12 +1,9 @@
-function [J_x] = dynamics_jacobian(dt, x, u)
+function [J_x] = dynamics_jacobian(dt, x, a)
     % Computes state derivative with predictive model. Use ODE solver to compute next state.
     
     %% decomp
     % decompose state vector: [q(4); w(3); v(3)]
     q = x(1:4); w = x(5:7); v = x(8:10); alt = x(11);
-
-    % decompose input vector
-    a = u.accel;
 
     %% load parameters
     persistent param
@@ -31,7 +28,7 @@ function [J_x] = dynamics_jacobian(dt, x, u)
     %% angular rate rows (w, 5:7)
     % when implementing in C: the torque partial derivatives can probably
     % be put in one function
-    [torque_v] = aerodynamics_jacobian(v, alt, param);
+    [torque_v] = dynamics_aero_jacobian(v, alt, param);
 
     w_w = eye(3) + dt * param.Jinv * tilde(param.J*w); % torque_w = 0 for now
     w_v = dt * param.Jinv * torque_v;
@@ -63,27 +60,5 @@ function [J_x] = dynamics_jacobian(dt, x, u)
     J_x(11,1:4) = alt_q; % column q
     J_x(11,8:10) = alt_v; % column v
     J_x(11, 11) = alt_alt; % column alt
-
-end
-
-%% skew symmetric matrix / cross-product jacobian
-function [skewed] = tilde(vector)
-    skewed = [0, -vector(3), vector(2);
-              vector(3), 0, -vector(1);
-              -vector(2), vector(1), 0];
-end
-
-%% aerodynamics
-function [torque_v] = aerodynamics_jacobian(v, alt, param)
-
-    %%% air data 
-    airdata = model_airdata(alt, v);
-
-    %torque_vx = Cl * delta * param.c_canard * [v(1), v(2), v(3); 0, 0, 0; 0, 0, 0];
-    torque_vyz = 0.5 * param.c_aero * param.Cn_alpha * [0, 0, 0;
-                                                        v(3), 0, v(1);
-                                                        -v(2), -v(1), 0];
-    %torque_v =  airdata.density * (torque_vx + torque_vyz);
-    torque_v =  airdata.density * (torque_vyz);
 
 end
