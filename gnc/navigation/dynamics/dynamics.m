@@ -8,7 +8,7 @@ function [x_new] = dynamics(dt, x, a)
     %% load parameters
     persistent param
     if isempty(param)
-        param = coder.load("model/model_params.mat");
+        param = coder.load("model_params.mat");
     end
     
     %% compute rotation matrix 

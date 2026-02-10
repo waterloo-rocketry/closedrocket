@@ -8,7 +8,7 @@ function [J_x] = dynamics_jacobian(dt, x, a)
     %% load parameters
     persistent param
     if isempty(param)
-        param = coder.load("model/model_params.mat");
+        param = coder.load("model_params.mat");
     end
     
     %% create empty Jacobian 
