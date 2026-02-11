@@ -18,16 +18,12 @@ function [J_x] = dynamics_jacobian(dt, x, a)
     
     %% quaternion attitude rows (q, 1:4)
     [q_q, q_w] = quaternion_update_jacobian(q, w, dt);
-    % [qdot_q, qdot_w] = quaternion_derivative_jacobian(q,w);
-    % q_q = eye(4) + dt * qdot_q;
-    % q_w = dt * qdot_w;
 
     J_x(1:4,1:4) = q_q; % column q (attitude)
     J_x(1:4, 5:7) = q_w; % column w (rates)
 
     %% angular rate rows (w, 5:7)
-    % when implementing in C: the torque partial derivatives can probably
-    % be put in one function
+    % when implementing in C: the torque partial derivatives can probably be put in one function
     [torque_v] = dynamics_aero_jacobian(v, alt, param);
 
     w_w = eye(3) + dt * param.Jinv * tilde(param.J*w); % torque_w = 0 for now
@@ -38,7 +34,6 @@ function [J_x] = dynamics_jacobian(dt, x, a)
 
 
     %% velocity rows (v, 8:10)
-    % v_q = dt * quaternion_rotate_jacobian(quaternion_inv(q), param.g);
     v_q = dt * quaternion_rotate_jacobian(q, param.g);
     v_w = dt * tilde(v);
     v_v = eye(3) - dt * tilde(w);
@@ -49,7 +44,6 @@ function [J_x] = dynamics_jacobian(dt, x, a)
 
 
     %% altitude row (alt, 11)
-    % r_q = dt * quaternion_rotate_jacobian(q, v);
     r_q = dt * quaternion_rotate_jacobian(quaternion_inv(q), v);
     alt_q = r_q(1,:); % only use altitude from position vector
     r_v = dt * quaternion_rotmatrix(quaternion_inv(q));
