@@ -27,8 +27,8 @@ function [x_corr, P_corr] = ekf_update(dt, x, P, a_meas, w_meas, Q, R)
     innovation = w_meas - w;
 
     %%% compute Jacobian: H = dh/dx
-    H = zeros(3, 11); 
-    H(:, 5:7) = eye(3); % hardcoded measurement jacobian
+    % H = zeros(3, 11); % is hardcoded
+    % H(:, 5:7) = eye(3); % hardcoded measurement jacobian
 
     %%% compute Kalman gain (and helper matrices)
     L = P_pred(5:7, 5:7) + R; % hardcoded H*P*H' 
