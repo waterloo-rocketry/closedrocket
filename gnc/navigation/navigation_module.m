@@ -4,10 +4,9 @@ function [xhat, Phat_norm, airdata] = navigation_module(timestamp, IMU_1, IMU_2,
     % IMU = struct of IMUi = [accel; omega; mag; baro] 
     %#codegen
     
-    persistent x P t b flight_phase; % remembers x, P, t from last iteration
+    persistent t x P b flight_phase; % remembers t, x, P from last iteration
     
     %% settings
-    % IMU_select = [1; 1]; % select IMUs, 1 is on, 0 is off
     idle_time = 9; % wait time to handover
 
     %% initialize at beginning
@@ -23,12 +22,12 @@ function [xhat, Phat_norm, airdata] = navigation_module(timestamp, IMU_1, IMU_2,
     end
     
     %% timecode
-    T = timestamp - t; % time step size for integrators
+    dt = timestamp - t; % time step size for integrators
     t = timestamp;
     
     %% flight phase
     if t >= idle_time % mock for flight phase
-            flight_phase = 0;
+            flight_phase = 0; % 1 is pad, 0 is flight
     end
 
     %% Pad filter iteration
@@ -39,7 +38,7 @@ function [xhat, Phat_norm, airdata] = navigation_module(timestamp, IMU_1, IMU_2,
 
     %% Flight filter iteration
     if flight_phase == 0 % in flight
-        [xhat, Phat] = ekf_algorithm(x, P, b, t, T, IMU_1, IMU_2, sensor_select);
+        [xhat, Phat] = flight_filter(dt, x, P, b, IMU_i);
         x = xhat; P = Phat;
     end
 
