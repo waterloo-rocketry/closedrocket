@@ -1,4 +1,4 @@
-function [x, P] = flight_filter(x, P, b, t, dt, IMU_1, IMU_2, sensor_select)
+function [x, P] = flight_filter(dt, x, P, bias, IMU_i)
     % Inputs: estimates x, P; control u; measurement y; sensor bias b; timecode t
     % Input parameters: weighting Q, R; time difference to last compute T; 
     % Outputs: new estimates x, P
@@ -16,7 +16,7 @@ function [x, P] = flight_filter(x, P, b, t, dt, IMU_1, IMU_2, sensor_select)
     A2 = IMU_2(1:3,1);
     W2 = IMU_2(4:6,1);
 
-    [a, w] = ekf_prefilter_imu(dt, A1, W1, A2, W2, A3, W3);
+    [a, w] = ekf_prefilter_imu(dt, bias, A1, W1, A2, W2, A3, W3);
     [xhat, Phat] = ekf_update(dt, x, P, a, w, Q, R);
     x = xhat; P = Phat;
 
@@ -29,7 +29,7 @@ function [x, P] = flight_filter(x, P, b, t, dt, IMU_1, IMU_2, sensor_select)
         %%% y = [ P(1) ]
         R = 1;
 
-        [xhat, Phat] = ekf_correct(@meas_baro, @meas_baro_jacobian, x, P, IMU_1(10), b.bias_1, R);
+        [xhat, Phat] = ekf_correct(@meas_baro, @meas_baro_jacobian, x, P, IMU_1(10), bias, R);
         x = xhat; P = Phat;
     end
 
@@ -39,7 +39,7 @@ function [x, P] = flight_filter(x, P, b, t, dt, IMU_1, IMU_2, sensor_select)
         %%% y = [  Mag(3) ]
         R = diag([1, 1, 1])*0.01;
 
-        [xhat, Phat] = ekf_correct(@meas_mag, @meas_mag_jacobian, x, P, IMU_2(7:9), b.bias_2, R);
+        [xhat, Phat] = ekf_correct(@meas_mag, @meas_mag_jacobian, x, P, IMU_2(7:9), bias, R);
         x = xhat; P = Phat;
     end 
 
