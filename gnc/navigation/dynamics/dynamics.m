@@ -27,8 +27,10 @@ function [x_new] = dynamics(dt, x, a)
     w_new = w + dt * param.Jinv * (torque - cross(w, param.J*w));
     
     % velocity update 
-    v_new = v + dt * (a - cross(w,v) + S*param.g);
-
+    w_tilde = dt * tilde(w);
+    w_tilde_exp = w_tilde + 1/2*w_tilde^2 + 1/6*w_tilde^3;
+    v_new = v + dt*a - w_tilde_exp*v + S*param.g; 
+        
     % altitude update
     v_earth = (S')*v;
     alt_new = alt + dt * v_earth(1);
