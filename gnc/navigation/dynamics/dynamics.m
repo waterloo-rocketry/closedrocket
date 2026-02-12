@@ -1,5 +1,5 @@
 function [x_new] = dynamics(dt, x, a)
-    % Computes state derivative with predictive model. Use ODE solver to compute next state.
+    % Computes state update with dynamics model and time integration
     
     %% decomp
     % decompose state vector: [q(4); w(3); v(3); alt]
@@ -24,12 +24,16 @@ function [x_new] = dynamics(dt, x, a)
     q_new = quaternion_increment(q, w, dt);
 
     % rate update
-    w_new = w + dt * param.Jinv * (torque - cross(w, param.J*w));
+    w_tilde = - dt * math_tilde(w);
+    w_tilde_exp = math_matrix_exp(w_tilde);
+    w_new = w + param.Jinv * (w_tilde_exp*param.J*w) + dt * param.Jinv * torque;
+    %w_new = w + dt * param.Jinv * (torque - cross(w, param.J*w)); % old version
+    %%% for Jx < Jy = Jz : u = (Jy-Jx)/Jy * wx, and 
+    %%% wx_new = wx, [wy, wz]_new = Sx(u*dt)*[wy, wz] with Sx = [c(u), s(u); -s(u), c(u)]
     
     % velocity update 
-    w_tilde = dt * tilde(w);
-    w_tilde_exp = w_tilde + 1/2*w_tilde^2 + 1/6*w_tilde^3;
-    v_new = v + dt*a - w_tilde_exp*v + S*param.g; 
+    v_new = v + w_tilde_exp*v + dt * a + dt * S*param.g; 
+    % v_new = v + dt * (a - cross(w,v) + S*param.g); % old version
         
     % altitude update
     v_earth = (S')*v;
