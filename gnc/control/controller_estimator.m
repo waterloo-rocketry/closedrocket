@@ -34,6 +34,13 @@ function [C_l_delta, C_l_0] = controller_estimator(time, w, delta, pdyn_params)
        w_dot_old = 0;
     end
 
+    % prevents high noise density for small delta from affecting estimate
+    % probably should make more rigorous
+    if abs(delta) < 0.005
+        delta = 0;
+    end
+
+
     %% lowpass command and measurement
     alpha = 0.25;
     delta = (1-alpha) * d_old + alpha * delta;

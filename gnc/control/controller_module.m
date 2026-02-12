@@ -1,4 +1,4 @@
-function [u, r] = controller_module(time, xR, pdyn)
+function [u, r] = controller_module(time, xR, pdyn, delta)
     % Top-level controller module.
     % u : control command, desired canard angle (rad)
     % r : roll angle target (rad)
