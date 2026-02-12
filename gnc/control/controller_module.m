@@ -1,4 +1,4 @@
-function [u, r] = controller_module(time, xR, pdyn, delta)
+function [u, r, C_l_delta] = controller_module(time, xR, pdyn, delta)
     % Top-level controller module.
     % u : control command, desired canard angle (rad)
     % r : roll angle target (rad)
@@ -7,8 +7,8 @@ function [u, r] = controller_module(time, xR, pdyn, delta)
     % pdyn : dynamic pressure (Pa)
 
     %% settings
-    time_launch = 10; % pad delay time
-    time_coast = 10; % time from launch to burnout
+    time_launch = 0; % pad delay time
+    time_coast = 0; % time from launch to burnout
     time_program = 10; % time from launch to start of roll program
     u_max = deg2rad(10); % limit output to this angle
     L_min = 0.1; % limit roll control derivative for low authority conditions
@@ -16,7 +16,7 @@ function [u, r] = controller_module(time, xR, pdyn, delta)
     %% parameters
     persistent param
     if isempty(param)
-        param = coder.load("model_params.mat");
+        param = coder.load("gnc/model_params.mat");
     end
 
     %% Reference signal
@@ -41,13 +41,14 @@ function [u, r] = controller_module(time, xR, pdyn, delta)
     % Computes control signal of the adaptive LQR controller.
 
     %%% Coefficient Estimation
-    pdyn_params = pdyn * params.c_canard;
-    C_l_delta = controller_estimator(time, w, delta, pdyn_params);
+    pdyn_params = pdyn * param.c_canard;
+    C_l_delta = controller_estimator(time, xR(2), delta, pdyn_params);
        
     L_delta = C_l_delta * pdyn_params;
     L_delta = 1 / (max(min(1/L_delta, 1/L_min), -1/L_min)); % lower bounds
 
     %%% Feedback law
+    u = 0;
     u = controller_law(xR, r, L_delta);
 
     %%% limit output to allowable angle
