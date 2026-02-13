@@ -1,4 +1,4 @@
-function [xhat, Phat_norm, airdata] = navigation_module(timestamp, IMU_1, IMU_2, sensor_select)
+function [xhat, Phat_norm, airdata, xR] = navigation_module(timestamp, IMU_1, IMU_2, sensor_select)
     % Top-level estimator module. Calls EKF algorithm.
     % Inputs: concocted measurement and output vectors with multiple sensors. Not yet fully supported, work in progress
     % IMU = struct of IMUi = [accel; omega; mag; baro] 
@@ -48,4 +48,7 @@ function [xhat, Phat_norm, airdata] = navigation_module(timestamp, IMU_1, IMU_2,
     %% Compute variance norm for EKF quality
     Phat_norm = norm(P); % Compute the norm of the covariance matrix
 
+    %% Roll state for controller
+    phi = quaternion_to_roll(x(1:4));
+    xR = [phi; x(5)];
 end
