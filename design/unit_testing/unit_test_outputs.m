@@ -10,11 +10,11 @@ for i = 1:length(allTests)
     argList = struct2cell(allTests(i).inputs);
     
     try
-        results(i).modelName = allTests(i).modelName;
+        results(i).funcName = allTests(i).funcName;
         results(i).inputData = allTests(i).inputs;
-        results(i).output    = funcHandle(argList{:});
+        results(i).output = funcHandle(argList{:});
     catch ME
-        warning('Failed to run %s: %s', allTests(i).modelName, ME.message);
+        warning('Failed to run %s: %s', allTests(i).funcName, ME.message);
     end
 end
 
