@@ -9,9 +9,9 @@ function [u, r, C_l_delta] = controller_module(time, xR, pdyn, delta)
     %% settings
     time_launch = 0; % pad delay time
     time_coast = 0; % time from launch to burnout
-    time_program = 10; % time from launch to start of roll program
+    time_program = 5; % time from launch to start of roll program
     u_max = deg2rad(10); % limit output to this angle
-    L_min = 0.1; % limit roll control derivative for low authority conditions
+    L_min = 10; % limit roll control derivative for low authority conditions
 
     %% parameters
     persistent param
