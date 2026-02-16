@@ -7,29 +7,30 @@ function [a, w] = ekf_prefilter_imu(dt, A1, W1, A2, W2, A3, W3)
     a = zeros(3,1);
     w = zeros(3,1);
 
+    %%% gyroscope bias correction
+    % w1 = W1 - b_w1;
+
     %%% average angular rates
-    %w = ...
+    % r1 = 1e-7; % use actual noise variances from datasheets
+    % r2 = 1e-5; 
+    % if sensor1_isdead == 1
+    %     r1 = 1e10; % very very high
+    % end
+    % R1 = 1 - r1 / (r1+r2);
+    %
+    % w = R1* w1 + R2 * w2;
 
+    %%% centrifugal correction
+    % a1 = A1 - cross(w, cross(w, param.d1));
+    
     %%% average acceleration
-    a1 = a;
-    a2 = a;
-    a_number = 0;
-    if sensor_select(1) == 1 
-        a1 = u(:,1) - cross(w, cross(w, param.d1)); % correction for centrifugal force
-        a_number = a_number + 1;
-    end
-    if sensor_select(2) == 1
-        a2 = u(:,2) - cross(w, cross(w, param.d2));
-        a_number = a_number + 1;
-    end
-    if a_number ~= 0
-        a = a1 + a2 / a_number; % average if multiple IMUs are alive
-    end
-
-    % decompose state vector: [q(4); w(3); v(3); alt]
-    w = x(5:7); 
-    % decompose bias matrix: [b_A(3,i); b_W(3, i); M_E(3, i); b_P(1, i)]
-    b_W = b(4:6);
-    y_expected = w + b_W; 
+    % r1 = 1e-7; % use actual noise variances from datasheets
+    % r2 = 1e-5; 
+    % if sensor1_isdead == 1
+    %     r1 = 1e10; % very very high
+    % end
+    % R1 = 1 - r1 / (r1+r2);
+    %
+    % a = R1*a1 + R2 *a2;
 
 end
