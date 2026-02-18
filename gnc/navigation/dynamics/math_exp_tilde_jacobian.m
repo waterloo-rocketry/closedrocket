@@ -1,6 +1,7 @@
-function [skewed_exp_vector] = math_exp_tilde_jacobian(w, dt, v)
+function [skewed_exp_v] = math_exp_tilde_jacobian(w, dt, v)
     % jacobian of {exp(-tilde(w)*dt)*v} wrt w
-    skewed_exp_vector = [0,                   -dt*v(3)*exp(-dt*w(2)), dt*v(2)*exp(w(3));
-                        dt*v(3)*exp(dt*w(1)),  0,                    -dt*v(1)*exp(-dt*w(3));
-                       -dt*v(2)*exp(-dt*w(1)), dt*v(1)*exp(dt*w(2)), 0];
+    dtw_tilde = math_tilde(-dt * w);
+    skewed_exp = math_matrix_exp(dtw_tilde);
+    jacobian_left = eye(3) - 1/2 * dtw_tilde + 1/6 * dtw_tilde^2 + 1/24*dtw_tilde^3;
+    skewed_exp_v = - dt * skewed_exp * math_tilde(v) * jacobian_left;
 end
