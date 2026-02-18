@@ -1,6 +1,6 @@
-function [skewed] = math_tilde(vector)
+function [skewed] = math_tilde(w)
     % skew symmetric matrix / cross-product jacobian
-    skewed = [0, -vector(3), vector(2);
-              vector(3), 0, -vector(1);
-              -vector(2), vector(1), 0];
+    skewed = [0, -w(3), w(2);
+              w(3), 0, -w(1);
+              -w(2), w(1), 0];
 end

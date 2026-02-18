@@ -1,5 +1,5 @@
 function [torque_v] = dynamics_aero_jacobian(v, alt, param)
-    % aerodynamics
+    % aerodynamics partial derivatives
 
     %%% air data 
     airdata = airdata_atmos(alt);

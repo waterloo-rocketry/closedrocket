@@ -23,10 +23,10 @@ function [J_x] = dynamics_jacobian(dt, x, a)
     J_x(1:4, 5:7) = q_w; % column w (rates)
 
     %% angular rate rows (w, 5:7)
-    % when implementing in C: the torque partial derivatives can probably be put in one function
     [torque_v] = dynamics_aero_jacobian(v, alt, param);
 
-    w_w = eye(3) + dt * param.Jinv * math_tilde(param.J*w); % torque_w = 0 for now
+    w_exp_tilde = math_exp_tilde(w, dt);
+    w_w = param.Jinv * w_exp_tilde * param.J;
     w_v = dt * param.Jinv * torque_v;
 
     J_x(5:7,5:7) = w_w; % column w
@@ -35,8 +35,8 @@ function [J_x] = dynamics_jacobian(dt, x, a)
 
     %% velocity rows (v, 8:10)
     v_q = dt * quaternion_rotate_jacobian(q, param.g);
-    v_w = dt * math_tilde(v);
-    v_v = eye(3) - dt * math_tilde(w);
+    v_w = math_exp_tilde_jacobian(w, dt, v);
+    v_v = w_exp_tilde;
 
     J_x(8:10,1:4) = v_q; % column q
     J_x(8:10,5:7) = v_w; % column w

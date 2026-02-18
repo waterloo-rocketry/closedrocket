@@ -21,18 +21,17 @@ function [x_new] = dynamics(dt, x, a)
     %% time updates
 
     % quaternion update
-    q_new = quaternion_increment(q, w, dt);
+    q_new = quaternion_update(q, w, dt);
 
     % rate update
-    w_tilde = - dt * math_tilde(w);
-    w_tilde_exp = math_matrix_exp(w_tilde);
-    w_new = w + param.Jinv * (w_tilde_exp*param.J*w) + dt * param.Jinv * torque;
+    w_exp_tilde = math_exp_tilde(w, dt);
+    w_new = param.Jinv * (w_exp_tilde*param.J*w) + dt * param.Jinv * torque;
     %w_new = w + dt * param.Jinv * (torque - cross(w, param.J*w)); % old version
     %%% for Jx < Jy = Jz : u = (Jy-Jx)/Jy * wx, and 
     %%% wx_new = wx, [wy, wz]_new = Sx(u*dt)*[wy, wz] with Sx = [c(u), s(u); -s(u), c(u)]
     
     % velocity update 
-    v_new = v + w_tilde_exp*v + dt * a + dt * S*param.g; 
+    v_new = w_exp_tilde*v + dt * a + dt * S*param.g; 
     % v_new = v + dt * (a - cross(w,v) + S*param.g); % old version
         
     % altitude update
