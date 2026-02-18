@@ -12,7 +12,7 @@ function [x_corr, P_corr] = ekf_update(dt, x, P, a_meas, w_meas, Q, R)
     x_pred = dynamics(dt, x, a_meas);
 
     %%% discrete Jacobian: F = df/dx
-    F = dynamics_jacobian(dt, x, a_meas);
+    F = dynamics_jacobian(dt, x);
 
     %%% discrete covariance
     P_pred = F * P * F' + Q;
