@@ -1,4 +1,4 @@
-function [x, P] = flight_filter(dt, x, P, bias, IMU_i)
+function [x, P] = flight_filter(dt, x, P, bias, board_imu, mti_imu, ad_imu, board_baro, board_mag, mti_baro, mti_mag)
     % Inputs: estimates x, P; control u; measurement y; sensor bias b; timecode t
     % Input parameters: weighting Q, R; time difference to last compute T; 
     % Outputs: new estimates x, P
