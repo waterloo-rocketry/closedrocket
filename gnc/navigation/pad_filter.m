@@ -1,12 +1,12 @@
-function [x_init, bias_1, bias_2] = pad_filter(IMU_1, IMU_2, sensor_select)
+function [x_init, bias] = pad_filter(board_imu, mti_imu, ad_imu, board_baro, board_mag, mti_baro, mti_mag)
     % Computes inital state and covariance estimate for EKF, and bias values for the IMU
     % Uses all available sensors: Gyroscope W, Magnetometer M, Accelerometer A, Barometer P
     % Outputs: initial state, sensor bias matrix
     %#codegen
 
-
-    % filtered_i is lowpass filtered data of IMU_i
-    persistent filtered_1 filtered_2; % remembers from last iteration
+    %%% remember filtered values from last iteration
+    persistent board_accel_f board_gyro_f mti_accel_f mti_gyro_f ad_accel_f ad_gyro_f 
+    persistent board_baro_f board_mag_f mti_baro_f mti_mag_f
 
     %% parameters
     persistent param
@@ -14,52 +14,38 @@ function [x_init, bias_1, bias_2] = pad_filter(IMU_1, IMU_2, sensor_select)
         param = coder.load("model/model_params.mat");
     end 
 
-
-    %% Initialization
-
-    if isempty(filtered_1)
-        if sensor_select(1) == 1 % if IMU_i alive
-            filtered_1 = IMU_1;
-        else
-            filtered_1 = zeros(10,1);
-        end
-    end
-    if isempty(filtered_2)
-        if sensor_select(2) == 1 % if IMU_i alive
-            filtered_2 = IMU_2;
-        else
-            filtered_2 = zeros(10,1);
-        end
-    end
-
-
-    %% lowpass filter
-
+    %% lowpass filter (and initialization)
     alpha = 0.0005; % low pass time constant
     % filtered = filtered + alpha*(measured-filtered);
 
-    if sensor_select(1) == 1
-        filtered_1 = alpha * IMU_1 + (1 - alpha) * filtered_1;
-    end
-    if sensor_select(2) == 1
-        filtered_2 = alpha * IMU_2 + (1 - alpha) * filtered_2;
-    end
+    if board_imu.accel_status == 1, board_accel_f = lowpass(board_accel_f, board_imu.accel_meas, alpha); end
+    if board_imu.gyro_status == 1, board_gyro_f = lowpass(board_gyro_f, board_imu.gyro_meas, alpha); end
+    if mti_imu.accel_status == 1, mti_accel_f = lowpass(mti_accel_f, mti_imu.accel_meas, alpha); end
+    if mti_imu.gyro_status == 1, mti_gyro_f = lowpass(mti_gyro_f, mti_imu.gyro_meas, alpha); end
+    if ad_imu.accel_status == 1, ad_accel_f = lowpass(ad_accel_f, ad_imu.accel_meas, alpha); end
+    if ad_imu.gyro_status == 1, ad_gyro_f = lowpass(ad_gyro_f, ad_imu.gyro_meas, alpha); end
+    if board_baro.baro_status == 1, board_baro_f = lowpass(board_baro_f, board_baro.baro_meas, alpha); end
+    if board_mag.mag_status == 1, board_mag_f = lowpass(board_mag_f, board_mag.mag_meas, alpha); end
+    if mti_baro.baro_status == 1, mti_baro_f = lowpass(mti_baro_f, mti_baro.baro_meas, alpha); end
+    if mti_mag.mag_status == 1, mti_mag_f = lowpass(mti_mag_f, mti_mag.mag_meas, alpha); end
 
 
     %% State determination
     
     %%% average specific force of selected sensors
-    a = zeros(3,1); % acceleration a
-    if sensor_select(1) == 1 % only add alive IMUs to average
-        a = a + filtered_1(1:3);
+    a = zeros(3,1); % acceleration 
+    if board_imu.accel_status == 1 % only add alive IMUs to average
+        a = a + board_accel_f;
     end
-    if sensor_select(2) == 1
-        a = a + filtered_2(1:3);
+    if mti_imu.accel_status == 1
+        a = a + mti_accel_f;
     end
-    a = a / norm(sensor_select, 1); % divide by number of alive IMUs
+    if ad_imu.accel_status == 1
+        a = a + ad_accel_f;
+    end
 
     %%% gravity vector in body-fixed frame
-    A = a / norm(a); % unit vector of gravity direction
+    A = a / (norm(a) + 1e-6); % unit vector of gravity direction
     
     %%% determine initial orientation quaternion
     qw = sqrt( 0.5 + 0.5*A(1) );
@@ -85,44 +71,43 @@ function [x_init, bias_1, bias_2] = pad_filter(IMU_1, IMU_2, sensor_select)
     x_init = [q; w; v; alt];
 
     %% Bias determination
-    
-    % declare bias vectors
-    bias_1 = zeros(10, 1); 
-    bias_2 = zeros(10, 1);
-    
-    %%% accelerometer
-    % did not add accelerometer bias determination yet, leave out for now
-    if sensor_select(1) == 1
-        bias_1(1:3) = filtered_1(1:3);
-    end
-    if sensor_select(2) == 1
-        bias_2(1:3) = filtered_2(1:3);
-    end
-
+        
     %%% gyroscope
-    if sensor_select(1) == 1
-        bias_1(4:6) = filtered_1(4:6);
+    if board_imu.gyro_status == 1
+        bias.board_gyro = board_gyro_f;
     end
-    if sensor_select(2) == 1
-        bias_2(4:6) = filtered_2(4:6);
+    if mti_imu.gyro_status == 1
+        bias.mti_gyro = mti_gyro_f;
+    end
+    if ad_imu.gyro_status == 1
+        bias.ad_gyro = ad_gyro_f;
     end
     
     %%% earth magnetic field
     ST = transpose(quaternion_rotmatrix(q)); % launch attitude
-    if sensor_select(1) == 1
-        bias_1(7:9) = ST * filtered_1(7:9);
+    if board_imu.gyro_status == 1
+        bias.board_mag_earth = ST * board_mag_f;
     end
-    if sensor_select(2) == 1
-        bias_2(7:9) = ST * filtered_2(7:9);
+    if mti_imu.gyro_status == 1
+        bias.mti_mag_earth = ST * mti_mag_f;
     end
 
     %%% barometer
     pressure = model_airdata(param.elevation).pressure; % what the pressure should be at launch elevation
-    if sensor_select(1) == 1
-        bias_1(10) = filtered_1(10) - pressure;
+    if board_baro.baro_status == 1
+        bias.board_baro = board_baro_f - pressure;
     end
-    if sensor_select(2) == 1
-        bias_2(10) = filtered_2(10) - pressure;
+    if mti_baro.baro_status == 1
+        bias.mti_baro = mti_baro_f - pressure;
     end
 
+end
+
+%% Lowpass filter function
+function filtered = lowpass(filtered, measured, alpha)
+    if isempty(filtered) % initialize
+        filtered = measured;  
+    else 
+        filtered = alpha * measured + (1 - alpha) * filtered; 
+    end
 end

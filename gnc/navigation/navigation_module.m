@@ -1,18 +1,15 @@
-function [xhat, Phat_norm, airdata, xR] = navigation_module(timestamp, IMU_1, IMU_2, sensor_select)
-    % Top-level estimator module. Calls EKF algorithm.
-    % Inputs: concocted measurement and output vectors with multiple sensors. Not yet fully supported, work in progress
-    % IMU = struct of IMUi = [accel; omega; mag; baro] 
-    %#codegen
-    
+function [xhat, Phat_norm, airdata, xR] = navigation_module(timestamp, board_imu, mti_imu, ad_imu, board_baro, board_mag, mti_baro, mti_mag)
+    % Top-level estimator module. Calls the pad and flight filters.
+    %#codegen    
     persistent t x P b flight_phase; % remembers t, x, P from last iteration
     
     %% settings
     idle_time = 9; % wait time to handover
 
     %% initialize at beginning
-    xhat = zeros(11,1); xhat(1) = 1; Phat = zeros(11); bias_1 = zeros(10, 1); bias_2 = zeros(10, 1);
+    xhat = zeros(11,1); xhat(1) = 1; Phat = zeros(11); 
     if isempty(x)
-        x = xhat; P = Phat; b.bias_1 = bias_1; b.bias_2 = bias_2;
+        x = xhat; P = Phat;
         flight_phase = 1;
         if timestamp >= 0.005
                 t = timestamp-0.005;
@@ -31,14 +28,14 @@ function [xhat, Phat_norm, airdata, xR] = navigation_module(timestamp, IMU_1, IM
     end
 
     %% Pad filter iteration
-    if flight_phase ~= 0 % only before ignition
-        [xhat, bias_1, bias_2] = pad_filter(IMU_1, IMU_2, sensor_select);
-        x = xhat; b.bias_1 = bias_1; b.bias_2 = bias_2;
+    if flight_phase ~= 0 || isempty(b) % only before ignition (or if not run before)
+        [xhat, bias] = pad_filter(board_imu, mti_imu, ad_imu, board_baro, board_mag, mti_baro, mti_mag);
+        x = xhat; b = bias;
     end 
 
     %% Flight filter iteration
     if flight_phase == 0 % in flight
-        [xhat, Phat] = flight_filter(dt, x, P, b, IMU_i);
+        [xhat, Phat] = flight_filter(dt, x, P, b, board_imu, mti_imu, ad_imu, board_baro, board_mag, mti_baro, mti_mag);
         x = xhat; P = Phat;
     end
 
