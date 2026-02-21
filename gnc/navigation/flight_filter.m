@@ -23,11 +23,19 @@ function [x, P] = flight_filter(dt, x, P, bias, board_imu, mti_imu, ad_imu, boar
     %%% R is a square matrix (size depending on amount of sensors), tuning for measurement E(noise)
  
     % Barometer
-    if sensor_select(1) == 1 % only correct with alive IMUs
+    board_baro, board_mag, mti_baro, mti_mag
+
+    if board_baro.baro_status == 1 % only correct with alive IMUs
         %%% y = [ P(1) ]
         R = 1;
+        [xhat, Phat] = ekf_correct(@meas_baro, @meas_baro_jacobian, x, P, board_baro, bias, R);
+        x = xhat; P = Phat;
+    end
 
-        [xhat, Phat] = ekf_correct(@meas_baro, @meas_baro_jacobian, x, P, IMU_1(10), bias, R);
+    if mti_baro.baro_status == 1 % only correct with alive IMUs
+        %%% y = [ P(1) ]
+        R = 1;
+        [xhat, Phat] = ekf_correct(@meas_baro, @meas_baro_jacobian, x, P, mti_baro, bias, R);
         x = xhat; P = Phat;
     end
 
