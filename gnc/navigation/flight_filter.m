@@ -11,9 +11,7 @@ function [x, P] = flight_filter(dt, x, P, bias, board_imu, mti_imu, ad_imu, boar
     Q = diag([[1,1,1,1]*1e-7, [10, 10, 10], [1,1,1]*1e-3, 1]) * 1e-3;
     R = diag([1, 1, 1])*1e-6;
     
-    % board_IMU is struct containing accel, accel_status 
-    % gyro, gyro_status, gyro_bias
-    % also finn my guy capital letters exist
+    % board_imu is struct containing accel, accel_status, gyro, gyro_status, gyro_bias
     [a, w] = ekf_prefilter_imu(board_imu, mti_imu, ad_imu);
     [xhat, Phat] = ekf_update(dt, x, P, a, w, Q, R);
     x = xhat; P = Phat;
@@ -22,30 +20,31 @@ function [x, P] = flight_filter(dt, x, P, bias, board_imu, mti_imu, ad_imu, boar
     %%% Correction with barometer, magnetometer
     %%% R is a square matrix (size depending on amount of sensors), tuning for measurement E(noise)
  
-    % Barometer
-    board_baro, board_mag, mti_baro, mti_mag
-
+    %%% Barometer
     if board_baro.baro_status == 1 % only correct with alive IMUs
         %%% y = [ P(1) ]
         R = 1;
-        [xhat, Phat] = ekf_correct(@meas_baro, @meas_baro_jacobian, x, P, board_baro, bias, R);
+        [xhat, Phat] = ekf_correct(@meas_baro, @meas_baro_jacobian, x, P, board_baro.baro_meas, bias, R);
         x = xhat; P = Phat;
     end
-
     if mti_baro.baro_status == 1 % only correct with alive IMUs
         %%% y = [ P(1) ]
         R = 1;
-        [xhat, Phat] = ekf_correct(@meas_baro, @meas_baro_jacobian, x, P, mti_baro, bias, R);
+        [xhat, Phat] = ekf_correct(@meas_baro, @meas_baro_jacobian, x, P, mti_baro.baro_meas, bias, R);
         x = xhat; P = Phat;
     end
 
-
-    % Magnetometer
-    if sensor_select(2) == 1
+    %%% Magnetometer
+    if board_mag.mag_status == 1
         %%% y = [  Mag(3) ]
         R = diag([1, 1, 1])*0.01;
-
-        [xhat, Phat] = ekf_correct(@meas_mag, @meas_mag_jacobian, x, P, IMU_2(7:9), bias, R);
+        [xhat, Phat] = ekf_correct(@meas_mag, @meas_mag_jacobian, x, P, board_mag.mag_meas, bias, R);
+        x = xhat; P = Phat;
+    end 
+    if mti_mag.mag_status == 1
+        %%% y = [  Mag(3) ]
+        R = diag([1, 1, 1])*0.01;
+        [xhat, Phat] = ekf_correct(@meas_mag, @meas_mag_jacobian, x, P, mti_mag.mag_meas, bias, R);
         x = xhat; P = Phat;
     end 
 
