@@ -1,7 +1,6 @@
 function [x_init, bias] = pad_filter(board_imu, mti_imu, ad_imu, board_baro, board_mag, mti_baro, mti_mag)
-    % Computes inital state and covariance estimate for EKF, and bias values for the IMU
-    % Uses all available sensors: Gyroscope W, Magnetometer M, Accelerometer A, Barometer P
-    % Outputs: initial state, sensor bias matrix
+    % Computes inital state for flight filter, and bias values for the sensors
+    % Outputs: initial state, sensor biases
     %#codegen
 
     %%% remember filtered values from last iteration
@@ -11,28 +10,27 @@ function [x_init, bias] = pad_filter(board_imu, mti_imu, ad_imu, board_baro, boa
     %% parameters
     persistent param
     if isempty(param)
-        param = coder.load("model/model_params.mat");
+        param = coder.load("model_params.mat"); % only required parameter is launch altitude
     end 
 
     %% lowpass filter (and initialization)
     alpha = 0.0005; % low pass time constant
     % filtered = filtered + alpha*(measured-filtered);
 
-    if board_imu.accel_status == 1, board_accel_f = lowpass(board_accel_f, board_imu.accel_meas, alpha); end
-    if board_imu.gyro_status == 1, board_gyro_f = lowpass(board_gyro_f, board_imu.gyro_meas, alpha); end
-    if mti_imu.accel_status == 1, mti_accel_f = lowpass(mti_accel_f, mti_imu.accel_meas, alpha); end
-    if mti_imu.gyro_status == 1, mti_gyro_f = lowpass(mti_gyro_f, mti_imu.gyro_meas, alpha); end
-    if ad_imu.accel_status == 1, ad_accel_f = lowpass(ad_accel_f, ad_imu.accel_meas, alpha); end
-    if ad_imu.gyro_status == 1, ad_gyro_f = lowpass(ad_gyro_f, ad_imu.gyro_meas, alpha); end
-    if board_baro.baro_status == 1, board_baro_f = lowpass(board_baro_f, board_baro.baro_meas, alpha); end
-    if board_mag.mag_status == 1, board_mag_f = lowpass(board_mag_f, board_mag.mag_meas, alpha); end
-    if mti_baro.baro_status == 1, mti_baro_f = lowpass(mti_baro_f, mti_baro.baro_meas, alpha); end
-    if mti_mag.mag_status == 1, mti_mag_f = lowpass(mti_mag_f, mti_mag.mag_meas, alpha); end
+    if board_imu.accel_status == 1, board_accel_f = pad_lowpass(board_accel_f, board_imu.accel_meas, alpha); end
+    if board_imu.gyro_status == 1, board_gyro_f = pad_lowpass(board_gyro_f, board_imu.gyro_meas, alpha); end
+    if mti_imu.accel_status == 1, mti_accel_f = pad_lowpass(mti_accel_f, mti_imu.accel_meas, alpha); end
+    if mti_imu.gyro_status == 1, mti_gyro_f = pad_lowpass(mti_gyro_f, mti_imu.gyro_meas, alpha); end
+    if ad_imu.accel_status == 1, ad_accel_f = pad_lowpass(ad_accel_f, ad_imu.accel_meas, alpha); end
+    if ad_imu.gyro_status == 1, ad_gyro_f = pad_lowpass(ad_gyro_f, ad_imu.gyro_meas, alpha); end
+    if board_baro.baro_status == 1, board_baro_f = pad_lowpass(board_baro_f, board_baro.baro_meas, alpha); end
+    if board_mag.mag_status == 1, board_mag_f = pad_lowpass(board_mag_f, board_mag.mag_meas, alpha); end
+    if mti_baro.baro_status == 1, mti_baro_f = pad_lowpass(mti_baro_f, mti_baro.baro_meas, alpha); end
+    if mti_mag.mag_status == 1, mti_mag_f = pad_lowpass(mti_mag_f, mti_mag.mag_meas, alpha); end
 
 
-    %% State determination
-    
-    %%% average specific force of selected sensors
+    %% Initial state determination    
+    %%% Orientation
     a = zeros(3,1); % acceleration 
     if board_imu.accel_status == 1 % only add alive IMUs to average
         a = a + board_accel_f;
@@ -43,22 +41,7 @@ function [x_init, bias] = pad_filter(board_imu, mti_imu, ad_imu, board_baro, boa
     if ad_imu.accel_status == 1
         a = a + ad_accel_f;
     end
-
-    %%% gravity vector in body-fixed frame
-    A = a / (norm(a) + 1e-6); % unit vector of gravity direction
-    
-    %%% determine initial orientation quaternion
-    qw = sqrt( 0.5 + 0.5*A(1) );
-    qx = 0;
-    if qw == 0 % exact upside down case
-        qy = 1; % either qy = 1 or qz = 1, this is arbitrary 
-        qz = 0;
-    else 
-        qy = 0.5 * A(3) / qw;
-        qz = -0.5 * A(2) / qw;
-    end
-    q = [qw; qx; qy; qz];
-    q = q / norm(q);
+    q = pad_inclinometer(a); % a gets normed inside function
 
     %%% launch altitude
     alt = param.elevation;
@@ -101,13 +84,4 @@ function [x_init, bias] = pad_filter(board_imu, mti_imu, ad_imu, board_baro, boa
         bias.mti_baro = mti_baro_f - pressure;
     end
 
-end
-
-%% Lowpass filter function
-function filtered = lowpass(filtered, measured, alpha)
-    if isempty(filtered) % initialize
-        filtered = measured;  
-    else 
-        filtered = alpha * measured + (1 - alpha) * filtered; 
-    end
 end
