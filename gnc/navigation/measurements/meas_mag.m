@@ -1,4 +1,4 @@
-function [y] = meas_mag(t, x, bias)
+function [y] = meas_mag(x, bias)
     % Computes measurement prediction using current state and sensor biases
 
     %% decomp

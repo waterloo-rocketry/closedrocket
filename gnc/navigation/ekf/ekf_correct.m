@@ -9,12 +9,12 @@ function [x_new, P_new] = ekf_correct(model_measurement, model_jacobian, x, P, y
     % Uses discrete-time measurement model and analytical Jacobian
 
     %%% compute expected measurement and difference to measured values
-    y_expected = model_measurement(0,x,b);
+    y_expected = model_measurement(x,b);
     innovation = y - y_expected;
 
     %%% compute Jacobian: H = dh/dx
     % H = jacobian(@model_measurement, 0, x, b); 
-    H = model_jacobian(0, x, b);
+    H = model_jacobian(x, b);
 
     %%% compute Kalman gain (and helper matrices)
     L = H * P * H' + R;

@@ -1,4 +1,4 @@
-function [J] = meas_mag_jacobian(t, x, bias)
+function [J] = meas_mag_jacobian(x, bias)
     % Computes measurement prediction using current state and sensor biases
 
     %% decomp
