@@ -1,36 +1,61 @@
-function [a, w] = ekf_prefilter_imu(dt, A1, W1, A2, W2, A3, W3)
+function [a, w] = ekf_prefilter_imu(board_imu, mti_imu, ad_imu)
     % Pre-filters redundant IMU data, weighted averages of acceleration and rates
     % Includes weighted averages of acceleration and rates, and bias handling
     % Inputs: time step dt, accelerometer Ai, gyroscope Wi 
     % Outputs: specific acceleration a, angular rates w
-
-    a = zeros(3,1);
-    w = zeros(3,1);
-
-    %%% gyroscope bias correction
-    % w1 = W1 - b_w1;
-
-    %%% average angular rates
-    % r1 = 1e-7; % use actual noise variances from datasheets
-    % r2 = 1e-5; 
-    % if sensor1_isdead == 1
-    %     r1 = 1e10; % very very high
-    % end
-    % R1 = 1 - r1 / (r1+r2);
-    %
-    % w = R1* w1 + R2 * w2;
-
-    %%% centrifugal correction
-    % a1 = A1 - cross(w, cross(w, param.d1));
+    % Hadamard product / division is simply performed element by element
     
-    %%% average acceleration
-    % r1 = 1e-7; % use actual noise variances from datasheets
-    % r2 = 1e-5; 
-    % if sensor1_isdead == 1
-    %     r1 = 1e10; % very very high
-    % end
-    % R1 = 1 - r1 / (r1+r2);
-    %
-    % a = R1*a1 + R2 *a2;
+    % sensor confidences
+    C_board_a = [1 1 1] * 1e-7; % use actual numbers lol
+    C_board_a = C_board_a .* board_imu.accel_status; % Hadamard product
+    C_board_w = [1 1 1] * 1e-5;
+    C_board_w = C_board_w .* board_imu.gyro_status;
+
+    C_mti_a = [1 1 1] * 1e-7;
+    C_mti_a = C_mti_a .* mti_imu.accel_status;
+    C_mti_w = [1 1 1] * 1e-5;
+    C_mti_w = C_mti_w .* mti_imu.gyro_status;
+
+    C_ad_a = [1 1 1] * 1e-7;
+    C_ad_a = C_ad_a .* ad_imu.accel_status;
+    C_ad_w = [1 1 1] * 1e-5;
+    C_ad_w = C_ad_w .* ad_imu.gyro_status;
+
+    C_total_a = C_board_a + C_mti_a + C_ad_a;
+    C_total_w = C_board_w + C_mti_w + C_ad_w;
+
+    % if zero confidence in all sensors for any parameter
+    % should probably introduce actual handling (or start crying lol)
+    if any(C_total_a == 0)
+        error('No accel confidence on at least one axis.');
+    end
+    if any(C_total_w == 0)
+        error('No gyro confidence on at least one axis.');
+    end
+
+    % normalize confidence with Hadamard division
+    C_board_a = C_board_a ./ C_total_a;
+    C_mti_a = C_mti_a ./ C_total_a;
+    C_ad_a = C_ad_a ./ C_total_a;
+    
+    C_board_w = C_board_w ./ C_total_w;
+    C_mti_w = C_mti_w ./ C_total_w;
+    C_ad_w = C_ad_w ./ C_total_w;
+
+    
+    % calculate angular rate
+    w_board = board_imu.gyro - board_imu.gyro_bias;
+    w_mti = mti_imu.gyro - mti_imu.gyro_bias;
+    w_ad = ad_imu.gyro - ad_imu.gyro_bias;
+
+    w = C_board_w .* w_board + C_mti_w .* w_mti + C_ad_w .* w_ad;
+
+    % centrifugal correction
+    % should probably use w from ekf for this
+    a_board = board_imu.accel - cross(w, cross(w, param.d_board));
+    a_mti = mti_imu.accel - cross(w, cross(w, param.d_mti));
+    a_ad = ad_imu.accel - cross(w, cross(w, param.d_ad));
+
+    a = C_board_a .* a_board + C_mti_a .* a_mti + C_ad_a .* a_ad;
 
 end

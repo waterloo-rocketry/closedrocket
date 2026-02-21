@@ -9,14 +9,12 @@ function [x, P] = flight_filter(dt, x, P, bias, board_imu, mti_imu, ad_imu, boar
     %%% Q is a square 11 matrix, tuning for prediction E(noise)
     %%% R is a square 3 matrix, tuning for measurement E(noise) of the gyroscope
     Q = diag([[1,1,1,1]*1e-7, [10, 10, 10], [1,1,1]*1e-3, 1]) * 1e-3;
-    R = diag([[1, 1, 1])*1e-6;
+    R = diag([1, 1, 1])*1e-6;
     
-    A1 = IMU_1(1:3,1);
-    W1 = IMU_1(4:6,1);
-    A2 = IMU_2(1:3,1);
-    W2 = IMU_2(4:6,1);
-
-    [a, w] = ekf_prefilter_imu(dt, bias, A1, W1, A2, W2, A3, W3);
+    % board_IMU is struct containing accel, accel_status 
+    % gyro, gyro_status, gyro_bias
+    % also finn my guy capital letters exist
+    [a, w] = ekf_prefilter_imu(board_imu, mti_imu, ad_imu);
     [xhat, Phat] = ekf_update(dt, x, P, a, w, Q, R);
     x = xhat; P = Phat;
 
