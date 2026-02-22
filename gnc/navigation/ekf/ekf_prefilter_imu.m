@@ -3,8 +3,7 @@ function [a, w] = ekf_prefilter_imu(bias, board_accel, board_gyro, mti_accel, mt
     %%% includes correction of gyroscope bias and centrifugal acceleration.
     
     %% confidences
-    % base confidences (tune per sensor)
-
+    %%% base confidences (tune per sensor)
     % use accelerometer bias standard deviation
     C0_board_a = [1 1 1] / (1e-7)^2;
     C0_mti_a = [1 1 1] / (1e-7)^2;
@@ -15,6 +14,7 @@ function [a, w] = ekf_prefilter_imu(bias, board_accel, board_gyro, mti_accel, mt
     C0_mti_w = [1 1 1] / (1e-5)^2;
     C0_ad_w = [1 1 1] / (1e-5)^2;
 
+    %%% calculations
     % accel confidences (Hadamard product)
     C_board_a = C0_board_a .* board_accel.status;
     C_mti_a = C0_mti_a .* mti_accel.status;
@@ -51,7 +51,6 @@ function [a, w] = ekf_prefilter_imu(bias, board_accel, board_gyro, mti_accel, mt
     end 
 
     %% averaging
-
     % bias-corrected gyros
     w_board = board_gyro.meas - bias.board_gyro;
     w_mti = mti_gyro.meas - bias.mti_gyro;
