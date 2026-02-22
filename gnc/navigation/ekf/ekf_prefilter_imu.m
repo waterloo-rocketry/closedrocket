@@ -1,5 +1,8 @@
-function [a, w] = ekf_prefilter_imu(board_accel, board_gyro, mti_accel, mti_gyro, ad_accel, ad_gyro, param)
-
+function [a, w] = ekf_prefilter_imu(bias, board_accel, board_gyro, mti_accel, mti_gyro, ad_accel, ad_gyro)
+    %%% computes average acceleration and angular rates from multiple IMUs.
+    %%% includes correction of gyroscope bias and centrifugal acceleration.
+    
+    %% confidences
     % base confidences (tune per sensor)
 
     % use accelerometer bias standard deviation
@@ -41,10 +44,18 @@ function [a, w] = ekf_prefilter_imu(board_accel, board_gyro, mti_accel, mti_gyro
     C_mti_w = C_mti_w ./ C_total_w;
     C_ad_w = C_ad_w ./ C_total_w;
 
+    %% parameters
+    persistent param
+    if isempty(param)
+        param = coder.load("model_params.mat"); % only required parameter is launch altitude
+    end 
+
+    %% averaging
+
     % bias-corrected gyros
-    w_board = board_gyro.meas - board_gyro.bias;
-    w_mti = mti_gyro.meas - mti_gyro.bias;
-    w_ad = ad_gyro.meas - ad_gyro.bias;
+    w_board = board_gyro.meas - bias.board_gyro;
+    w_mti = mti_gyro.meas - bias.mti_gyro;
+    w_ad = ad_gyro.meas - bias.ad_gyro;
 
     % weighted angular rate
     w = C_board_w .* w_board + C_mti_w .* w_mti + C_ad_w .* w_ad;

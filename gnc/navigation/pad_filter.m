@@ -1,4 +1,4 @@
-function [x_init, bias] = pad_filter(board_imu, mti_imu, ad_imu, board_baro, board_mag, mti_baro, mti_mag)
+function [x_init, bias] = pad_filter(board_accel, board_gyro, mti_accel, mti_gyro, ad_accel, ad_gyro, board_baro, board_mag, mti_baro, mti_mag)
     % Computes inital state for flight filter, and bias values for the sensors
     % Outputs: initial state, sensor biases
     %#codegen
@@ -17,28 +17,28 @@ function [x_init, bias] = pad_filter(board_imu, mti_imu, ad_imu, board_baro, boa
     alpha = 0.0005; % low pass time constant
     % filtered = filtered + alpha*(measured-filtered);
 
-    if board_imu.accel_status == 1, board_accel_f = pad_lowpass(board_accel_f, board_imu.accel_meas, alpha); end
-    if board_imu.gyro_status == 1, board_gyro_f = pad_lowpass(board_gyro_f, board_imu.gyro_meas, alpha); end
-    if mti_imu.accel_status == 1, mti_accel_f = pad_lowpass(mti_accel_f, mti_imu.accel_meas, alpha); end
-    if mti_imu.gyro_status == 1, mti_gyro_f = pad_lowpass(mti_gyro_f, mti_imu.gyro_meas, alpha); end
-    if ad_imu.accel_status == 1, ad_accel_f = pad_lowpass(ad_accel_f, ad_imu.accel_meas, alpha); end
-    if ad_imu.gyro_status == 1, ad_gyro_f = pad_lowpass(ad_gyro_f, ad_imu.gyro_meas, alpha); end
-    if board_baro.baro_status == 1, board_baro_f = pad_lowpass(board_baro_f, board_baro.baro_meas, alpha); end
-    if board_mag.mag_status == 1, board_mag_f = pad_lowpass(board_mag_f, board_mag.mag_meas, alpha); end
-    if mti_baro.baro_status == 1, mti_baro_f = pad_lowpass(mti_baro_f, mti_baro.baro_meas, alpha); end
-    if mti_mag.mag_status == 1, mti_mag_f = pad_lowpass(mti_mag_f, mti_mag.mag_meas, alpha); end
+    if board_accel.status == 1, board_accel_f = pad_lowpass(board_accel_f, board_accel.meas, alpha); end
+    if board_gyro.status == 1, board_gyro_f = pad_lowpass(board_gyro_f, board_gyro.meas, alpha); end
+    if mti_accel.status == 1, mti_accel_f = pad_lowpass(mti_accel_f, mti_accel.meas, alpha); end
+    if mti_gyro.status == 1, mti_gyro_f = pad_lowpass(mti_gyro_f, mti_gyro.meas, alpha); end
+    if ad_accel.status == 1, ad_accel_f = pad_lowpass(ad_accel_f, ad_accel.meas, alpha); end
+    if ad_gyro.status == 1, ad_gyro_f = pad_lowpass(ad_gyro_f, ad_gyro.meas, alpha); end
+    if board_baro.status == 1, board_baro_f = pad_lowpass(board_baro_f, board_baro.meas, alpha); end
+    if board_mag.status == 1, board_mag_f = pad_lowpass(board_mag_f, board_mag.meas, alpha); end
+    if mti_baro.status == 1, mti_baro_f = pad_lowpass(mti_baro_f, mti_baro.meas, alpha); end
+    if mti_mag.status == 1, mti_mag_f = pad_lowpass(mti_mag_f, mti_mag.meas, alpha); end
 
 
     %% Initial state determination    
     %%% Orientation
     a = zeros(3,1); % acceleration 
-    if board_imu.accel_status == 1 % only add alive IMUs to average
+    if board_accel.status == 1 % only add alive IMUs to average
         a = a + board_accel_f;
     end
-    if mti_imu.accel_status == 1
+    if mti_accel.status == 1
         a = a + mti_accel_f;
     end
-    if ad_imu.accel_status == 1
+    if ad_accel.status == 1
         a = a + ad_accel_f;
     end
     q = pad_inclinometer(a); % a gets normed inside function
@@ -56,31 +56,31 @@ function [x_init, bias] = pad_filter(board_imu, mti_imu, ad_imu, board_baro, boa
     %% Bias determination
         
     %%% gyroscope
-    if board_imu.gyro_status == 1
+    if board_gyro.status == 1
         bias.board_gyro = board_gyro_f;
     end
-    if mti_imu.gyro_status == 1
+    if mti_gyro.status == 1
         bias.mti_gyro = mti_gyro_f;
     end
-    if ad_imu.gyro_status == 1
+    if ad_gyro.status == 1
         bias.ad_gyro = ad_gyro_f;
     end
     
     %%% earth magnetic field
     ST = transpose(quaternion_rotmatrix(q)); % launch attitude
-    if board_imu.gyro_status == 1
+    if board_gyro.status == 1
         bias.board_mag_earth = ST * board_mag_f;
     end
-    if mti_imu.gyro_status == 1
+    if mti_gyro.status == 1
         bias.mti_mag_earth = ST * mti_mag_f;
     end
 
     %%% barometer
     pressure = model_airdata(param.elevation).pressure; % what the pressure should be at launch elevation
-    if board_baro.baro_status == 1
+    if board_baro.baro.status == 1
         bias.board_baro = board_baro_f - pressure;
     end
-    if mti_baro.baro_status == 1
+    if mti_baro.baro.status == 1
         bias.mti_baro = mti_baro_f - pressure;
     end
 
