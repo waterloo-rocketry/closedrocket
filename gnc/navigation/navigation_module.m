@@ -1,4 +1,4 @@
-function [xhat, Phat_norm, airdata, xR] = navigation_module(timestamp, board_imu, mti_imu, ad_imu, board_baro, board_mag, mti_baro, mti_mag)
+function [xhat, Phat_norm, airdata, xR] = navigation_module(timestamp, board_accel, board_gyro, mti_accel, mti_gyro, ad_accel, ad_gyro, board_baro, board_mag, mti_baro, mti_mag)
     % Top-level estimator module. Calls the pad and flight filters.
     %#codegen    
     persistent t x P b flight_phase; % remembers t, x, P from last iteration
