@@ -4,7 +4,7 @@ function [meas_rotated] = imu_handler(meas, location)
     
     persistent param
     if isempty(param)
-        param = coder.load("model/model_params.mat");
+        param = coder.load("gnc/model_params.mat");
     end
 
     meas_rotated = zeros(3,1);
