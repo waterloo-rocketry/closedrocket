@@ -5,14 +5,14 @@ function [a, w] = ekf_prefilter_imu(bias, board_accel, board_gyro, mti_accel, mt
     %% confidences
     %%% base confidences (tune per sensor)
     % use accelerometer bias standard deviation
-    C0_board_a = [1 1 1] / (1e-7)^2;
-    C0_mti_a = [1 1 1] / (1e-7)^2;
-    C0_ad_a = [1 1 1] / (1e-7)^2;
+    C0_board_a = [1; 1; 1] / (1e-7)^2;
+    C0_mti_a = [1; 1; 1] / (1e-7)^2;
+    C0_ad_a = [1; 1; 1] / (1e-7)^2;
 
     % use gyroscope noise standard deviation
-    C0_board_w = [1 1 1] / (1e-5)^2;
-    C0_mti_w = [1 1 1] / (1e-5)^2;
-    C0_ad_w = [1 0 0] / (1e-5)^2;
+    C0_board_w = [1; 1; 1] / (1e-5)^2;
+    C0_mti_w = [1; 1; 1] / (1e-5)^2;
+    C0_ad_w = [1; 0; 0] / (1e-5)^2;
 
     %%% confidence calculations
     % sensor status

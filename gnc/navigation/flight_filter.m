@@ -36,13 +36,13 @@ function [x, P] = flight_filter(dt, x, P, bias, board_accel, board_gyro, mti_acc
     if board_mag.status == 1
         %%% y = [  Mag(3) ]
         R = diag([1, 1, 1])*0.01;
-        [xhat, Phat] = ekf_correct(@meas_mag, @meas_mag_jacobian, x, P, board_mag.meas, bias.board_mag, R);
+        [xhat, Phat] = ekf_correct(@meas_mag, @meas_mag_jacobian, x, P, board_mag.meas, bias.board_mag_earth, R);
         x = xhat; P = Phat;
     end 
     if mti_mag.status == 1
         %%% y = [  Mag(3) ]
         R = diag([1, 1, 1])*0.01;
-        [xhat, Phat] = ekf_correct(@meas_mag, @meas_mag_jacobian, x, P, mti_mag.meas, bias.mti_mag, R);
+        [xhat, Phat] = ekf_correct(@meas_mag, @meas_mag_jacobian, x, P, mti_mag.meas, bias.mti_mag_earth, R);
         x = xhat; P = Phat;
     end 
 

@@ -40,7 +40,7 @@ function [xhat, Phat_norm, airdata, xR] = navigation_module(timestamp, board_acc
     end
 
     %% Compute air data
-    airdata = airdata_dynamic(alt, v);
+    airdata = airdata_dynamic(x(11), x(8:10));
 
     %% Compute variance norm for EKF quality
     Phat_norm = norm(P); % Compute the norm of the covariance matrix
