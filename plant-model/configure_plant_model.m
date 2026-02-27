@@ -6,7 +6,7 @@ run('plant-model/Data/Aurora/aurora.m')
 
 %%% Settings
 chute_enable = [1, 0]; % no recovery is = 0
-time_idle = 0; % wait time on the rail before launch
+time_idle = 10; % wait time on the rail before launch
 
 %%% environment
 run('plant-model/Data/Environment/environment.m')
