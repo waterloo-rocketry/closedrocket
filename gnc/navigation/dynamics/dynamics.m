@@ -19,7 +19,7 @@ function [x_new] = dynamics(dt, x, a)
     w_exp_tilde = math_exp_tilde(w, dt);
     torque = dynamics_aero(v, alt, param);
     w_new = param.Jinv * (w_exp_tilde*param.J*w) + dt * param.Jinv * torque;
-    %w_new = w + dt * param.Jinv * (torque - cross(w, param.J*w)); % old version
+    % w_new = w + dt * param.Jinv * (torque - cross(w, param.J*w)); % old version
     %%% possibly more accurate: for Jx < Jy = Jz : u = (Jy-Jx)/Jy * wx, and 
     %%% wx_new = wx, [wy, wz]_new = Sx(u*dt)*[wy, wz] with Sx = [c(u), s(u); -s(u), c(u)]
     

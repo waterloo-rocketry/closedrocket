@@ -15,11 +15,11 @@ function [x_init, bias] = pad_filter(board_accel, board_gyro, mti_accel, mti_gyr
 
     %% Initialization
     if isempty(board_accel_f)
-        board_accel_f = board_accel.meas 
+        board_accel_f = board_accel.meas;
         board_gyro_f = board_gyro.meas;
-        mti_accel_f = mti_accel.meas
+        mti_accel_f = mti_accel.meas;
         mti_gyro_f = mti_gyro.meas; 
-        ad_accel_f = ad_accel.meas 
+        ad_accel_f = ad_accel.meas; 
         ad_gyro_f = ad_gyro.meas;  
         board_baro_f = board_baro.meas; 
         board_mag_f = board_mag.meas; 
@@ -62,7 +62,6 @@ function [x_init, bias] = pad_filter(board_accel, board_gyro, mti_accel, mti_gyr
     if ad_accel.status == 1
         a = a + ad_accel_f;
     end
-    a
     q = pad_inclinometer(a); % a gets normed inside function
 
     %%% launch altitude
