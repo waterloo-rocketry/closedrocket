@@ -34,4 +34,4 @@ octave-workspace
 *.mp4
 
 # Simulation results
-monte-carlo/*/*.mat
+monte-carlo/*/*.mat.DS_Store
