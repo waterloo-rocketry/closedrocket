@@ -32,6 +32,10 @@ Mdot(end+1) = Mdot(end);
 % Unfiltered quality is shit - need to see how simlink block behaves
 Mdot = lowpass(Mdot, 0.1);
 
+I_xx = or_data.RotationalMomentOfInertia_kg_m__;
+I_yy = or_data.LongitudinalMomentOfInertia_kg_m__;
+I_zz = I_yy; % rocket is axially symmetric
+
 Cd = or_data.DragCoefficient___;
 Mach = or_data.MachNumber___;
 
