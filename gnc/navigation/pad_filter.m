@@ -87,7 +87,7 @@ function [x_init, bias] = pad_filter(board_accel, board_gyro, mti_accel, mti_gyr
     bias.mti_mag_earth = ST * mti_mag_f;
     
     %%% barometer
-    pressure = model_airdata(param.elevation).pressure; % what the pressure should be at launch elevation
+    pressure = airdata_atmos(param.elevation).pressure; % what the pressure should be at launch elevation
     bias.board_baro = board_baro_f - pressure;
     bias.mti_baro = mti_baro_f - pressure;
 
