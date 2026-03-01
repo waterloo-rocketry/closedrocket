@@ -20,25 +20,31 @@ function [u, r, C_l_delta] = controller_module(time, xR, pdyn, delta)
     end
 
     %% Reference signal
-    % Generates reference signal r (rad) for roll program
-    % includes multiple roll angle steps
+    %%% Generates reference signal r (rad) for roll program
+    %%% includes multiple roll angle steps
     
     t = time - time_launch;
-    r = 0;
-    if t > (time_program + 7)
-        if t < (time_program + 12)
+    switch true
+        case (t >= (time_program + 7) && t < (time_program + 12))
             r = 0.5;
-        elseif t < (time_program + 17)
+        case (t >= (time_program + 12) && t < (time_program + 17))
             r = -0.5;
-        elseif t < (time_program + 24)
+        case (t >= (time_program + 17) && t < (time_program + 24))
             r = 0.5;
-        elseif t > (time_program + 31)
+        otherwise 
             r = 0;
-        end
     end
 
     %% controller algorithm
-    % Computes control signal of the adaptive LQR controller.
+    %%% Computes control signal of the adaptive LQR controller.
+    
+    %%% lowpass dynamic pressure
+    % persistent pdyn_lp
+    % if isempty(pdyn_lp)
+    %     pdyn_lp = pdyn;
+    % else 
+    %     pdyn_lp = 0.99 * pdyn_lp + 0.01 * pdyn; % lowpass filter update
+    % end
 
     %%% Coefficient Estimation
     pdyn_params = pdyn * param.c_canard;
@@ -57,7 +63,7 @@ function [u, r, C_l_delta] = controller_module(time, xR, pdyn, delta)
     if t < time_coast % disable during boost
         u = 0;
     end
-    if pdyn < 1000 % disable during low control auhtority at apogee
+    if pdyn_lp < 1000 % disable during low control authority at apogee
         u = 0;
     end
 end
