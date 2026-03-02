@@ -9,9 +9,10 @@ function [u, r, C_l_delta] = controller_module(time, xR, pdyn, delta)
     %% settings
     time_launch = 10; % pad delay time
     time_coast = 10; % time from launch to burnout
-    time_program = 20; % time from launch to start of roll program
+    time_program = 15; % time from launch to start of roll program
     u_max = deg2rad(10); % limit output to this angle
     L_min = 10; % limit roll control derivative for low authority conditions
+    pdyn_min = 500; % deactivate at low authority near apogee
 
     %% parameters
     persistent param
@@ -34,18 +35,11 @@ function [u, r, C_l_delta] = controller_module(time, xR, pdyn, delta)
         otherwise 
             r = 0;
     end
+    % r = 0; % deactivate roll program
 
     %% controller algorithm
     %%% Computes control signal of the adaptive LQR controller.
-    
-    %%% lowpass dynamic pressure
-    % persistent pdyn_lp
-    % if isempty(pdyn_lp)
-    %     pdyn_lp = pdyn;
-    % else 
-    %     pdyn_lp = 0.99 * pdyn_lp + 0.01 * pdyn; % lowpass filter update
-    % end
-
+  
     %%% Coefficient Estimation
     pdyn_params = pdyn * param.c_canard;
     C_l_delta = controller_estimator(time, xR(2), delta, pdyn_params);
@@ -53,7 +47,7 @@ function [u, r, C_l_delta] = controller_module(time, xR, pdyn, delta)
     L_delta = C_l_delta * pdyn_params;
     L_delta = 1 / (max(min(1/L_delta, 1/L_min), -1/L_min)); % lower bounds
 
-    %%% Feedback law
+    %%% Control Law, Feedback + Feedforward tracking
     u = 0;
     u = controller_law(xR, r, L_delta);
 
@@ -63,7 +57,7 @@ function [u, r, C_l_delta] = controller_module(time, xR, pdyn, delta)
     if t < time_coast % disable during boost
         u = 0;
     end
-    if pdyn < 500 % disable during low control authority at apogee
+    if pdyn < pdyn_min % disable during low control authority
         u = 0;
     end
 end
