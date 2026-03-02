@@ -16,12 +16,7 @@ constant_wind_enable = 0;   % Toggle for type; old wind model is = 1
 
 %%% sensors
 run('plant-model/Data/Sensors/sensors_processing.m')
-sensor_fault_enable = [0, 0, 0]; % no faults is = 0
 
 %% data pre-processing
 run('plant-model/scripts/data_preparation.m')
 
-%% Controller and Estimator loading
-clear estimator_module
-clear control_scheduler
-design_param = load('model/model_params.mat');

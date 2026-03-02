@@ -56,4 +56,6 @@ function [airdata_altitude, airdata] = airdata_atmos_jacobian(altitude)
     airdata_altitude.density = density_altitude;
     airdata.sonic_speed = sonic_speed;
     airdata_altitude.sonic_speed = sonic_speed_altitude;
+    airdata.mach = 0; % need to initialize struct field before calling airdata_dynamic
+    airdata.dynamic_pressure = 0; % need to initialize struct field before calling airdata_dynamic
 end

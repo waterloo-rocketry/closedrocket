@@ -25,22 +25,23 @@ c_canard = area_canard*length_canard; % moment arm * area of canard
 %% Environment
 g = [-9.81; 0; 0]; % gravitational acceleration in the geographic inertial frame
 
-
 %% Sensors
-S1 = [0, 0, 1;
-     1, 0, 0;
-     0, 1, 0]; % IMU 1, rotation transform from sensor frame to body frame
-S2 = [0, 0, -1;
-     -1, 0, 0;
-      0, 1, 0]; % IMU 2, rotation transform from sensor frame to body frame
+%%% S: rotation transform from sensor frame to body frame
+%%% d: center of sensor frame relative to body frame
 
-d1 = [1.2; 0.074; -0.027]; % center of sensor frame
-d2 = [1.2; 0.065; 0.047]; % center of sensor frame
+S_board = [1 0, 0;
+           0, 1, 0;
+           0, 0, 1]; % Onboard STM IMU
+S_mti = [1, 0, 0;
+         0, 1, 0;
+         0, 0, 1]; % Movella MTi
+S_ad = [1, 0, 0;
+         0, 1, 0;
+         0, 0, 1]; % AD breakout board
 
-B1 = eye(3); % Soft iron compensation
-B2 = eye(3); % Soft iron compensation
-b1 = [0;0;0]; % Hard iron compensation
-b2 = [0;0;0]; % Hard iron compensation
+d_board = [1.21; 0; 0]; % Onboard STM IMU
+d_mti = [1.21; 0; 0]; % Movella MTi
+d_ad = [1.21; 0; 0]; % AD breakout board
 
 %% save and export
-save("design/model/model_params.mat");
+save("gnc/model_params.mat");
