@@ -63,7 +63,7 @@ function [u, r, C_l_delta] = controller_module(time, xR, pdyn, delta)
     if t < time_coast % disable during boost
         u = 0;
     end
-    if pdyn_lp < 1000 % disable during low control authority at apogee
+    if pdyn < 500 % disable during low control authority at apogee
         u = 0;
     end
 end
