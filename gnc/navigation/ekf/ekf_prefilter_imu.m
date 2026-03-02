@@ -44,7 +44,7 @@ function [a, w] = ekf_prefilter_imu(bias, board_accel, board_gyro, mti_accel, mt
     %% parameters
     persistent param
     if isempty(param)
-        param = coder.load("model_params.mat"); % only required parameter is launch altitude
+        param = coder.load("gnc/model_params.mat");
     end 
 
     %% averaging
@@ -59,9 +59,9 @@ function [a, w] = ekf_prefilter_imu(bias, board_accel, board_gyro, mti_accel, mt
     % centrifugal acceleration correction
     w_tilde = math_tilde(w);
     w_tilde_sq = w_tilde * w_tilde;
-    a_board = board_accel.meas - w_tilde_sq * param.d_board;
-    a_mti = mti_accel.meas - w_tilde_sq * param.d_mti;
-    a_ad = ad_accel.meas - w_tilde_sq * param.d_ad;
+    a_board = board_accel.meas;% - w_tilde_sq * param.d_board;
+    a_mti = mti_accel.meas;% - w_tilde_sq * param.d_mti;
+    a_ad = ad_accel.meas;% - w_tilde_sq * param.d_ad;
 
     % weighted acceleration
     a = C_board_a .* a_board + C_mti_a .* a_mti + C_ad_a .* a_ad;
