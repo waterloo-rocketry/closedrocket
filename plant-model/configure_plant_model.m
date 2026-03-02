@@ -16,7 +16,6 @@ constant_wind_enable = 0;   % Toggle for type; old wind model is = 1
 
 %%% sensors
 run('plant-model/Data/Sensors/sensors_processing.m')
-% S = SENSOR_TYPE();
 
 %% data pre-processing
 run('plant-model/scripts/data_preparation.m')
