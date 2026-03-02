@@ -1,12 +1,9 @@
-function [J] = meas_mag_jacobian(t, x, bias)
+function [J] = meas_mag_jacobian(x, M_E)
     % Computes measurement prediction using current state and sensor biases
 
     %% decomp
     % decompose state vector: [q(4); w(3); v(3); alt]
     q = x(1:4);
-
-    % decompose bias matrix: [b_A(3,i); b_W(3, i); M_E(3, i); b_P(1, i)]
-    M_E = bias(7:9);
 
     %% Initialize
     % Jacobian is of size: length(measurement) rows, length(x) columns
