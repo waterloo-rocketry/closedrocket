@@ -39,9 +39,9 @@ S_ad = [1, 0, 0;
          0, 1, 0;
          0, 0, 1]; % AD breakout board
 
-d_board = [0; 0; 0]; % Onboard STM IMU
-d_mti = [0; 0; 0]; % Movella MTi
-d_ad = [0; 0; 0]; % AD breakout board
+d_board = [1.21; 0; 0]; % Onboard STM IMU
+d_mti = [1.21; 0; 0]; % Movella MTi
+d_ad = [1.21; 0; 0]; % AD breakout board
 
 %% save and export
 save("gnc/model_params.mat");
