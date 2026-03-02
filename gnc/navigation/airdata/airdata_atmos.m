@@ -48,4 +48,6 @@ function [airdata] = airdata_atmos(altitude)
     airdata.temperature = temperature;
     airdata.density = density;
     airdata.sonic_speed = sonic_speed;
+    airdata.mach = 0; % need to initialize struct field before calling airdata_dynamic
+    airdata.dynamic_pressure = 0; % need to initialize struct field before calling airdata_dynamic
 end

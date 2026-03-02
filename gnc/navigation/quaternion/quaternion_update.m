@@ -1,13 +1,19 @@
-function [q_new] = quaternion_update(q_un, omega, dt)
-    % computes quaternion update from quaternion and body rates
+function [q_new, dq] = quaternion_update(q_un, w, dt)
+    % computes new quaternion from old quaternion and body rates
 
     % norm quaternions
     q = q_un / norm(q_un);
     
-    % quaternion derivative
-    q_dot = 0.5 * quaternion_multiply(q, [0; omega]);% - norm(omega)*(q-q_un);
+    % incremental quaternion
+    dphi = norm(w) * dt / 2;
+    if norm(w) == 0
+        dn = [0; 0; 0];
+    else    
+        dn = w / norm(w);
+    end
 
-    % update and norm
-    q_new = q + dt * q_dot;
-    q_new = q_new / norm(q_new);
+    dq = [cos(dphi); dn*sin(dphi)];
+     
+    % quaternion derivative
+    q_new = quaternion_multiply(q, dq);
 end

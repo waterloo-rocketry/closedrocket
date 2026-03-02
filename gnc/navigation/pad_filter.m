@@ -1,78 +1,68 @@
-function [x_init, bias_1, bias_2] = pad_filter(IMU_1, IMU_2, sensor_select)
-    % Computes inital state and covariance estimate for EKF, and bias values for the IMU
-    % Uses all available sensors: Gyroscope W, Magnetometer M, Accelerometer A, Barometer P
-    % Outputs: initial state, sensor bias matrix
+function [x_init, bias] = pad_filter(board_accel, board_gyro, mti_accel, mti_gyro, ad_accel, ad_gyro, board_baro, board_mag, mti_baro, mti_mag)
+    % Computes inital state for flight filter, and bias values for the sensors
+    % Outputs: initial state, sensor biases
     %#codegen
 
-
-    % filtered_i is lowpass filtered data of IMU_i
-    persistent filtered_1 filtered_2; % remembers from last iteration
+    %%% remember filtered values from last iteration
+    persistent board_accel_f board_gyro_f mti_accel_f mti_gyro_f ad_accel_f ad_gyro_f 
+    persistent board_baro_f board_mag_f mti_baro_f mti_mag_f
 
     %% parameters
     persistent param
     if isempty(param)
-        param = coder.load("model/model_params.mat");
+        param = coder.load("model_params.mat"); % only required parameter is launch altitude
     end 
 
-
     %% Initialization
-
-    if isempty(filtered_1)
-        if sensor_select(1) == 1 % if IMU_i alive
-            filtered_1 = IMU_1;
-        else
-            filtered_1 = zeros(10,1);
-        end
+    if isempty(board_accel_f)
+        board_accel_f = board_accel.meas;
+        board_gyro_f = board_gyro.meas;
+        mti_accel_f = mti_accel.meas;
+        mti_gyro_f = mti_gyro.meas; 
+        ad_accel_f = ad_accel.meas; 
+        ad_gyro_f = ad_gyro.meas;  
+        board_baro_f = board_baro.meas; 
+        board_mag_f = board_mag.meas; 
+        mti_baro_f = mti_baro.meas; 
+        mti_mag_f = mti_mag.meas; 
+        bias.board_gyro = zeros(3,1); 
+        bias.mti_gyro = zeros(3,1); 
+        bias.ad_gyro = zeros(3,1); 
+        bias.board_mag_earth = zeros(3,1); 
+        bias.mti_mag_earth = zeros(3,1); 
+        bias.board_baro = 0;
+        bias.mti_baro = 0; 
     end
-    if isempty(filtered_2)
-        if sensor_select(2) == 1 % if IMU_i alive
-            filtered_2 = IMU_2;
-        else
-            filtered_2 = zeros(10,1);
-        end
-    end
-
 
     %% lowpass filter
-
     alpha = 0.0005; % low pass time constant
     % filtered = filtered + alpha*(measured-filtered);
+        
+    board_accel_f = pad_lowpass(board_accel_f, board_accel, alpha);
+    board_gyro_f = pad_lowpass(board_gyro_f, board_gyro, alpha); 
+    mti_accel_f = pad_lowpass(mti_accel_f, mti_accel, alpha);
+    mti_gyro_f = pad_lowpass(mti_gyro_f, mti_gyro, alpha); 
+    ad_accel_f = pad_lowpass(ad_accel_f, ad_accel, alpha);
+    ad_gyro_f = pad_lowpass(ad_gyro_f, ad_gyro, alpha); 
+    board_baro_f = pad_lowpass(board_baro_f, board_baro, alpha); 
+    board_mag_f = pad_lowpass(board_mag_f, board_mag, alpha); 
+    mti_baro_f = pad_lowpass(mti_baro_f, mti_baro, alpha); 
+    mti_mag_f = pad_lowpass(mti_mag_f, mti_mag, alpha); 
 
-    if sensor_select(1) == 1
-        filtered_1 = alpha * IMU_1 + (1 - alpha) * filtered_1;
-    end
-    if sensor_select(2) == 1
-        filtered_2 = alpha * IMU_2 + (1 - alpha) * filtered_2;
-    end
 
-
-    %% State determination
-    
-    %%% average specific force of selected sensors
-    a = zeros(3,1); % acceleration a
-    if sensor_select(1) == 1 % only add alive IMUs to average
-        a = a + filtered_1(1:3);
+    %% Initial state determination    
+    %%% Orientation
+    a = zeros(3,1); % acceleration 
+    if board_accel.status == 1 % only add alive IMUs to average
+        a = a + board_accel_f;
     end
-    if sensor_select(2) == 1
-        a = a + filtered_2(1:3);
+    if mti_accel.status == 1
+        a = a + mti_accel_f;
     end
-    a = a / norm(sensor_select, 1); % divide by number of alive IMUs
-
-    %%% gravity vector in body-fixed frame
-    A = a / norm(a); % unit vector of gravity direction
-    
-    %%% determine initial orientation quaternion
-    qw = sqrt( 0.5 + 0.5*A(1) );
-    qx = 0;
-    if qw == 0 % exact upside down case
-        qy = 1; % either qy = 1 or qz = 1, this is arbitrary 
-        qz = 0;
-    else 
-        qy = 0.5 * A(3) / qw;
-        qz = -0.5 * A(2) / qw;
+    if ad_accel.status == 1
+        a = a + ad_accel_f;
     end
-    q = [qw; qx; qy; qz];
-    q = q / norm(q);
+    q = pad_inclinometer(a); % a gets normed inside function
 
     %%% launch altitude
     alt = param.elevation;
@@ -85,44 +75,20 @@ function [x_init, bias_1, bias_2] = pad_filter(IMU_1, IMU_2, sensor_select)
     x_init = [q; w; v; alt];
 
     %% Bias determination
-    
-    % declare bias vectors
-    bias_1 = zeros(10, 1); 
-    bias_2 = zeros(10, 1);
-    
-    %%% accelerometer
-    % did not add accelerometer bias determination yet, leave out for now
-    if sensor_select(1) == 1
-        bias_1(1:3) = filtered_1(1:3);
-    end
-    if sensor_select(2) == 1
-        bias_2(1:3) = filtered_2(1:3);
-    end
-
+        
     %%% gyroscope
-    if sensor_select(1) == 1
-        bias_1(4:6) = filtered_1(4:6);
-    end
-    if sensor_select(2) == 1
-        bias_2(4:6) = filtered_2(4:6);
-    end
+    bias.board_gyro = board_gyro_f;
+    bias.mti_gyro = mti_gyro_f;
+    bias.ad_gyro = ad_gyro_f;
     
     %%% earth magnetic field
     ST = transpose(quaternion_rotmatrix(q)); % launch attitude
-    if sensor_select(1) == 1
-        bias_1(7:9) = ST * filtered_1(7:9);
-    end
-    if sensor_select(2) == 1
-        bias_2(7:9) = ST * filtered_2(7:9);
-    end
-
+    bias.board_mag_earth = ST * board_mag_f;
+    bias.mti_mag_earth = ST * mti_mag_f;
+    
     %%% barometer
-    pressure = model_airdata(param.elevation).pressure; % what the pressure should be at launch elevation
-    if sensor_select(1) == 1
-        bias_1(10) = filtered_1(10) - pressure;
-    end
-    if sensor_select(2) == 1
-        bias_2(10) = filtered_2(10) - pressure;
-    end
+    pressure = airdata_atmos(param.elevation).pressure; % what the pressure should be at launch elevation
+    bias.board_baro = board_baro_f - pressure;
+    bias.mti_baro = mti_baro_f - pressure;
 
 end
