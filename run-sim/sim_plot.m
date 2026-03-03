@@ -1,7 +1,7 @@
 %% Configure and Plot
 clear 
-folderpath = 'monte-carlo/single_uncontrolled/';
-name = 'uncon';
+folderpath = 'run-sim/result/';
+name = 'result';
 
 %%% Plots
 
@@ -46,7 +46,6 @@ fontsize(f_sim, 12, "points")
 
 
 %% export
-
 % exportgraphics(f_sim, append(folderpath, 'sim_', name, '_sim.pdf'), 'ContentType', 'vector')
 % exportgraphics(f_est, append(folderpath, 'sim_', name, '_est.pdf'), 'ContentType', 'vector')
 % exportgraphics(f_err, append(folderpath, 'sim_', name, '_err.pdf'), 'ContentType', 'vector')

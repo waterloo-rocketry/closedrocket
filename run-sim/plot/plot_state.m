@@ -22,7 +22,7 @@ function [plots] = plot_state(dataset, varargin)
     if nargin >= 3
         idx = varargin{2};
     else
-        idx = 1:6;
+        idx = 1:4;
     end
 
     if isscalar(idx)
@@ -34,7 +34,7 @@ function [plots] = plot_state(dataset, varargin)
     elseif length(idx) == 4
         tiledlayout(2,2,'TileSpacing','Compact');
     else
-        tiledlayout(3,2,'TileSpacing','Compact');
+        tiledlayout(2,2,'TileSpacing','Compact');
     end 
     
     for i = idx
@@ -46,16 +46,9 @@ function [plots] = plot_state(dataset, varargin)
             case 3
                 plots.v = nexttile;
             case 4
-                plots.alt = nexttile; 
-            case 5
-                plots.cl = nexttile;
-            case 6
-                plots.delta = nexttile;             
+                plots.alt = nexttile;            
         end
     end
-
-    % plots.q = nexttile; plots.w = nexttile; plots.v = nexttile; plots.alt = nexttile; 
-    % plots.cl = nexttile; plots.delta = nexttile;
     
     if ismember(1, idx)
     names = ["$q_w$","$q_x$","$q_y$","$q_z$"];
@@ -121,35 +114,5 @@ function [plots] = plot_state(dataset, varargin)
     grid(plots.alt, 'on')
     plots.alt.YAxis.Exponent = 0;
     % ylim([0, 20])
-    end
-
-    if ismember(5, idx)
-    names = "$C_{L_\delta}$";
-    for i = 1
-        plot(plots.cl, time, dataset.cl(:,i), 'DisplayName', names(i), 'Color',colors(i+3,:))
-        hold(plots.cl, 'on')
-    end
-    legend(plots.cl, 'show', 'Orientation','vertical', Location='eastoutside', IconColumnWidth=12 )
-    title(plots.cl, "Canard Coefficient",'FontWeight','Normal')
-    xlabel(plots.cl, "Time [s]")
-    xlim(plots.cl, tlim)
-    xticks(plots.cl, linspace(tlim(1), tlim(end), ticknumber) );
-    grid(plots.cl, 'on')
-    plots.cl.YAxis.Exponent = 0;
-    end
-
-    if ismember(6, idx)
-    names = "$\delta$";
-    for i = 1
-        plot(plots.delta, time, rad2deg(dataset.delta(:,i)), 'DisplayName', names(i), 'Color',colors(i+3,:))
-        hold(plots.delta, 'on')
-    end
-    legend(plots.delta, 'show', 'Orientation','vertical', Location='eastoutside', IconColumnWidth=12 )
-    title(plots.delta, "Canard Angle [deg]",'FontWeight','Normal')
-    xlabel(plots.delta, "Time [s]")
-    xlim(plots.delta, tlim)
-    xticks(plots.delta, linspace(tlim(1), tlim(end), ticknumber) );
-    grid(plots.delta, 'on')
-    plots.delta.YAxis.Exponent = 0;
     end
 end

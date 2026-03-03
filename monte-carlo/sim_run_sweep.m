@@ -78,8 +78,8 @@ error_id = [];
 unstable_count = 0;
 unstable_id = [];
 for k = 1:number_simulations
-    [in_vars] = sim_postprocessor_in(simin(k), load(sprintf('monte-carlo/batch%s/plant_model_baseline.mat', batch_name)));
-    [sdt, sdt_vars] = sim_postprocessor(simout(k));
+    [in_vars] = mc_postprocessor_in(simin(k), load(sprintf('monte-carlo/batch%s/plant_model_baseline.mat', batch_name)));
+    [sdt, sdt_vars] = mc_postprocessor(simout(k));
     filename = sprintf('monte-carlo/batch%s/sim_%d.mat', batch_name, k);
     save(filename, 'sdt', 'in_vars');
     if ~isempty(simout(k).ErrorMessage)

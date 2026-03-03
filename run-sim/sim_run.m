@@ -1,6 +1,6 @@
 %% Configure
 clear 
-folderpath = 'monte-carlo/single_uncontrolled/';
+folderpath = 'run-sim/result/';
 run('configure_plant_model');
 save(append(folderpath, 'plant_model_baseline.mat'));
 clearvars -except folderpath
