@@ -44,7 +44,7 @@ canard_roll_reversal_factor = 1; % coefficient gain
 %Reference parameters   
 rocket_diameter = 0.203; % reference length [m]
 rocket_area_frontal = pi * rocket_diameter^2 / 4; % reference area [m^2]
-rocket_length = 5.55; % rocket length [m]
+rocket_length = 5.56; % rocket length [m]
 
 %Parachutes
 chute_pos_x = -1.1; % chute attachment [m]
@@ -69,12 +69,12 @@ body_length = rocket_length - nosecone_length - tail_length; % fuselage length o
 body_surface_roughness = 20 / 10^6; % RMC(?) roughness 20 um smooth paint
 
 %Fin parameters
-fin_chord_root = 0.432; %[m] root chord?
-fin_chord_tip = 0.0254; %[m] tip chord?
-fin_height = 0.216; %[m] height?
-fin_sweep = 0.457; % [m]
-fin_sweep_angle = deg2rad(64.7); % angle from radial normal [rad]
-fin_pos_x_roottip = - ( rocket_length - tail_length - 0.475 - 0.0172 ); % position of fins measured from nosecone [m]
+fin_chord_root = 0.508; %[m] root chord?
+fin_chord_tip = 0.0635; %[m] tip chord?
+fin_height = 0.229; %[m] height?
+fin_sweep = 0.495; % [m]
+fin_sweep_angle = deg2rad(65.2); % angle from radial normal [rad]
+fin_pos_x_roottip = - ( rocket_length - tail_length - 0.475 - 0.0508 ); % position of fins measured from nosecone [m]
 fin_number = 4; % Number of fins
 fin_cant_angle_rad = deg2rad(0); % fin cant angle [rad]
 
