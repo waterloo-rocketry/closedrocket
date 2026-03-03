@@ -2,7 +2,7 @@
 % run('plant-model/rockets/Borealis/borealis.m')
 % run('plant-model/rockets/testflight/testflight.m')
 % run('plant-model/rockets/Aurora/aurora.m')
-% run('plant-model/rockets/Polaris/polaris.m')
+run('plant-model/rockets/Polaris/polaris.m')
 
 %%% Settings
 chute_enable = [1, 0]; % no recovery is = 0
