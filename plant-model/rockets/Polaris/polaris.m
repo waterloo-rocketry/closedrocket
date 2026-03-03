@@ -1,32 +1,40 @@
 %% OR Simulation Output Data
-or_data = readtable('plant-model/Data/unnamed_2026/unnamed_2026_cycle_0.csv');
-% or_override_aoa_cna = readtable('plant-model/Data/Aurora/aurora_cycle_2_cna_aoa.csv');
-% or_override_mach_cna = readtable('plant-model/Data/Aurora/aurora_cycle_2_cna_mach.csv');
+or_data = readtable('plant-model/rockets/Polaris/polaris_cycle_0.csv');
 
 %% Initial values
-location = [420; 43.47; -80.54]; % launch location on earth. Altitude, Latitude, Longitude
-rail_angle_pitch = deg2rad(-5); % Rail pitch angle. Negative is pitched downrange
-rail_angle_yaw = deg2rad(0); % Rail yaw angle. Negative is yawed downrange
-rail_angle_roll = deg2rad(0); % Rocket clocking angle. 
+location = [420; 43.47; -80.54]; % launch location on earth. Altitude, Latitude, Longitude [m, deg, deg]
+rail_angle_pitch = deg2rad(-5); % Rail pitch angle. Negative is pitched downrange [rad]
+rail_angle_yaw = deg2rad(0); % Rail yaw angle. Negative is yawed downrange [rad]
+rail_angle_roll = deg2rad(0); % Rocket clocking angle [rad]
 rail_length = 11.28; % [m]
 
 %% Sensor mounting
-sensor_1_d = [-1.83; 0.074; -0.027]; % mounting location of IMU 1 relative nosetip
-sensor_1_S = [0, 1, 0;
-              0, 0, 1;
-              1, 0, 0]; % mounting orientation of IMU 1 relative body frame
-sensor_2_d = [-1.83; 0.065; 0.047]; % mounting location of IMU 2 relative nosetip
-sensor_2_S = [0, -1, 0;
-              0, 0, 1;
-              -1, 0, 0]; % mounting orientation of IMU 2 relative body frame
+%%% _d : Mounting location relative to body frame [m]
+%%% _S : Mounting orientation relative to nosetip [rotation matrix]
+%%% Sensor group 1 (Onboard)
+sensor_1_d = [-1.83; 0.074; -0.027]; 
+sensor_1_S = [1, 0, 0;
+              0, 1, 0;
+              0, 0, 1]; 
+%%% Sensor group 2 (Movella MTi)
+sensor_2_d = [-1.83; 0.065; 0.047];
+sensor_2_S = [1, 0, 0;
+              0, 1, 0;
+              0, 0, 1]; 
+%%% Sensor group 3 (AD breakout)
+sensor_3_d = [-1.83; 0; 0]; 
+sensor_3_S = [1, 0, 0;
+              0, 1, 0;
+              0, 0, 1];
 
 %% Actuator parameters
-act_freq = 150; % natural frequency, approx 1/timeconstant
-act_deadtime = 0.02; % delay in servo internal control loop
+act_freq = 150; % natural frequency, approx 1/timeconstant [1/s]
+act_deadtime = 0.02; % delay in servo internal control loop [s]
 act_damping = 0.9; % damping ratio
-act_backlash = 0.25; % play in deg
-act_anglelimit = 12; % max deflection in deg
-act_ratelimit = 480; % max rate in deg/s
+act_backlash = 0.25; % play [deg]
+act_anglelimit = 12; % max deflection [deg]
+act_ratelimit = 480; % max rate [deg/s]
+act_gear_ratio = 0.5; % speed ratio of gearing between motor and canard
 
 %% Misc Rocket parameters
 engine_thrust_factor = 1; % perfomance gain
