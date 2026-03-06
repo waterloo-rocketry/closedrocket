@@ -25,7 +25,7 @@ function [J_x] = dynamics_jacobian(dt, x)
     %% angular rate rows (w, 5:7)
     [torque_v] = dynamics_aero_jacobian(v, alt, param);
 
-    w_exp_tilde = math_exp_tilde(w, dt);
+    w_exp_tilde = math_rotate(w, dt);
     w_w = param.Jinv * w_exp_tilde * param.J;
     w_v = dt * param.Jinv * torque_v;
 
@@ -35,7 +35,7 @@ function [J_x] = dynamics_jacobian(dt, x)
 
     %% velocity rows (v, 8:10)
     v_q = dt * quaternion_rotate_jacobian(q, param.g);
-    v_w = math_exp_tilde_jacobian(w, dt, v);
+    v_w = math_rotate_jacobian(w, dt, v);
     v_v = w_exp_tilde;
 
     J_x(8:10,1:4) = v_q; % column q
