@@ -87,4 +87,4 @@ canard_height = 0.0508; % root to tip length
 canard_sweep_angle = deg2rad(60.3); % angle from radial normal [rad]
 canard_delta_max = deg2rad(12); % Canard maximum angle of attack
 canard_pos_x_roottip = - (nosecone_length + 0.241 + 0.518 + 0.102 - 0.0254); % position of the most forward tip of the canards
-canard_cant_zero = deg2rad(0.1); % zero roll not perfect
+canard_cant_zero = deg2rad(0.2); % zero roll not perfect
