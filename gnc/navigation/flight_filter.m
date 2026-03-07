@@ -9,8 +9,8 @@ function [x, P] = flight_filter(dt, x, P, bias, board_accel, board_gyro, mti_acc
     %%% Q is a square 11 matrix, tuning for prediction E(noise)
     %%% R is a square 3 matrix, tuning for measurement E(noise) of the gyroscope
     [a, w] = ekf_prefilter_imu(bias, board_accel, board_gyro, mti_accel, mti_gyro, ad_accel, ad_gyro);
-    Q = diag([[1,1,1,1]*1e-12, [1, 1, 1], [1,1,1]*1e-6, 1e-3]);
-    R = diag([1, 1, 1])*1e-6;
+    Q = diag([[1,1,1,1]*1e-10, [1, 1, 1]*1e-2, [1,1,1]*1e-4, 1e-3]);
+    R = diag([1, 1, 1])*1e-9;
     [xhat, Phat] = ekf_update(dt, x, P, a, w, Q, R);
     x = xhat; P = Phat;
 
@@ -19,13 +19,13 @@ function [x, P] = flight_filter(dt, x, P, bias, board_accel, board_gyro, mti_acc
     %%% R is a square matrix (size depending on amount of sensors), tuning for measurement E(noise)
  
     %%% Barometer
-    if board_baro.status == 1 % only correct with alive IMUs
+    if board_baro.status == true % only correct with alive IMUs
         %%% y = [ P(1) ]
         R = 100;
         [xhat, Phat] = ekf_correct(@meas_baro, @meas_baro_jacobian, x, P, board_baro.meas, bias.board_baro, R);
         x = xhat; P = Phat;
     end
-    if mti_baro.status == 1 % only correct with alive IMUs
+    if mti_baro.status == true % only correct with alive IMUs
         %%% y = [ P(1) ]
         R = 100;
         [xhat, Phat] = ekf_correct(@meas_baro, @meas_baro_jacobian, x, P, mti_baro.meas, bias.mti_baro, R);
@@ -33,15 +33,15 @@ function [x, P] = flight_filter(dt, x, P, bias, board_accel, board_gyro, mti_acc
     end
 
     %%% Magnetometer
-    if board_mag.status == 1
+    if board_mag.status == true
         %%% y = [  Mag(3) ]
-        R = diag([1, 1, 1])*10;
+        R = diag([1, 1, 1]);
         [xhat, Phat] = ekf_correct(@meas_mag, @meas_mag_jacobian, x, P, board_mag.meas, bias.board_mag_earth, R);
         x = xhat; P = Phat;
     end 
-    if mti_mag.status == 1
+    if mti_mag.status == true
         %%% y = [  Mag(3) ]
-        R = diag([1, 1, 1])*10;
+        R = diag([1, 1, 1]);
         [xhat, Phat] = ekf_correct(@meas_mag, @meas_mag_jacobian, x, P, mti_mag.meas, bias.mti_mag_earth, R);
         x = xhat; P = Phat;
     end 

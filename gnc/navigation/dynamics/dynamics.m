@@ -16,7 +16,7 @@ function [x_new] = dynamics(dt, x, a)
     q_new = quaternion_update(q, w, dt);
 
     % rate update
-    w_exp_tilde = math_exp_tilde(w, dt);
+    w_exp_tilde = math_rotate(w, dt);
     torque = dynamics_aero(v, alt, param);
     w_new = param.Jinv * (w_exp_tilde*param.J*w) + dt * param.Jinv * torque;
     % w_new = w + dt * param.Jinv * (torque - cross(w, param.J*w)); % old version

@@ -40,6 +40,6 @@ function [x_corr, P_corr] = ekf_update(dt, x, P, a_meas, w_meas, Q, R)
 
     %%% correct state estimate
     x_corr = x_pred + K * innovation;
-    x_corr(1:4) = x_corr(1:4) / norm(x_corr(1:4)); % norm quaternions
+    x_corr(1:4) = quaternion_norm(x_corr(1:4)); % norm quaternions
 
 end
