@@ -3,9 +3,8 @@ function [x_init, bias] = pad_filter(board_accel, board_gyro, mti_accel, mti_gyr
     % Outputs: initial state, sensor biases
     %#codegen
 
-    %%% remember filtered values from last iteration
-    persistent board_accel_f board_gyro_f mti_accel_f mti_gyro_f ad_accel_f ad_gyro_f 
-    persistent board_baro_f board_mag_f mti_baro_f mti_mag_f
+    %% Settings
+    alpha = 0.0005; % low pass time constant
 
     %% parameters
     persistent param
@@ -14,6 +13,10 @@ function [x_init, bias] = pad_filter(board_accel, board_gyro, mti_accel, mti_gyr
     end 
 
     %% Initialization
+    %%% remember filtered values from last iteration
+    persistent board_accel_f board_gyro_f mti_accel_f mti_gyro_f ad_accel_f ad_gyro_f 
+    persistent board_baro_f board_mag_f mti_baro_f mti_mag_f
+
     if isempty(board_accel_f)
         board_accel_f = board_accel.meas;
         board_gyro_f = board_gyro.meas;
@@ -35,7 +38,6 @@ function [x_init, bias] = pad_filter(board_accel, board_gyro, mti_accel, mti_gyr
     end
 
     %% lowpass filter
-    alpha = 0.0005; % low pass time constant
     % filtered = filtered + alpha*(measured-filtered);
         
     board_accel_f = pad_lowpass(board_accel_f, board_accel, alpha);
