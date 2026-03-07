@@ -2,7 +2,7 @@ function [q_new, dq] = quaternion_update(q_un, w, dt)
     % computes new quaternion from old quaternion and body rates
 
     %%% norm quaternions
-    q = quaternion_norm(q);
+    q = quaternion_norm(q_un);
     
     %%% incremental quaternion
     dphi = norm(w) * dt / 2;
