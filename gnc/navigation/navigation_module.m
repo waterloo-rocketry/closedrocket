@@ -1,16 +1,19 @@
 function [xhat, Phat_norm, airdata, xR] = navigation_module(timestamp, board_accel, board_gyro, mti_accel, mti_gyro, ad_accel, ad_gyro, board_baro, board_mag, mti_baro, mti_mag)
     % Top-level estimator module. Calls the pad and flight filters.
     %#codegen    
-    persistent t x P b flight_phase; % remembers t, x, P from last iteration
+    persistent t x P b flight_phase k; % remembers t, x, P from last iteration
     
     %% settings
-    idle_time = 9; % wait time to handover
+    idle_time = 10; % wait time to handover
+    sampling_imu = 0.002; % sampling period of imu [s]
+    sampling_other = 0.02; % sampling period of baro, mag [s]
 
     %% initialize at beginning
     xhat = zeros(11,1); xhat(1) = 1; Phat = zeros(11); 
     if isempty(x)
         x = xhat; P = Phat;
         flight_phase = 1;
+        k = 1;
         if timestamp >= 0.005
                 t = timestamp-0.005;
         else 
@@ -26,6 +29,18 @@ function [xhat, Phat_norm, airdata, xR] = navigation_module(timestamp, board_acc
     if t >= idle_time % mock for flight phase
             flight_phase = 0; % 1 is pad, 0 is flight
     end
+
+    %% Mock slower sampling rate of baro, mag
+    if k ==  sampling_other/sampling_imu
+        k = 1; % reset counter for the next cycle
+    else
+        k = k + 1; % increment counter for the next cycle
+        board_baro.status = false; % sensors do not have new data
+        board_mag.status = false;
+        mti_baro.status = false;
+        mti_mag.status = false;
+    end
+
 
     %% Pad filter iteration
     if flight_phase ~= 0 || isempty(b) % only before ignition (or if not run before)

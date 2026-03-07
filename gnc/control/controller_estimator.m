@@ -11,7 +11,16 @@ function [C_l_delta, C_l_0] = controller_estimator(time, w, delta, pdyn_params)
     % C_l_0 = rocket induced angular acceleration / (rho * area * arm)
 
     %% tuning parameters
+    %%% covariance
     Q = diag([1e-5, 1e-9]);
+    
+    %%% small angle cutoff
+    if abs(delta) < 0.005 % prevents high noise density for small delta from affecting estimate
+        delta = 0;  % probably should make more rigorous
+    end
+
+    %%% lowpass
+    tau = 0.25; % time constant
 
     %% initialize
     persistent t c P_minus w_old d_old w_dot_old
@@ -34,15 +43,7 @@ function [C_l_delta, C_l_0] = controller_estimator(time, w, delta, pdyn_params)
        w_dot_old = 0;
     end
 
-    % prevents high noise density for small delta from affecting estimate
-    % probably should make more rigorous
-    if abs(delta) < 0.005
-        delta = 0;
-    end
-
-
     %% lowpass command and measurement
-    tau = 0.25;
     delta = (1 - tau) * d_old + tau * delta;
     w_dot = (1 - tau) * w_dot_old + tau * (w - w_old) / (time - t);
 
