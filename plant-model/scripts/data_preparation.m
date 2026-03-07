@@ -1,7 +1,7 @@
 %% Data preparation for simulation
 or_data = fillmissing(or_data, 'previous');
 
-%% MCI
+%% Constant mass and inertia
 % Wet
 I_xx_0 = or_data.RotationalMomentOfInertia_kg_m__(1);
 I_yy_0 = or_data.LongitudinalMomentOfInertia_kg_m__(1);
@@ -18,34 +18,32 @@ total_mass_d = or_data.Mass_g_(find(~isnan(or_data.Mass_g_), 1, 'last')) / 1000;
 
 %% Input Time Series
 sim_time = or_data.x_Time_s_; % s
+
+%%% time series mass and inertia
+mass = or_data.Mass_g_ / 1000; % g -> kg
+OR_cg = -or_data.CGLocation_cm_ / 100; % centre of gravity over time (replace NaN with Last val)
+I_xx = or_data.RotationalMomentOfInertia_kg_m__;
+I_yy = or_data.LongitudinalMomentOfInertia_kg_m__;
+I_zz = I_yy; % rocket is axially symmetric
+
+%%% thrust
 F_thrust = or_data.Thrust_N_; % N assume thrust is perfectly aligned
 F_thrust = circshift(F_thrust, 5);
 F_thrust(end-5:end) = 0;
 F_thrust(2:5) = NaN;
 F_thrust = fillmissing(F_thrust, 'linear');
 
-OR_cg = -or_data.CGLocation_cm_ / 100; % centre of gravity over time (replace NaN with Last val)
-% Do diff here since simulink may become unstable
-mass = or_data.Mass_g_ / 1000; % g -> kg
-Mdot = diff(mass) ./ diff(sim_time); % kg/s 1st discrete derivative
-Mdot(end+1) = Mdot(end);
-% Unfiltered quality is shit - need to see how simlink block behaves
-Mdot = lowpass(Mdot, 0.1);
-
-I_xx = or_data.RotationalMomentOfInertia_kg_m__;
-I_yy = or_data.LongitudinalMomentOfInertia_kg_m__;
-I_zz = I_yy; % rocket is axially symmetric
-
-Cd = or_data.DragCoefficient___;
-Mach = or_data.MachNumber___;
-
-%% Reference Time Series
+%%% reference trajectory 
 alt = or_data.Altitude_m_;
 vel_ver = or_data.VerticalVelocity_m_s_;
 drag = or_data.DragForce_N_;
 crossrange = or_data.LateralDistance_m_;
 v_crossrange = or_data.LateralVelocity_m_s_;
 angle_vert_deg = 90 - or_data.VerticalOrientation_zenith____;
+
+%%% import Mach/Cd
+Cd = or_data.DragCoefficient___;
+Mach = or_data.MachNumber___;
 
 %% Cd vs Mach table
 % Combine the two vectors into a 2-column matrix
@@ -73,16 +71,8 @@ lookup_table = unique_data;
 CD_input = lookup_table(:, 1); % Mach #
 CD_data = lookup_table(:, 2); % Cd
 
-%% Cn_alpha tables
 
-% CNa_input_aoa = deg2rad(or_override_aoa_cna{:,1}); % angle of attack
-% CNa_data_aoa = or_override_aoa_cna{:,2}; % CN_alpha
-% 
-% CNa_input_mach = or_override_mach_cna{:,1}; % Mach number
-% CNa_data_mach = or_override_mach_cna{:,2}; % CN_alpha
-
-
-%% Aero
+%% Aero scripts
 % Nose
 [nosecone_area_planform, nosecone_area_bow, nosecone_area_aft, nosecone_volume, nosecone_pos_x_cp] = aerobody(nosecone_length, 0, 2 * nosecone_radius, 0);
 
