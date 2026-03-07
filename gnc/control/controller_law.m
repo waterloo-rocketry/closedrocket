@@ -13,10 +13,11 @@ function [u, K, Kr] = controller_law(xR, r, L_delta)
     Q_phi_mode2   = 0;
     Q_omega_mode2 = 20;
 
-    %% Control mode switching: linear crossfade
+    %%% thresholds
     w_low  = 0.5; % w < w_low: fully mode 1
     w_high = 1; % w > w_high: fully mode 2
- 
+
+    %% Control mode switching: linear crossfade
     w = abs(xR(2));
     blend = (w - w_low) / (w_high - w_low);
     blend = max(0, min(1, blend)); % clamp to [0,1]

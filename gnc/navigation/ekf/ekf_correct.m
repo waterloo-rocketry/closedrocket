@@ -26,7 +26,7 @@ function [x_new, P_new] = ekf_correct(model_measurement, model_jacobian, x, P, y
 
     %%% correct state estimate
     x_corr = x + K * innovation;
-    x_corr(1:4) = x_corr(1:4) / norm(x_corr(1:4)); % norm quaternions
+    x_corr(1:4) = quaternion_norm(x_corr(1:4)); % norm quaternions
 
     %%% return a-posteriori estimates
     x_new = x_corr; P_new = P_corr;
