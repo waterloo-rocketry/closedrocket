@@ -7,7 +7,7 @@ function [u, r, C_l_delta] = controller_module(time, xR, pdyn, delta)
     % pdyn : dynamic pressure (Pa)
 
     %% settings
-    time_launch = 10; % pad delay time
+    time_launch = 20; % pad delay time
     time_coast = 10; % time from launch to burnout
     time_program = 15; % time from launch to start of roll program
     u_max = deg2rad(10); % limit output to this angle

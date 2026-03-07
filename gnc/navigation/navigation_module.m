@@ -4,7 +4,9 @@ function [xhat, Phat_norm, airdata, xR] = navigation_module(timestamp, board_acc
     persistent t x P b flight_phase k; % remembers t, x, P from last iteration
     
     %% settings
-    idle_time = 9; % wait time to handover
+    idle_time = 10; % wait time to handover
+    sampling_imu = 0.002; % sampling period of imu [s]
+    sampling_other = 0.02; % sampling period of baro, mag [s]
 
     %% initialize at beginning
     xhat = zeros(11,1); xhat(1) = 1; Phat = zeros(11); 
@@ -29,8 +31,6 @@ function [xhat, Phat_norm, airdata, xR] = navigation_module(timestamp, board_acc
     end
 
     %% Mock slower sampling rate of baro, mag
-    sampling_imu = 0.002; % sampling period of imu [s]
-    sampling_other = 0.02; % sampling period of baro, mag [s]
     if k ==  sampling_other/sampling_imu
         k = 1; % reset counter for the next cycle
     else
