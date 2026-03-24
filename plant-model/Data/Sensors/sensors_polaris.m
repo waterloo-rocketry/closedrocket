@@ -7,10 +7,10 @@
 % input the noise value as (noise density)^2, or (RMS)^2/bandwidth = (RMS)^2*samplingrate.
 
 %% Processor values
-samplingrate_nav = 0.002; % sampling period of navigation
-samplingrate_ctrl = 0.01; % sampling period of controller
-samplingrate_imu = 0.002; % sampling period of imu
-samplingrate_other = 0.02; % sampling period baro and mag
+samplingrate_nav = 1/480; % sampling period of navigation
+samplingrate_ctrl = 1/100; % sampling period of controller
+samplingrate_imu = 1/480; % sampling period of imu
+samplingrate_other = 1/50; % sampling period baro and mag
 
 %% Sensor group 1 (Onboard)
 
