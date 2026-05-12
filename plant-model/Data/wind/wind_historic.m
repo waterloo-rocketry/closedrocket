@@ -1,6 +1,6 @@
 function [wind_heights, wind_vectors] = wind_historic(wind_layer_threshold)
     %% windspeed wrt height from csv
-    wind_data = readtable("plant-model/Data/environment/sim_parameters_historical_aug2023+aug2024_no-clouds_2025-06-03.csv", ...
+    wind_data = readtable("plant-model/data/wind/sim_parameters_historical_aug2023+aug2024_no-clouds_2025-06-03.csv", ...
         ReadVariableNames=true, VariableNamingRule="preserve");
     
     %% pick a random timestamp and process

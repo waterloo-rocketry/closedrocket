@@ -1,5 +1,5 @@
 %% OR Simulation Output Data
-or_data = readtable('plant-model/rockets/Aurora/aurora_cycle_3_staticfire.csv');
+or_data = readtable('plant-model/data/rockets/Aurora/aurora_cycle_3_staticfire.csv');
 % or_override_aoa_cna = readtable('plant-model/Data/Aurora/aurora_cycle_2_cna_aoa.csv');
 % or_override_mach_cna = readtable('plant-model/Data/Aurora/aurora_cycle_2_cna_mach.csv');
 

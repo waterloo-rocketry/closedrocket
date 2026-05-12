@@ -1,5 +1,5 @@
 %% OR Simulation Output Data
-or_data = readtable('plant-model/rockets/Polaris/polaris_cycle_1.csv');
+or_data = readtable('plant-model/data/rockets/Polaris/polaris_cycle_1.csv');
 
 %% Initial values
 location = [420; 43.47; -80.54]; % launch location on earth. Altitude, Latitude, Longitude [m, deg, deg]
