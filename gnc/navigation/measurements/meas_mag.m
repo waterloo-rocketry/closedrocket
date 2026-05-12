@@ -7,7 +7,7 @@ function [y] = meas_mag(x, M_E)
 
     %% magnetic field model
     S = quaternion_rotmatrix(q);
-    M = S * M_E; % Earth magnetic field in body frame
+    M = S * M_E; % [Gauss], measured Earth magnetic field in body frame
     % TODO: add iron corrections
 
     %% measurement prediction

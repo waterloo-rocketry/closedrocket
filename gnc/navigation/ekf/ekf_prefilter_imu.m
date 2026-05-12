@@ -54,7 +54,7 @@ function [a, w] = ekf_prefilter_imu(bias, board_accel, board_gyro, mti_accel, mt
     w_ad = ad_gyro.meas - bias.ad_gyro;
 
     % weighted angular rates
-    w = C_board_w .* w_board + C_mti_w .* w_mti + C_ad_w .* w_ad;
+    w = C_board_w .* w_board + C_mti_w .* w_mti + C_ad_w .* w_ad; % [rad/s]
 
     % centrifugal acceleration correction
     % w_tilde = math_tilde(w);
@@ -64,5 +64,5 @@ function [a, w] = ekf_prefilter_imu(bias, board_accel, board_gyro, mti_accel, mt
     a_ad = ad_accel.meas;% - w_tilde_sq * param.d_ad;
 
     % weighted acceleration
-    a = C_board_a .* a_board + C_mti_a .* a_mti + C_ad_a .* a_ad;
+    a = C_board_a .* a_board + C_mti_a .* a_mti + C_ad_a .* a_ad; % [m/s^2]
 end

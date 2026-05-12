@@ -7,12 +7,12 @@ function [u, r, C_l_delta] = controller_module(time, xR, pdyn, delta)
     % pdyn : dynamic pressure (Pa)
 
     %% settings
-    time_launch = 20; % pad delay time
-    time_coast = 10; % time from launch to burnout
-    time_program = 15; % time from launch to start of roll program
-    u_max = deg2rad(10); % limit output to this angle
-    L_min = 10; % limit roll control derivative for low authority conditions
-    pdyn_min = 500; % deactivate at low authority near apogee
+    time_launch = 20; % [s], pad delay time
+    time_coast = 10; % [s], time from launch to burnout
+    time_program = 15; % [s], time from launch to start of roll program
+    u_max = deg2rad(10); % [rad], limit output to this angle
+    L_min = 10; % [rad/s^2 (angular accelaration) / rad (canard angle)] limit roll control derivative for low authority conditions
+    pdyn_min = 500; % [Pa] deactivate at low authority near apogee
 
     %% parameters
     persistent param

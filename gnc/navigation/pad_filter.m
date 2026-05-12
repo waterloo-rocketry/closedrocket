@@ -1,10 +1,10 @@
 function [x_init, bias] = pad_filter(board_accel, board_gyro, mti_accel, mti_gyro, ad_accel, ad_gyro, board_baro, board_mag, mti_baro, mti_mag)
-    % Computes inital state for flight filter, and bias values for the sensors
-    % Outputs: initial state, sensor biases
+    % Computes on pad: inital state for flight filter, and bias values for the sensors
+    % Outputs: initial state x, sensor biases bias
     %#codegen
 
     %% Settings
-    alpha = 0.0005; % low pass time constant
+    alpha = 0.0005; % [s], low pass time constant
 
     %% parameters
     persistent param

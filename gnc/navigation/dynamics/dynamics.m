@@ -13,7 +13,7 @@ function [x_new] = dynamics(dt, x, a)
     
     %% time updates
     % quaternion update
-    q_new = quaternion_update(q, w, dt);
+    q_new = quaternion_update(q, w, dt); 
 
     % rate update
     w_exp_tilde = math_rotate(w, dt);

@@ -1,8 +1,8 @@
-function [x_corr, P_corr] = ekf_update(dt, x, P, a_meas, w_meas, Q, R)
-    % Computes EKF prediction step.
-    % Inputs: estimates x, P; control u; 
-    % Input parameters: weighting Q; time difference to last compute step; 
-    % Outputs: new estimates x, P
+function [x_new, P_new] = ekf_update(dt, x, P, a_meas, w_meas, Q, R)
+    % Computes EKF prediction+correction step for IMU data.
+    % Input variables: time step dt, old state x, old covariance P; acceleration a, angular rate w; 
+    % Input parameters: dynamics weighting Q, gyroscope weighting R;  
+    % Outputs: new state x, new covariance P
 
     %% Prediction
     % computes a-priori state and covariance estimates
@@ -36,10 +36,10 @@ function [x_corr, P_corr] = ekf_update(dt, x, P, a_meas, w_meas, Q, R)
     E = eye(11) - [zeros(11,4), K, zeros(11,4)]; % hardcoded K*H
     
     %%% correct covariance estimate
-    P_corr = E * P_pred * E' + K * R * K'; % joseph stabilized
+    P_new = E * P_pred * E' + K * R * K'; % joseph stabilized
 
     %%% correct state estimate
-    x_corr = x_pred + K * innovation;
-    x_corr(1:4) = quaternion_norm(x_corr(1:4)); % norm quaternions
+    x_new = x_pred + K * innovation;
+    x_new(1:4) = quaternion_norm(x_new(1:4)); % norm quaternions
 
 end

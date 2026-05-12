@@ -1,8 +1,9 @@
 function [x_new, P_new] = ekf_correct(model_measurement, model_jacobian, x, P, y, b, R)
-    % Computes EKF correction step.
-    % Inputs: estimates x, P; measurement y; sensor bias b;
-    % Input parameters: weighting R; 
-    % Outputs: new estimates x, P
+    % Computes EKF correction step for other sensor data.
+    % Input function handles: measurement model, model jacobian; 
+    % Input variables: old state x, old covariance P, measurement y, sensor bias b;
+    % Input parameters: sensor noise weighting R; 
+    % Outputs: new state x, new covariance P
 
     %% Correction
     % computes a-posteriori state and covariance estimates
@@ -22,12 +23,9 @@ function [x_new, P_new] = ekf_correct(model_measurement, model_jacobian, x, P, y
     E = eye(length(x)) - K * H;
     
     %%% correct covariance estimate
-    P_corr = E * P * E' + K * R * K'; % joseph stabilized
+    P_new = E * P * E' + K * R * K'; % joseph stabilized
 
     %%% correct state estimate
-    x_corr = x + K * innovation;
-    x_corr(1:4) = quaternion_norm(x_corr(1:4)); % norm quaternions
-
-    %%% return a-posteriori estimates
-    x_new = x_corr; P_new = P_corr;
+    x_new = x + K * innovation;
+    x_new(1:4) = quaternion_norm(x_new(1:4)); % norm quaternions
 end
