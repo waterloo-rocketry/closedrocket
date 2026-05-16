@@ -1,4 +1,5 @@
 function [C_l_delta, C_l_0] = controller_estimator(time, w, delta, pdyn_params)
+    %#codegen
     % estimates the canard aerodynamic coefficients from canard angle, roll rates, air data
     % coeffs : canard coefficients C_l_delta and C_l_0
     % time : current time stamp (s)

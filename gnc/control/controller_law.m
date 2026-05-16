@@ -1,4 +1,5 @@
 function [u, K, Kr] = controller_law(xR, r, L_delta)
+    %#codegen
     % computes the optimal control signal for a flight condition 
     % u : control signal, desired canard angle (rad)
     % xR : roll state [roll angle (rad); roll rate (rad/s)]
