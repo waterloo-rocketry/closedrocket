@@ -44,10 +44,10 @@ function [airdata] = airdata_atmos(altitude)
     sonic_speed = sqrt(air_gamma*air_R*temperature);
 
     % return values
-    airdata.pressure = pressure;
-    airdata.temperature = temperature;
-    airdata.density = density;
-    airdata.sonic_speed = sonic_speed;
+    airdata.pressure = pressure; % [Pa]
+    airdata.temperature = temperature; % [K]
+    airdata.density = density; % [kg/m^3]
+    airdata.sonic_speed = sonic_speed; % [m/s]
     airdata.mach = 0; % need to initialize struct field before calling airdata_dynamic
     airdata.dynamic_pressure = 0; % need to initialize struct field before calling airdata_dynamic
 end

@@ -1,12 +1,13 @@
-function [xhat, Phat_norm, airdata, xR] = navigation_module(timestamp, board_accel, board_gyro, mti_accel, mti_gyro, ad_accel, ad_gyro, board_baro, board_mag, mti_baro, mti_mag)
-    % Top-level estimator module. Calls the pad and flight filters.
+function [state, cov_norm, airdata, roll_state] = navigation_module(timestamp, board_accel, board_gyro, mti_accel, mti_gyro, ad_accel, ad_gyro, board_baro, board_mag, mti_baro, mti_mag)
+    % Top-level navigation module. Calls the pad and flight filters. 
+    % Mocks firmware higher-level stuff
     %#codegen    
     persistent t x P b flight_phase k; % remembers t, x, P from last iteration
     
-    %% settings
-    idle_time = 10; % wait time to handover
-    sampling_imu = 0.002; % sampling period of imu [s]
-    sampling_other = 0.02; % sampling period of baro, mag [s]
+    %% config settings
+    idle_time = 10; % [s], wait time to handover from pad to flight
+    sampling_imu = 0.002; % [s], sampling period of imu
+    sampling_other = 0.02; % [s], sampling period of baro, mag
 
     %% initialize at beginning
     xhat = zeros(11,1); xhat(1) = 1; Phat = zeros(11); 
@@ -22,7 +23,7 @@ function [xhat, Phat_norm, airdata, xR] = navigation_module(timestamp, board_acc
     end
     
     %% timecode
-    dt = timestamp - t; % time step size for integrators
+    dt = timestamp - t; % [s], time step size for dynamics integration
     t = timestamp;
     
     %% flight phase
@@ -54,13 +55,23 @@ function [xhat, Phat_norm, airdata, xR] = navigation_module(timestamp, board_acc
         x = xhat; P = Phat;
     end
 
+    %% Pack state as struct
+    %%% use union in C or smth
+    state.q = x(1:4); % [1], attitude quaternion
+    state.w = x(5:7); % [rad/s], angular rate 
+    state.v = x(8:10); % [m/s], velocity
+    state.alt = x(11); % [m], altitude
+    state.x = x; % also full state as vector is needed in simulink
+
+    %% Compute variance norm 
+    %%% for evaluating EKF quality
+    cov_norm = norm(P); % scalar, 2-norm of the covariance matrix
+
     %% Compute air data
-    airdata = airdata_dynamic(x(11), x(8:10));
+    airdata = airdata_atmos(x(11));
+    airdata = airdata_dynamic(airdata, x(8:10));
 
-    %% Compute variance norm for EKF quality
-    Phat_norm = norm(P); % Compute the norm of the covariance matrix
-
-    %% Roll state for controller
+    %% controller input vector
     phi = quaternion_to_roll(x(1:4));
-    xR = [phi; x(5)];
+    roll_state = [phi; x(5)];
 end

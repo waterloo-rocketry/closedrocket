@@ -7,7 +7,7 @@ function [y] = meas_baro(x, b_P)
 
     %% atmosphere model
     airdata = airdata_atmos(alt);
-    P = airdata.pressure + b_P;
+    P = airdata.pressure + b_P; % [Pa], measured atmospheric pressure
 
     %% measurement prediction
     y = [P];
