@@ -71,6 +71,47 @@ lookup_table = unique_data;
 CD_input = lookup_table(:, 1); % Mach #
 CD_data = lookup_table(:, 2); % Cd
 
+%% Canard CL GPR-smoothed lookup table
+% Transcribed from Python delta_wing GPR approach
+
+delta_data = readmatrix("plant-model/Data/Aero/delta.csv");
+
+canard_CL_Mach_raw  = delta_data(:,1);
+canard_CL_alpha_raw = delta_data(:,2);   % deg
+canard_CL_raw       = delta_data(:,4);   % CL column
+
+X = [canard_CL_Mach_raw(:), canard_CL_alpha_raw(:)];
+Y = canard_CL_raw(:);
+
+valid_idx = all(~isnan(X), 2) & ~isnan(Y);
+X = X(valid_idx,:);
+Y = Y(valid_idx);
+
+%% Fit GPR
+% MATLAB does not map exactly to sklearn's DotProduct + RBF + WhiteKernel
+% unless using a custom kernel. This is the practical close version.
+
+canard_CL_gpr = fitrgp( ...
+    X, ...
+    Y, ...
+    "KernelFunction", "ardsquaredexponential", ...
+    "BasisFunction", "linear", ...
+    "Standardize", true);
+
+%% Precompute GPR into numeric lookup table for Simulink
+
+canard_CL_Mach_input  = 0.5:0.01:2.5;
+canard_CL_alpha_input = 0:0.1:15;   % deg
+
+[canard_CL_Mach_grid, canard_CL_alpha_grid] = meshgrid( ...
+    canard_CL_Mach_input, ...
+    canard_CL_alpha_input);
+
+X_query = [canard_CL_Mach_grid(:), canard_CL_alpha_grid(:)];
+
+canard_CL_query = predict(canard_CL_gpr, X_query);
+
+canard_CL_data = reshape(canard_CL_query, size(canard_CL_Mach_grid));
 
 %% Aero scripts
 % Nose
