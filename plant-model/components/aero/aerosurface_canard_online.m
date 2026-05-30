@@ -18,6 +18,6 @@ function [C_normal_1] = aerosurface_canard_online( ...
         alpha_q, ...
         "linear");
 
-    C_normal_1 = sign(incidence) * C_abs;
+    C_normal_1 = C_abs;
 
 end
