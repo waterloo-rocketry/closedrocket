@@ -5,13 +5,11 @@
  * File: norm.c
  *
  * MATLAB Coder version            : 25.2
- * C/C++ source code generated on  : 31-May-2026 10:28:26
+ * C/C++ source code generated on  : 31-May-2026 14:06:35
  */
 
 /* Include Files */
 #include "norm.h"
-#include "rt_nonfinite.h"
-#include "svd.h"
 #include "rt_nonfinite.h"
 #include <math.h>
 
@@ -103,30 +101,6 @@ double c_norm(const double x[4])
     y += t * t;
   }
   return scale * sqrt(y);
-}
-
-/*
- * Arguments    : const double x[121]
- * Return Type  : double
- */
-double d_norm(const double x[121])
-{
-  double y;
-  int i;
-  y = 0.0;
-  for (i = 0; i < 121; i++) {
-    double absx;
-    absx = fabs(x[i]);
-    if (rtIsNaN(absx) || (absx > y)) {
-      y = absx;
-    }
-  }
-  if ((!rtIsInf(y)) && (!rtIsNaN(y))) {
-    double dv[11];
-    svd(x, dv);
-    y = dv[0];
-  }
-  return y;
 }
 
 /*

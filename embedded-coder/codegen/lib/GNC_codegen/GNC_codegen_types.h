@@ -5,7 +5,7 @@
  * File: GNC_codegen_types.h
  *
  * MATLAB Coder version            : 25.2
- * C/C++ source code generated on  : 31-May-2026 10:28:26
+ * C/C++ source code generated on  : 31-May-2026 14:06:35
  */
 
 #ifndef GNC_CODEGEN_TYPES_H
@@ -18,50 +18,64 @@
 #ifndef typedef_struct0_T
 #define typedef_struct0_T
 typedef struct {
-  double meas[3];
-  bool status;
+  double board_gyro[3];
+  double mti_gyro[3];
+  double ad_gyro[3];
+  double board_mag_earth[3];
+  double mti_mag_earth[3];
+  double board_baro;
+  double mti_baro;
 } struct0_T;
 #endif /* typedef_struct0_T */
 
 #ifndef typedef_struct1_T
 #define typedef_struct1_T
 typedef struct {
-  double meas;
-  bool status;
+  double board_accel_f[3];
+  double board_gyro_f[3];
+  double mti_accel_f[3];
+  double mti_gyro_f[3];
+  double ad_accel_f[3];
+  double ad_gyro_f[3];
+  double board_baro_f;
+  double board_mag_f[3];
+  double mti_baro_f;
+  double mti_mag_f[3];
 } struct1_T;
 #endif /* typedef_struct1_T */
-
-#ifndef typedef_struct3_T
-#define typedef_struct3_T
-typedef struct {
-  double pressure;
-  double temperature;
-  double density;
-  double sonic_speed;
-  double mach;
-  double dynamic_pressure;
-} struct3_T;
-#endif /* typedef_struct3_T */
 
 #ifndef typedef_struct2_T
 #define typedef_struct2_T
 typedef struct {
-  double q[4];
-  double w[3];
-  double v[3];
-  double alt;
-  double x[11];
+  double meas[3];
+  bool status;
 } struct2_T;
 #endif /* typedef_struct2_T */
 
-#ifndef typedef_b_struct_T
-#define typedef_b_struct_T
+#ifndef typedef_struct3_T
+#define typedef_struct3_T
+typedef struct {
+  double meas[3];
+  double status;
+} struct3_T;
+#endif /* typedef_struct3_T */
+
+#ifndef typedef_struct4_T
+#define typedef_struct4_T
+typedef struct {
+  double meas;
+  bool status;
+} struct4_T;
+#endif /* typedef_struct4_T */
+
+#ifndef typedef_struct_T
+#define typedef_struct_T
 typedef struct {
   double J[9];
   double Jinv[9];
   double g[3];
-} b_struct_T;
-#endif /* typedef_b_struct_T */
+} struct_T;
+#endif /* typedef_struct_T */
 
 #endif
 /*

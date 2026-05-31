@@ -81,44 +81,60 @@
                     <Type id="23" type="coderapp.internal.codertype.PrimitiveType"/>
                   </Inputs>
                   <Inputs id="24" type="coderapp.internal.interface.project.Input">
-                    <Name>board_accel</Name>
-                    <Type id="25" type="coderapp.internal.codertype.StructType"/>
+                    <Name>x</Name>
+                    <Type id="25" type="coderapp.internal.codertype.PrimitiveType"/>
                   </Inputs>
                   <Inputs id="26" type="coderapp.internal.interface.project.Input">
-                    <Name>board_gyro</Name>
-                    <Type id="25" type="coderapp.internal.codertype.StructType"/>
-                  </Inputs>
-                  <Inputs id="27" type="coderapp.internal.interface.project.Input">
-                    <Name>mti_accel</Name>
-                    <Type id="25" type="coderapp.internal.codertype.StructType"/>
+                    <Name>P</Name>
+                    <Type id="27" type="coderapp.internal.codertype.PrimitiveType"/>
                   </Inputs>
                   <Inputs id="28" type="coderapp.internal.interface.project.Input">
-                    <Name>mti_gyro</Name>
-                    <Type id="25" type="coderapp.internal.codertype.StructType"/>
-                  </Inputs>
-                  <Inputs id="29" type="coderapp.internal.interface.project.Input">
-                    <Name>ad_accel</Name>
-                    <Type id="25" type="coderapp.internal.codertype.StructType"/>
+                    <Name>b</Name>
+                    <Type id="29" type="coderapp.internal.codertype.StructType"/>
                   </Inputs>
                   <Inputs id="30" type="coderapp.internal.interface.project.Input">
-                    <Name>ad_gyro</Name>
-                    <Type id="25" type="coderapp.internal.codertype.StructType"/>
+                    <Name>sf</Name>
+                    <Type id="31" type="coderapp.internal.codertype.StructType"/>
                   </Inputs>
-                  <Inputs id="31" type="coderapp.internal.interface.project.Input">
-                    <Name>board_baro</Name>
-                    <Type id="32" type="coderapp.internal.codertype.StructType"/>
-                  </Inputs>
-                  <Inputs id="33" type="coderapp.internal.interface.project.Input">
-                    <Name>board_mag</Name>
-                    <Type id="25" type="coderapp.internal.codertype.StructType"/>
+                  <Inputs id="32" type="coderapp.internal.interface.project.Input">
+                    <Name>board_accel</Name>
+                    <Type id="33" type="coderapp.internal.codertype.StructType"/>
                   </Inputs>
                   <Inputs id="34" type="coderapp.internal.interface.project.Input">
-                    <Name>mti_baro</Name>
-                    <Type id="32" type="coderapp.internal.codertype.StructType"/>
+                    <Name>board_gyro</Name>
+                    <Type id="33" type="coderapp.internal.codertype.StructType"/>
                   </Inputs>
                   <Inputs id="35" type="coderapp.internal.interface.project.Input">
+                    <Name>mti_accel</Name>
+                    <Type id="33" type="coderapp.internal.codertype.StructType"/>
+                  </Inputs>
+                  <Inputs id="36" type="coderapp.internal.interface.project.Input">
+                    <Name>mti_gyro</Name>
+                    <Type id="33" type="coderapp.internal.codertype.StructType"/>
+                  </Inputs>
+                  <Inputs id="37" type="coderapp.internal.interface.project.Input">
+                    <Name>ad_accel</Name>
+                    <Type id="33" type="coderapp.internal.codertype.StructType"/>
+                  </Inputs>
+                  <Inputs id="38" type="coderapp.internal.interface.project.Input">
+                    <Name>ad_gyro</Name>
+                    <Type id="39" type="coderapp.internal.codertype.StructType"/>
+                  </Inputs>
+                  <Inputs id="40" type="coderapp.internal.interface.project.Input">
+                    <Name>board_baro</Name>
+                    <Type id="41" type="coderapp.internal.codertype.StructType"/>
+                  </Inputs>
+                  <Inputs id="42" type="coderapp.internal.interface.project.Input">
+                    <Name>board_mag</Name>
+                    <Type id="33" type="coderapp.internal.codertype.StructType"/>
+                  </Inputs>
+                  <Inputs id="43" type="coderapp.internal.interface.project.Input">
+                    <Name>mti_baro</Name>
+                    <Type id="41" type="coderapp.internal.codertype.StructType"/>
+                  </Inputs>
+                  <Inputs id="44" type="coderapp.internal.interface.project.Input">
                     <Name>mti_mag</Name>
-                    <Type id="25" type="coderapp.internal.codertype.StructType"/>
+                    <Type id="33" type="coderapp.internal.codertype.StructType"/>
                   </Inputs>
                   <NumOutputs>4</NumOutputs>
                 </Signatures>
@@ -127,80 +143,80 @@
                 </File>
                 <Name>navigation_codegen_entry</Name>
               </EntryPoints>
-              <SizeConstraints id="36" type="coderapp.internal.interface.project.SizeConstraints">
+              <SizeConstraints id="45" type="coderapp.internal.interface.project.SizeConstraints">
                 <Value type="coderapp.internal.interface.project.SizeConstraintsValue"/>
               </SizeConstraints>
-              <Types id="37" type="coderapp.internal.codertype.TypeStore">
-                <Types id="21" type="coderapp.internal.codertype.PrimitiveType">
+              <Types id="46" type="coderapp.internal.codertype.TypeStore">
+                <Types id="47" type="coderapp.internal.codertype.PrimitiveType">
                   <ClassName>double</ClassName>
                   <Size type="coderapp.internal.codertype.Dimension"/>
                   <Size type="coderapp.internal.codertype.Dimension"/>
                 </Types>
-                <Types id="38" type="coderapp.internal.codertype.PrimitiveType">
+                <Types id="48" type="coderapp.internal.codertype.PrimitiveType">
                   <ClassName>double</ClassName>
                   <Size type="coderapp.internal.codertype.Dimension">
                     <Length>2</Length>
                   </Size>
                   <Size type="coderapp.internal.codertype.Dimension"/>
                 </Types>
-                <Types id="23" type="coderapp.internal.codertype.PrimitiveType">
+                <Types id="49" type="coderapp.internal.codertype.PrimitiveType">
                   <ClassName>logical</ClassName>
                   <Size type="coderapp.internal.codertype.Dimension"/>
                   <Size type="coderapp.internal.codertype.Dimension"/>
                 </Types>
-                <Types id="39" type="coderapp.internal.codertype.PrimitiveType">
+                <Types id="50" type="coderapp.internal.codertype.PrimitiveType">
                   <ClassName>double</ClassName>
                   <Size type="coderapp.internal.codertype.Dimension">
                     <Length>3</Length>
                   </Size>
                   <Size type="coderapp.internal.codertype.Dimension"/>
                 </Types>
-                <Types id="25" type="coderapp.internal.codertype.StructType">
-                  <Fields id="40" type="coderapp.internal.codertype.Property">
+                <Types id="51" type="coderapp.internal.codertype.StructType">
+                  <Fields id="52" type="coderapp.internal.codertype.Property">
                     <Name>meas</Name>
-                    <Type id="39" type="coderapp.internal.codertype.PrimitiveType"/>
+                    <Type id="50" type="coderapp.internal.codertype.PrimitiveType"/>
                   </Fields>
-                  <Fields id="41" type="coderapp.internal.codertype.Property">
+                  <Fields id="53" type="coderapp.internal.codertype.Property">
                     <Name>status</Name>
-                    <Type id="23" type="coderapp.internal.codertype.PrimitiveType"/>
+                    <Type id="49" type="coderapp.internal.codertype.PrimitiveType"/>
                   </Fields>
                   <ClassName>struct</ClassName>
                   <Size type="coderapp.internal.codertype.Dimension"/>
                   <Size type="coderapp.internal.codertype.Dimension"/>
                 </Types>
-                <Types id="32" type="coderapp.internal.codertype.StructType">
-                  <Fields id="42" type="coderapp.internal.codertype.Property">
+                <Types id="54" type="coderapp.internal.codertype.StructType">
+                  <Fields id="55" type="coderapp.internal.codertype.Property">
                     <Name>meas</Name>
-                    <Type id="21" type="coderapp.internal.codertype.PrimitiveType"/>
+                    <Type id="47" type="coderapp.internal.codertype.PrimitiveType"/>
                   </Fields>
-                  <Fields id="43" type="coderapp.internal.codertype.Property">
+                  <Fields id="56" type="coderapp.internal.codertype.Property">
                     <Name>status</Name>
-                    <Type id="23" type="coderapp.internal.codertype.PrimitiveType"/>
+                    <Type id="49" type="coderapp.internal.codertype.PrimitiveType"/>
                   </Fields>
                   <ClassName>struct</ClassName>
                   <Size type="coderapp.internal.codertype.Dimension"/>
                   <Size type="coderapp.internal.codertype.Dimension"/>
                 </Types>
-                <Types id="44" type="coderapp.internal.codertype.PrimitiveType">
+                <Types id="57" type="coderapp.internal.codertype.PrimitiveType">
                   <ClassName>double</ClassName>
                   <Size type="coderapp.internal.codertype.Dimension">
                     <Length>3</Length>
                   </Size>
                   <Size type="coderapp.internal.codertype.Dimension"/>
                 </Types>
-                <Types id="45" type="coderapp.internal.codertype.PrimitiveType">
+                <Types id="58" type="coderapp.internal.codertype.PrimitiveType">
                   <ClassName>logical</ClassName>
                   <Size type="coderapp.internal.codertype.Dimension"/>
                   <Size type="coderapp.internal.codertype.Dimension"/>
                 </Types>
-                <Types id="46" type="coderapp.internal.codertype.StructType">
-                  <Fields id="47" type="coderapp.internal.codertype.Property">
+                <Types id="59" type="coderapp.internal.codertype.StructType">
+                  <Fields id="60" type="coderapp.internal.codertype.Property">
                     <Name>meas</Name>
-                    <Type id="44" type="coderapp.internal.codertype.PrimitiveType"/>
+                    <Type id="57" type="coderapp.internal.codertype.PrimitiveType"/>
                   </Fields>
-                  <Fields id="48" type="coderapp.internal.codertype.Property">
+                  <Fields id="61" type="coderapp.internal.codertype.Property">
                     <Name>status</Name>
-                    <Type id="45" type="coderapp.internal.codertype.PrimitiveType"/>
+                    <Type id="58" type="coderapp.internal.codertype.PrimitiveType"/>
                   </Fields>
                   <ClassName>struct</ClassName>
                   <Size type="coderapp.internal.codertype.Dimension"/>
@@ -211,14 +227,14 @@
                   <Size type="coderapp.internal.codertype.Dimension"/>
                   <Size type="coderapp.internal.codertype.Dimension"/>
                 </Types>
-                <Types id="49" type="coderapp.internal.codertype.StructType">
-                  <Fields id="50" type="coderapp.internal.codertype.Property">
+                <Types id="62" type="coderapp.internal.codertype.StructType">
+                  <Fields id="63" type="coderapp.internal.codertype.Property">
                     <Name>meas</Name>
                     <Type id="5" type="coderapp.internal.codertype.PrimitiveType"/>
                   </Fields>
-                  <Fields id="51" type="coderapp.internal.codertype.Property">
+                  <Fields id="64" type="coderapp.internal.codertype.Property">
                     <Name>status</Name>
-                    <Type id="45" type="coderapp.internal.codertype.PrimitiveType"/>
+                    <Type id="58" type="coderapp.internal.codertype.PrimitiveType"/>
                   </Fields>
                   <ClassName>struct</ClassName>
                   <Size type="coderapp.internal.codertype.Dimension"/>
@@ -231,7 +247,7 @@
                   </Size>
                   <Size type="coderapp.internal.codertype.Dimension"/>
                 </Types>
-                <Types id="52" type="coderapp.internal.codertype.PrimitiveType">
+                <Types id="65" type="coderapp.internal.codertype.PrimitiveType">
                   <ClassName>double</ClassName>
                   <Size type="coderapp.internal.codertype.Dimension">
                     <Length>2</Length>
@@ -240,7 +256,7 @@
                     <Length>2</Length>
                   </Size>
                 </Types>
-                <Types id="53" type="coderapp.internal.codertype.PrimitiveType">
+                <Types id="66" type="coderapp.internal.codertype.PrimitiveType">
                   <ClassName>double</ClassName>
                   <Size type="coderapp.internal.codertype.Dimension">
                     <Length>2</Length>
@@ -252,39 +268,39 @@
                   <Size type="coderapp.internal.codertype.Dimension"/>
                   <Size type="coderapp.internal.codertype.Dimension"/>
                 </Types>
-                <Types id="54" type="coderapp.internal.codertype.PrimitiveType">
+                <Types id="67" type="coderapp.internal.codertype.PrimitiveType">
                   <ClassName>double</ClassName>
                   <Size type="coderapp.internal.codertype.Dimension">
                     <Length>3</Length>
                   </Size>
                   <Size type="coderapp.internal.codertype.Dimension"/>
                 </Types>
-                <Types id="55" type="coderapp.internal.codertype.PrimitiveType">
+                <Types id="68" type="coderapp.internal.codertype.PrimitiveType">
                   <ClassName>logical</ClassName>
                   <Size type="coderapp.internal.codertype.Dimension"/>
                   <Size type="coderapp.internal.codertype.Dimension"/>
                 </Types>
-                <Types id="56" type="coderapp.internal.codertype.StructType">
-                  <Fields id="57" type="coderapp.internal.codertype.Property">
+                <Types id="69" type="coderapp.internal.codertype.StructType">
+                  <Fields id="70" type="coderapp.internal.codertype.Property">
                     <Name>meas</Name>
-                    <Type id="54" type="coderapp.internal.codertype.PrimitiveType"/>
+                    <Type id="67" type="coderapp.internal.codertype.PrimitiveType"/>
                   </Fields>
-                  <Fields id="58" type="coderapp.internal.codertype.Property">
+                  <Fields id="71" type="coderapp.internal.codertype.Property">
                     <Name>status</Name>
-                    <Type id="55" type="coderapp.internal.codertype.PrimitiveType"/>
+                    <Type id="68" type="coderapp.internal.codertype.PrimitiveType"/>
                   </Fields>
                   <ClassName>struct</ClassName>
                   <Size type="coderapp.internal.codertype.Dimension"/>
                   <Size type="coderapp.internal.codertype.Dimension"/>
                 </Types>
-                <Types id="59" type="coderapp.internal.codertype.StructType">
-                  <Fields id="60" type="coderapp.internal.codertype.Property">
+                <Types id="72" type="coderapp.internal.codertype.StructType">
+                  <Fields id="73" type="coderapp.internal.codertype.Property">
                     <Name>meas</Name>
                     <Type id="16" type="coderapp.internal.codertype.PrimitiveType"/>
                   </Fields>
-                  <Fields id="61" type="coderapp.internal.codertype.Property">
+                  <Fields id="74" type="coderapp.internal.codertype.Property">
                     <Name>status</Name>
-                    <Type id="55" type="coderapp.internal.codertype.PrimitiveType"/>
+                    <Type id="68" type="coderapp.internal.codertype.PrimitiveType"/>
                   </Fields>
                   <ClassName>struct</ClassName>
                   <Size type="coderapp.internal.codertype.Dimension"/>
@@ -298,6 +314,172 @@
                   <Size type="coderapp.internal.codertype.Dimension">
                     <Length>2</Length>
                   </Size>
+                </Types>
+                <Types id="21" type="coderapp.internal.codertype.PrimitiveType">
+                  <ClassName>double</ClassName>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                </Types>
+                <Types id="75" type="coderapp.internal.codertype.PrimitiveType">
+                  <ClassName>double</ClassName>
+                  <Size type="coderapp.internal.codertype.Dimension">
+                    <Length>2</Length>
+                  </Size>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                </Types>
+                <Types id="76" type="coderapp.internal.codertype.PrimitiveType">
+                  <ClassName>double</ClassName>
+                  <Size type="coderapp.internal.codertype.Dimension">
+                    <Length>2</Length>
+                  </Size>
+                  <Size type="coderapp.internal.codertype.Dimension">
+                    <Length>2</Length>
+                  </Size>
+                </Types>
+                <Types id="23" type="coderapp.internal.codertype.PrimitiveType">
+                  <ClassName>logical</ClassName>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                </Types>
+                <Types id="25" type="coderapp.internal.codertype.PrimitiveType">
+                  <ClassName>double</ClassName>
+                  <Size type="coderapp.internal.codertype.Dimension">
+                    <Length>11</Length>
+                  </Size>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                </Types>
+                <Types id="27" type="coderapp.internal.codertype.PrimitiveType">
+                  <ClassName>double</ClassName>
+                  <Size type="coderapp.internal.codertype.Dimension">
+                    <Length>11</Length>
+                  </Size>
+                  <Size type="coderapp.internal.codertype.Dimension">
+                    <Length>11</Length>
+                  </Size>
+                </Types>
+                <Types id="77" type="coderapp.internal.codertype.PrimitiveType">
+                  <ClassName>double</ClassName>
+                  <Size type="coderapp.internal.codertype.Dimension">
+                    <Length>3</Length>
+                  </Size>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                </Types>
+                <Types id="29" type="coderapp.internal.codertype.StructType">
+                  <Fields id="78" type="coderapp.internal.codertype.Property">
+                    <Name>board_gyro</Name>
+                    <Type id="77" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="79" type="coderapp.internal.codertype.Property">
+                    <Name>mti_gyro</Name>
+                    <Type id="77" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="80" type="coderapp.internal.codertype.Property">
+                    <Name>ad_gyro</Name>
+                    <Type id="77" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="81" type="coderapp.internal.codertype.Property">
+                    <Name>board_mag_earth</Name>
+                    <Type id="77" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="82" type="coderapp.internal.codertype.Property">
+                    <Name>mti_mag_earth</Name>
+                    <Type id="77" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="83" type="coderapp.internal.codertype.Property">
+                    <Name>board_baro</Name>
+                    <Type id="21" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="84" type="coderapp.internal.codertype.Property">
+                    <Name>mti_baro</Name>
+                    <Type id="21" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <ClassName>struct</ClassName>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                </Types>
+                <Types id="31" type="coderapp.internal.codertype.StructType">
+                  <Fields id="85" type="coderapp.internal.codertype.Property">
+                    <Name>board_accel_f</Name>
+                    <Type id="77" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="86" type="coderapp.internal.codertype.Property">
+                    <Name>board_gyro_f</Name>
+                    <Type id="77" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="87" type="coderapp.internal.codertype.Property">
+                    <Name>mti_accel_f</Name>
+                    <Type id="77" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="88" type="coderapp.internal.codertype.Property">
+                    <Name>mti_gyro_f</Name>
+                    <Type id="77" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="89" type="coderapp.internal.codertype.Property">
+                    <Name>ad_accel_f</Name>
+                    <Type id="77" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="90" type="coderapp.internal.codertype.Property">
+                    <Name>ad_gyro_f</Name>
+                    <Type id="77" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="91" type="coderapp.internal.codertype.Property">
+                    <Name>board_baro_f</Name>
+                    <Type id="21" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="92" type="coderapp.internal.codertype.Property">
+                    <Name>board_mag_f</Name>
+                    <Type id="77" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="93" type="coderapp.internal.codertype.Property">
+                    <Name>mti_baro_f</Name>
+                    <Type id="21" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="94" type="coderapp.internal.codertype.Property">
+                    <Name>mti_mag_f</Name>
+                    <Type id="77" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <ClassName>struct</ClassName>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                </Types>
+                <Types id="33" type="coderapp.internal.codertype.StructType">
+                  <Fields id="95" type="coderapp.internal.codertype.Property">
+                    <Name>meas</Name>
+                    <Type id="77" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="96" type="coderapp.internal.codertype.Property">
+                    <Name>status</Name>
+                    <Type id="23" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <ClassName>struct</ClassName>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                </Types>
+                <Types id="39" type="coderapp.internal.codertype.StructType">
+                  <Fields id="97" type="coderapp.internal.codertype.Property">
+                    <Name>meas</Name>
+                    <Type id="77" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="98" type="coderapp.internal.codertype.Property">
+                    <Name>status</Name>
+                    <Type id="21" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <ClassName>struct</ClassName>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                </Types>
+                <Types id="41" type="coderapp.internal.codertype.StructType">
+                  <Fields id="99" type="coderapp.internal.codertype.Property">
+                    <Name>meas</Name>
+                    <Type id="21" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="100" type="coderapp.internal.codertype.Property">
+                    <Name>status</Name>
+                    <Type id="23" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <ClassName>struct</ClassName>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
                 </Types>
               </Types>
             </coderapp.internal.interface.project.Interface>
@@ -517,131 +699,59 @@
                 </Artifacts>
                 <Artifacts id="36" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\pad_filter.c</Path>
+                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\rtGetInf.c</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="37" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\pad_filter.h</Path>
+                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\rtGetInf.h</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="38" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\rtGetInf.c</Path>
+                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\rtGetNaN.c</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="39" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\rtGetInf.h</Path>
+                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\rtGetNaN.h</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="40" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\rtGetNaN.c</Path>
+                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\rt_defines.h</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="41" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\rtGetNaN.h</Path>
+                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\rt_nonfinite.c</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="42" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\rt_defines.h</Path>
+                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\rt_nonfinite.h</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="43" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\rt_nonfinite.c</Path>
+                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\rtwtypes.h</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="44" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\rt_nonfinite.h</Path>
-                  </File>
-                  <Type>GENERATED_SOURCE</Type>
-                </Artifacts>
-                <Artifacts id="45" type="coderapp.internal.build.mfz.CodegenArtifact">
-                  <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\rtwtypes.h</Path>
-                  </File>
-                  <Type>GENERATED_SOURCE</Type>
-                </Artifacts>
-                <Artifacts id="46" type="coderapp.internal.build.mfz.CodegenArtifact">
-                  <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\svd.c</Path>
-                  </File>
-                  <Type>GENERATED_SOURCE</Type>
-                </Artifacts>
-                <Artifacts id="47" type="coderapp.internal.build.mfz.CodegenArtifact">
-                  <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\svd.h</Path>
-                  </File>
-                  <Type>GENERATED_SOURCE</Type>
-                </Artifacts>
-                <Artifacts id="48" type="coderapp.internal.build.mfz.CodegenArtifact">
-                  <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\xnrm2.c</Path>
-                  </File>
-                  <Type>GENERATED_SOURCE</Type>
-                </Artifacts>
-                <Artifacts id="49" type="coderapp.internal.build.mfz.CodegenArtifact">
-                  <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\xnrm2.h</Path>
-                  </File>
-                  <Type>GENERATED_SOURCE</Type>
-                </Artifacts>
-                <Artifacts id="50" type="coderapp.internal.build.mfz.CodegenArtifact">
-                  <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\xrotg.c</Path>
-                  </File>
-                  <Type>GENERATED_SOURCE</Type>
-                </Artifacts>
-                <Artifacts id="51" type="coderapp.internal.build.mfz.CodegenArtifact">
-                  <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\xrotg.h</Path>
-                  </File>
-                  <Type>GENERATED_SOURCE</Type>
-                </Artifacts>
-                <Artifacts id="52" type="coderapp.internal.build.mfz.CodegenArtifact">
-                  <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\xzlangeM.c</Path>
-                  </File>
-                  <Type>GENERATED_SOURCE</Type>
-                </Artifacts>
-                <Artifacts id="53" type="coderapp.internal.build.mfz.CodegenArtifact">
-                  <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\xzlangeM.h</Path>
-                  </File>
-                  <Type>GENERATED_SOURCE</Type>
-                </Artifacts>
-                <Artifacts id="54" type="coderapp.internal.build.mfz.CodegenArtifact">
-                  <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\xzlascl.c</Path>
-                  </File>
-                  <Type>GENERATED_SOURCE</Type>
-                </Artifacts>
-                <Artifacts id="55" type="coderapp.internal.build.mfz.CodegenArtifact">
-                  <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\xzlascl.h</Path>
-                  </File>
-                  <Type>GENERATED_SOURCE</Type>
-                </Artifacts>
-                <Artifacts id="56" type="coderapp.internal.build.mfz.CodegenArtifact">
-                  <File type="coderapp.internal.util.mfz.FileSpec">
                     <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\examples\main.c</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
-                <Artifacts id="57" type="coderapp.internal.build.mfz.CodegenArtifact">
+                <Artifacts id="45" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
                     <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\examples\main.h</Path>
                   </File>
@@ -649,7 +759,7 @@
                 </Artifacts>
                 <BuildFolder type="coderapp.internal.util.mfz.FileSpec"/>
                 <Success>true</Success>
-                <Timestamp>2026-05-31T10:28:47</Timestamp>
+                <Timestamp>2026-05-31T14:07:01</Timestamp>
               </MainBuildResult>
             </coderapp.internal.mlc.mfz.MatlabCoderProjectState>
           </MF0>

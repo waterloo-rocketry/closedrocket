@@ -1,4 +1,4 @@
-function [x_init, bias] = pad_filter(board_accel, board_gyro, mti_accel, mti_gyro, ad_accel, ad_gyro, board_baro, board_mag, mti_baro, mti_mag)
+function [x_init, bias, sf_ret] = pad_filter(board_accel, board_gyro, mti_accel, mti_gyro, ad_accel, ad_gyro, board_baro, board_mag, mti_baro, mti_mag, sf)
     % Computes on pad: inital state for flight filter, and bias values for the sensors
     % Outputs: initial state x, sensor biases bias
     %#codegen
@@ -12,30 +12,17 @@ function [x_init, bias] = pad_filter(board_accel, board_gyro, mti_accel, mti_gyr
         param = coder.load("model_params.mat"); % only required parameter is launch altitude
     end 
 
-    %% Initialization
-    %%% remember filtered values from last iteration
-    persistent board_accel_f board_gyro_f mti_accel_f mti_gyro_f ad_accel_f ad_gyro_f 
-    persistent board_baro_f board_mag_f mti_baro_f mti_mag_f
+    board_accel_f = sf.board_accel_f;
+    board_gyro_f = sf.board_gyro_f;
+    mti_accel_f = sf.mti_accel_f;
+    mti_gyro_f = sf.mti_gyro_f;
+    ad_accel_f = sf.ad_accel_f;
+    ad_gyro_f = sf.ad_gyro_f;
+    board_baro_f = sf.board_baro_f;
+    board_mag_f = sf.board_mag_f;
+    mti_baro_f = sf.mti_baro_f;
+    mti_mag_f = sf.mti_mag_f;
 
-    if isempty(board_accel_f)
-        board_accel_f = board_accel.meas;
-        board_gyro_f = board_gyro.meas;
-        mti_accel_f = mti_accel.meas;
-        mti_gyro_f = mti_gyro.meas; 
-        ad_accel_f = ad_accel.meas; 
-        ad_gyro_f = ad_gyro.meas;  
-        board_baro_f = board_baro.meas; 
-        board_mag_f = board_mag.meas; 
-        mti_baro_f = mti_baro.meas; 
-        mti_mag_f = mti_mag.meas; 
-        bias.board_gyro = zeros(3,1); 
-        bias.mti_gyro = zeros(3,1); 
-        bias.ad_gyro = zeros(3,1); 
-        bias.board_mag_earth = zeros(3,1); 
-        bias.mti_mag_earth = zeros(3,1); 
-        bias.board_baro = 0;
-        bias.mti_baro = 0; 
-    end
 
     %% lowpass filter
     % filtered = filtered + alpha*(measured-filtered);
@@ -49,7 +36,18 @@ function [x_init, bias] = pad_filter(board_accel, board_gyro, mti_accel, mti_gyr
     board_baro_f = pad_lowpass(board_baro_f, board_baro, alpha); 
     board_mag_f = pad_lowpass(board_mag_f, board_mag, alpha); 
     mti_baro_f = pad_lowpass(mti_baro_f, mti_baro, alpha); 
-    mti_mag_f = pad_lowpass(mti_mag_f, mti_mag, alpha); 
+    mti_mag_f = pad_lowpass(mti_mag_f, mti_mag, alpha);
+
+    sf_ret.board_accel_f = board_accel_f;
+    sf_ret.board_gyro_f = board_gyro_f;
+    sf_ret.mti_accel_f = mti_accel_f;
+    sf_ret.mti_gyro_f = mti_gyro_f;
+    sf_ret.ad_accel_f = ad_accel_f;
+    sf_ret.ad_gyro_f = ad_gyro_f;
+    sf_ret.board_baro_f = board_baro_f;
+    sf_ret.board_mag_f = board_mag_f;
+    sf_ret.mti_baro_f = mti_baro_f;
+    sf_ret.mti_mag_f = mti_mag_f;
 
 
     %% Initial state determination    

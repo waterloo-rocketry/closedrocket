@@ -5,7 +5,7 @@
  * File: GNC_codegen_data.c
  *
  * MATLAB Coder version            : 25.2
- * C/C++ source code generated on  : 31-May-2026 10:28:26
+ * C/C++ source code generated on  : 31-May-2026 14:06:35
  */
 
 /* Include Files */
@@ -14,13 +14,11 @@
 #include "rt_nonfinite.h"
 
 /* Variable Definitions */
-bool board_accel_f_not_empty;
+struct_T param;
 
-b_struct_T param;
+struct_T b_param;
 
-b_struct_T b_param;
-
-const b_struct_T r = {
+const struct_T r = {
     {0.46, 0.0, 0.0, 0.0, 49.5, 0.0, 0.0, 0.0, 49.5}, /* J */
     {2.1739130434782608, 0.0, 0.0, 0.0, 0.020202020202020204, 0.0, 0.0, 0.0,
      0.020202020202020204}, /* Jinv */

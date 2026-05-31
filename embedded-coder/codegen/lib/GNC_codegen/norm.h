@@ -5,7 +5,7 @@
  * File: norm.h
  *
  * MATLAB Coder version            : 25.2
- * C/C++ source code generated on  : 31-May-2026 10:28:26
+ * C/C++ source code generated on  : 31-May-2026 14:06:35
  */
 
 #ifndef NORM_H
@@ -24,8 +24,6 @@ extern "C" {
 double b_norm(const double x[3]);
 
 double c_norm(const double x[4]);
-
-double d_norm(const double x[121]);
 
 #ifdef __cplusplus
 }

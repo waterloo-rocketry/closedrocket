@@ -5,7 +5,7 @@
  * File: ekf_correct.c
  *
  * MATLAB Coder version            : 25.2
- * C/C++ source code generated on  : 31-May-2026 10:28:26
+ * C/C++ source code generated on  : 31-May-2026 14:06:35
  */
 
 /* Include Files */
@@ -28,15 +28,15 @@
  * covariance P
  *
  * Arguments    : const double x[11]
- *                const double b_P[121]
+ *                const double P[121]
  *                double y
  *                double b
  *                double x_new[11]
  *                double P_new[121]
  * Return Type  : void
  */
-void b_ekf_correct(const double x[11], const double b_P[121], double y,
-                   double b, double x_new[11], double P_new[121])
+void b_ekf_correct(const double x[11], const double P[121], double y, double b,
+                   double x_new[11], double P_new[121])
 {
   double E[121];
   double b_E[121];
@@ -144,7 +144,7 @@ void b_ekf_correct(const double x[11], const double b_P[121], double y,
   for (i = 0; i < 11; i++) {
     layer_idx_3 = b_H[i];
     for (i1 = 0; i1 < 11; i1++) {
-      layer_idx_3 += H[i1] * b_P[i1 + 11 * i];
+      layer_idx_3 += H[i1] * P[i1 + 11 * i];
     }
     b_H[i] = layer_idx_3;
     layer_idx_2 += layer_idx_3 * H[i];
@@ -153,7 +153,7 @@ void b_ekf_correct(const double x[11], const double b_P[121], double y,
   memset(&x_new[0], 0, 11U * sizeof(double));
   for (i = 0; i < 11; i++) {
     for (i1 = 0; i1 < 11; i1++) {
-      x_new[i1] += b_P[i1 + 11 * i] * H[i];
+      x_new[i1] += P[i1 + 11 * i] * H[i];
     }
   }
   for (i = 0; i < 11; i++) {
@@ -170,7 +170,7 @@ void b_ekf_correct(const double x[11], const double b_P[121], double y,
   memset(&E[0], 0, 121U * sizeof(double));
   for (i = 0; i < 11; i++) {
     for (i1 = 0; i1 < 11; i1++) {
-      layer_idx_2 = b_P[i1 + 11 * i];
+      layer_idx_2 = P[i1 + 11 * i];
       for (i2 = 0; i2 < 11; i2++) {
         layer_idx_0 = i2 + 11 * i;
         E[layer_idx_0] += b_E[i2 + 11 * i1] * layer_idx_2;
@@ -218,7 +218,7 @@ void b_ekf_correct(const double x[11], const double b_P[121], double y,
  * covariance P
  *
  * Arguments    : const double x[11]
- *                const double b_P[121]
+ *                const double P[121]
  *                const double y[3]
  *                const double b[3]
  *                const double R[9]
@@ -226,7 +226,7 @@ void b_ekf_correct(const double x[11], const double b_P[121], double y,
  *                double P_new[121]
  * Return Type  : void
  */
-void ekf_correct(const double x[11], const double b_P[121], const double y[3],
+void ekf_correct(const double x[11], const double P[121], const double y[3],
                  const double b[3], const double R[9], double x_new[11],
                  double P_new[121])
 {
@@ -235,7 +235,7 @@ void ekf_correct(const double x[11], const double b_P[121], const double y[3],
   double b_E[121];
   double H[33];
   double K[33];
-  double c_P[33];
+  double b_P[33];
   double y_tmp[33];
   double b_b[9];
   double c_a[9];
@@ -348,14 +348,14 @@ void ekf_correct(const double x[11], const double b_P[121], const double y[3],
     b_H_tmp = 3 * i1 + 1;
     H_tmp = 3 * i1 + 2;
     for (i = 0; i < 11; i++) {
-      d = b_P[i + 11 * i1];
+      d = P[i + 11 * i1];
       q_mag += H[3 * i] * d;
       K[b_H_tmp] += H[3 * i + 1] * d;
       K[H_tmp] += H[3 * i + 2] * d;
     }
     K[3 * i1] = q_mag;
   }
-  memset(&c_P[0], 0, 33U * sizeof(double));
+  memset(&b_P[0], 0, 33U * sizeof(double));
   for (i2 = 0; i2 < 3; i2++) {
     for (i1 = 0; i1 < 3; i1++) {
       q_mag = 0.0;
@@ -369,7 +369,7 @@ void ekf_correct(const double x[11], const double b_P[121], const double y[3],
       q_mag = y_tmp[i1 + 11 * i2];
       for (i = 0; i < 11; i++) {
         b_H_tmp = i + 11 * i2;
-        c_P[b_H_tmp] += b_P[i + 11 * i1] * q_mag;
+        b_P[b_H_tmp] += P[i + 11 * i1] * q_mag;
       }
     }
   }
@@ -380,7 +380,7 @@ void ekf_correct(const double x[11], const double b_P[121], const double y[3],
       q_mag = c_a[i + 3 * i1];
       for (i2 = 0; i2 < 11; i2++) {
         b_H_tmp = i2 + 11 * i1;
-        K[b_H_tmp] += c_P[i2 + 11 * i] * q_mag;
+        K[b_H_tmp] += b_P[i2 + 11 * i] * q_mag;
       }
     }
   }
@@ -399,7 +399,7 @@ void ekf_correct(const double x[11], const double b_P[121], const double y[3],
   memset(&E[0], 0, 121U * sizeof(double));
   for (i1 = 0; i1 < 11; i1++) {
     for (i = 0; i < 11; i++) {
-      q_mag = b_P[i + 11 * i1];
+      q_mag = P[i + 11 * i1];
       for (i2 = 0; i2 < 11; i2++) {
         b_H_tmp = i2 + 11 * i1;
         E[b_H_tmp] += b_E[i2 + 11 * i] * q_mag;

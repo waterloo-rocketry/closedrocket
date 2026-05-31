@@ -13,12 +13,6 @@ mpower.obj
 atan2.obj
 inv.obj
 ekf_correct.obj
-svd.obj
-xzlangeM.obj
-xnrm2.obj
-pad_filter.obj
 dynamics.obj
 dynamics_jacobian.obj
 diag.obj
-xrotg.obj
-xzlascl.obj

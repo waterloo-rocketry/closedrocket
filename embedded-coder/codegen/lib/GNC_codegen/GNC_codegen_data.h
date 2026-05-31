@@ -5,7 +5,7 @@
  * File: GNC_codegen_data.h
  *
  * MATLAB Coder version            : 25.2
- * C/C++ source code generated on  : 31-May-2026 10:28:26
+ * C/C++ source code generated on  : 31-May-2026 14:06:35
  */
 
 #ifndef GNC_CODEGEN_DATA_H
@@ -18,10 +18,9 @@
 #include <stdlib.h>
 
 /* Variable Declarations */
-extern bool board_accel_f_not_empty;
-extern b_struct_T param;
-extern b_struct_T b_param;
-extern const b_struct_T r;
+extern struct_T param;
+extern struct_T b_param;
+extern const struct_T r;
 extern bool isInitialized_GNC_codegen;
 
 #endif

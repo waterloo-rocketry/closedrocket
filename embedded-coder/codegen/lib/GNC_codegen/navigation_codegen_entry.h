@@ -5,7 +5,7 @@
  * File: navigation_codegen_entry.h
  *
  * MATLAB Coder version            : 25.2
- * C/C++ source code generated on  : 31-May-2026 10:28:26
+ * C/C++ source code generated on  : 31-May-2026 14:06:35
  */
 
 #ifndef NAVIGATION_CODEGEN_ENTRY_H
@@ -23,15 +23,14 @@ extern "C" {
 
 /* Function Declarations */
 extern void navigation_codegen_entry(
-    double dt, bool flight_phase, const struct0_T *board_accel,
-    const struct0_T *board_gyro, const struct0_T *mti_accel,
-    const struct0_T *mti_gyro, const struct0_T *ad_accel,
-    const struct0_T *ad_gyro, const struct1_T *board_baro,
-    const struct0_T *board_mag, const struct1_T *mti_baro,
-    const struct0_T *mti_mag, struct2_T *state, double *cov_norm,
-    struct3_T *airdata, double roll_state[2]);
-
-void navigation_codegen_entry_init(void);
+    double dt, bool flight_phase, const double x[11], const double P[121],
+    const struct0_T *b, const struct1_T *sf, const struct2_T *board_accel,
+    const struct2_T *board_gyro, const struct2_T *mti_accel,
+    const struct2_T *mti_gyro, const struct2_T *ad_accel,
+    const struct3_T *ad_gyro, const struct4_T *board_baro,
+    const struct2_T *board_mag, const struct4_T *mti_baro,
+    const struct2_T *mti_mag, double x_ret[11], double P_ret[121],
+    struct0_T *b_ret, struct1_T *sf_ret);
 
 #ifdef __cplusplus
 }

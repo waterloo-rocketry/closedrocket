@@ -5,7 +5,7 @@
  * File: ekf_correct.h
  *
  * MATLAB Coder version            : 25.2
- * C/C++ source code generated on  : 31-May-2026 10:28:26
+ * C/C++ source code generated on  : 31-May-2026 14:06:35
  */
 
 #ifndef EKF_CORRECT_H
@@ -21,10 +21,10 @@ extern "C" {
 #endif
 
 /* Function Declarations */
-void b_ekf_correct(const double x[11], const double b_P[121], double y,
-                   double b, double x_new[11], double P_new[121]);
+void b_ekf_correct(const double x[11], const double P[121], double y, double b,
+                   double x_new[11], double P_new[121]);
 
-void ekf_correct(const double x[11], const double b_P[121], const double y[3],
+void ekf_correct(const double x[11], const double P[121], const double y[3],
                  const double b[3], const double R[9], double x_new[11],
                  double P_new[121]);
 

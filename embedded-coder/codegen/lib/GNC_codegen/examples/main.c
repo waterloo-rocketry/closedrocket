@@ -5,7 +5,7 @@
  * File: main.c
  *
  * MATLAB Coder version            : 25.2
- * C/C++ source code generated on  : 31-May-2026 10:28:26
+ * C/C++ source code generated on  : 31-May-2026 14:06:35
  */
 
 /*************************************************************************/
@@ -43,6 +43,10 @@
 #include "rt_nonfinite.h"
 
 /* Function Declarations */
+static void argInit_11x11_real_T(double result[121]);
+
+static void argInit_11x1_real_T(double result[11]);
+
 static void argInit_2x1_real_T(double result[2]);
 
 static void argInit_2x2_real_T(double result[4]);
@@ -53,11 +57,47 @@ static bool argInit_boolean_T(void);
 
 static double argInit_real_T(void);
 
-static struct0_T argInit_struct0_T(void);
+static void argInit_struct0_T(struct0_T *result);
 
-static struct1_T argInit_struct1_T(void);
+static void argInit_struct1_T(struct1_T *result);
+
+static struct2_T argInit_struct2_T(void);
+
+static struct3_T argInit_struct3_T(void);
+
+static struct4_T argInit_struct4_T(void);
 
 /* Function Definitions */
+/*
+ * Arguments    : double result[121]
+ * Return Type  : void
+ */
+static void argInit_11x11_real_T(double result[121])
+{
+  int i;
+  /* Loop over the array to initialize each element. */
+  for (i = 0; i < 121; i++) {
+    /* Set the value of the array element.
+Change this value to the value that the application requires. */
+    result[i] = argInit_real_T();
+  }
+}
+
+/*
+ * Arguments    : double result[11]
+ * Return Type  : void
+ */
+static void argInit_11x1_real_T(double result[11])
+{
+  int idx0;
+  /* Loop over the array to initialize each element. */
+  for (idx0 = 0; idx0 < 11; idx0++) {
+    /* Set the value of the array element.
+Change this value to the value that the application requires. */
+    result[idx0] = argInit_real_T();
+  }
+}
+
 /*
  * Arguments    : double result[2]
  * Return Type  : void
@@ -122,12 +162,75 @@ static double argInit_real_T(void)
 }
 
 /*
- * Arguments    : void
- * Return Type  : struct0_T
+ * Arguments    : struct0_T *result
+ * Return Type  : void
  */
-static struct0_T argInit_struct0_T(void)
+static void argInit_struct0_T(struct0_T *result)
 {
-  struct0_T result;
+  double result_tmp;
+  /* Set the value of each structure field.
+Change this value to the value that the application requires. */
+  argInit_3x1_real_T(result->board_gyro);
+  result_tmp = argInit_real_T();
+  result->board_baro = result_tmp;
+  result->mti_baro = result_tmp;
+  result->mti_gyro[0] = result->board_gyro[0];
+  result->ad_gyro[0] = result->board_gyro[0];
+  result->board_mag_earth[0] = result->board_gyro[0];
+  result->mti_mag_earth[0] = result->board_gyro[0];
+  result->mti_gyro[1] = result->board_gyro[1];
+  result->ad_gyro[1] = result->board_gyro[1];
+  result->board_mag_earth[1] = result->board_gyro[1];
+  result->mti_mag_earth[1] = result->board_gyro[1];
+  result->mti_gyro[2] = result->board_gyro[2];
+  result->ad_gyro[2] = result->board_gyro[2];
+  result->board_mag_earth[2] = result->board_gyro[2];
+  result->mti_mag_earth[2] = result->board_gyro[2];
+}
+
+/*
+ * Arguments    : struct1_T *result
+ * Return Type  : void
+ */
+static void argInit_struct1_T(struct1_T *result)
+{
+  double result_tmp;
+  /* Set the value of each structure field.
+Change this value to the value that the application requires. */
+  argInit_3x1_real_T(result->board_accel_f);
+  result_tmp = argInit_real_T();
+  result->board_baro_f = result_tmp;
+  result->mti_baro_f = result_tmp;
+  result->board_gyro_f[0] = result->board_accel_f[0];
+  result->mti_accel_f[0] = result->board_accel_f[0];
+  result->mti_gyro_f[0] = result->board_accel_f[0];
+  result->ad_accel_f[0] = result->board_accel_f[0];
+  result->ad_gyro_f[0] = result->board_accel_f[0];
+  result->board_mag_f[0] = result->board_accel_f[0];
+  result->mti_mag_f[0] = result->board_accel_f[0];
+  result->board_gyro_f[1] = result->board_accel_f[1];
+  result->mti_accel_f[1] = result->board_accel_f[1];
+  result->mti_gyro_f[1] = result->board_accel_f[1];
+  result->ad_accel_f[1] = result->board_accel_f[1];
+  result->ad_gyro_f[1] = result->board_accel_f[1];
+  result->board_mag_f[1] = result->board_accel_f[1];
+  result->mti_mag_f[1] = result->board_accel_f[1];
+  result->board_gyro_f[2] = result->board_accel_f[2];
+  result->mti_accel_f[2] = result->board_accel_f[2];
+  result->mti_gyro_f[2] = result->board_accel_f[2];
+  result->ad_accel_f[2] = result->board_accel_f[2];
+  result->ad_gyro_f[2] = result->board_accel_f[2];
+  result->board_mag_f[2] = result->board_accel_f[2];
+  result->mti_mag_f[2] = result->board_accel_f[2];
+}
+
+/*
+ * Arguments    : void
+ * Return Type  : struct2_T
+ */
+static struct2_T argInit_struct2_T(void)
+{
+  struct2_T result;
   /* Set the value of each structure field.
 Change this value to the value that the application requires. */
   argInit_3x1_real_T(result.meas);
@@ -137,11 +240,25 @@ Change this value to the value that the application requires. */
 
 /*
  * Arguments    : void
- * Return Type  : struct1_T
+ * Return Type  : struct3_T
  */
-static struct1_T argInit_struct1_T(void)
+static struct3_T argInit_struct3_T(void)
 {
-  struct1_T result;
+  struct3_T result;
+  /* Set the value of each structure field.
+Change this value to the value that the application requires. */
+  argInit_3x1_real_T(result.meas);
+  result.status = argInit_real_T();
+  return result;
+}
+
+/*
+ * Arguments    : void
+ * Return Type  : struct4_T
+ */
+static struct4_T argInit_struct4_T(void)
+{
+  struct4_T result;
   /* Set the value of each structure field.
 Change this value to the value that the application requires. */
   result.meas = argInit_real_T();
@@ -207,16 +324,25 @@ void main_controller_codegen_entry(void)
  */
 void main_navigation_codegen_entry(void)
 {
-  struct0_T board_accel_tmp;
-  struct1_T b_r;
+  struct0_T b_r;
+  struct0_T b_ret;
   struct1_T r1;
-  struct2_T state;
-  struct3_T airdata;
-  double roll_state[2];
-  double cov_norm;
+  struct1_T sf_ret;
+  struct2_T board_accel_tmp;
+  struct3_T r2;
+  struct4_T r3;
+  struct4_T r4;
+  double P_ret[121];
+  double dv1[121];
+  double dv[11];
+  double x_ret[11];
   /* Initialize function 'navigation_codegen_entry' input arguments. */
+  /* Initialize function input argument 'x'. */
+  /* Initialize function input argument 'P'. */
+  /* Initialize function input argument 'b'. */
+  /* Initialize function input argument 'sf'. */
   /* Initialize function input argument 'board_accel'. */
-  board_accel_tmp = argInit_struct0_T();
+  board_accel_tmp = argInit_struct2_T();
   /* Initialize function input argument 'board_gyro'. */
   /* Initialize function input argument 'mti_accel'. */
   /* Initialize function input argument 'mti_gyro'. */
@@ -227,13 +353,18 @@ void main_navigation_codegen_entry(void)
   /* Initialize function input argument 'mti_baro'. */
   /* Initialize function input argument 'mti_mag'. */
   /* Call the entry-point 'navigation_codegen_entry'. */
-  b_r = argInit_struct1_T();
-  r1 = argInit_struct1_T();
-  navigation_codegen_entry(argInit_real_T(), argInit_boolean_T(),
+  argInit_11x1_real_T(dv);
+  argInit_11x11_real_T(dv1);
+  argInit_struct0_T(&b_r);
+  argInit_struct1_T(&r1);
+  r2 = argInit_struct3_T();
+  r3 = argInit_struct4_T();
+  r4 = argInit_struct4_T();
+  navigation_codegen_entry(argInit_real_T(), argInit_boolean_T(), dv, dv1, &b_r,
+                           &r1, &board_accel_tmp, &board_accel_tmp,
                            &board_accel_tmp, &board_accel_tmp, &board_accel_tmp,
-                           &board_accel_tmp, &board_accel_tmp, &board_accel_tmp,
-                           &b_r, &board_accel_tmp, &r1, &board_accel_tmp,
-                           &state, &cov_norm, &airdata, roll_state);
+                           &r2, &r3, &board_accel_tmp, &r4, &board_accel_tmp,
+                           x_ret, P_ret, &b_ret, &sf_ret);
 }
 
 /*

@@ -5,7 +5,7 @@
  * File: _coder_GNC_codegen_info.h
  *
  * MATLAB Coder version            : 25.2
- * C/C++ source code generated on  : 31-May-2026 10:28:26
+ * C/C++ source code generated on  : 31-May-2026 14:06:35
  */
 
 #ifndef _CODER_GNC_CODEGEN_INFO_H

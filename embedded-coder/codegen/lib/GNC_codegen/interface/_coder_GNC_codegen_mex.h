@@ -5,7 +5,7 @@
  * File: _coder_GNC_codegen_mex.h
  *
  * MATLAB Coder version            : 25.2
- * C/C++ source code generated on  : 31-May-2026 10:28:26
+ * C/C++ source code generated on  : 31-May-2026 14:06:35
  */
 
 #ifndef _CODER_GNC_CODEGEN_MEX_H
@@ -32,7 +32,7 @@ void unsafe_controller_codegen_entry_mexFunction(int32_T nlhs, mxArray *plhs[7],
 
 void unsafe_navigation_codegen_entry_mexFunction(int32_T nlhs, mxArray *plhs[4],
                                                  int32_T nrhs,
-                                                 const mxArray *prhs[12]);
+                                                 const mxArray *prhs[16]);
 
 #ifdef __cplusplus
 }
