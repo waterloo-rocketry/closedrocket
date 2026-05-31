@@ -5,7 +5,7 @@
  * File: controller_codegen_entry.h
  *
  * MATLAB Coder version            : 25.2
- * C/C++ source code generated on  : 31-May-2026 14:06:35
+ * C/C++ source code generated on  : 31-May-2026 14:39:19
  */
 
 #ifndef CONTROLLER_CODEGEN_ENTRY_H
