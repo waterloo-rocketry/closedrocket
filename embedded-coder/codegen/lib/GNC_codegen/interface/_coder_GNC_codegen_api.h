@@ -5,7 +5,7 @@
  * File: _coder_GNC_codegen_api.h
  *
  * MATLAB Coder version            : 25.2
- * C/C++ source code generated on  : 16-May-2026 22:56:01
+ * C/C++ source code generated on  : 31-May-2026 10:28:26
  */
 
 #ifndef _CODER_GNC_CODEGEN_API_H
@@ -76,12 +76,16 @@ void GNC_codegen_xil_shutdown(void);
 
 void GNC_codegen_xil_terminate(void);
 
-void controller_codegen_entry(real_T b_time, real_T xR[2], real_T pdyn,
-                              real_T delta, real_T *u, real_T *r,
-                              real_T *C_l_delta);
+void controller_codegen_entry(real_T b_time, real_T dt_ctrl, real_T xR[2],
+                              real_T pdyn, real_T delta, real_T w_old,
+                              real_T coeffs[2], real_T P_minus[4], real_T d_old,
+                              real_T w_dot_old, real_T *u, real_T *r,
+                              real_T coeffs_ret[2], real_T *w_old_ret,
+                              real_T P_minus_ret[4], real_T *d_old_ret,
+                              real_T *w_dot_old_ret);
 
-void controller_codegen_entry_api(const mxArray *const prhs[4], int32_T nlhs,
-                                  const mxArray *plhs[3]);
+void controller_codegen_entry_api(const mxArray *const prhs[10], int32_T nlhs,
+                                  const mxArray *plhs[7]);
 
 void navigation_codegen_entry(real_T dt, boolean_T flight_phase,
                               struct0_T *board_accel, struct0_T *board_gyro,

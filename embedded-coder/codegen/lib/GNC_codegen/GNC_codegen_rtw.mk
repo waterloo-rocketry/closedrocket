@@ -2,7 +2,7 @@
 ## Makefile generated for component 'GNC_codegen'. 
 ## 
 ## Makefile     : GNC_codegen_rtw.mk
-## Generated on : Sat May 16 22:56:12 2026
+## Generated on : Sun May 31 10:28:46 2026
 ## Final product: .\GNC_codegen.lib
 ## Product type : static-library
 ## 
@@ -184,7 +184,7 @@ DEFINES = $(DEFINES_CUSTOM) $(DEFINES_STANDARD)
 ## SOURCE FILES
 ###########################################################################
 
-SRCS = $(START_DIR)\codegen\lib\GNC_codegen\GNC_codegen_data.c $(START_DIR)\codegen\lib\GNC_codegen\rt_nonfinite.c $(START_DIR)\codegen\lib\GNC_codegen\rtGetNaN.c $(START_DIR)\codegen\lib\GNC_codegen\rtGetInf.c $(START_DIR)\codegen\lib\GNC_codegen\GNC_codegen_initialize.c $(START_DIR)\codegen\lib\GNC_codegen\GNC_codegen_terminate.c $(START_DIR)\codegen\lib\GNC_codegen\controller_codegen_entry.c $(START_DIR)\codegen\lib\GNC_codegen\eye.c $(START_DIR)\codegen\lib\GNC_codegen\navigation_codegen_entry.c $(START_DIR)\codegen\lib\GNC_codegen\norm.c $(START_DIR)\codegen\lib\GNC_codegen\airdata_atmos.c $(START_DIR)\codegen\lib\GNC_codegen\mpower.c $(START_DIR)\codegen\lib\GNC_codegen\atan2.c $(START_DIR)\codegen\lib\GNC_codegen\inv.c $(START_DIR)\codegen\lib\GNC_codegen\ekf_correct.c $(START_DIR)\codegen\lib\GNC_codegen\svd.c $(START_DIR)\codegen\lib\GNC_codegen\xzlangeM.c $(START_DIR)\codegen\lib\GNC_codegen\xnrm2.c $(START_DIR)\codegen\lib\GNC_codegen\controller_estimator.c $(START_DIR)\codegen\lib\GNC_codegen\pad_filter.c $(START_DIR)\codegen\lib\GNC_codegen\dynamics.c $(START_DIR)\codegen\lib\GNC_codegen\dynamics_jacobian.c $(START_DIR)\codegen\lib\GNC_codegen\diag.c $(START_DIR)\codegen\lib\GNC_codegen\xrotg.c $(START_DIR)\codegen\lib\GNC_codegen\xzlascl.c
+SRCS = $(START_DIR)\codegen\lib\GNC_codegen\GNC_codegen_data.c $(START_DIR)\codegen\lib\GNC_codegen\rt_nonfinite.c $(START_DIR)\codegen\lib\GNC_codegen\rtGetNaN.c $(START_DIR)\codegen\lib\GNC_codegen\rtGetInf.c $(START_DIR)\codegen\lib\GNC_codegen\GNC_codegen_initialize.c $(START_DIR)\codegen\lib\GNC_codegen\GNC_codegen_terminate.c $(START_DIR)\codegen\lib\GNC_codegen\controller_codegen_entry.c $(START_DIR)\codegen\lib\GNC_codegen\eye.c $(START_DIR)\codegen\lib\GNC_codegen\navigation_codegen_entry.c $(START_DIR)\codegen\lib\GNC_codegen\norm.c $(START_DIR)\codegen\lib\GNC_codegen\airdata_atmos.c $(START_DIR)\codegen\lib\GNC_codegen\mpower.c $(START_DIR)\codegen\lib\GNC_codegen\atan2.c $(START_DIR)\codegen\lib\GNC_codegen\inv.c $(START_DIR)\codegen\lib\GNC_codegen\ekf_correct.c $(START_DIR)\codegen\lib\GNC_codegen\svd.c $(START_DIR)\codegen\lib\GNC_codegen\xzlangeM.c $(START_DIR)\codegen\lib\GNC_codegen\xnrm2.c $(START_DIR)\codegen\lib\GNC_codegen\pad_filter.c $(START_DIR)\codegen\lib\GNC_codegen\dynamics.c $(START_DIR)\codegen\lib\GNC_codegen\dynamics_jacobian.c $(START_DIR)\codegen\lib\GNC_codegen\diag.c $(START_DIR)\codegen\lib\GNC_codegen\xrotg.c $(START_DIR)\codegen\lib\GNC_codegen\xzlascl.c
 
 ALL_SRCS = $(SRCS)
 
@@ -192,7 +192,7 @@ ALL_SRCS = $(SRCS)
 ## OBJECTS
 ###########################################################################
 
-OBJS = GNC_codegen_data.obj rt_nonfinite.obj rtGetNaN.obj rtGetInf.obj GNC_codegen_initialize.obj GNC_codegen_terminate.obj controller_codegen_entry.obj eye.obj navigation_codegen_entry.obj norm.obj airdata_atmos.obj mpower.obj atan2.obj inv.obj ekf_correct.obj svd.obj xzlangeM.obj xnrm2.obj controller_estimator.obj pad_filter.obj dynamics.obj dynamics_jacobian.obj diag.obj xrotg.obj xzlascl.obj
+OBJS = GNC_codegen_data.obj rt_nonfinite.obj rtGetNaN.obj rtGetInf.obj GNC_codegen_initialize.obj GNC_codegen_terminate.obj controller_codegen_entry.obj eye.obj navigation_codegen_entry.obj norm.obj airdata_atmos.obj mpower.obj atan2.obj inv.obj ekf_correct.obj svd.obj xzlangeM.obj xnrm2.obj pad_filter.obj dynamics.obj dynamics_jacobian.obj diag.obj xrotg.obj xzlascl.obj
 
 ALL_OBJS = $(OBJS)
 
@@ -428,10 +428,6 @@ xzlangeM.obj : "$(START_DIR)\codegen\lib\GNC_codegen\xzlangeM.c"
 
 xnrm2.obj : "$(START_DIR)\codegen\lib\GNC_codegen\xnrm2.c"
 	$(CC) $(CFLAGS) -Fo"$@" "$(START_DIR)\codegen\lib\GNC_codegen\xnrm2.c"
-
-
-controller_estimator.obj : "$(START_DIR)\codegen\lib\GNC_codegen\controller_estimator.c"
-	$(CC) $(CFLAGS) -Fo"$@" "$(START_DIR)\codegen\lib\GNC_codegen\controller_estimator.c"
 
 
 pad_filter.obj : "$(START_DIR)\codegen\lib\GNC_codegen\pad_filter.c"

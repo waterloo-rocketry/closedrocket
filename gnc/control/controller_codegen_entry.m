@@ -1,4 +1,4 @@
-function [u, r, C_l_delta] = controller_codegen_entry(time, xR, pdyn, delta)
+function [u, r, coeffs_ret, w_old_ret, P_minus_ret, d_old_ret, w_dot_old_ret] = controller_codegen_entry(time, dt_ctrl, xR, pdyn, delta, w_old, coeffs, P_minus, d_old, w_dot_old)
     %#codegen
 
     % u : control command, desired canard angle (rad)
@@ -37,8 +37,10 @@ function [u, r, C_l_delta] = controller_codegen_entry(time, xR, pdyn, delta)
   
     %%% Coefficient Estimation
     pdyn_params = pdyn * param.c_canard;
-    C_l_delta = controller_estimator(time, xR(2), delta, pdyn_params);
-       
+
+    [coeffs_ret, w_old_ret, P_minus_ret, d_old_ret, w_dot_old_ret] = controller_estimator(dt_ctrl, xR(2), delta, pdyn_params, w_old, coeffs, P_minus, d_old, w_dot_old);
+    
+    C_l_delta = coeffs_ret(1);
     L_delta = C_l_delta * pdyn_params;
     
     if abs(L_delta) < L_min

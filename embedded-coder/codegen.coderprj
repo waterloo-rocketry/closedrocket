@@ -28,73 +28,97 @@
                     <Type id="5" type="coderapp.internal.codertype.PrimitiveType"/>
                   </Inputs>
                   <Inputs id="6" type="coderapp.internal.interface.project.Input">
-                    <Name>xR</Name>
-                    <Type id="7" type="coderapp.internal.codertype.PrimitiveType"/>
+                    <Name>dt_ctrl</Name>
+                    <Type id="5" type="coderapp.internal.codertype.PrimitiveType"/>
                   </Inputs>
-                  <Inputs id="8" type="coderapp.internal.interface.project.Input">
+                  <Inputs id="7" type="coderapp.internal.interface.project.Input">
+                    <Name>xR</Name>
+                    <Type id="8" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Inputs>
+                  <Inputs id="9" type="coderapp.internal.interface.project.Input">
                     <Name>pdyn</Name>
                     <Type id="5" type="coderapp.internal.codertype.PrimitiveType"/>
                   </Inputs>
-                  <Inputs id="9" type="coderapp.internal.interface.project.Input">
+                  <Inputs id="10" type="coderapp.internal.interface.project.Input">
                     <Name>delta</Name>
                     <Type id="5" type="coderapp.internal.codertype.PrimitiveType"/>
                   </Inputs>
-                  <NumOutputs>3</NumOutputs>
+                  <Inputs id="11" type="coderapp.internal.interface.project.Input">
+                    <Name>w_old</Name>
+                    <Type id="5" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Inputs>
+                  <Inputs id="12" type="coderapp.internal.interface.project.Input">
+                    <Name>coeffs</Name>
+                    <Type id="8" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Inputs>
+                  <Inputs id="13" type="coderapp.internal.interface.project.Input">
+                    <Name>P_minus</Name>
+                    <Type id="14" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Inputs>
+                  <Inputs id="15" type="coderapp.internal.interface.project.Input">
+                    <Name>d_old</Name>
+                    <Type id="16" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Inputs>
+                  <Inputs id="17" type="coderapp.internal.interface.project.Input">
+                    <Name>w_dot_old</Name>
+                    <Type id="5" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Inputs>
+                  <NumOutputs>7</NumOutputs>
                 </Signatures>
                 <File type="coderapp.internal.util.mfz.FileSpec">
                   <Path>../gnc/control/controller_codegen_entry.m</Path>
                 </File>
                 <Name>controller_codegen_entry</Name>
               </EntryPoints>
-              <EntryPoints id="10" type="coderapp.internal.interface.project.EntryPointFunction">
-                <Signatures id="11" type="coderapp.internal.interface.project.FunctionSignature">
-                  <Inputs id="12" type="coderapp.internal.interface.project.Input">
-                    <Name>dt</Name>
-                    <Type id="5" type="coderapp.internal.codertype.PrimitiveType"/>
-                  </Inputs>
-                  <Inputs id="13" type="coderapp.internal.interface.project.Input">
-                    <Name>flight_phase</Name>
-                    <Type id="14" type="coderapp.internal.codertype.PrimitiveType"/>
-                  </Inputs>
-                  <Inputs id="15" type="coderapp.internal.interface.project.Input">
-                    <Name>board_accel</Name>
-                    <Type id="16" type="coderapp.internal.codertype.StructType"/>
-                  </Inputs>
-                  <Inputs id="17" type="coderapp.internal.interface.project.Input">
-                    <Name>board_gyro</Name>
-                    <Type id="16" type="coderapp.internal.codertype.StructType"/>
-                  </Inputs>
-                  <Inputs id="18" type="coderapp.internal.interface.project.Input">
-                    <Name>mti_accel</Name>
-                    <Type id="16" type="coderapp.internal.codertype.StructType"/>
-                  </Inputs>
-                  <Inputs id="19" type="coderapp.internal.interface.project.Input">
-                    <Name>mti_gyro</Name>
-                    <Type id="16" type="coderapp.internal.codertype.StructType"/>
-                  </Inputs>
+              <EntryPoints id="18" type="coderapp.internal.interface.project.EntryPointFunction">
+                <Signatures id="19" type="coderapp.internal.interface.project.FunctionSignature">
                   <Inputs id="20" type="coderapp.internal.interface.project.Input">
-                    <Name>ad_accel</Name>
-                    <Type id="16" type="coderapp.internal.codertype.StructType"/>
-                  </Inputs>
-                  <Inputs id="21" type="coderapp.internal.interface.project.Input">
-                    <Name>ad_gyro</Name>
-                    <Type id="16" type="coderapp.internal.codertype.StructType"/>
+                    <Name>dt</Name>
+                    <Type id="21" type="coderapp.internal.codertype.PrimitiveType"/>
                   </Inputs>
                   <Inputs id="22" type="coderapp.internal.interface.project.Input">
-                    <Name>board_baro</Name>
-                    <Type id="23" type="coderapp.internal.codertype.StructType"/>
+                    <Name>flight_phase</Name>
+                    <Type id="23" type="coderapp.internal.codertype.PrimitiveType"/>
                   </Inputs>
                   <Inputs id="24" type="coderapp.internal.interface.project.Input">
-                    <Name>board_mag</Name>
-                    <Type id="16" type="coderapp.internal.codertype.StructType"/>
-                  </Inputs>
-                  <Inputs id="25" type="coderapp.internal.interface.project.Input">
-                    <Name>mti_baro</Name>
-                    <Type id="23" type="coderapp.internal.codertype.StructType"/>
+                    <Name>board_accel</Name>
+                    <Type id="25" type="coderapp.internal.codertype.StructType"/>
                   </Inputs>
                   <Inputs id="26" type="coderapp.internal.interface.project.Input">
+                    <Name>board_gyro</Name>
+                    <Type id="25" type="coderapp.internal.codertype.StructType"/>
+                  </Inputs>
+                  <Inputs id="27" type="coderapp.internal.interface.project.Input">
+                    <Name>mti_accel</Name>
+                    <Type id="25" type="coderapp.internal.codertype.StructType"/>
+                  </Inputs>
+                  <Inputs id="28" type="coderapp.internal.interface.project.Input">
+                    <Name>mti_gyro</Name>
+                    <Type id="25" type="coderapp.internal.codertype.StructType"/>
+                  </Inputs>
+                  <Inputs id="29" type="coderapp.internal.interface.project.Input">
+                    <Name>ad_accel</Name>
+                    <Type id="25" type="coderapp.internal.codertype.StructType"/>
+                  </Inputs>
+                  <Inputs id="30" type="coderapp.internal.interface.project.Input">
+                    <Name>ad_gyro</Name>
+                    <Type id="25" type="coderapp.internal.codertype.StructType"/>
+                  </Inputs>
+                  <Inputs id="31" type="coderapp.internal.interface.project.Input">
+                    <Name>board_baro</Name>
+                    <Type id="32" type="coderapp.internal.codertype.StructType"/>
+                  </Inputs>
+                  <Inputs id="33" type="coderapp.internal.interface.project.Input">
+                    <Name>board_mag</Name>
+                    <Type id="25" type="coderapp.internal.codertype.StructType"/>
+                  </Inputs>
+                  <Inputs id="34" type="coderapp.internal.interface.project.Input">
+                    <Name>mti_baro</Name>
+                    <Type id="32" type="coderapp.internal.codertype.StructType"/>
+                  </Inputs>
+                  <Inputs id="35" type="coderapp.internal.interface.project.Input">
                     <Name>mti_mag</Name>
-                    <Type id="16" type="coderapp.internal.codertype.StructType"/>
+                    <Type id="25" type="coderapp.internal.codertype.StructType"/>
                   </Inputs>
                   <NumOutputs>4</NumOutputs>
                 </Signatures>
@@ -103,59 +127,177 @@
                 </File>
                 <Name>navigation_codegen_entry</Name>
               </EntryPoints>
-              <SizeConstraints id="27" type="coderapp.internal.interface.project.SizeConstraints">
+              <SizeConstraints id="36" type="coderapp.internal.interface.project.SizeConstraints">
                 <Value type="coderapp.internal.interface.project.SizeConstraintsValue"/>
               </SizeConstraints>
-              <Types id="28" type="coderapp.internal.codertype.TypeStore">
-                <Types id="5" type="coderapp.internal.codertype.PrimitiveType">
+              <Types id="37" type="coderapp.internal.codertype.TypeStore">
+                <Types id="21" type="coderapp.internal.codertype.PrimitiveType">
                   <ClassName>double</ClassName>
                   <Size type="coderapp.internal.codertype.Dimension"/>
                   <Size type="coderapp.internal.codertype.Dimension"/>
                 </Types>
-                <Types id="7" type="coderapp.internal.codertype.PrimitiveType">
+                <Types id="38" type="coderapp.internal.codertype.PrimitiveType">
                   <ClassName>double</ClassName>
                   <Size type="coderapp.internal.codertype.Dimension">
                     <Length>2</Length>
                   </Size>
                   <Size type="coderapp.internal.codertype.Dimension"/>
                 </Types>
-                <Types id="14" type="coderapp.internal.codertype.PrimitiveType">
+                <Types id="23" type="coderapp.internal.codertype.PrimitiveType">
                   <ClassName>logical</ClassName>
                   <Size type="coderapp.internal.codertype.Dimension"/>
                   <Size type="coderapp.internal.codertype.Dimension"/>
                 </Types>
-                <Types id="29" type="coderapp.internal.codertype.PrimitiveType">
+                <Types id="39" type="coderapp.internal.codertype.PrimitiveType">
                   <ClassName>double</ClassName>
                   <Size type="coderapp.internal.codertype.Dimension">
                     <Length>3</Length>
                   </Size>
                   <Size type="coderapp.internal.codertype.Dimension"/>
                 </Types>
-                <Types id="16" type="coderapp.internal.codertype.StructType">
-                  <Fields id="30" type="coderapp.internal.codertype.Property">
+                <Types id="25" type="coderapp.internal.codertype.StructType">
+                  <Fields id="40" type="coderapp.internal.codertype.Property">
                     <Name>meas</Name>
-                    <Type id="29" type="coderapp.internal.codertype.PrimitiveType"/>
+                    <Type id="39" type="coderapp.internal.codertype.PrimitiveType"/>
                   </Fields>
-                  <Fields id="31" type="coderapp.internal.codertype.Property">
+                  <Fields id="41" type="coderapp.internal.codertype.Property">
                     <Name>status</Name>
-                    <Type id="14" type="coderapp.internal.codertype.PrimitiveType"/>
+                    <Type id="23" type="coderapp.internal.codertype.PrimitiveType"/>
                   </Fields>
                   <ClassName>struct</ClassName>
                   <Size type="coderapp.internal.codertype.Dimension"/>
                   <Size type="coderapp.internal.codertype.Dimension"/>
                 </Types>
-                <Types id="23" type="coderapp.internal.codertype.StructType">
-                  <Fields id="32" type="coderapp.internal.codertype.Property">
+                <Types id="32" type="coderapp.internal.codertype.StructType">
+                  <Fields id="42" type="coderapp.internal.codertype.Property">
                     <Name>meas</Name>
-                    <Type id="5" type="coderapp.internal.codertype.PrimitiveType"/>
+                    <Type id="21" type="coderapp.internal.codertype.PrimitiveType"/>
                   </Fields>
-                  <Fields id="33" type="coderapp.internal.codertype.Property">
+                  <Fields id="43" type="coderapp.internal.codertype.Property">
                     <Name>status</Name>
-                    <Type id="14" type="coderapp.internal.codertype.PrimitiveType"/>
+                    <Type id="23" type="coderapp.internal.codertype.PrimitiveType"/>
                   </Fields>
                   <ClassName>struct</ClassName>
                   <Size type="coderapp.internal.codertype.Dimension"/>
                   <Size type="coderapp.internal.codertype.Dimension"/>
+                </Types>
+                <Types id="44" type="coderapp.internal.codertype.PrimitiveType">
+                  <ClassName>double</ClassName>
+                  <Size type="coderapp.internal.codertype.Dimension">
+                    <Length>3</Length>
+                  </Size>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                </Types>
+                <Types id="45" type="coderapp.internal.codertype.PrimitiveType">
+                  <ClassName>logical</ClassName>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                </Types>
+                <Types id="46" type="coderapp.internal.codertype.StructType">
+                  <Fields id="47" type="coderapp.internal.codertype.Property">
+                    <Name>meas</Name>
+                    <Type id="44" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="48" type="coderapp.internal.codertype.Property">
+                    <Name>status</Name>
+                    <Type id="45" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <ClassName>struct</ClassName>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                </Types>
+                <Types id="5" type="coderapp.internal.codertype.PrimitiveType">
+                  <ClassName>double</ClassName>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                </Types>
+                <Types id="49" type="coderapp.internal.codertype.StructType">
+                  <Fields id="50" type="coderapp.internal.codertype.Property">
+                    <Name>meas</Name>
+                    <Type id="5" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="51" type="coderapp.internal.codertype.Property">
+                    <Name>status</Name>
+                    <Type id="45" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <ClassName>struct</ClassName>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                </Types>
+                <Types id="8" type="coderapp.internal.codertype.PrimitiveType">
+                  <ClassName>double</ClassName>
+                  <Size type="coderapp.internal.codertype.Dimension">
+                    <Length>2</Length>
+                  </Size>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                </Types>
+                <Types id="52" type="coderapp.internal.codertype.PrimitiveType">
+                  <ClassName>double</ClassName>
+                  <Size type="coderapp.internal.codertype.Dimension">
+                    <Length>2</Length>
+                  </Size>
+                  <Size type="coderapp.internal.codertype.Dimension">
+                    <Length>2</Length>
+                  </Size>
+                </Types>
+                <Types id="53" type="coderapp.internal.codertype.PrimitiveType">
+                  <ClassName>double</ClassName>
+                  <Size type="coderapp.internal.codertype.Dimension">
+                    <Length>2</Length>
+                  </Size>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                </Types>
+                <Types id="16" type="coderapp.internal.codertype.PrimitiveType">
+                  <ClassName>double</ClassName>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                </Types>
+                <Types id="54" type="coderapp.internal.codertype.PrimitiveType">
+                  <ClassName>double</ClassName>
+                  <Size type="coderapp.internal.codertype.Dimension">
+                    <Length>3</Length>
+                  </Size>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                </Types>
+                <Types id="55" type="coderapp.internal.codertype.PrimitiveType">
+                  <ClassName>logical</ClassName>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                </Types>
+                <Types id="56" type="coderapp.internal.codertype.StructType">
+                  <Fields id="57" type="coderapp.internal.codertype.Property">
+                    <Name>meas</Name>
+                    <Type id="54" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="58" type="coderapp.internal.codertype.Property">
+                    <Name>status</Name>
+                    <Type id="55" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <ClassName>struct</ClassName>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                </Types>
+                <Types id="59" type="coderapp.internal.codertype.StructType">
+                  <Fields id="60" type="coderapp.internal.codertype.Property">
+                    <Name>meas</Name>
+                    <Type id="16" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="61" type="coderapp.internal.codertype.Property">
+                    <Name>status</Name>
+                    <Type id="55" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <ClassName>struct</ClassName>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                </Types>
+                <Types id="14" type="coderapp.internal.codertype.PrimitiveType">
+                  <ClassName>double</ClassName>
+                  <Size type="coderapp.internal.codertype.Dimension">
+                    <Length>2</Length>
+                  </Size>
+                  <Size type="coderapp.internal.codertype.Dimension">
+                    <Length>2</Length>
+                  </Size>
                 </Types>
               </Types>
             </coderapp.internal.interface.project.Interface>
@@ -267,251 +409,239 @@
                 </Artifacts>
                 <Artifacts id="18" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\controller_estimator.c</Path>
+                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\diag.c</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="19" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\controller_estimator.h</Path>
+                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\diag.h</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="20" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\diag.c</Path>
+                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\dynamics.c</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="21" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\diag.h</Path>
+                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\dynamics.h</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="22" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\dynamics.c</Path>
+                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\dynamics_jacobian.c</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="23" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\dynamics.h</Path>
+                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\dynamics_jacobian.h</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="24" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\dynamics_jacobian.c</Path>
+                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\ekf_correct.c</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="25" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\dynamics_jacobian.h</Path>
+                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\ekf_correct.h</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="26" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\ekf_correct.c</Path>
+                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\eye.c</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="27" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\ekf_correct.h</Path>
+                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\eye.h</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="28" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\eye.c</Path>
+                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\inv.c</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="29" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\eye.h</Path>
+                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\inv.h</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="30" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\inv.c</Path>
+                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\mpower.c</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="31" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\inv.h</Path>
+                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\mpower.h</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="32" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\mpower.c</Path>
+                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\navigation_codegen_entry.c</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="33" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\mpower.h</Path>
+                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\navigation_codegen_entry.h</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="34" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\navigation_codegen_entry.c</Path>
+                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\norm.c</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="35" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\navigation_codegen_entry.h</Path>
+                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\norm.h</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="36" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\norm.c</Path>
+                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\pad_filter.c</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="37" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\norm.h</Path>
+                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\pad_filter.h</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="38" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\pad_filter.c</Path>
+                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\rtGetInf.c</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="39" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\pad_filter.h</Path>
+                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\rtGetInf.h</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="40" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\rtGetInf.c</Path>
+                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\rtGetNaN.c</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="41" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\rtGetInf.h</Path>
+                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\rtGetNaN.h</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="42" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\rtGetNaN.c</Path>
+                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\rt_defines.h</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="43" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\rtGetNaN.h</Path>
+                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\rt_nonfinite.c</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="44" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\rt_defines.h</Path>
+                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\rt_nonfinite.h</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="45" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\rt_nonfinite.c</Path>
+                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\rtwtypes.h</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="46" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\rt_nonfinite.h</Path>
+                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\svd.c</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="47" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\rtwtypes.h</Path>
+                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\svd.h</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="48" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\svd.c</Path>
+                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\xnrm2.c</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="49" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\svd.h</Path>
+                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\xnrm2.h</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="50" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\xnrm2.c</Path>
+                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\xrotg.c</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="51" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\xnrm2.h</Path>
+                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\xrotg.h</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="52" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\xrotg.c</Path>
+                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\xzlangeM.c</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="53" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\xrotg.h</Path>
+                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\xzlangeM.h</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="54" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\xzlangeM.c</Path>
+                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\xzlascl.c</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="55" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\xzlangeM.h</Path>
+                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\xzlascl.h</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="56" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\xzlascl.c</Path>
-                  </File>
-                  <Type>GENERATED_SOURCE</Type>
-                </Artifacts>
-                <Artifacts id="57" type="coderapp.internal.build.mfz.CodegenArtifact">
-                  <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\xzlascl.h</Path>
-                  </File>
-                  <Type>GENERATED_SOURCE</Type>
-                </Artifacts>
-                <Artifacts id="58" type="coderapp.internal.build.mfz.CodegenArtifact">
-                  <File type="coderapp.internal.util.mfz.FileSpec">
                     <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\examples\main.c</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
-                <Artifacts id="59" type="coderapp.internal.build.mfz.CodegenArtifact">
+                <Artifacts id="57" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
                     <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\examples\main.h</Path>
                   </File>
@@ -519,7 +649,7 @@
                 </Artifacts>
                 <BuildFolder type="coderapp.internal.util.mfz.FileSpec"/>
                 <Success>true</Success>
-                <Timestamp>2026-05-16T22:56:12</Timestamp>
+                <Timestamp>2026-05-31T10:28:47</Timestamp>
               </MainBuildResult>
             </coderapp.internal.mlc.mfz.MatlabCoderProjectState>
           </MF0>

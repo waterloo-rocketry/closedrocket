@@ -5,7 +5,7 @@
  * File: main.c
  *
  * MATLAB Coder version            : 25.2
- * C/C++ source code generated on  : 16-May-2026 22:56:01
+ * C/C++ source code generated on  : 31-May-2026 10:28:26
  */
 
 /*************************************************************************/
@@ -45,6 +45,8 @@
 /* Function Declarations */
 static void argInit_2x1_real_T(double result[2]);
 
+static void argInit_2x2_real_T(double result[4]);
+
 static void argInit_3x1_real_T(double result[3]);
 
 static bool argInit_boolean_T(void);
@@ -68,6 +70,21 @@ static void argInit_2x1_real_T(double result[2])
     /* Set the value of the array element.
 Change this value to the value that the application requires. */
     result[idx0] = argInit_real_T();
+  }
+}
+
+/*
+ * Arguments    : double result[4]
+ * Return Type  : void
+ */
+static void argInit_2x2_real_T(double result[4])
+{
+  int i;
+  /* Loop over the array to initialize each element. */
+  for (i = 0; i < 4; i++) {
+    /* Set the value of the array element.
+Change this value to the value that the application requires. */
+    result[i] = argInit_real_T();
   }
 }
 
@@ -160,18 +177,28 @@ You do not need to do this more than one time. */
  */
 void main_controller_codegen_entry(void)
 {
-  double dv[2];
-  double C_l_delta;
+  double P_minus_ret[4];
+  double dv[4];
+  double coeffs_ret[2];
+  double xR_tmp[2];
   double b_r;
+  double d_old_ret;
   double time_tmp;
   double u;
+  double w_dot_old_ret;
+  double w_old_ret;
   /* Initialize function 'controller_codegen_entry' input arguments. */
   time_tmp = argInit_real_T();
   /* Initialize function input argument 'xR'. */
+  argInit_2x1_real_T(xR_tmp);
+  /* Initialize function input argument 'coeffs'. */
+  /* Initialize function input argument 'P_minus'. */
   /* Call the entry-point 'controller_codegen_entry'. */
-  argInit_2x1_real_T(dv);
-  controller_codegen_entry(time_tmp, dv, time_tmp, time_tmp, &u, &b_r,
-                           &C_l_delta);
+  argInit_2x2_real_T(dv);
+  controller_codegen_entry(time_tmp, time_tmp, xR_tmp, time_tmp, time_tmp,
+                           time_tmp, xR_tmp, dv, time_tmp, time_tmp, &u, &b_r,
+                           coeffs_ret, &w_old_ret, P_minus_ret, &d_old_ret,
+                           &w_dot_old_ret);
 }
 
 /*

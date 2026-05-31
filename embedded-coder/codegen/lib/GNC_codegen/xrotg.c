@@ -5,7 +5,7 @@
  * File: xrotg.c
  *
  * MATLAB Coder version            : 25.2
- * C/C++ source code generated on  : 16-May-2026 22:56:01
+ * C/C++ source code generated on  : 31-May-2026 10:28:26
  */
 
 /* Include Files */
@@ -24,7 +24,7 @@ double xrotg(double *a, double *b, double *s)
 {
   double absa;
   double absb;
-  double b_c;
+  double c;
   double roe;
   double scale;
   roe = *b;
@@ -36,30 +36,30 @@ double xrotg(double *a, double *b, double *s)
   scale = absa + absb;
   if (scale == 0.0) {
     scale = 0.0;
-    b_c = 1.0;
+    c = 1.0;
     *a = 0.0;
     *b = 0.0;
   } else {
     double bds;
-    b_c = absa / scale;
+    c = absa / scale;
     bds = absb / scale;
-    bds = scale * sqrt(b_c * b_c + bds * bds);
+    bds = scale * sqrt(c * c + bds * bds);
     if (roe < 0.0) {
       bds = -bds;
     }
-    b_c = *a / bds;
+    c = *a / bds;
     scale = *b / bds;
     if (absa > absb) {
       *b = scale;
-    } else if (b_c != 0.0) {
-      *b = 1.0 / b_c;
+    } else if (c != 0.0) {
+      *b = 1.0 / c;
     } else {
       *b = 1.0;
     }
     *a = bds;
   }
   *s = scale;
-  return b_c;
+  return c;
 }
 
 /*

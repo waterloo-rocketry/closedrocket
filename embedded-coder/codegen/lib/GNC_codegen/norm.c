@@ -5,7 +5,7 @@
  * File: norm.c
  *
  * MATLAB Coder version            : 25.2
- * C/C++ source code generated on  : 16-May-2026 22:56:01
+ * C/C++ source code generated on  : 31-May-2026 10:28:26
  */
 
 /* Include Files */
@@ -23,8 +23,8 @@
 double b_norm(const double x[3])
 {
   double absxk;
-  double b_t;
   double scale;
+  double t;
   double y;
   scale = 3.3121686421112381E-170;
   absxk = fabs(x[0]);
@@ -32,26 +32,26 @@ double b_norm(const double x[3])
     y = 1.0;
     scale = absxk;
   } else {
-    b_t = absxk / 3.3121686421112381E-170;
-    y = b_t * b_t;
+    t = absxk / 3.3121686421112381E-170;
+    y = t * t;
   }
   absxk = fabs(x[1]);
   if (absxk > scale) {
-    b_t = scale / absxk;
-    y = y * b_t * b_t + 1.0;
+    t = scale / absxk;
+    y = y * t * t + 1.0;
     scale = absxk;
   } else {
-    b_t = absxk / scale;
-    y += b_t * b_t;
+    t = absxk / scale;
+    y += t * t;
   }
   absxk = fabs(x[2]);
   if (absxk > scale) {
-    b_t = scale / absxk;
-    y = y * b_t * b_t + 1.0;
+    t = scale / absxk;
+    y = y * t * t + 1.0;
     scale = absxk;
   } else {
-    b_t = absxk / scale;
-    y += b_t * b_t;
+    t = absxk / scale;
+    y += t * t;
   }
   return scale * sqrt(y);
 }
@@ -63,8 +63,8 @@ double b_norm(const double x[3])
 double c_norm(const double x[4])
 {
   double absxk;
-  double b_t;
   double scale;
+  double t;
   double y;
   scale = 3.3121686421112381E-170;
   absxk = fabs(x[0]);
@@ -72,35 +72,35 @@ double c_norm(const double x[4])
     y = 1.0;
     scale = absxk;
   } else {
-    b_t = absxk / 3.3121686421112381E-170;
-    y = b_t * b_t;
+    t = absxk / 3.3121686421112381E-170;
+    y = t * t;
   }
   absxk = fabs(x[1]);
   if (absxk > scale) {
-    b_t = scale / absxk;
-    y = y * b_t * b_t + 1.0;
+    t = scale / absxk;
+    y = y * t * t + 1.0;
     scale = absxk;
   } else {
-    b_t = absxk / scale;
-    y += b_t * b_t;
+    t = absxk / scale;
+    y += t * t;
   }
   absxk = fabs(x[2]);
   if (absxk > scale) {
-    b_t = scale / absxk;
-    y = y * b_t * b_t + 1.0;
+    t = scale / absxk;
+    y = y * t * t + 1.0;
     scale = absxk;
   } else {
-    b_t = absxk / scale;
-    y += b_t * b_t;
+    t = absxk / scale;
+    y += t * t;
   }
   absxk = fabs(x[3]);
   if (absxk > scale) {
-    b_t = scale / absxk;
-    y = y * b_t * b_t + 1.0;
+    t = scale / absxk;
+    y = y * t * t + 1.0;
     scale = absxk;
   } else {
-    b_t = absxk / scale;
-    y += b_t * b_t;
+    t = absxk / scale;
+    y += t * t;
   }
   return scale * sqrt(y);
 }

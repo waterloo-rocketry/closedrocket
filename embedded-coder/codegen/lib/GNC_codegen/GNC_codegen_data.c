@@ -5,7 +5,7 @@
  * File: GNC_codegen_data.c
  *
  * MATLAB Coder version            : 25.2
- * C/C++ source code generated on  : 16-May-2026 22:56:01
+ * C/C++ source code generated on  : 31-May-2026 10:28:26
  */
 
 /* Include Files */
@@ -14,18 +14,6 @@
 #include "rt_nonfinite.h"
 
 /* Variable Definitions */
-double t;
-
-double c[2];
-
-bool P_minus_not_empty;
-
-bool w_old_not_empty;
-
-double d_old;
-
-double w_dot_old;
-
 bool board_accel_f_not_empty;
 
 b_struct_T param;

@@ -5,7 +5,7 @@
  * File: xnrm2.c
  *
  * MATLAB Coder version            : 25.2
- * C/C++ source code generated on  : 16-May-2026 22:56:01
+ * C/C++ source code generated on  : 31-May-2026 10:28:26
  */
 
 /* Include Files */
@@ -33,14 +33,14 @@ double b_xnrm2(int n, const double x[11], int ix0)
     double absxk;
     absxk = fabs(x[k - 1]);
     if (absxk > scale) {
-      double b_t;
-      b_t = scale / absxk;
-      y = y * b_t * b_t + 1.0;
+      double t;
+      t = scale / absxk;
+      y = y * t * t + 1.0;
       scale = absxk;
     } else {
-      double b_t;
-      b_t = absxk / scale;
-      y += b_t * b_t;
+      double t;
+      t = absxk / scale;
+      y += t * t;
     }
   }
   return scale * sqrt(y);
@@ -65,14 +65,14 @@ double xnrm2(int n, const double x[121], int ix0)
     double absxk;
     absxk = fabs(x[k - 1]);
     if (absxk > scale) {
-      double b_t;
-      b_t = scale / absxk;
-      y = y * b_t * b_t + 1.0;
+      double t;
+      t = scale / absxk;
+      y = y * t * t + 1.0;
       scale = absxk;
     } else {
-      double b_t;
-      b_t = absxk / scale;
-      y += b_t * b_t;
+      double t;
+      t = absxk / scale;
+      y += t * t;
     }
   }
   return scale * sqrt(y);

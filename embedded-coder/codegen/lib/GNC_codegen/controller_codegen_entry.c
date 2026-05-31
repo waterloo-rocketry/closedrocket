@@ -5,7 +5,7 @@
  * File: controller_codegen_entry.c
  *
  * MATLAB Coder version            : 25.2
- * C/C++ source code generated on  : 16-May-2026 22:56:01
+ * C/C++ source code generated on  : 31-May-2026 10:28:26
  */
 
 /* Include Files */
@@ -27,21 +27,33 @@
  *  pdyn : dynamic pressure (Pa)
  *
  * Arguments    : double b_time
+ *                double dt_ctrl
  *                const double xR[2]
  *                double pdyn
  *                double delta
+ *                double w_old
+ *                const double coeffs[2]
+ *                const double P_minus[4]
+ *                double d_old
+ *                double w_dot_old
  *                double *u
  *                double *b_r
- *                double *C_l_delta
+ *                double coeffs_ret[2]
+ *                double *w_old_ret
+ *                double P_minus_ret[4]
+ *                double *d_old_ret
+ *                double *w_dot_old_ret
  * Return Type  : void
  */
-void controller_codegen_entry(double b_time, const double xR[2], double pdyn,
-                              double delta, double *u, double *b_r,
-                              double *C_l_delta)
+void controller_codegen_entry(double b_time, double dt_ctrl, const double xR[2],
+                              double pdyn, double delta, double w_old,
+                              const double coeffs[2], const double P_minus[4],
+                              double d_old, double w_dot_old, double *u,
+                              double *b_r, double coeffs_ret[2],
+                              double *w_old_ret, double P_minus_ret[4],
+                              double *d_old_ret, double *w_dot_old_ret)
 {
-  static double P_minus[4];
-  static double w_old;
-  double Q[4];
+  double b_P[4];
   double dv[4];
   double dv1[4];
   double K[2];
@@ -49,10 +61,14 @@ void controller_codegen_entry(double b_time, const double xR[2], double pdyn,
   double b_delta;
   double b_tmp_tmp;
   double c_r;
+  double d;
+  double d1;
+  double d2;
   double pdyn_params;
   double r_idx_0;
+  double w_dot;
+  int P_minus_ret_tmp;
   int i;
-  int i1;
   if (!isInitialized_GNC_codegen) {
     GNC_codegen_initialize();
   }
@@ -92,7 +108,6 @@ void controller_codegen_entry(double b_time, const double xR[2], double pdyn,
   /*  C_l_0 = rocket induced angular acceleration / (rho * area * arm) */
   /*     %% tuning parameters */
   /* %% covariance */
-  diag(Q);
   /* %% small angle cutoff */
   if (fabs(delta) < 0.005) {
     /*  prevents high noise density for small delta from affecting estimate */
@@ -101,92 +116,80 @@ void controller_codegen_entry(double b_time, const double xR[2], double pdyn,
   }
   /* %% lowpass */
   /*  time constant */
-  /*     %% initialize */
-  if (!P_minus_not_empty) {
-    P_minus[0] = Q[0];
-    P_minus[1] = Q[1];
-    P_minus[2] = Q[2];
-    P_minus[3] = Q[3];
-    P_minus_not_empty = true;
-  }
-  if (!w_old_not_empty) {
-    w_old = xR[1];
-    w_old_not_empty = true;
-  }
   /*     %% lowpass command and measurement */
   b_delta = 0.75 * d_old + 0.25 * b_delta;
-  w_dot_old = 0.75 * w_dot_old + 0.25 * (xR[1] - w_old) / (b_time - t);
+  w_dot = 0.75 * w_dot_old + 0.25 * (xR[1] - w_old) / dt_ctrl;
   /*     %% Kalman filter */
   r_idx_0 = pdyn_params * b_delta;
   /*  regression  */
-  Q[0] += P_minus[0];
-  Q[1] += P_minus[1];
-  Q[2] += P_minus[2];
-  Q[3] += P_minus[3];
+  diag(b_P);
+  b_P[0] += P_minus[0];
+  b_P[1] += P_minus[1];
+  b_P[2] += P_minus[2];
+  b_P[3] += P_minus[3];
   /*  covariance prediction */
   memset(&K[0], 0, sizeof(double) << 1);
-  L_delta = r_idx_0 * Q[0];
-  b_tmp_tmp = pdyn_params * Q[3];
-  c_r = ((K[0] + L_delta) + pdyn_params * Q[1]) * r_idx_0 +
-        ((K[1] + r_idx_0 * Q[2]) + b_tmp_tmp) * pdyn_params;
+  L_delta = r_idx_0 * b_P[0];
+  b_tmp_tmp = pdyn_params * b_P[3];
+  c_r = ((K[0] + L_delta) + pdyn_params * b_P[1]) * r_idx_0 +
+        ((K[1] + r_idx_0 * b_P[2]) + b_tmp_tmp) * pdyn_params;
   /*  correction gain. the stuff inside in brackets is just a scalar so you can
    * just divide */
-  K[0] = (L_delta + Q[2] * pdyn_params) / (c_r + 1.0);
-  K[1] = (Q[1] * r_idx_0 + b_tmp_tmp) / (c_r + 1.0);
-  L_delta = w_dot_old - (r_idx_0 * c[0] + pdyn_params * c[1]);
+  K[0] = (L_delta + b_P[2] * pdyn_params) / (c_r + 1.0);
+  K[1] = (b_P[1] * r_idx_0 + b_tmp_tmp) / (c_r + 1.0);
+  L_delta = w_dot - (r_idx_0 * coeffs[0] + pdyn_params * coeffs[1]);
   /*  coefficient correction */
-  eye(P_minus);
-  c[0] += K[0] * L_delta;
-  dv[0] = P_minus[0] - K[0] * r_idx_0;
-  dv[1] = P_minus[1] - K[1] * r_idx_0;
-  c[1] += K[1] * L_delta;
-  dv[2] = P_minus[2] - K[0] * pdyn_params;
-  dv[3] = P_minus[3] - K[1] * pdyn_params;
-  memset(&P_minus[0], 0, sizeof(double) << 2);
+  eye(dv);
+  coeffs_ret[0] = coeffs[0] + K[0] * L_delta;
+  dv1[0] = dv[0] - K[0] * r_idx_0;
+  dv1[1] = dv[1] - K[1] * r_idx_0;
+  coeffs_ret[1] = coeffs[1] + K[1] * L_delta;
+  dv1[2] = dv[2] - K[0] * pdyn_params;
+  dv1[3] = dv[3] - K[1] * pdyn_params;
+  memset(&dv[0], 0, sizeof(double) << 2);
+  L_delta = dv1[0];
+  b_tmp_tmp = dv1[1];
+  c_r = dv1[2];
+  r_idx_0 = dv1[3];
+  for (i = 0; i < 2; i++) {
+    P_minus_ret_tmp = i << 1;
+    d = b_P[P_minus_ret_tmp];
+    d1 = dv[P_minus_ret_tmp] + L_delta * d;
+    d2 = dv[P_minus_ret_tmp + 1] + b_tmp_tmp * d;
+    d = b_P[P_minus_ret_tmp + 1];
+    d1 += c_r * d;
+    dv[P_minus_ret_tmp] = d1;
+    d2 += r_idx_0 * d;
+    dv[P_minus_ret_tmp + 1] = d2;
+  }
+  memset(&P_minus_ret[0], 0, sizeof(double) << 2);
   L_delta = dv[0];
-  c_r = dv[1];
-  r_idx_0 = dv[2];
-  b_tmp_tmp = dv[3];
+  b_tmp_tmp = dv[1];
+  c_r = dv[2];
+  r_idx_0 = dv[3];
   for (i = 0; i < 2; i++) {
-    i1 = i << 1;
-    t = Q[i1];
-    w_old = P_minus[i1] + L_delta * t;
-    d_old = P_minus[i1 + 1] + c_r * t;
-    t = Q[i1 + 1];
-    w_old += r_idx_0 * t;
-    P_minus[i1] = w_old;
-    d_old += b_tmp_tmp * t;
-    P_minus[i1 + 1] = d_old;
+    d = dv1[i];
+    P_minus_ret_tmp = i << 1;
+    d1 = P_minus_ret[P_minus_ret_tmp] + L_delta * d;
+    d2 = P_minus_ret[P_minus_ret_tmp + 1] + b_tmp_tmp * d;
+    b_P[P_minus_ret_tmp] = K[0] * K[i];
+    d = dv1[i + 2];
+    d1 += c_r * d;
+    P_minus_ret[P_minus_ret_tmp] = d1;
+    d2 += r_idx_0 * d;
+    P_minus_ret[P_minus_ret_tmp + 1] = d2;
+    b_P[P_minus_ret_tmp + 1] = K[1] * K[i];
   }
-  memset(&dv1[0], 0, sizeof(double) << 2);
-  L_delta = P_minus[0];
-  c_r = P_minus[1];
-  r_idx_0 = P_minus[2];
-  b_tmp_tmp = P_minus[3];
-  for (i = 0; i < 2; i++) {
-    t = dv[i];
-    i1 = i << 1;
-    w_old = dv1[i1] + L_delta * t;
-    d_old = dv1[i1 + 1] + c_r * t;
-    Q[i1] = K[0] * K[i];
-    t = dv[i + 2];
-    w_old += r_idx_0 * t;
-    dv1[i1] = w_old;
-    d_old += b_tmp_tmp * t;
-    dv1[i1 + 1] = d_old;
-    Q[i1 + 1] = K[1] * K[i];
-  }
-  P_minus[0] = dv1[0] + Q[0];
-  P_minus[1] = dv1[1] + Q[1];
-  P_minus[2] = dv1[2] + Q[2];
-  P_minus[3] = dv1[3] + Q[3];
+  P_minus_ret[0] += b_P[0];
+  P_minus_ret[1] += b_P[1];
+  P_minus_ret[2] += b_P[2];
+  P_minus_ret[3] += b_P[3];
   /*  covariance correction. Joseph form for numerical stability */
   /*     %% update for next cycle */
-  t = b_time;
-  w_old = xR[1];
-  d_old = b_delta;
-  *C_l_delta = c[0];
-  L_delta = c[0] * pdyn_params;
+  *w_old_ret = xR[1];
+  *d_old_ret = b_delta;
+  *w_dot_old_ret = w_dot;
+  L_delta = coeffs_ret[0] * pdyn_params;
   if (fabs(L_delta) < 10.0) {
     if (L_delta >= 0.0) {
       L_delta = 10.0;

@@ -5,7 +5,7 @@
  * File: GNC_codegen_types.h
  *
  * MATLAB Coder version            : 25.2
- * C/C++ source code generated on  : 16-May-2026 22:56:01
+ * C/C++ source code generated on  : 31-May-2026 10:28:26
  */
 
 #ifndef GNC_CODEGEN_TYPES_H
