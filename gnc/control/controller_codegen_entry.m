@@ -14,7 +14,7 @@ function [u, r, coeffs_ret, w_old_ret, P_minus_ret, d_old_ret, w_dot_old_ret] = 
 
     %% Constants
     time_program = 15;
-    u_max = deg2rad(10); % [rad], limit output to this angle
+    u_max = deg2rad(20); % [rad], limit output to this angle
     L_min = 10; % [rad/s^2 (angular accelaration) / rad (canard angle)] limit roll control derivative for low authority conditions
     pdyn_min = 500; % [Pa] deactivate at low authority near apogee
     
@@ -41,7 +41,7 @@ function [u, r, coeffs_ret, w_old_ret, P_minus_ret, d_old_ret, w_dot_old_ret] = 
     [coeffs_ret, w_old_ret, P_minus_ret, d_old_ret, w_dot_old_ret] = controller_estimator(dt_ctrl, xR(2), delta, pdyn_params, w_old, coeffs, P_minus, d_old, w_dot_old);
     
     C_l_delta = coeffs_ret(1);
-    L_delta = C_l_delta * pdyn_params;
+    L_delta = 2 * C_l_delta * pdyn_params;
     
     if abs(L_delta) < L_min
         if L_delta >= 0

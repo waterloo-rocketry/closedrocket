@@ -5,7 +5,7 @@
  * File: controller_codegen_entry.c
  *
  * MATLAB Coder version            : 25.2
- * C/C++ source code generated on  : 31-May-2026 14:39:19
+ * C/C++ source code generated on  : 31-May-2026 15:50:44
  */
 
 /* Include Files */
@@ -58,8 +58,8 @@ void controller_codegen_entry(double b_time, double dt_ctrl, const double xR[2],
   double dv1[4];
   double K[2];
   double L_delta;
-  double b_delta;
   double b_tmp_tmp;
+  double c_delta;
   double c_r;
   double d;
   double d1;
@@ -94,7 +94,6 @@ void controller_codegen_entry(double b_time, double dt_ctrl, const double xR[2],
   /* %% Computes control signal of the adaptive LQR controller. */
   /* %% Coefficient Estimation */
   pdyn_params = pdyn * 0.00061367415999999994;
-  b_delta = delta;
   /*  estimates the canard aerodynamic coefficients from canard angle, roll
    * rates, air data */
   /*  coeffs : canard coefficients C_l_delta and C_l_0 */
@@ -108,19 +107,20 @@ void controller_codegen_entry(double b_time, double dt_ctrl, const double xR[2],
   /*  C_l_0 = rocket induced angular acceleration / (rho * area * arm) */
   /*     %% tuning parameters */
   /* %% covariance */
+  c_delta = delta / 2.0;
   /* %% small angle cutoff */
-  if (fabs(delta) < 0.005) {
+  if (fabs(c_delta) < 0.005) {
     /*  prevents high noise density for small delta from affecting estimate */
-    b_delta = 0.0;
+    c_delta = 0.0;
     /*  probably should make more rigorous */
   }
   /* %% lowpass */
   /*  time constant */
   /*     %% lowpass command and measurement */
-  b_delta = 0.75 * d_old + 0.25 * b_delta;
+  c_delta = 0.75 * d_old + 0.25 * c_delta;
   w_dot = 0.75 * w_dot_old + 0.25 * (xR[1] - w_old) / dt_ctrl;
   /*     %% Kalman filter */
-  r_idx_0 = pdyn_params * b_delta;
+  r_idx_0 = pdyn_params * c_delta;
   /*  regression  */
   diag(P);
   P[0] += P_minus[0];
@@ -187,9 +187,9 @@ void controller_codegen_entry(double b_time, double dt_ctrl, const double xR[2],
   /*  covariance correction. Joseph form for numerical stability */
   /*     %% update for next cycle */
   *w_old_ret = xR[1];
-  *d_old_ret = b_delta;
+  *d_old_ret = c_delta;
   *w_dot_old_ret = w_dot;
-  L_delta = coeffs_ret[0] * pdyn_params;
+  L_delta = 2.0 * coeffs_ret[0] * pdyn_params;
   if (fabs(L_delta) < 10.0) {
     if (L_delta >= 0.0) {
       L_delta = 10.0;
@@ -225,8 +225,8 @@ void controller_codegen_entry(double b_time, double dt_ctrl, const double xR[2],
       fmax((K[0] * xR[0] +
             L_delta * sqrt(2.0 * c_r + (b_tmp_tmp + r_idx_0 * 20.0)) * xR[1]) +
                -K[0] * *b_r,
-           -0.17453292519943295),
-      0.17453292519943295);
+           -0.3490658503988659),
+      0.3490658503988659);
   /*  upper bounds */
   if (pdyn < 500.0) {
     /*  disable during low control authority */

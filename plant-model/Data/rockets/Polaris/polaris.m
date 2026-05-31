@@ -32,7 +32,7 @@ act_freq = 150; % natural frequency, approx 1/timeconstant [1/s]
 act_deadtime = 0.02; % delay in servo internal control loop [s]
 act_damping = 0.9; % damping ratio
 act_backlash = 0.25; % play [deg]
-act_anglelimit = 12; % max deflection [deg]
+act_anglelimit = 22; % max deflection [deg]
 act_ratelimit = 480; % max rate [deg/s]
 act_gear_ratio = 0.5; % speed ratio of gearing between motor and canard
 

@@ -1,4 +1,4 @@
-function [coeffs_ret, w_old_ret, P_minus_ret, d_old_ret, w_dot_old_ret] = controller_estimator(dt_ctrl, w, delta, pdyn_params, w_old, coeffs, P_minus, d_old, w_dot_old)
+function [coeffs_ret, w_old_ret, P_minus_ret, d_old_ret, w_dot_old_ret] = controller_estimator(dt_ctrl, w, enc_delta, pdyn_params, w_old, coeffs, P_minus, d_old, w_dot_old)
     %#codegen
     % estimates the canard aerodynamic coefficients from canard angle, roll rates, air data
     % coeffs : canard coefficients C_l_delta and C_l_0
@@ -14,21 +14,23 @@ function [coeffs_ret, w_old_ret, P_minus_ret, d_old_ret, w_dot_old_ret] = contro
     %% tuning parameters
     %%% covariance
     Q = diag([1e-5, 1e-9]);
+
+    c_delta = enc_delta / 2;
     
     %%% small angle cutoff
-    if abs(delta) < 0.005 % prevents high noise density for small delta from affecting estimate
-        delta = 0;  % probably should make more rigorous
+    if abs(c_delta) < 0.005 % prevents high noise density for small delta from affecting estimate
+        c_delta = 0;  % probably should make more rigorous
     end
 
     %%% lowpass
     tau = 0.25; % time constant
 
     %% lowpass command and measurement
-    delta = (1 - tau) * d_old + tau * delta;
+    c_delta = (1 - tau) * d_old + tau * c_delta;
     w_dot = (1 - tau) * w_dot_old + tau * (w - w_old) / dt_ctrl;
 
     %% Kalman filter
-    r = pdyn_params * [delta; 1]; % regression 
+    r = pdyn_params * [c_delta; 1]; % regression 
     P = P_minus + Q; % covariance prediction
     K = P * r / (r' * P * r + 1); % correction gain. the stuff inside in brackets is just a scalar so you can just divide
     coeffs = coeffs + K * (w_dot - r' * coeffs); % coefficient correction
@@ -38,6 +40,6 @@ function [coeffs_ret, w_old_ret, P_minus_ret, d_old_ret, w_dot_old_ret] = contro
     coeffs_ret = coeffs;
     P_minus_ret = P_plus;
     w_old_ret = w;
-    d_old_ret = delta;
+    d_old_ret = c_delta;
     w_dot_old_ret = w_dot; 
 end
