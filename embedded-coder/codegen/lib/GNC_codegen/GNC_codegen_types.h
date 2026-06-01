@@ -5,7 +5,7 @@
  * File: GNC_codegen_types.h
  *
  * MATLAB Coder version            : 25.2
- * C/C++ source code generated on  : 31-May-2026 15:50:44
+ * C/C++ source code generated on  : 01-Jun-2026 00:25:13
  */
 
 #ifndef GNC_CODEGEN_TYPES_H
@@ -55,18 +55,10 @@ typedef struct {
 #ifndef typedef_struct3_T
 #define typedef_struct3_T
 typedef struct {
-  double meas[3];
-  double status;
-} struct3_T;
-#endif /* typedef_struct3_T */
-
-#ifndef typedef_struct4_T
-#define typedef_struct4_T
-typedef struct {
   double meas;
   bool status;
-} struct4_T;
-#endif /* typedef_struct4_T */
+} struct3_T;
+#endif /* typedef_struct3_T */
 
 #ifndef typedef_struct_T
 #define typedef_struct_T

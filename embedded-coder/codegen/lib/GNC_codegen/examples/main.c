@@ -5,7 +5,7 @@
  * File: main.c
  *
  * MATLAB Coder version            : 25.2
- * C/C++ source code generated on  : 31-May-2026 15:50:44
+ * C/C++ source code generated on  : 01-Jun-2026 00:25:13
  */
 
 /*************************************************************************/
@@ -64,8 +64,6 @@ static void argInit_struct1_T(struct1_T *result);
 static struct2_T argInit_struct2_T(void);
 
 static struct3_T argInit_struct3_T(void);
-
-static struct4_T argInit_struct4_T(void);
 
 /* Function Definitions */
 /*
@@ -247,20 +245,6 @@ static struct3_T argInit_struct3_T(void)
   struct3_T result;
   /* Set the value of each structure field.
 Change this value to the value that the application requires. */
-  argInit_3x1_real_T(result.meas);
-  result.status = argInit_real_T();
-  return result;
-}
-
-/*
- * Arguments    : void
- * Return Type  : struct4_T
- */
-static struct4_T argInit_struct4_T(void)
-{
-  struct4_T result;
-  /* Set the value of each structure field.
-Change this value to the value that the application requires. */
   result.meas = argInit_real_T();
   result.status = argInit_boolean_T();
   return result;
@@ -330,8 +314,7 @@ void main_navigation_codegen_entry(void)
   struct1_T sf_ret;
   struct2_T board_accel_tmp;
   struct3_T r2;
-  struct4_T r3;
-  struct4_T r4;
+  struct3_T r3;
   double P_ret[121];
   double dv1[121];
   double dv[11];
@@ -358,13 +341,12 @@ void main_navigation_codegen_entry(void)
   argInit_struct0_T(&b_r);
   argInit_struct1_T(&r1);
   r2 = argInit_struct3_T();
-  r3 = argInit_struct4_T();
-  r4 = argInit_struct4_T();
+  r3 = argInit_struct3_T();
   navigation_codegen_entry(argInit_real_T(), argInit_boolean_T(), dv, dv1, &b_r,
                            &r1, &board_accel_tmp, &board_accel_tmp,
                            &board_accel_tmp, &board_accel_tmp, &board_accel_tmp,
-                           &r2, &r3, &board_accel_tmp, &r4, &board_accel_tmp,
-                           x_ret, P_ret, &b_ret, &sf_ret);
+                           &board_accel_tmp, &r2, &board_accel_tmp, &r3,
+                           &board_accel_tmp, x_ret, P_ret, &b_ret, &sf_ret);
 }
 
 /*

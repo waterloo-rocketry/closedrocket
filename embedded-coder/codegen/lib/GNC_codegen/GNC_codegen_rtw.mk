@@ -2,7 +2,7 @@
 ## Makefile generated for component 'GNC_codegen'. 
 ## 
 ## Makefile     : GNC_codegen_rtw.mk
-## Generated on : Sun May 31 15:50:53 2026
+## Generated on : Mon Jun 01 00:25:35 2026
 ## Final product: .\GNC_codegen.lib
 ## Product type : static-library
 ## 

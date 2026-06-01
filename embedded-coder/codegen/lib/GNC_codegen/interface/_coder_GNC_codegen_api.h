@@ -5,7 +5,7 @@
  * File: _coder_GNC_codegen_api.h
  *
  * MATLAB Coder version            : 25.2
- * C/C++ source code generated on  : 31-May-2026 15:50:44
+ * C/C++ source code generated on  : 01-Jun-2026 00:25:13
  */
 
 #ifndef _CODER_GNC_CODEGEN_API_H
@@ -58,18 +58,10 @@ typedef struct {
 #ifndef typedef_struct3_T
 #define typedef_struct3_T
 typedef struct {
-  real_T meas[3];
-  real_T status;
-} struct3_T;
-#endif /* typedef_struct3_T */
-
-#ifndef typedef_struct4_T
-#define typedef_struct4_T
-typedef struct {
   real_T meas;
   boolean_T status;
-} struct4_T;
-#endif /* typedef_struct4_T */
+} struct3_T;
+#endif /* typedef_struct3_T */
 
 /* Variable Declarations */
 extern emlrtCTX emlrtRootTLSGlobal;
@@ -105,9 +97,9 @@ void navigation_codegen_entry(real_T dt, boolean_T flight_phase, real_T x[11],
                               real_T P[121], struct0_T *b, struct1_T *sf,
                               struct2_T *board_accel, struct2_T *board_gyro,
                               struct2_T *mti_accel, struct2_T *mti_gyro,
-                              struct2_T *ad_accel, struct3_T *ad_gyro,
-                              struct4_T *board_baro, struct2_T *board_mag,
-                              struct4_T *mti_baro, struct2_T *mti_mag,
+                              struct2_T *ad_accel, struct2_T *ad_gyro,
+                              struct3_T *board_baro, struct2_T *board_mag,
+                              struct3_T *mti_baro, struct2_T *mti_mag,
                               real_T x_ret[11], real_T P_ret[121],
                               struct0_T *b_ret, struct1_T *sf_ret);
 
