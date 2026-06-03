@@ -47,7 +47,7 @@ function [u, r, ctrl_mem_out] = controller_codegen_entry(time, dt_ctrl, xR, pdyn
     [coeffs_ret, w_old_ret, P_minus_ret, d_old_ret, w_dot_old_ret] = controller_estimator(dt_ctrl, xR(2), delta, pdyn_params, w_old, coeffs, P_minus, d_old, w_dot_old);
     
     C_l_delta = coeffs_ret(1);
-    L_delta = 2 * C_l_delta * pdyn_params;
+    L_delta = C_l_delta * pdyn_params / 2;
     
     if abs(L_delta) < L_min
         if L_delta >= 0
