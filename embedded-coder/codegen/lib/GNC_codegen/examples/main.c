@@ -5,7 +5,7 @@
  * File: main.c
  *
  * MATLAB Coder version            : 25.2
- * C/C++ source code generated on  : 01-Jun-2026 00:25:13
+ * C/C++ source code generated on  : 02-Jun-2026 22:53:09
  */
 
 /*************************************************************************/
@@ -61,9 +61,11 @@ static void argInit_struct0_T(struct0_T *result);
 
 static void argInit_struct1_T(struct1_T *result);
 
-static struct2_T argInit_struct2_T(void);
+static void argInit_struct2_T(struct2_T *result);
 
 static struct3_T argInit_struct3_T(void);
+
+static struct4_T argInit_struct4_T(void);
 
 /* Function Definitions */
 /*
@@ -168,6 +170,23 @@ static void argInit_struct0_T(struct0_T *result)
   double result_tmp;
   /* Set the value of each structure field.
 Change this value to the value that the application requires. */
+  result_tmp = argInit_real_T();
+  argInit_2x1_real_T(result->coeffs);
+  result->w_old = result_tmp;
+  argInit_2x2_real_T(result->P_minus);
+  result->d_old = result_tmp;
+  result->w_dot_old = result_tmp;
+}
+
+/*
+ * Arguments    : struct1_T *result
+ * Return Type  : void
+ */
+static void argInit_struct1_T(struct1_T *result)
+{
+  double result_tmp;
+  /* Set the value of each structure field.
+Change this value to the value that the application requires. */
   argInit_3x1_real_T(result->board_gyro);
   result_tmp = argInit_real_T();
   result->board_baro = result_tmp;
@@ -187,10 +206,10 @@ Change this value to the value that the application requires. */
 }
 
 /*
- * Arguments    : struct1_T *result
+ * Arguments    : struct2_T *result
  * Return Type  : void
  */
-static void argInit_struct1_T(struct1_T *result)
+static void argInit_struct2_T(struct2_T *result)
 {
   double result_tmp;
   /* Set the value of each structure field.
@@ -224,11 +243,11 @@ Change this value to the value that the application requires. */
 
 /*
  * Arguments    : void
- * Return Type  : struct2_T
+ * Return Type  : struct3_T
  */
-static struct2_T argInit_struct2_T(void)
+static struct3_T argInit_struct3_T(void)
 {
-  struct2_T result;
+  struct3_T result;
   /* Set the value of each structure field.
 Change this value to the value that the application requires. */
   argInit_3x1_real_T(result.meas);
@@ -238,11 +257,11 @@ Change this value to the value that the application requires. */
 
 /*
  * Arguments    : void
- * Return Type  : struct3_T
+ * Return Type  : struct4_T
  */
-static struct3_T argInit_struct3_T(void)
+static struct4_T argInit_struct4_T(void)
 {
-  struct3_T result;
+  struct4_T result;
   /* Set the value of each structure field.
 Change this value to the value that the application requires. */
   result.meas = argInit_real_T();
@@ -278,28 +297,21 @@ You do not need to do this more than one time. */
  */
 void main_controller_codegen_entry(void)
 {
-  double P_minus_ret[4];
-  double dv[4];
-  double coeffs_ret[2];
-  double xR_tmp[2];
-  double b_r;
-  double d_old_ret;
+  struct0_T b_r;
+  struct0_T ctrl_mem_out;
+  double dv[2];
+  double c_r;
   double time_tmp;
   double u;
-  double w_dot_old_ret;
-  double w_old_ret;
   /* Initialize function 'controller_codegen_entry' input arguments. */
   time_tmp = argInit_real_T();
   /* Initialize function input argument 'xR'. */
-  argInit_2x1_real_T(xR_tmp);
-  /* Initialize function input argument 'coeffs'. */
-  /* Initialize function input argument 'P_minus'. */
+  /* Initialize function input argument 'ctrl_mem_in'. */
   /* Call the entry-point 'controller_codegen_entry'. */
-  argInit_2x2_real_T(dv);
-  controller_codegen_entry(time_tmp, time_tmp, xR_tmp, time_tmp, time_tmp,
-                           time_tmp, xR_tmp, dv, time_tmp, time_tmp, &u, &b_r,
-                           coeffs_ret, &w_old_ret, P_minus_ret, &d_old_ret,
-                           &w_dot_old_ret);
+  argInit_2x1_real_T(dv);
+  argInit_struct0_T(&b_r);
+  controller_codegen_entry(time_tmp, time_tmp, dv, time_tmp, time_tmp, &b_r, &u,
+                           &c_r, &ctrl_mem_out);
 }
 
 /*
@@ -308,13 +320,13 @@ void main_controller_codegen_entry(void)
  */
 void main_navigation_codegen_entry(void)
 {
-  struct0_T b_r;
-  struct0_T b_ret;
-  struct1_T r1;
-  struct1_T sf_ret;
-  struct2_T board_accel_tmp;
-  struct3_T r2;
-  struct3_T r3;
+  struct1_T b_r;
+  struct1_T b_ret;
+  struct2_T r1;
+  struct2_T sf_ret;
+  struct3_T board_accel_tmp;
+  struct4_T r2;
+  struct4_T r3;
   double P_ret[121];
   double dv1[121];
   double dv[11];
@@ -325,7 +337,7 @@ void main_navigation_codegen_entry(void)
   /* Initialize function input argument 'b'. */
   /* Initialize function input argument 'sf'. */
   /* Initialize function input argument 'board_accel'. */
-  board_accel_tmp = argInit_struct2_T();
+  board_accel_tmp = argInit_struct3_T();
   /* Initialize function input argument 'board_gyro'. */
   /* Initialize function input argument 'mti_accel'. */
   /* Initialize function input argument 'mti_gyro'. */
@@ -338,10 +350,10 @@ void main_navigation_codegen_entry(void)
   /* Call the entry-point 'navigation_codegen_entry'. */
   argInit_11x1_real_T(dv);
   argInit_11x11_real_T(dv1);
-  argInit_struct0_T(&b_r);
-  argInit_struct1_T(&r1);
-  r2 = argInit_struct3_T();
-  r3 = argInit_struct3_T();
+  argInit_struct1_T(&b_r);
+  argInit_struct2_T(&r1);
+  r2 = argInit_struct4_T();
+  r3 = argInit_struct4_T();
   navigation_codegen_entry(argInit_real_T(), argInit_boolean_T(), dv, dv1, &b_r,
                            &r1, &board_accel_tmp, &board_accel_tmp,
                            &board_accel_tmp, &board_accel_tmp, &board_accel_tmp,

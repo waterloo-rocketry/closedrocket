@@ -5,7 +5,7 @@
  * File: GNC_codegen_types.h
  *
  * MATLAB Coder version            : 25.2
- * C/C++ source code generated on  : 01-Jun-2026 00:25:13
+ * C/C++ source code generated on  : 02-Jun-2026 22:53:09
  */
 
 #ifndef GNC_CODEGEN_TYPES_H
@@ -15,8 +15,8 @@
 #include "rtwtypes.h"
 
 /* Type Definitions */
-#ifndef typedef_struct0_T
-#define typedef_struct0_T
+#ifndef typedef_struct1_T
+#define typedef_struct1_T
 typedef struct {
   double board_gyro[3];
   double mti_gyro[3];
@@ -25,11 +25,11 @@ typedef struct {
   double mti_mag_earth[3];
   double board_baro;
   double mti_baro;
-} struct0_T;
-#endif /* typedef_struct0_T */
+} struct1_T;
+#endif /* typedef_struct1_T */
 
-#ifndef typedef_struct1_T
-#define typedef_struct1_T
+#ifndef typedef_struct2_T
+#define typedef_struct2_T
 typedef struct {
   double board_accel_f[3];
   double board_gyro_f[3];
@@ -41,24 +41,35 @@ typedef struct {
   double board_mag_f[3];
   double mti_baro_f;
   double mti_mag_f[3];
-} struct1_T;
-#endif /* typedef_struct1_T */
-
-#ifndef typedef_struct2_T
-#define typedef_struct2_T
-typedef struct {
-  double meas[3];
-  bool status;
 } struct2_T;
 #endif /* typedef_struct2_T */
 
 #ifndef typedef_struct3_T
 #define typedef_struct3_T
 typedef struct {
-  double meas;
+  double meas[3];
   bool status;
 } struct3_T;
 #endif /* typedef_struct3_T */
+
+#ifndef typedef_struct4_T
+#define typedef_struct4_T
+typedef struct {
+  double meas;
+  bool status;
+} struct4_T;
+#endif /* typedef_struct4_T */
+
+#ifndef typedef_struct0_T
+#define typedef_struct0_T
+typedef struct {
+  double coeffs[2];
+  double w_old;
+  double P_minus[4];
+  double d_old;
+  double w_dot_old;
+} struct0_T;
+#endif /* typedef_struct0_T */
 
 #ifndef typedef_struct_T
 #define typedef_struct_T

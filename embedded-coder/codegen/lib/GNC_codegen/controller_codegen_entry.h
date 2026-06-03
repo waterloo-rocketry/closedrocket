@@ -5,13 +5,14 @@
  * File: controller_codegen_entry.h
  *
  * MATLAB Coder version            : 25.2
- * C/C++ source code generated on  : 01-Jun-2026 00:25:13
+ * C/C++ source code generated on  : 02-Jun-2026 22:53:09
  */
 
 #ifndef CONTROLLER_CODEGEN_ENTRY_H
 #define CONTROLLER_CODEGEN_ENTRY_H
 
 /* Include Files */
+#include "GNC_codegen_types.h"
 #include "rtwtypes.h"
 #include <stddef.h>
 #include <stdlib.h>
@@ -21,12 +22,11 @@ extern "C" {
 #endif
 
 /* Function Declarations */
-extern void controller_codegen_entry(
-    double b_time, double dt_ctrl, const double xR[2], double pdyn,
-    double delta, double w_old, const double coeffs[2], const double P_minus[4],
-    double d_old, double w_dot_old, double *u, double *b_r,
-    double coeffs_ret[2], double *w_old_ret, double P_minus_ret[4],
-    double *d_old_ret, double *w_dot_old_ret);
+extern void controller_codegen_entry(double b_time, double dt_ctrl,
+                                     const double xR[2], double pdyn,
+                                     double delta, const struct0_T *ctrl_mem_in,
+                                     double *u, double *b_r,
+                                     struct0_T *ctrl_mem_out);
 
 #ifdef __cplusplus
 }

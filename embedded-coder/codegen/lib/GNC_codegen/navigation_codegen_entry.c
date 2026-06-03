@@ -5,7 +5,7 @@
  * File: navigation_codegen_entry.c
  *
  * MATLAB Coder version            : 25.2
- * C/C++ source code generated on  : 01-Jun-2026 00:25:13
+ * C/C++ source code generated on  : 02-Jun-2026 22:53:09
  */
 
 /* Include Files */
@@ -31,33 +31,33 @@
  *                bool flight_phase
  *                const double x[11]
  *                const double P[121]
- *                const struct0_T *b
- *                const struct1_T *sf
- *                const struct2_T *board_accel
- *                const struct2_T *board_gyro
- *                const struct2_T *mti_accel
- *                const struct2_T *mti_gyro
- *                const struct2_T *ad_accel
- *                const struct2_T *ad_gyro
- *                const struct3_T *board_baro
- *                const struct2_T *board_mag
- *                const struct3_T *mti_baro
- *                const struct2_T *mti_mag
+ *                const struct1_T *b
+ *                const struct2_T *sf
+ *                const struct3_T *board_accel
+ *                const struct3_T *board_gyro
+ *                const struct3_T *mti_accel
+ *                const struct3_T *mti_gyro
+ *                const struct3_T *ad_accel
+ *                const struct3_T *ad_gyro
+ *                const struct4_T *board_baro
+ *                const struct3_T *board_mag
+ *                const struct4_T *mti_baro
+ *                const struct3_T *mti_mag
  *                double x_ret[11]
  *                double P_ret[121]
- *                struct0_T *b_ret
- *                struct1_T *sf_ret
+ *                struct1_T *b_ret
+ *                struct2_T *sf_ret
  * Return Type  : void
  */
 void navigation_codegen_entry(
     double dt, bool flight_phase, const double x[11], const double P[121],
-    const struct0_T *b, const struct1_T *sf, const struct2_T *board_accel,
-    const struct2_T *board_gyro, const struct2_T *mti_accel,
-    const struct2_T *mti_gyro, const struct2_T *ad_accel,
-    const struct2_T *ad_gyro, const struct3_T *board_baro,
-    const struct2_T *board_mag, const struct3_T *mti_baro,
-    const struct2_T *mti_mag, double x_ret[11], double P_ret[121],
-    struct0_T *b_ret, struct1_T *sf_ret)
+    const struct1_T *b, const struct2_T *sf, const struct3_T *board_accel,
+    const struct3_T *board_gyro, const struct3_T *mti_accel,
+    const struct3_T *mti_gyro, const struct3_T *ad_accel,
+    const struct3_T *ad_gyro, const struct4_T *board_baro,
+    const struct3_T *board_mag, const struct4_T *mti_baro,
+    const struct3_T *mti_mag, double x_ret[11], double P_ret[121],
+    struct1_T *b_ret, struct2_T *sf_ret)
 {
   static const double Q[121] = {
       1.0E-10, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,

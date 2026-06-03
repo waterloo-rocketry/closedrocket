@@ -1,4 +1,4 @@
-function [u, r, coeffs_ret, w_old_ret, P_minus_ret, d_old_ret, w_dot_old_ret] = controller_codegen_entry(time, dt_ctrl, xR, pdyn, delta, w_old, coeffs, P_minus, d_old, w_dot_old)
+function [u, r, ctrl_mem_out] = controller_codegen_entry(time, dt_ctrl, xR, pdyn, delta, ctrl_mem_in)
     %#codegen
 
     % u : control command, desired canard angle (rad)
@@ -11,6 +11,12 @@ function [u, r, coeffs_ret, w_old_ret, P_minus_ret, d_old_ret, w_dot_old_ret] = 
     if isempty(param)
         param = coder.load('gnc/model_params.mat');
     end
+
+    coeffs = ctrl_mem_in.coeffs;
+    w_old = ctrl_mem_in.w_old;
+    P_minus = ctrl_mem_in.P_minus;
+    d_old = ctrl_mem_in.d_old;
+    w_dot_old = ctrl_mem_in.w_dot_old;
 
     %% Constants
     time_program = 15;
@@ -61,5 +67,10 @@ function [u, r, coeffs_ret, w_old_ret, P_minus_ret, d_old_ret, w_dot_old_ret] = 
     if pdyn < pdyn_min % disable during low control authority
         u = 0;
     end
-
+    
+    ctrl_mem_out.coeffs = coeffs_ret;
+    ctrl_mem_out.w_old = w_old_ret;
+    ctrl_mem_out.P_minus = P_minus_ret;
+    ctrl_mem_out.d_old = d_old_ret;
+    ctrl_mem_out.w_dot_old = w_dot_old_ret;
 end

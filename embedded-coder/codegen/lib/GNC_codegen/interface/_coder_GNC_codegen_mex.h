@@ -5,7 +5,7 @@
  * File: _coder_GNC_codegen_mex.h
  *
  * MATLAB Coder version            : 25.2
- * C/C++ source code generated on  : 01-Jun-2026 00:25:13
+ * C/C++ source code generated on  : 02-Jun-2026 22:53:09
  */
 
 #ifndef _CODER_GNC_CODEGEN_MEX_H
@@ -26,9 +26,9 @@ MEXFUNCTION_LINKAGE void mexFunction(int32_T nlhs, mxArray *plhs[],
 
 emlrtCTX mexFunctionCreateRootTLS(void);
 
-void unsafe_controller_codegen_entry_mexFunction(int32_T nlhs, mxArray *plhs[7],
+void unsafe_controller_codegen_entry_mexFunction(int32_T nlhs, mxArray *plhs[3],
                                                  int32_T nrhs,
-                                                 const mxArray *prhs[10]);
+                                                 const mxArray *prhs[6]);
 
 void unsafe_navigation_codegen_entry_mexFunction(int32_T nlhs, mxArray *plhs[4],
                                                  int32_T nrhs,

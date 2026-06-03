@@ -5,13 +5,14 @@
  * File: controller_codegen_entry.c
  *
  * MATLAB Coder version            : 25.2
- * C/C++ source code generated on  : 01-Jun-2026 00:25:13
+ * C/C++ source code generated on  : 02-Jun-2026 22:53:09
  */
 
 /* Include Files */
 #include "controller_codegen_entry.h"
 #include "GNC_codegen_data.h"
 #include "GNC_codegen_initialize.h"
+#include "GNC_codegen_types.h"
 #include "diag.h"
 #include "eye.h"
 #include "rt_nonfinite.h"
@@ -31,31 +32,21 @@
  *                const double xR[2]
  *                double pdyn
  *                double delta
- *                double w_old
- *                const double coeffs[2]
- *                const double P_minus[4]
- *                double d_old
- *                double w_dot_old
+ *                const struct0_T *ctrl_mem_in
  *                double *u
  *                double *b_r
- *                double coeffs_ret[2]
- *                double *w_old_ret
- *                double P_minus_ret[4]
- *                double *d_old_ret
- *                double *w_dot_old_ret
+ *                struct0_T *ctrl_mem_out
  * Return Type  : void
  */
 void controller_codegen_entry(double b_time, double dt_ctrl, const double xR[2],
-                              double pdyn, double delta, double w_old,
-                              const double coeffs[2], const double P_minus[4],
-                              double d_old, double w_dot_old, double *u,
-                              double *b_r, double coeffs_ret[2],
-                              double *w_old_ret, double P_minus_ret[4],
-                              double *d_old_ret, double *w_dot_old_ret)
+                              double pdyn, double delta,
+                              const struct0_T *ctrl_mem_in, double *u,
+                              double *b_r, struct0_T *ctrl_mem_out)
 {
   double P[4];
   double dv[4];
   double dv1[4];
+  double dv2[4];
   double K[2];
   double L_delta;
   double b_tmp_tmp;
@@ -67,8 +58,8 @@ void controller_codegen_entry(double b_time, double dt_ctrl, const double xR[2],
   double pdyn_params;
   double r_idx_0;
   double w_dot;
-  int P_minus_ret_tmp;
   int i;
+  int i1;
   if (!isInitialized_GNC_codegen) {
     GNC_codegen_initialize();
   }
@@ -117,16 +108,17 @@ void controller_codegen_entry(double b_time, double dt_ctrl, const double xR[2],
   /* %% lowpass */
   /*  time constant */
   /*     %% lowpass command and measurement */
-  c_delta = 0.75 * d_old + 0.25 * c_delta;
-  w_dot = 0.75 * w_dot_old + 0.25 * (xR[1] - w_old) / dt_ctrl;
+  c_delta = 0.75 * ctrl_mem_in->d_old + 0.25 * c_delta;
+  w_dot = 0.75 * ctrl_mem_in->w_dot_old +
+          0.25 * (xR[1] - ctrl_mem_in->w_old) / dt_ctrl;
   /*     %% Kalman filter */
   r_idx_0 = pdyn_params * c_delta;
   /*  regression  */
   diag(P);
-  P[0] += P_minus[0];
-  P[1] += P_minus[1];
-  P[2] += P_minus[2];
-  P[3] += P_minus[3];
+  P[0] += ctrl_mem_in->P_minus[0];
+  P[1] += ctrl_mem_in->P_minus[1];
+  P[2] += ctrl_mem_in->P_minus[2];
+  P[3] += ctrl_mem_in->P_minus[3];
   /*  covariance prediction */
   memset(&K[0], 0, sizeof(double) << 1);
   L_delta = r_idx_0 * P[0];
@@ -137,13 +129,14 @@ void controller_codegen_entry(double b_time, double dt_ctrl, const double xR[2],
    * just divide */
   K[0] = (L_delta + P[2] * pdyn_params) / (c_r + 1.0);
   K[1] = (P[1] * r_idx_0 + b_tmp_tmp) / (c_r + 1.0);
-  L_delta = w_dot - (r_idx_0 * coeffs[0] + pdyn_params * coeffs[1]);
+  L_delta = w_dot - (r_idx_0 * ctrl_mem_in->coeffs[0] +
+                     pdyn_params * ctrl_mem_in->coeffs[1]);
   /*  coefficient correction */
   eye(dv);
-  coeffs_ret[0] = coeffs[0] + K[0] * L_delta;
+  ctrl_mem_out->coeffs[0] = ctrl_mem_in->coeffs[0] + K[0] * L_delta;
   dv1[0] = dv[0] - K[0] * r_idx_0;
   dv1[1] = dv[1] - K[1] * r_idx_0;
-  coeffs_ret[1] = coeffs[1] + K[1] * L_delta;
+  ctrl_mem_out->coeffs[1] = ctrl_mem_in->coeffs[1] + K[1] * L_delta;
   dv1[2] = dv[2] - K[0] * pdyn_params;
   dv1[3] = dv[3] - K[1] * pdyn_params;
   memset(&dv[0], 0, sizeof(double) << 2);
@@ -152,44 +145,44 @@ void controller_codegen_entry(double b_time, double dt_ctrl, const double xR[2],
   c_r = dv1[2];
   r_idx_0 = dv1[3];
   for (i = 0; i < 2; i++) {
-    P_minus_ret_tmp = i << 1;
-    d = P[P_minus_ret_tmp];
-    d1 = dv[P_minus_ret_tmp] + L_delta * d;
-    d2 = dv[P_minus_ret_tmp + 1] + b_tmp_tmp * d;
-    d = P[P_minus_ret_tmp + 1];
+    i1 = i << 1;
+    d = P[i1];
+    d1 = dv[i1] + L_delta * d;
+    d2 = dv[i1 + 1] + b_tmp_tmp * d;
+    d = P[i1 + 1];
     d1 += c_r * d;
-    dv[P_minus_ret_tmp] = d1;
+    dv[i1] = d1;
     d2 += r_idx_0 * d;
-    dv[P_minus_ret_tmp + 1] = d2;
+    dv[i1 + 1] = d2;
   }
-  memset(&P_minus_ret[0], 0, sizeof(double) << 2);
+  memset(&dv2[0], 0, sizeof(double) << 2);
   L_delta = dv[0];
   b_tmp_tmp = dv[1];
   c_r = dv[2];
   r_idx_0 = dv[3];
   for (i = 0; i < 2; i++) {
     d = dv1[i];
-    P_minus_ret_tmp = i << 1;
-    d1 = P_minus_ret[P_minus_ret_tmp] + L_delta * d;
-    d2 = P_minus_ret[P_minus_ret_tmp + 1] + b_tmp_tmp * d;
-    P[P_minus_ret_tmp] = K[0] * K[i];
+    i1 = i << 1;
+    d1 = dv2[i1] + L_delta * d;
+    d2 = dv2[i1 + 1] + b_tmp_tmp * d;
+    P[i1] = K[0] * K[i];
     d = dv1[i + 2];
     d1 += c_r * d;
-    P_minus_ret[P_minus_ret_tmp] = d1;
+    dv2[i1] = d1;
     d2 += r_idx_0 * d;
-    P_minus_ret[P_minus_ret_tmp + 1] = d2;
-    P[P_minus_ret_tmp + 1] = K[1] * K[i];
+    dv2[i1 + 1] = d2;
+    P[i1 + 1] = K[1] * K[i];
   }
-  P_minus_ret[0] += P[0];
-  P_minus_ret[1] += P[1];
-  P_minus_ret[2] += P[2];
-  P_minus_ret[3] += P[3];
+  ctrl_mem_out->P_minus[0] = dv2[0] + P[0];
+  ctrl_mem_out->P_minus[1] = dv2[1] + P[1];
+  ctrl_mem_out->P_minus[2] = dv2[2] + P[2];
+  ctrl_mem_out->P_minus[3] = dv2[3] + P[3];
   /*  covariance correction. Joseph form for numerical stability */
   /*     %% update for next cycle */
-  *w_old_ret = xR[1];
-  *d_old_ret = c_delta;
-  *w_dot_old_ret = w_dot;
-  L_delta = 2.0 * coeffs_ret[0] * pdyn_params;
+  ctrl_mem_out->w_old = xR[1];
+  ctrl_mem_out->d_old = c_delta;
+  ctrl_mem_out->w_dot_old = w_dot;
+  L_delta = 2.0 * ctrl_mem_out->coeffs[0] * pdyn_params;
   if (fabs(L_delta) < 10.0) {
     if (L_delta >= 0.0) {
       L_delta = 10.0;

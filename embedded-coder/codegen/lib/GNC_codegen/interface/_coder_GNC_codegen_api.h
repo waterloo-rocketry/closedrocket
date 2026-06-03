@@ -5,7 +5,7 @@
  * File: _coder_GNC_codegen_api.h
  *
  * MATLAB Coder version            : 25.2
- * C/C++ source code generated on  : 01-Jun-2026 00:25:13
+ * C/C++ source code generated on  : 02-Jun-2026 22:53:09
  */
 
 #ifndef _CODER_GNC_CODEGEN_API_H
@@ -18,8 +18,8 @@
 #include <string.h>
 
 /* Type Definitions */
-#ifndef typedef_struct0_T
-#define typedef_struct0_T
+#ifndef typedef_struct1_T
+#define typedef_struct1_T
 typedef struct {
   real_T board_gyro[3];
   real_T mti_gyro[3];
@@ -28,11 +28,11 @@ typedef struct {
   real_T mti_mag_earth[3];
   real_T board_baro;
   real_T mti_baro;
-} struct0_T;
-#endif /* typedef_struct0_T */
+} struct1_T;
+#endif /* typedef_struct1_T */
 
-#ifndef typedef_struct1_T
-#define typedef_struct1_T
+#ifndef typedef_struct2_T
+#define typedef_struct2_T
 typedef struct {
   real_T board_accel_f[3];
   real_T board_gyro_f[3];
@@ -44,24 +44,35 @@ typedef struct {
   real_T board_mag_f[3];
   real_T mti_baro_f;
   real_T mti_mag_f[3];
-} struct1_T;
-#endif /* typedef_struct1_T */
-
-#ifndef typedef_struct2_T
-#define typedef_struct2_T
-typedef struct {
-  real_T meas[3];
-  boolean_T status;
 } struct2_T;
 #endif /* typedef_struct2_T */
 
 #ifndef typedef_struct3_T
 #define typedef_struct3_T
 typedef struct {
-  real_T meas;
+  real_T meas[3];
   boolean_T status;
 } struct3_T;
 #endif /* typedef_struct3_T */
+
+#ifndef typedef_struct4_T
+#define typedef_struct4_T
+typedef struct {
+  real_T meas;
+  boolean_T status;
+} struct4_T;
+#endif /* typedef_struct4_T */
+
+#ifndef typedef_struct0_T
+#define typedef_struct0_T
+typedef struct {
+  real_T coeffs[2];
+  real_T w_old;
+  real_T P_minus[4];
+  real_T d_old;
+  real_T w_dot_old;
+} struct0_T;
+#endif /* typedef_struct0_T */
 
 /* Variable Declarations */
 extern emlrtCTX emlrtRootTLSGlobal;
@@ -83,25 +94,21 @@ void GNC_codegen_xil_shutdown(void);
 void GNC_codegen_xil_terminate(void);
 
 void controller_codegen_entry(real_T b_time, real_T dt_ctrl, real_T xR[2],
-                              real_T pdyn, real_T delta, real_T w_old,
-                              real_T coeffs[2], real_T P_minus[4], real_T d_old,
-                              real_T w_dot_old, real_T *u, real_T *r,
-                              real_T coeffs_ret[2], real_T *w_old_ret,
-                              real_T P_minus_ret[4], real_T *d_old_ret,
-                              real_T *w_dot_old_ret);
+                              real_T pdyn, real_T delta, struct0_T *ctrl_mem_in,
+                              real_T *u, real_T *r, struct0_T *ctrl_mem_out);
 
-void controller_codegen_entry_api(const mxArray *const prhs[10], int32_T nlhs,
-                                  const mxArray *plhs[7]);
+void controller_codegen_entry_api(const mxArray *const prhs[6], int32_T nlhs,
+                                  const mxArray *plhs[3]);
 
 void navigation_codegen_entry(real_T dt, boolean_T flight_phase, real_T x[11],
-                              real_T P[121], struct0_T *b, struct1_T *sf,
-                              struct2_T *board_accel, struct2_T *board_gyro,
-                              struct2_T *mti_accel, struct2_T *mti_gyro,
-                              struct2_T *ad_accel, struct2_T *ad_gyro,
-                              struct3_T *board_baro, struct2_T *board_mag,
-                              struct3_T *mti_baro, struct2_T *mti_mag,
+                              real_T P[121], struct1_T *b, struct2_T *sf,
+                              struct3_T *board_accel, struct3_T *board_gyro,
+                              struct3_T *mti_accel, struct3_T *mti_gyro,
+                              struct3_T *ad_accel, struct3_T *ad_gyro,
+                              struct4_T *board_baro, struct3_T *board_mag,
+                              struct4_T *mti_baro, struct3_T *mti_mag,
                               real_T x_ret[11], real_T P_ret[121],
-                              struct0_T *b_ret, struct1_T *sf_ret);
+                              struct1_T *b_ret, struct2_T *sf_ret);
 
 void navigation_codegen_entry_api(const mxArray *const prhs[16], int32_T nlhs,
                                   const mxArray *plhs[4]);

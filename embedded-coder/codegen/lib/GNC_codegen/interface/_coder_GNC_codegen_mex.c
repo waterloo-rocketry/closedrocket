@@ -5,7 +5,7 @@
  * File: _coder_GNC_codegen_mex.c
  *
  * MATLAB Coder version            : 25.2
- * C/C++ source code generated on  : 01-Jun-2026 00:25:13
+ * C/C++ source code generated on  : 02-Jun-2026 22:53:09
  */
 
 /* Include Files */
@@ -29,7 +29,7 @@ void mexFunction(int32_T nlhs, mxArray *plhs[], int32_T nrhs,
       NULL  /* prev */
   };
   const mxArray *c_prhs[16];
-  const mxArray *b_prhs[10];
+  const mxArray *b_prhs[6];
   int32_T i;
   int32_T i1;
   const char_T *entryPointTemplateNames[2] = {"controller_codegen_entry",
@@ -40,7 +40,7 @@ void mexFunction(int32_T nlhs, mxArray *plhs[], int32_T nrhs,
   switch (emlrtGetEntryPointIndexR2016a(
       &st, nrhs, &prhs[0], (const char_T **)&entryPointTemplateNames[0], 2)) {
   case 0:
-    for (i = 0; i < 10; i++) {
+    for (i = 0; i < 6; i++) {
       b_prhs[i] = prhs[i + 1];
     }
     unsafe_controller_codegen_entry_mexFunction(nlhs, plhs, nrhs - 1, b_prhs);
@@ -68,36 +68,36 @@ emlrtCTX mexFunctionCreateRootTLS(void)
 
 /*
  * Arguments    : int32_T nlhs
- *                mxArray *plhs[7]
+ *                mxArray *plhs[3]
  *                int32_T nrhs
- *                const mxArray *prhs[10]
+ *                const mxArray *prhs[6]
  * Return Type  : void
  */
-void unsafe_controller_codegen_entry_mexFunction(int32_T nlhs, mxArray *plhs[7],
+void unsafe_controller_codegen_entry_mexFunction(int32_T nlhs, mxArray *plhs[3],
                                                  int32_T nrhs,
-                                                 const mxArray *prhs[10])
+                                                 const mxArray *prhs[6])
 {
   emlrtStack st = {
       NULL, /* site */
       NULL, /* tls */
       NULL  /* prev */
   };
-  const mxArray *b_prhs[10];
-  const mxArray *outputs[7];
+  const mxArray *b_prhs[6];
+  const mxArray *outputs[3];
   int32_T i;
   int32_T i1;
   st.tls = emlrtRootTLSGlobal;
   /* Check for proper number of arguments. */
-  if (nrhs != 10) {
-    emlrtErrMsgIdAndTxt(&st, "EMLRT:runTime:WrongNumberOfInputs", 5, 12, 10, 4,
+  if (nrhs != 6) {
+    emlrtErrMsgIdAndTxt(&st, "EMLRT:runTime:WrongNumberOfInputs", 5, 12, 6, 4,
                         24, "controller_codegen_entry");
   }
-  if (nlhs > 7) {
+  if (nlhs > 3) {
     emlrtErrMsgIdAndTxt(&st, "EMLRT:runTime:TooManyOutputArguments", 3, 4, 24,
                         "controller_codegen_entry");
   }
   /* Call the function. */
-  for (i = 0; i < 10; i++) {
+  for (i = 0; i < 6; i++) {
     b_prhs[i] = prhs[i];
   }
   controller_codegen_entry_api(b_prhs, nlhs, outputs);
