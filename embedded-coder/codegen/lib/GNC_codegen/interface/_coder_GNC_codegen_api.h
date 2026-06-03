@@ -5,7 +5,7 @@
  * File: _coder_GNC_codegen_api.h
  *
  * MATLAB Coder version            : 25.2
- * C/C++ source code generated on  : 02-Jun-2026 22:53:09
+ * C/C++ source code generated on  : 02-Jun-2026 23:24:33
  */
 
 #ifndef _CODER_GNC_CODEGEN_API_H
@@ -47,21 +47,37 @@ typedef struct {
 } struct2_T;
 #endif /* typedef_struct2_T */
 
-#ifndef typedef_struct3_T
-#define typedef_struct3_T
-typedef struct {
-  real_T meas[3];
-  boolean_T status;
-} struct3_T;
-#endif /* typedef_struct3_T */
-
 #ifndef typedef_struct4_T
 #define typedef_struct4_T
 typedef struct {
-  real_T meas;
+  real_T meas[3];
   boolean_T status;
 } struct4_T;
 #endif /* typedef_struct4_T */
+
+#ifndef typedef_struct5_T
+#define typedef_struct5_T
+typedef struct {
+  real_T meas;
+  boolean_T status;
+} struct5_T;
+#endif /* typedef_struct5_T */
+
+#ifndef typedef_struct3_T
+#define typedef_struct3_T
+typedef struct {
+  struct4_T board_accel;
+  struct4_T board_gyro;
+  struct4_T mti_accel;
+  struct4_T mti_gyro;
+  struct4_T ad_accel;
+  struct4_T ad_gyro;
+  struct5_T board_baro;
+  struct4_T board_mag;
+  struct5_T mti_baro;
+  struct4_T mti_mag;
+} struct3_T;
+#endif /* typedef_struct3_T */
 
 #ifndef typedef_struct0_T
 #define typedef_struct0_T
@@ -101,16 +117,12 @@ void controller_codegen_entry_api(const mxArray *const prhs[6], int32_T nlhs,
                                   const mxArray *plhs[3]);
 
 void navigation_codegen_entry(real_T dt, boolean_T flight_phase, real_T x[11],
-                              real_T P[121], struct1_T *b, struct2_T *sf,
-                              struct3_T *board_accel, struct3_T *board_gyro,
-                              struct3_T *mti_accel, struct3_T *mti_gyro,
-                              struct3_T *ad_accel, struct3_T *ad_gyro,
-                              struct4_T *board_baro, struct3_T *board_mag,
-                              struct4_T *mti_baro, struct3_T *mti_mag,
+                              real_T P[121], struct1_T *bias,
+                              struct2_T *sens_filt, struct3_T *sens_input,
                               real_T x_ret[11], real_T P_ret[121],
-                              struct1_T *b_ret, struct2_T *sf_ret);
+                              struct1_T *bias_ret, struct2_T *sens_filt_ret);
 
-void navigation_codegen_entry_api(const mxArray *const prhs[16], int32_T nlhs,
+void navigation_codegen_entry_api(const mxArray *const prhs[7], int32_T nlhs,
                                   const mxArray *plhs[4]);
 
 #ifdef __cplusplus

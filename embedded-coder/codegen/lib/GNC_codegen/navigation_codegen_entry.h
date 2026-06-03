@@ -5,7 +5,7 @@
  * File: navigation_codegen_entry.h
  *
  * MATLAB Coder version            : 25.2
- * C/C++ source code generated on  : 02-Jun-2026 22:53:09
+ * C/C++ source code generated on  : 02-Jun-2026 23:24:33
  */
 
 #ifndef NAVIGATION_CODEGEN_ENTRY_H
@@ -24,13 +24,9 @@ extern "C" {
 /* Function Declarations */
 extern void navigation_codegen_entry(
     double dt, bool flight_phase, const double x[11], const double P[121],
-    const struct1_T *b, const struct2_T *sf, const struct3_T *board_accel,
-    const struct3_T *board_gyro, const struct3_T *mti_accel,
-    const struct3_T *mti_gyro, const struct3_T *ad_accel,
-    const struct3_T *ad_gyro, const struct4_T *board_baro,
-    const struct3_T *board_mag, const struct4_T *mti_baro,
-    const struct3_T *mti_mag, double x_ret[11], double P_ret[121],
-    struct1_T *b_ret, struct2_T *sf_ret);
+    struct1_T *bias, const struct2_T *sens_filt, const struct3_T *sens_input,
+    double x_ret[11], double P_ret[121], struct1_T *bias_ret,
+    struct2_T *sens_filt_ret);
 
 #ifdef __cplusplus
 }

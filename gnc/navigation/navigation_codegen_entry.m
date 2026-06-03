@@ -1,21 +1,31 @@
-function [x_ret, P_ret, b_ret, sf_ret] = navigation_codegen_entry(dt, flight_phase, x, P, b, sf, board_accel, board_gyro, mti_accel, mti_gyro, ad_accel, ad_gyro, board_baro, board_mag, mti_baro, mti_mag)
+function [x_ret, P_ret, bias_ret, sens_filt_ret] = navigation_codegen_entry(dt, flight_phase, x, P, bias, sens_filt, sens_input)
     %#codegen
     % Calls the pad and flight filters.
     
     x_ret = x;
     P_ret = P;
-    b_ret = b;
-    sf_ret = sf;
+    bias_ret = bias;
+    sens_filt_ret = sens_filt;
+    board_accel = sens_input.board_accel;
+    board_gyro = sens_input.board_gyro;
+    mti_accel = sens_input.mti_accel;
+    mti_gyro = sens_input.mti_gyro;
+    ad_accel = sens_input.ad_accel;
+    ad_gyro = sens_input.ad_gyro;
+    board_baro = sens_input.board_baro;
+    board_mag = sens_input.board_mag;
+    mti_baro = sens_input.mti_baro;
+    mti_mag = sens_input.mti_mag;
 
     %% Pad filter iteration
-    if flight_phase == false || isempty(b) % only before ignition (or if not run before)
-        [xhat, bias, sf_ret] = pad_filter(board_accel, board_gyro, mti_accel, mti_gyro, ad_accel, ad_gyro, board_baro, board_mag, mti_baro, mti_mag, sf);
-        x_ret = xhat; b_ret = bias;
+    if flight_phase == false || isempty(bias) % only before ignition (or if not run before)
+        [xhat, bias, sens_filt_ret] = pad_filter(board_accel, board_gyro, mti_accel, mti_gyro, ad_accel, ad_gyro, board_baro, board_mag, mti_baro, mti_mag, sens_filt);
+        x_ret = xhat; bias_ret = bias;
     end 
 
     %% Flight filter iteration
     if flight_phase == true % in flight
-        [x_ret, P_ret] = flight_filter(dt, x, P, b, board_accel, board_gyro, mti_accel, mti_gyro, ad_accel, ad_gyro, board_baro, board_mag, mti_baro, mti_mag);
+        [x_ret, P_ret] = flight_filter(dt, x, P, bias, board_accel, board_gyro, mti_accel, mti_gyro, ad_accel, ad_gyro, board_baro, board_mag, mti_baro, mti_mag);
     end
 
 end

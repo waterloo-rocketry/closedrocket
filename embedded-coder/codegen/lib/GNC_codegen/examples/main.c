@@ -5,7 +5,7 @@
  * File: main.c
  *
  * MATLAB Coder version            : 25.2
- * C/C++ source code generated on  : 02-Jun-2026 22:53:09
+ * C/C++ source code generated on  : 02-Jun-2026 23:24:33
  */
 
 /*************************************************************************/
@@ -63,9 +63,11 @@ static void argInit_struct1_T(struct1_T *result);
 
 static void argInit_struct2_T(struct2_T *result);
 
-static struct3_T argInit_struct3_T(void);
+static void argInit_struct3_T(struct3_T *result);
 
 static struct4_T argInit_struct4_T(void);
+
+static struct5_T argInit_struct5_T(void);
 
 /* Function Definitions */
 /*
@@ -242,17 +244,23 @@ Change this value to the value that the application requires. */
 }
 
 /*
- * Arguments    : void
- * Return Type  : struct3_T
+ * Arguments    : struct3_T *result
+ * Return Type  : void
  */
-static struct3_T argInit_struct3_T(void)
+static void argInit_struct3_T(struct3_T *result)
 {
-  struct3_T result;
   /* Set the value of each structure field.
 Change this value to the value that the application requires. */
-  argInit_3x1_real_T(result.meas);
-  result.status = argInit_boolean_T();
-  return result;
+  result->board_accel = argInit_struct4_T();
+  result->board_baro = argInit_struct5_T();
+  result->mti_baro = argInit_struct5_T();
+  result->board_gyro = result->board_accel;
+  result->mti_accel = result->board_accel;
+  result->mti_gyro = result->board_accel;
+  result->ad_accel = result->board_accel;
+  result->ad_gyro = result->board_accel;
+  result->board_mag = result->board_accel;
+  result->mti_mag = result->board_accel;
 }
 
 /*
@@ -262,6 +270,20 @@ Change this value to the value that the application requires. */
 static struct4_T argInit_struct4_T(void)
 {
   struct4_T result;
+  /* Set the value of each structure field.
+Change this value to the value that the application requires. */
+  argInit_3x1_real_T(result.meas);
+  result.status = argInit_boolean_T();
+  return result;
+}
+
+/*
+ * Arguments    : void
+ * Return Type  : struct5_T
+ */
+static struct5_T argInit_struct5_T(void)
+{
+  struct5_T result;
   /* Set the value of each structure field.
 Change this value to the value that the application requires. */
   result.meas = argInit_real_T();
@@ -321,12 +343,10 @@ void main_controller_codegen_entry(void)
 void main_navigation_codegen_entry(void)
 {
   struct1_T b_r;
-  struct1_T b_ret;
+  struct1_T bias_ret;
   struct2_T r1;
-  struct2_T sf_ret;
-  struct3_T board_accel_tmp;
-  struct4_T r2;
-  struct4_T r3;
+  struct2_T sens_filt_ret;
+  struct3_T r2;
   double P_ret[121];
   double dv1[121];
   double dv[11];
@@ -334,31 +354,17 @@ void main_navigation_codegen_entry(void)
   /* Initialize function 'navigation_codegen_entry' input arguments. */
   /* Initialize function input argument 'x'. */
   /* Initialize function input argument 'P'. */
-  /* Initialize function input argument 'b'. */
-  /* Initialize function input argument 'sf'. */
-  /* Initialize function input argument 'board_accel'. */
-  board_accel_tmp = argInit_struct3_T();
-  /* Initialize function input argument 'board_gyro'. */
-  /* Initialize function input argument 'mti_accel'. */
-  /* Initialize function input argument 'mti_gyro'. */
-  /* Initialize function input argument 'ad_accel'. */
-  /* Initialize function input argument 'ad_gyro'. */
-  /* Initialize function input argument 'board_baro'. */
-  /* Initialize function input argument 'board_mag'. */
-  /* Initialize function input argument 'mti_baro'. */
-  /* Initialize function input argument 'mti_mag'. */
+  /* Initialize function input argument 'bias'. */
+  /* Initialize function input argument 'sens_filt'. */
+  /* Initialize function input argument 'sens_input'. */
   /* Call the entry-point 'navigation_codegen_entry'. */
   argInit_11x1_real_T(dv);
   argInit_11x11_real_T(dv1);
   argInit_struct1_T(&b_r);
   argInit_struct2_T(&r1);
-  r2 = argInit_struct4_T();
-  r3 = argInit_struct4_T();
+  argInit_struct3_T(&r2);
   navigation_codegen_entry(argInit_real_T(), argInit_boolean_T(), dv, dv1, &b_r,
-                           &r1, &board_accel_tmp, &board_accel_tmp,
-                           &board_accel_tmp, &board_accel_tmp, &board_accel_tmp,
-                           &board_accel_tmp, &r2, &board_accel_tmp, &r3,
-                           &board_accel_tmp, x_ret, P_ret, &b_ret, &sf_ret);
+                           &r1, &r2, x_ret, P_ret, &bias_ret, &sens_filt_ret);
 }
 
 /*

@@ -5,7 +5,7 @@
  * File: GNC_codegen_types.h
  *
  * MATLAB Coder version            : 25.2
- * C/C++ source code generated on  : 02-Jun-2026 22:53:09
+ * C/C++ source code generated on  : 02-Jun-2026 23:24:33
  */
 
 #ifndef GNC_CODEGEN_TYPES_H
@@ -44,21 +44,37 @@ typedef struct {
 } struct2_T;
 #endif /* typedef_struct2_T */
 
-#ifndef typedef_struct3_T
-#define typedef_struct3_T
-typedef struct {
-  double meas[3];
-  bool status;
-} struct3_T;
-#endif /* typedef_struct3_T */
-
 #ifndef typedef_struct4_T
 #define typedef_struct4_T
 typedef struct {
-  double meas;
+  double meas[3];
   bool status;
 } struct4_T;
 #endif /* typedef_struct4_T */
+
+#ifndef typedef_struct5_T
+#define typedef_struct5_T
+typedef struct {
+  double meas;
+  bool status;
+} struct5_T;
+#endif /* typedef_struct5_T */
+
+#ifndef typedef_struct3_T
+#define typedef_struct3_T
+typedef struct {
+  struct4_T board_accel;
+  struct4_T board_gyro;
+  struct4_T mti_accel;
+  struct4_T mti_gyro;
+  struct4_T ad_accel;
+  struct4_T ad_gyro;
+  struct5_T board_baro;
+  struct4_T board_mag;
+  struct5_T mti_baro;
+  struct4_T mti_mag;
+} struct3_T;
+#endif /* typedef_struct3_T */
 
 #ifndef typedef_struct0_T
 #define typedef_struct0_T

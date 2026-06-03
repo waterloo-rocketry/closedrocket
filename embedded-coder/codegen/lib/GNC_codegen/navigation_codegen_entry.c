@@ -5,7 +5,7 @@
  * File: navigation_codegen_entry.c
  *
  * MATLAB Coder version            : 25.2
- * C/C++ source code generated on  : 02-Jun-2026 22:53:09
+ * C/C++ source code generated on  : 02-Jun-2026 23:24:33
  */
 
 /* Include Files */
@@ -31,33 +31,21 @@
  *                bool flight_phase
  *                const double x[11]
  *                const double P[121]
- *                const struct1_T *b
- *                const struct2_T *sf
- *                const struct3_T *board_accel
- *                const struct3_T *board_gyro
- *                const struct3_T *mti_accel
- *                const struct3_T *mti_gyro
- *                const struct3_T *ad_accel
- *                const struct3_T *ad_gyro
- *                const struct4_T *board_baro
- *                const struct3_T *board_mag
- *                const struct4_T *mti_baro
- *                const struct3_T *mti_mag
+ *                struct1_T *bias
+ *                const struct2_T *sens_filt
+ *                const struct3_T *sens_input
  *                double x_ret[11]
  *                double P_ret[121]
- *                struct1_T *b_ret
- *                struct2_T *sf_ret
+ *                struct1_T *bias_ret
+ *                struct2_T *sens_filt_ret
  * Return Type  : void
  */
-void navigation_codegen_entry(
-    double dt, bool flight_phase, const double x[11], const double P[121],
-    const struct1_T *b, const struct2_T *sf, const struct3_T *board_accel,
-    const struct3_T *board_gyro, const struct3_T *mti_accel,
-    const struct3_T *mti_gyro, const struct3_T *ad_accel,
-    const struct3_T *ad_gyro, const struct4_T *board_baro,
-    const struct3_T *board_mag, const struct4_T *mti_baro,
-    const struct3_T *mti_mag, double x_ret[11], double P_ret[121],
-    struct1_T *b_ret, struct2_T *sf_ret)
+void navigation_codegen_entry(double dt, bool flight_phase, const double x[11],
+                              const double P[121], struct1_T *bias,
+                              const struct2_T *sens_filt,
+                              const struct3_T *sens_input, double x_ret[11],
+                              double P_ret[121], struct1_T *bias_ret,
+                              struct2_T *sens_filt_ret)
 {
   static const double Q[121] = {
       1.0E-10, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
@@ -73,7 +61,7 @@ void navigation_codegen_entry(
       0.001};
   static const double R[9] = {1.0E-9, 0.0, 0.0, 0.0,   1.0E-9,
                               0.0,    0.0, 0.0, 1.0E-9};
-  static const double b_b[9] = {1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0};
+  static const double b[9] = {1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0};
   double E[121];
   double F[121];
   double b_F[121];
@@ -115,8 +103,8 @@ void navigation_codegen_entry(
   }
   memcpy(&x_ret[0], &x[0], 11U * sizeof(double));
   memcpy(&P_ret[0], &P[0], 121U * sizeof(double));
-  *b_ret = *b;
-  *sf_ret = *sf;
+  *bias_ret = *bias;
+  *sens_filt_ret = *sens_filt;
   /*     %% Pad filter iteration */
   if (!flight_phase) {
     /*  only before ignition (or if not run before) */
@@ -126,131 +114,136 @@ void navigation_codegen_entry(
     /*     %% Settings */
     /*  [s], low pass time constant */
     /*     %% parameters */
-    board_accel_f[0] = sf->board_accel_f[0];
-    board_gyro_f_idx_0 = sf->board_gyro_f[0];
-    mti_accel_f_idx_0 = sf->mti_accel_f[0];
-    ad_accel_f[0] = sf->ad_accel_f[0];
-    board_accel_f[1] = sf->board_accel_f[1];
-    board_gyro_f_idx_1 = sf->board_gyro_f[1];
-    mti_accel_f_idx_1 = sf->mti_accel_f[1];
-    ad_accel_f[1] = sf->ad_accel_f[1];
-    board_accel_f[2] = sf->board_accel_f[2];
-    board_gyro_f_idx_2 = sf->board_gyro_f[2];
-    mti_accel_f_idx_2 = sf->mti_accel_f[2];
-    ad_accel_f[2] = sf->ad_accel_f[2];
-    board_baro_f = sf->board_baro_f;
-    mti_baro_f = sf->mti_baro_f;
+    board_accel_f[0] = sens_filt->board_accel_f[0];
+    board_gyro_f_idx_0 = sens_filt->board_gyro_f[0];
+    mti_accel_f_idx_0 = sens_filt->mti_accel_f[0];
+    ad_accel_f[0] = sens_filt->ad_accel_f[0];
+    board_accel_f[1] = sens_filt->board_accel_f[1];
+    board_gyro_f_idx_1 = sens_filt->board_gyro_f[1];
+    mti_accel_f_idx_1 = sens_filt->mti_accel_f[1];
+    ad_accel_f[1] = sens_filt->ad_accel_f[1];
+    board_accel_f[2] = sens_filt->board_accel_f[2];
+    board_gyro_f_idx_2 = sens_filt->board_gyro_f[2];
+    mti_accel_f_idx_2 = sens_filt->mti_accel_f[2];
+    ad_accel_f[2] = sens_filt->ad_accel_f[2];
+    board_baro_f = sens_filt->board_baro_f;
+    mti_baro_f = sens_filt->mti_baro_f;
     /*     %% lowpass filter */
     /*  filtered = filtered + alpha*(measured-filtered); */
     /* %% lowpass filter function used in pad filter */
-    if (board_accel->status) {
-      board_accel_f[0] =
-          0.0005 * board_accel->meas[0] + 0.9995 * sf->board_accel_f[0];
-      board_accel_f[1] =
-          0.0005 * board_accel->meas[1] + 0.9995 * sf->board_accel_f[1];
-      board_accel_f[2] =
-          0.0005 * board_accel->meas[2] + 0.9995 * sf->board_accel_f[2];
+    if (sens_input->board_accel.status) {
+      board_accel_f[0] = 0.0005 * sens_input->board_accel.meas[0] +
+                         0.9995 * sens_filt->board_accel_f[0];
+      board_accel_f[1] = 0.0005 * sens_input->board_accel.meas[1] +
+                         0.9995 * sens_filt->board_accel_f[1];
+      board_accel_f[2] = 0.0005 * sens_input->board_accel.meas[2] +
+                         0.9995 * sens_filt->board_accel_f[2];
     }
     /* %% lowpass filter function used in pad filter */
-    if (board_gyro->status) {
-      board_gyro_f_idx_0 =
-          0.0005 * board_gyro->meas[0] + 0.9995 * sf->board_gyro_f[0];
-      board_gyro_f_idx_1 =
-          0.0005 * board_gyro->meas[1] + 0.9995 * sf->board_gyro_f[1];
-      board_gyro_f_idx_2 =
-          0.0005 * board_gyro->meas[2] + 0.9995 * sf->board_gyro_f[2];
+    if (sens_input->board_gyro.status) {
+      board_gyro_f_idx_0 = 0.0005 * sens_input->board_gyro.meas[0] +
+                           0.9995 * sens_filt->board_gyro_f[0];
+      board_gyro_f_idx_1 = 0.0005 * sens_input->board_gyro.meas[1] +
+                           0.9995 * sens_filt->board_gyro_f[1];
+      board_gyro_f_idx_2 = 0.0005 * sens_input->board_gyro.meas[2] +
+                           0.9995 * sens_filt->board_gyro_f[2];
     }
     /* %% lowpass filter function used in pad filter */
-    if (mti_accel->status) {
-      mti_accel_f_idx_0 =
-          0.0005 * mti_accel->meas[0] + 0.9995 * sf->mti_accel_f[0];
-      mti_accel_f_idx_1 =
-          0.0005 * mti_accel->meas[1] + 0.9995 * sf->mti_accel_f[1];
-      mti_accel_f_idx_2 =
-          0.0005 * mti_accel->meas[2] + 0.9995 * sf->mti_accel_f[2];
+    if (sens_input->mti_accel.status) {
+      mti_accel_f_idx_0 = 0.0005 * sens_input->mti_accel.meas[0] +
+                          0.9995 * sens_filt->mti_accel_f[0];
+      mti_accel_f_idx_1 = 0.0005 * sens_input->mti_accel.meas[1] +
+                          0.9995 * sens_filt->mti_accel_f[1];
+      mti_accel_f_idx_2 = 0.0005 * sens_input->mti_accel.meas[2] +
+                          0.9995 * sens_filt->mti_accel_f[2];
     }
     /* %% lowpass filter function used in pad filter */
-    if (mti_gyro->status) {
-      sf_ret->mti_gyro_f[0] =
-          0.0005 * mti_gyro->meas[0] + 0.9995 * sf->mti_gyro_f[0];
-      sf_ret->mti_gyro_f[1] =
-          0.0005 * mti_gyro->meas[1] + 0.9995 * sf->mti_gyro_f[1];
-      sf_ret->mti_gyro_f[2] =
-          0.0005 * mti_gyro->meas[2] + 0.9995 * sf->mti_gyro_f[2];
+    if (sens_input->mti_gyro.status) {
+      sens_filt_ret->mti_gyro_f[0] = 0.0005 * sens_input->mti_gyro.meas[0] +
+                                     0.9995 * sens_filt->mti_gyro_f[0];
+      sens_filt_ret->mti_gyro_f[1] = 0.0005 * sens_input->mti_gyro.meas[1] +
+                                     0.9995 * sens_filt->mti_gyro_f[1];
+      sens_filt_ret->mti_gyro_f[2] = 0.0005 * sens_input->mti_gyro.meas[2] +
+                                     0.9995 * sens_filt->mti_gyro_f[2];
     }
     /* %% lowpass filter function used in pad filter */
-    if (ad_accel->status) {
-      ad_accel_f[0] = 0.0005 * ad_accel->meas[0] + 0.9995 * sf->ad_accel_f[0];
-      ad_accel_f[1] = 0.0005 * ad_accel->meas[1] + 0.9995 * sf->ad_accel_f[1];
-      ad_accel_f[2] = 0.0005 * ad_accel->meas[2] + 0.9995 * sf->ad_accel_f[2];
+    if (sens_input->ad_accel.status) {
+      ad_accel_f[0] = 0.0005 * sens_input->ad_accel.meas[0] +
+                      0.9995 * sens_filt->ad_accel_f[0];
+      ad_accel_f[1] = 0.0005 * sens_input->ad_accel.meas[1] +
+                      0.9995 * sens_filt->ad_accel_f[1];
+      ad_accel_f[2] = 0.0005 * sens_input->ad_accel.meas[2] +
+                      0.9995 * sens_filt->ad_accel_f[2];
     }
     /* %% lowpass filter function used in pad filter */
-    if (ad_gyro->status) {
-      sf_ret->ad_gyro_f[0] =
-          0.0005 * ad_gyro->meas[0] + 0.9995 * sf->ad_gyro_f[0];
-      sf_ret->ad_gyro_f[1] =
-          0.0005 * ad_gyro->meas[1] + 0.9995 * sf->ad_gyro_f[1];
-      sf_ret->ad_gyro_f[2] =
-          0.0005 * ad_gyro->meas[2] + 0.9995 * sf->ad_gyro_f[2];
+    if (sens_input->ad_gyro.status) {
+      sens_filt_ret->ad_gyro_f[0] = 0.0005 * sens_input->ad_gyro.meas[0] +
+                                    0.9995 * sens_filt->ad_gyro_f[0];
+      sens_filt_ret->ad_gyro_f[1] = 0.0005 * sens_input->ad_gyro.meas[1] +
+                                    0.9995 * sens_filt->ad_gyro_f[1];
+      sens_filt_ret->ad_gyro_f[2] = 0.0005 * sens_input->ad_gyro.meas[2] +
+                                    0.9995 * sens_filt->ad_gyro_f[2];
     }
     /* %% lowpass filter function used in pad filter */
-    if (board_baro->status) {
-      board_baro_f = 0.0005 * board_baro->meas + 0.9995 * sf->board_baro_f;
+    if (sens_input->board_baro.status) {
+      board_baro_f = 0.0005 * sens_input->board_baro.meas +
+                     0.9995 * sens_filt->board_baro_f;
     }
     /* %% lowpass filter function used in pad filter */
-    if (board_mag->status) {
-      sf_ret->board_mag_f[0] =
-          0.0005 * board_mag->meas[0] + 0.9995 * sf->board_mag_f[0];
-      sf_ret->board_mag_f[1] =
-          0.0005 * board_mag->meas[1] + 0.9995 * sf->board_mag_f[1];
-      sf_ret->board_mag_f[2] =
-          0.0005 * board_mag->meas[2] + 0.9995 * sf->board_mag_f[2];
+    if (sens_input->board_mag.status) {
+      sens_filt_ret->board_mag_f[0] = 0.0005 * sens_input->board_mag.meas[0] +
+                                      0.9995 * sens_filt->board_mag_f[0];
+      sens_filt_ret->board_mag_f[1] = 0.0005 * sens_input->board_mag.meas[1] +
+                                      0.9995 * sens_filt->board_mag_f[1];
+      sens_filt_ret->board_mag_f[2] = 0.0005 * sens_input->board_mag.meas[2] +
+                                      0.9995 * sens_filt->board_mag_f[2];
     }
     /* %% lowpass filter function used in pad filter */
-    if (mti_baro->status) {
-      mti_baro_f = 0.0005 * mti_baro->meas + 0.9995 * sf->mti_baro_f;
+    if (sens_input->mti_baro.status) {
+      mti_baro_f =
+          0.0005 * sens_input->mti_baro.meas + 0.9995 * sens_filt->mti_baro_f;
     }
     /* %% lowpass filter function used in pad filter */
-    if (mti_mag->status) {
-      sf_ret->mti_mag_f[0] =
-          0.0005 * mti_mag->meas[0] + 0.9995 * sf->mti_mag_f[0];
-      sf_ret->mti_mag_f[1] =
-          0.0005 * mti_mag->meas[1] + 0.9995 * sf->mti_mag_f[1];
-      sf_ret->mti_mag_f[2] =
-          0.0005 * mti_mag->meas[2] + 0.9995 * sf->mti_mag_f[2];
+    if (sens_input->mti_mag.status) {
+      sens_filt_ret->mti_mag_f[0] = 0.0005 * sens_input->mti_mag.meas[0] +
+                                    0.9995 * sens_filt->mti_mag_f[0];
+      sens_filt_ret->mti_mag_f[1] = 0.0005 * sens_input->mti_mag.meas[1] +
+                                    0.9995 * sens_filt->mti_mag_f[1];
+      sens_filt_ret->mti_mag_f[2] = 0.0005 * sens_input->mti_mag.meas[2] +
+                                    0.9995 * sens_filt->mti_mag_f[2];
     }
-    sf_ret->board_baro_f = board_baro_f;
-    sf_ret->mti_baro_f = mti_baro_f;
+    sens_filt_ret->board_baro_f = board_baro_f;
+    sens_filt_ret->mti_baro_f = mti_baro_f;
     /*     %% Initial state determination     */
     /* %% Orientation */
-    sf_ret->board_accel_f[0] = board_accel_f[0];
-    sf_ret->board_gyro_f[0] = board_gyro_f_idx_0;
-    sf_ret->mti_accel_f[0] = mti_accel_f_idx_0;
-    sf_ret->ad_accel_f[0] = ad_accel_f[0];
+    sens_filt_ret->board_accel_f[0] = board_accel_f[0];
+    sens_filt_ret->board_gyro_f[0] = board_gyro_f_idx_0;
+    sens_filt_ret->mti_accel_f[0] = mti_accel_f_idx_0;
+    sens_filt_ret->ad_accel_f[0] = ad_accel_f[0];
     a[0] = 0.0;
-    sf_ret->board_accel_f[1] = board_accel_f[1];
-    sf_ret->board_gyro_f[1] = board_gyro_f_idx_1;
-    sf_ret->mti_accel_f[1] = mti_accel_f_idx_1;
-    sf_ret->ad_accel_f[1] = ad_accel_f[1];
+    sens_filt_ret->board_accel_f[1] = board_accel_f[1];
+    sens_filt_ret->board_gyro_f[1] = board_gyro_f_idx_1;
+    sens_filt_ret->mti_accel_f[1] = mti_accel_f_idx_1;
+    sens_filt_ret->ad_accel_f[1] = ad_accel_f[1];
     a[1] = 0.0;
-    sf_ret->board_accel_f[2] = board_accel_f[2];
-    sf_ret->board_gyro_f[2] = board_gyro_f_idx_2;
-    sf_ret->mti_accel_f[2] = mti_accel_f_idx_2;
-    sf_ret->ad_accel_f[2] = ad_accel_f[2];
+    sens_filt_ret->board_accel_f[2] = board_accel_f[2];
+    sens_filt_ret->board_gyro_f[2] = board_gyro_f_idx_2;
+    sens_filt_ret->mti_accel_f[2] = mti_accel_f_idx_2;
+    sens_filt_ret->ad_accel_f[2] = ad_accel_f[2];
     a[2] = 0.0;
     /*  acceleration  */
-    if (board_accel->status) {
+    if (sens_input->board_accel.status) {
       /*  only add alive IMUs to average */
       a[0] = board_accel_f[0];
       a[1] = board_accel_f[1];
       a[2] = board_accel_f[2];
     }
-    if (mti_accel->status) {
+    if (sens_input->mti_accel.status) {
       a[0] += mti_accel_f_idx_0;
       a[1] += mti_accel_f_idx_1;
       a[2] += mti_accel_f_idx_2;
     }
-    if (ad_accel->status) {
+    if (sens_input->ad_accel.status) {
       a[0] += ad_accel_f[0];
       a[1] += ad_accel_f[1];
       a[2] += ad_accel_f[2];
@@ -310,19 +303,19 @@ void navigation_codegen_entry(
     /* %% rotation matrix */
     x_ret[4] = 0.0;
     x_ret[7] = 0.0;
-    b_ret->board_gyro[0] = board_gyro_f_idx_0;
-    b_ret->mti_gyro[0] = sf_ret->mti_gyro_f[0];
-    b_ret->ad_gyro[0] = sf_ret->ad_gyro_f[0];
+    bias->board_gyro[0] = board_gyro_f_idx_0;
+    bias->mti_gyro[0] = sens_filt_ret->mti_gyro_f[0];
+    bias->ad_gyro[0] = sens_filt_ret->ad_gyro_f[0];
     x_ret[5] = 0.0;
     x_ret[8] = 0.0;
-    b_ret->board_gyro[1] = board_gyro_f_idx_1;
-    b_ret->mti_gyro[1] = sf_ret->mti_gyro_f[1];
-    b_ret->ad_gyro[1] = sf_ret->ad_gyro_f[1];
+    bias->board_gyro[1] = board_gyro_f_idx_1;
+    bias->mti_gyro[1] = sens_filt_ret->mti_gyro_f[1];
+    bias->ad_gyro[1] = sens_filt_ret->ad_gyro_f[1];
     x_ret[6] = 0.0;
     x_ret[9] = 0.0;
-    b_ret->board_gyro[2] = board_gyro_f_idx_2;
-    b_ret->mti_gyro[2] = sf_ret->mti_gyro_f[2];
-    b_ret->ad_gyro[2] = sf_ret->ad_gyro_f[2];
+    bias->board_gyro[2] = board_gyro_f_idx_2;
+    bias->mti_gyro[2] = sens_filt_ret->mti_gyro_f[2];
+    bias->ad_gyro[2] = sens_filt_ret->ad_gyro_f[2];
     mti_accel_f_idx_2 =
         q[0] * q[0] - ((q[1] * q[1] + q[2] * q[2]) + expl_temp * expl_temp);
     mti_accel_f_idx_1 = 2.0 * q[0];
@@ -336,9 +329,9 @@ void navigation_codegen_entry(
      * qy^2 + qz^2] */
     for (i = 0; i < 3; i++) {
       qw = 2.0 * q[i + 1];
-      ST[3 * i] = mti_accel_f_idx_2 * b_b[i] + qw * q[1];
-      ST[3 * i + 1] = mti_accel_f_idx_2 * b_b[i + 3] + qw * q[2];
-      ST[3 * i + 2] = mti_accel_f_idx_2 * b_b[i + 6] + qw * expl_temp;
+      ST[3 * i] = mti_accel_f_idx_2 * b[i] + qw * q[1];
+      ST[3 * i + 1] = mti_accel_f_idx_2 * b[i + 3] + qw * q[2];
+      ST[3 * i + 2] = mti_accel_f_idx_2 * b[i + 6] + qw * expl_temp;
     }
     mti_accel_f_idx_2 = mti_accel_f_idx_1 * 0.0;
     c_a[0] = mti_accel_f_idx_2;
@@ -354,35 +347,36 @@ void navigation_codegen_entry(
       ST[i] -= c_a[i];
     }
     /*  launch attitude */
-    b_ret->board_mag_earth[0] = 0.0;
-    b_ret->board_mag_earth[1] = 0.0;
-    b_ret->board_mag_earth[2] = 0.0;
+    bias->board_mag_earth[0] = 0.0;
+    bias->board_mag_earth[1] = 0.0;
+    bias->board_mag_earth[2] = 0.0;
     for (i = 0; i < 3; i++) {
-      mti_accel_f_idx_2 = sf_ret->board_mag_f[i];
-      b_ret->board_mag_earth[0] += ST[3 * i] * mti_accel_f_idx_2;
-      b_ret->board_mag_earth[1] += ST[3 * i + 1] * mti_accel_f_idx_2;
-      b_ret->board_mag_earth[2] += ST[3 * i + 2] * mti_accel_f_idx_2;
-      b_ret->mti_mag_earth[i] = 0.0;
+      mti_accel_f_idx_2 = sens_filt_ret->board_mag_f[i];
+      bias->board_mag_earth[0] += ST[3 * i] * mti_accel_f_idx_2;
+      bias->board_mag_earth[1] += ST[3 * i + 1] * mti_accel_f_idx_2;
+      bias->board_mag_earth[2] += ST[3 * i + 2] * mti_accel_f_idx_2;
+      bias->mti_mag_earth[i] = 0.0;
     }
-    mti_accel_f_idx_2 = b_ret->mti_mag_earth[0];
-    qw = b_ret->mti_mag_earth[1];
-    mti_accel_f_idx_1 = b_ret->mti_mag_earth[2];
+    mti_accel_f_idx_2 = bias->mti_mag_earth[0];
+    qw = bias->mti_mag_earth[1];
+    mti_accel_f_idx_1 = bias->mti_mag_earth[2];
     for (i = 0; i < 3; i++) {
-      mti_accel_f_idx_0 = sf_ret->mti_mag_f[i];
+      mti_accel_f_idx_0 = sens_filt_ret->mti_mag_f[i];
       mti_accel_f_idx_2 += ST[3 * i] * mti_accel_f_idx_0;
       qw += ST[3 * i + 1] * mti_accel_f_idx_0;
       mti_accel_f_idx_1 += ST[3 * i + 2] * mti_accel_f_idx_0;
     }
-    b_ret->mti_mag_earth[2] = mti_accel_f_idx_1;
-    b_ret->mti_mag_earth[1] = qw;
-    b_ret->mti_mag_earth[0] = mti_accel_f_idx_2;
+    bias->mti_mag_earth[2] = mti_accel_f_idx_1;
+    bias->mti_mag_earth[1] = qw;
+    bias->mti_mag_earth[0] = mti_accel_f_idx_2;
     /* %% barometer */
     mti_accel_f_idx_2 =
         airdata_atmos(420.0, &mti_accel_f_idx_2, &t1_density, &qw,
                       &mti_accel_f_idx_0, &mti_accel_f_idx_1);
     /*  what the pressure should be at launch elevation */
-    b_ret->board_baro = board_baro_f - mti_accel_f_idx_2;
-    b_ret->mti_baro = mti_baro_f - mti_accel_f_idx_2;
+    bias->board_baro = board_baro_f - mti_accel_f_idx_2;
+    bias->mti_baro = mti_baro_f - mti_accel_f_idx_2;
+    *bias_ret = *bias;
   }
   /*     %% Flight filter iteration */
   if (flight_phase) {
@@ -430,17 +424,18 @@ void navigation_codegen_entry(
     /*     %% confidence calculations */
     /*  sensor status */
     /*  normalize (Hadamard division) */
-    d = 9.9999999999999981E+9 * (double)ad_gyro->status;
+    d = 9.9999999999999981E+9 * (double)sens_input->ad_gyro.status;
     board_accel_f_tmp_tmp =
-        1.0000000000000002E+14 * (double)board_accel->status;
+        1.0000000000000002E+14 * (double)sens_input->board_accel.status;
     b_board_accel_f_tmp_tmp =
-        1.0000000000000002E+14 * (double)mti_accel->status;
-    c_board_accel_f_tmp_tmp = 1.0000000000000002E+14 * (double)ad_accel->status;
+        1.0000000000000002E+14 * (double)sens_input->mti_accel.status;
+    c_board_accel_f_tmp_tmp =
+        1.0000000000000002E+14 * (double)sens_input->ad_accel.status;
     mti_accel_f_idx_1 = (board_accel_f_tmp_tmp + b_board_accel_f_tmp_tmp) +
                         c_board_accel_f_tmp_tmp;
     board_accel_f[0] = mti_accel_f_idx_1;
-    d1 = 9.9999999999999981E+9 * (double)board_gyro->status;
-    d2 = 9.9999999999999981E+9 * (double)mti_gyro->status;
+    d1 = 9.9999999999999981E+9 * (double)sens_input->board_gyro.status;
+    d2 = 9.9999999999999981E+9 * (double)sens_input->mti_gyro.status;
     d3 = d1 + d2;
     d4 = d3 + d;
     d /= d4;
@@ -579,13 +574,13 @@ void navigation_codegen_entry(
     mti_accel_f_idx_1 = 2.0 * x[0];
     for (i = 0; i < 3; i++) {
       qw = x[i + 1];
-      ST[3 * i] = mti_accel_f_idx_2 * b_b[3 * i] + 2.0 * x[1] * qw;
+      ST[3 * i] = mti_accel_f_idx_2 * b[3 * i] + 2.0 * x[1] * qw;
       b_w_exp_tilde_tmp = 3 * i + 1;
       ST[b_w_exp_tilde_tmp] =
-          mti_accel_f_idx_2 * b_b[b_w_exp_tilde_tmp] + 2.0 * x[2] * qw;
+          mti_accel_f_idx_2 * b[b_w_exp_tilde_tmp] + 2.0 * x[2] * qw;
       b_w_exp_tilde_tmp = 3 * i + 2;
       ST[b_w_exp_tilde_tmp] =
-          mti_accel_f_idx_2 * b_b[b_w_exp_tilde_tmp] + 2.0 * x[3] * qw;
+          mti_accel_f_idx_2 * b[b_w_exp_tilde_tmp] + 2.0 * x[3] * qw;
     }
     mti_accel_f_idx_2 = mti_accel_f_idx_1 * 0.0;
     c_a[0] = mti_accel_f_idx_2;
@@ -681,11 +676,11 @@ void navigation_codegen_entry(
                            w_exp_tilde[i + 3] * board_gyro_f_idx_0) +
                           w_exp_tilde[i + 6] * expl_temp) +
                          dt * ((board_accel_f_tmp_tmp / mti_accel_f_idx_2 *
-                                    board_accel->meas[i] +
+                                    sens_input->board_accel.meas[i] +
                                 b_board_accel_f_tmp_tmp / mti_accel_f_idx_2 *
-                                    mti_accel->meas[i]) +
+                                    sens_input->mti_accel.meas[i]) +
                                c_board_accel_f_tmp_tmp / mti_accel_f_idx_2 *
-                                   ad_accel->meas[i]);
+                                   sens_input->ad_accel.meas[i]);
     }
     memset(&ad_accel_f[0], 0, 3U * sizeof(double));
     board_gyro_f_idx_1 = ad_accel_f[0];
@@ -1009,21 +1004,23 @@ void navigation_codegen_entry(
       mti_accel_f_idx_2 = x[i + 1];
       c_w_exp_tilde_tmp = 11 * (i + 1);
       F[c_w_exp_tilde_tmp + 7] =
-          dt * (2.0 * (((mti_accel_f_idx_0 * b_b[3 * i] + x[1] * b_param.g[i]) -
+          dt * (2.0 * (((mti_accel_f_idx_0 * b[3 * i] + x[1] * b_param.g[i]) -
                         b_param.g[0] * mti_accel_f_idx_2) +
                        c_a[3 * i]));
       b_w_exp_tilde_tmp = 3 * i + 1;
       F[c_w_exp_tilde_tmp + 8] =
-          dt * (2.0 * (((mti_accel_f_idx_0 * b_b[b_w_exp_tilde_tmp] +
-                         x[2] * b_param.g[i]) -
-                        b_param.g[1] * mti_accel_f_idx_2) +
-                       c_a[b_w_exp_tilde_tmp]));
+          dt *
+          (2.0 *
+           (((mti_accel_f_idx_0 * b[b_w_exp_tilde_tmp] + x[2] * b_param.g[i]) -
+             b_param.g[1] * mti_accel_f_idx_2) +
+            c_a[b_w_exp_tilde_tmp]));
       b_w_exp_tilde_tmp = 3 * i + 2;
       F[c_w_exp_tilde_tmp + 9] =
-          dt * (2.0 * (((mti_accel_f_idx_0 * b_b[b_w_exp_tilde_tmp] +
-                         x[3] * b_param.g[i]) -
-                        b_param.g[2] * mti_accel_f_idx_2) +
-                       c_a[b_w_exp_tilde_tmp]));
+          dt *
+          (2.0 *
+           (((mti_accel_f_idx_0 * b[b_w_exp_tilde_tmp] + x[3] * b_param.g[i]) -
+             b_param.g[2] * mti_accel_f_idx_2) +
+            c_a[b_w_exp_tilde_tmp]));
     }
     /*  jacobian of {exp(-tilde(w)*dt)*v} wrt w    */
     /*  skew symmetric matrix / cross-product jacobian */
@@ -1124,19 +1121,19 @@ void navigation_codegen_entry(
       mti_accel_f_idx_1 = q[i + 1];
       c_w_exp_tilde_tmp = 3 * (i + 1);
       c_dt[c_w_exp_tilde_tmp] =
-          dt * (2.0 * (((board_gyro_f_idx_0 * b_b[3 * i] + q[1] * qw) -
+          dt * (2.0 * (((board_gyro_f_idx_0 * b[3 * i] + q[1] * qw) -
                         x[7] * mti_accel_f_idx_1) +
                        q[0] * ST[3 * i]));
       b_w_exp_tilde_tmp = 3 * i + 1;
       c_dt[c_w_exp_tilde_tmp + 1] =
           dt *
-          (2.0 * (((board_gyro_f_idx_0 * b_b[b_w_exp_tilde_tmp] + q[2] * qw) -
+          (2.0 * (((board_gyro_f_idx_0 * b[b_w_exp_tilde_tmp] + q[2] * qw) -
                    x[8] * mti_accel_f_idx_1) +
                   q[0] * ST[b_w_exp_tilde_tmp]));
       b_w_exp_tilde_tmp = 3 * i + 2;
       c_dt[c_w_exp_tilde_tmp + 2] =
           dt *
-          (2.0 * (((board_gyro_f_idx_0 * b_b[b_w_exp_tilde_tmp] + q[3] * qw) -
+          (2.0 * (((board_gyro_f_idx_0 * b[b_w_exp_tilde_tmp] + q[3] * qw) -
                    x[9] * mti_accel_f_idx_1) +
                   q[0] * ST[b_w_exp_tilde_tmp]));
     }
@@ -1173,7 +1170,7 @@ void navigation_codegen_entry(
     c_a[8] = mti_accel_f_idx_0;
     for (i = 0; i < 3; i++) {
       F[11 * (i + 7) + 10] =
-          dt * ((qw * b_b[3 * i] + 2.0 * q[1] * q[i + 1]) - c_a[3 * i]);
+          dt * ((qw * b[3 * i] + 2.0 * q[1] * q[i + 1]) - c_a[3 * i]);
     }
     /*  r_r = eye(3); */
     /*  column q */
@@ -1287,21 +1284,24 @@ void navigation_codegen_entry(
     }
     /*  joseph stabilized */
     /* %% correct state estimate */
-    mti_accel_f_idx_0 = ((d1 / d4 * (board_gyro->meas[0] - b->board_gyro[0]) +
-                          d2 / d4 * (mti_gyro->meas[0] - b->mti_gyro[0])) +
-                         a[0] * (ad_gyro->meas[0] - b->ad_gyro[0])) -
-                        x_pred[4];
+    mti_accel_f_idx_0 =
+        ((d1 / d4 * (sens_input->board_gyro.meas[0] - bias->board_gyro[0]) +
+          d2 / d4 * (sens_input->mti_gyro.meas[0] - bias->mti_gyro[0])) +
+         a[0] * (sens_input->ad_gyro.meas[0] - bias->ad_gyro[0])) -
+        x_pred[4];
     qw = d1 / d3;
     mti_accel_f_idx_2 = d2 / d3;
     mti_accel_f_idx_1 =
-        ((qw * (board_gyro->meas[1] - b->board_gyro[1]) +
-          mti_accel_f_idx_2 * (mti_gyro->meas[1] - b->mti_gyro[1])) +
-         d * (ad_gyro->meas[1] - b->ad_gyro[1])) -
+        ((qw * (sens_input->board_gyro.meas[1] - bias->board_gyro[1]) +
+          mti_accel_f_idx_2 *
+              (sens_input->mti_gyro.meas[1] - bias->mti_gyro[1])) +
+         d * (sens_input->ad_gyro.meas[1] - bias->ad_gyro[1])) -
         x_pred[5];
     mti_accel_f_idx_2 =
-        ((qw * (board_gyro->meas[2] - b->board_gyro[2]) +
-          mti_accel_f_idx_2 * (mti_gyro->meas[2] - b->mti_gyro[2])) +
-         d * (ad_gyro->meas[2] - b->ad_gyro[2])) -
+        ((qw * (sens_input->board_gyro.meas[2] - bias->board_gyro[2]) +
+          mti_accel_f_idx_2 *
+              (sens_input->mti_gyro.meas[2] - bias->mti_gyro[2])) +
+         d * (sens_input->ad_gyro.meas[2] - bias->ad_gyro[2])) -
         x_pred[6];
     for (i = 0; i < 11; i++) {
       x_ret[i] = x_pred[i] +
@@ -1321,34 +1321,36 @@ void navigation_codegen_entry(
     /* %% R is a square matrix (size length of sensor vector), tuning for
      * expected measurement noise magnitude E(noise) */
     /* %% Barometer */
-    if (board_baro->status) {
+    if (sens_input->board_baro.status) {
       /*  only correct with alive IMUs */
       /* %% y = [ P(1) ] */
       memcpy(&x_pred[0], &x_ret[0], 11U * sizeof(double));
       memcpy(&F[0], &P_ret[0], 121U * sizeof(double));
-      b_ekf_correct(x_pred, F, board_baro->meas, b->board_baro, x_ret, P_ret);
+      b_ekf_correct(x_pred, F, sens_input->board_baro.meas, bias->board_baro,
+                    x_ret, P_ret);
     }
-    if (mti_baro->status) {
+    if (sens_input->mti_baro.status) {
       /*  only correct with alive IMUs */
       /* %% y = [ P(1) ] */
       memcpy(&x_pred[0], &x_ret[0], 11U * sizeof(double));
       memcpy(&F[0], &P_ret[0], 121U * sizeof(double));
-      b_ekf_correct(x_pred, F, mti_baro->meas, b->mti_baro, x_ret, P_ret);
+      b_ekf_correct(x_pred, F, sens_input->mti_baro.meas, bias->mti_baro, x_ret,
+                    P_ret);
     }
     /* %% Magnetometer */
-    if (board_mag->status) {
+    if (sens_input->board_mag.status) {
       /* %% y = [  Mag(3) ] */
       memcpy(&x_pred[0], &x_ret[0], 11U * sizeof(double));
       memcpy(&F[0], &P_ret[0], 121U * sizeof(double));
-      ekf_correct(x_pred, F, board_mag->meas, b->board_mag_earth, b_b, x_ret,
-                  P_ret);
+      ekf_correct(x_pred, F, sens_input->board_mag.meas, bias->board_mag_earth,
+                  b, x_ret, P_ret);
     }
-    if (mti_mag->status) {
+    if (sens_input->mti_mag.status) {
       /* %% y = [  Mag(3) ] */
       memcpy(&x_pred[0], &x_ret[0], 11U * sizeof(double));
       memcpy(&F[0], &P_ret[0], 121U * sizeof(double));
-      ekf_correct(x_pred, F, mti_mag->meas, b->mti_mag_earth, b_b, x_ret,
-                  P_ret);
+      ekf_correct(x_pred, F, sens_input->mti_mag.meas, bias->mti_mag_earth, b,
+                  x_ret, P_ret);
     }
   }
 }

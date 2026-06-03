@@ -6,7 +6,7 @@ function [state, cov_norm, airdata, roll_state] = navigation_module(timestamp, b
 
     %% Pad Filter
     %%% remember filtered values from last iteration
-    persistent sf x P bias
+    persistent sens_filt x P bias
 
     %% initialize at beginning
     xhat = zeros(11,1); 
@@ -18,17 +18,17 @@ function [state, cov_norm, airdata, roll_state] = navigation_module(timestamp, b
         P = Phat;
     end
 
-    if isempty(sf)
-        sf.board_accel_f = board_accel.meas;
-        sf.board_gyro_f = board_gyro.meas;
-        sf.mti_accel_f = mti_accel.meas;
-        sf.mti_gyro_f = mti_gyro.meas; 
-        sf.ad_accel_f = ad_accel.meas; 
-        sf.ad_gyro_f = ad_gyro.meas;  
-        sf.board_baro_f = board_baro.meas; 
-        sf.board_mag_f = board_mag.meas; 
-        sf.mti_baro_f = mti_baro.meas; 
-        sf.mti_mag_f = mti_mag.meas; 
+    if isempty(sens_filt)
+        sens_filt.board_accel_f = board_accel.meas;
+        sens_filt.board_gyro_f = board_gyro.meas;
+        sens_filt.mti_accel_f = mti_accel.meas;
+        sens_filt.mti_gyro_f = mti_gyro.meas; 
+        sens_filt.ad_accel_f = ad_accel.meas; 
+        sens_filt.ad_gyro_f = ad_gyro.meas;  
+        sens_filt.board_baro_f = board_baro.meas; 
+        sens_filt.board_mag_f = board_mag.meas; 
+        sens_filt.mti_baro_f = mti_baro.meas; 
+        sens_filt.mti_mag_f = mti_mag.meas; 
         bias.board_gyro = zeros(3,1); 
         bias.mti_gyro = zeros(3,1); 
         bias.ad_gyro = zeros(3,1); 
@@ -74,7 +74,19 @@ function [state, cov_norm, airdata, roll_state] = navigation_module(timestamp, b
         mti_mag.status = false;
     end
 
-    [x_ret, P_ret, b_ret, sf_ret] = navigation_codegen_entry(dt, flight_phase, x, P, bias, sf, board_accel, board_gyro, mti_accel, mti_gyro, ad_accel, ad_gyro, board_baro, board_mag, mti_baro, mti_mag);
+
+    sens_input.board_accel = board_accel;
+    sens_input.board_gyro = board_gyro;
+    sens_input.mti_accel = mti_accel;
+    sens_input.mti_gyro = mti_gyro;
+    sens_input.ad_accel = ad_accel;
+    sens_input.ad_gyro = ad_gyro;
+    sens_input.board_baro = board_baro;
+    sens_input.board_mag = board_mag;
+    sens_input.mti_baro = mti_baro;
+    sens_input.mti_mag = mti_mag;
+
+    [x_ret, P_ret, b_ret, sf_ret] = navigation_codegen_entry(dt, flight_phase, x, P, bias, sens_filt, sens_input);
 
     x = x_ret;
     P = P_ret;
@@ -100,15 +112,15 @@ function [state, cov_norm, airdata, roll_state] = navigation_module(timestamp, b
     phi = quaternion_to_roll(x(1:4));
     roll_state = [phi; x(5)];
 
-    sf.board_accel_f = sf_ret.board_accel_f;
-    sf.board_gyro_f = sf_ret.board_gyro_f;
-    sf.mti_accel_f = sf_ret.mti_accel_f;
-    sf.mti_gyro_f = sf_ret.mti_gyro_f;
-    sf.ad_accel_f = sf_ret.ad_accel_f;
-    sf.ad_gyro_f = sf_ret.ad_gyro_f;
-    sf.board_baro_f = sf_ret.board_baro_f;
-    sf.board_mag_f = sf_ret.board_mag_f;
-    sf.mti_baro_f = sf_ret.mti_baro_f;
-    sf.mti_mag_f = sf_ret.mti_mag_f;
+    sens_filt.board_accel_f = sf_ret.board_accel_f;
+    sens_filt.board_gyro_f = sf_ret.board_gyro_f;
+    sens_filt.mti_accel_f = sf_ret.mti_accel_f;
+    sens_filt.mti_gyro_f = sf_ret.mti_gyro_f;
+    sens_filt.ad_accel_f = sf_ret.ad_accel_f;
+    sens_filt.ad_gyro_f = sf_ret.ad_gyro_f;
+    sens_filt.board_baro_f = sf_ret.board_baro_f;
+    sens_filt.board_mag_f = sf_ret.board_mag_f;
+    sens_filt.mti_baro_f = sf_ret.mti_baro_f;
+    sens_filt.mti_mag_f = sf_ret.mti_mag_f;
     
 end

@@ -5,7 +5,7 @@
  * File: _coder_GNC_codegen_mex.c
  *
  * MATLAB Coder version            : 25.2
- * C/C++ source code generated on  : 02-Jun-2026 22:53:09
+ * C/C++ source code generated on  : 02-Jun-2026 23:24:33
  */
 
 /* Include Files */
@@ -28,7 +28,7 @@ void mexFunction(int32_T nlhs, mxArray *plhs[], int32_T nrhs,
       NULL, /* tls */
       NULL  /* prev */
   };
-  const mxArray *c_prhs[16];
+  const mxArray *c_prhs[7];
   const mxArray *b_prhs[6];
   int32_T i;
   int32_T i1;
@@ -46,7 +46,7 @@ void mexFunction(int32_T nlhs, mxArray *plhs[], int32_T nrhs,
     unsafe_controller_codegen_entry_mexFunction(nlhs, plhs, nrhs - 1, b_prhs);
     break;
   case 1:
-    for (i1 = 0; i1 < 16; i1++) {
+    for (i1 = 0; i1 < 7; i1++) {
       c_prhs[i1] = prhs[i1 + 1];
     }
     unsafe_navigation_codegen_entry_mexFunction(nlhs, plhs, nrhs - 1, c_prhs);
@@ -114,26 +114,26 @@ void unsafe_controller_codegen_entry_mexFunction(int32_T nlhs, mxArray *plhs[3],
  * Arguments    : int32_T nlhs
  *                mxArray *plhs[4]
  *                int32_T nrhs
- *                const mxArray *prhs[16]
+ *                const mxArray *prhs[7]
  * Return Type  : void
  */
 void unsafe_navigation_codegen_entry_mexFunction(int32_T nlhs, mxArray *plhs[4],
                                                  int32_T nrhs,
-                                                 const mxArray *prhs[16])
+                                                 const mxArray *prhs[7])
 {
   emlrtStack st = {
       NULL, /* site */
       NULL, /* tls */
       NULL  /* prev */
   };
-  const mxArray *b_prhs[16];
+  const mxArray *b_prhs[7];
   const mxArray *outputs[4];
   int32_T i;
   int32_T i1;
   st.tls = emlrtRootTLSGlobal;
   /* Check for proper number of arguments. */
-  if (nrhs != 16) {
-    emlrtErrMsgIdAndTxt(&st, "EMLRT:runTime:WrongNumberOfInputs", 5, 12, 16, 4,
+  if (nrhs != 7) {
+    emlrtErrMsgIdAndTxt(&st, "EMLRT:runTime:WrongNumberOfInputs", 5, 12, 7, 4,
                         24, "navigation_codegen_entry");
   }
   if (nlhs > 4) {
@@ -141,7 +141,7 @@ void unsafe_navigation_codegen_entry_mexFunction(int32_T nlhs, mxArray *plhs[4],
                         "navigation_codegen_entry");
   }
   /* Call the function. */
-  for (i = 0; i < 16; i++) {
+  for (i = 0; i < 7; i++) {
     b_prhs[i] = prhs[i];
   }
   navigation_codegen_entry_api(b_prhs, nlhs, outputs);
