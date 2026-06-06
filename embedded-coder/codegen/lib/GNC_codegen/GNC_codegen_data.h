@@ -5,7 +5,7 @@
  * File: GNC_codegen_data.h
  *
  * MATLAB Coder version            : 25.2
- * C/C++ source code generated on  : 02-Jun-2026 23:24:33
+ * C/C++ source code generated on  : 05-Jun-2026 20:31:45
  */
 
 #ifndef GNC_CODEGEN_DATA_H
@@ -18,8 +18,9 @@
 #include <stdlib.h>
 
 /* Variable Declarations */
-extern struct_T param;
 extern struct_T b_param;
+extern struct_T c_param;
+extern struct_T d_param;
 extern const struct_T r;
 extern bool isInitialized_GNC_codegen;
 

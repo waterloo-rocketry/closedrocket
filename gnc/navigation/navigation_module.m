@@ -79,14 +79,14 @@ function [state, cov_norm, airdata, roll_state] = navigation_module(timestamp, b
     sens_input.board_gyro = board_gyro;
     sens_input.mti_accel = mti_accel;
     sens_input.mti_gyro = mti_gyro;
-    sens_input.ad_accel = ad_accel;
+    sens_input.ad_accel = ad_accel; 
     sens_input.ad_gyro = ad_gyro;
     sens_input.board_baro = board_baro;
     sens_input.board_mag = board_mag;
     sens_input.mti_baro = mti_baro;
     sens_input.mti_mag = mti_mag;
 
-    [x_ret, P_ret, b_ret, sf_ret] = navigation_codegen_entry(dt, flight_phase, x, P, bias, sens_filt, sens_input);
+    [x_ret, P_ret, b_ret, sf_ret, cov_norm, airdata, roll_state] = navigation_codegen_entry(dt, flight_phase, x, P, bias, sens_filt, sens_input);
 
     x = x_ret;
     P = P_ret;
@@ -99,18 +99,6 @@ function [state, cov_norm, airdata, roll_state] = navigation_module(timestamp, b
     state.v = x(8:10); % [m/s], velocity
     state.alt = x(11); % [m], altitude
     state.x = x; % also full state as vector is needed in simulink
-
-    %% Compute variance norm 
-    %%% for evaluating EKF quality
-    cov_norm = norm(P); % scalar, 2-norm of the covariance matrix
-
-    %% Compute air data
-    airdata = airdata_atmos(x(11));
-    airdata = airdata_dynamic(airdata, x(8:10));
-
-    %% controller input vector
-    phi = quaternion_to_roll(x(1:4));
-    roll_state = [phi; x(5)];
 
     sens_filt.board_accel_f = sf_ret.board_accel_f;
     sens_filt.board_gyro_f = sf_ret.board_gyro_f;

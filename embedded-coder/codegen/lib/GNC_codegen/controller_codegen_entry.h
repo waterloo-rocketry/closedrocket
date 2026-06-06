@@ -5,7 +5,7 @@
  * File: controller_codegen_entry.h
  *
  * MATLAB Coder version            : 25.2
- * C/C++ source code generated on  : 02-Jun-2026 23:24:33
+ * C/C++ source code generated on  : 05-Jun-2026 20:31:45
  */
 
 #ifndef CONTROLLER_CODEGEN_ENTRY_H
@@ -27,6 +27,8 @@ extern void controller_codegen_entry(double b_time, double dt_ctrl,
                                      double delta, const struct0_T *ctrl_mem_in,
                                      double *u, double *b_r,
                                      struct0_T *ctrl_mem_out);
+
+void controller_codegen_entry_init(void);
 
 #ifdef __cplusplus
 }

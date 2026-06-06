@@ -5,7 +5,7 @@
  * File: GNC_codegen_types.h
  *
  * MATLAB Coder version            : 25.2
- * C/C++ source code generated on  : 02-Jun-2026 23:24:33
+ * C/C++ source code generated on  : 05-Jun-2026 20:31:45
  */
 
 #ifndef GNC_CODEGEN_TYPES_H
@@ -76,6 +76,18 @@ typedef struct {
 } struct3_T;
 #endif /* typedef_struct3_T */
 
+#ifndef typedef_struct6_T
+#define typedef_struct6_T
+typedef struct {
+  double pressure;
+  double temperature;
+  double density;
+  double sonic_speed;
+  double mach;
+  double dynamic_pressure;
+} struct6_T;
+#endif /* typedef_struct6_T */
+
 #ifndef typedef_struct0_T
 #define typedef_struct0_T
 typedef struct {
@@ -90,8 +102,12 @@ typedef struct {
 #ifndef typedef_struct_T
 #define typedef_struct_T
 typedef struct {
+  double Cn_alpha;
   double J[9];
   double Jinv[9];
+  double c_aero;
+  double c_canard;
+  double elevation;
   double g[3];
 } struct_T;
 #endif /* typedef_struct_T */

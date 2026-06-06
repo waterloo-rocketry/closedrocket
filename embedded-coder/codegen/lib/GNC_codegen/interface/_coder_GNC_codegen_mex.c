@@ -5,7 +5,7 @@
  * File: _coder_GNC_codegen_mex.c
  *
  * MATLAB Coder version            : 25.2
- * C/C++ source code generated on  : 02-Jun-2026 23:24:33
+ * C/C++ source code generated on  : 05-Jun-2026 20:31:45
  */
 
 /* Include Files */
@@ -62,7 +62,7 @@ void mexFunction(int32_T nlhs, mxArray *plhs[], int32_T nrhs,
 emlrtCTX mexFunctionCreateRootTLS(void)
 {
   emlrtCreateRootTLSR2022a(&emlrtRootTLSGlobal, &emlrtContextGlobal, NULL, 1,
-                           NULL, "windows-1252", true);
+                           NULL, "UTF-8", true);
   return emlrtRootTLSGlobal;
 }
 
@@ -112,12 +112,12 @@ void unsafe_controller_codegen_entry_mexFunction(int32_T nlhs, mxArray *plhs[3],
 
 /*
  * Arguments    : int32_T nlhs
- *                mxArray *plhs[4]
+ *                mxArray *plhs[7]
  *                int32_T nrhs
  *                const mxArray *prhs[7]
  * Return Type  : void
  */
-void unsafe_navigation_codegen_entry_mexFunction(int32_T nlhs, mxArray *plhs[4],
+void unsafe_navigation_codegen_entry_mexFunction(int32_T nlhs, mxArray *plhs[7],
                                                  int32_T nrhs,
                                                  const mxArray *prhs[7])
 {
@@ -127,7 +127,7 @@ void unsafe_navigation_codegen_entry_mexFunction(int32_T nlhs, mxArray *plhs[4],
       NULL  /* prev */
   };
   const mxArray *b_prhs[7];
-  const mxArray *outputs[4];
+  const mxArray *outputs[7];
   int32_T i;
   int32_T i1;
   st.tls = emlrtRootTLSGlobal;
@@ -136,7 +136,7 @@ void unsafe_navigation_codegen_entry_mexFunction(int32_T nlhs, mxArray *plhs[4],
     emlrtErrMsgIdAndTxt(&st, "EMLRT:runTime:WrongNumberOfInputs", 5, 12, 7, 4,
                         24, "navigation_codegen_entry");
   }
-  if (nlhs > 4) {
+  if (nlhs > 7) {
     emlrtErrMsgIdAndTxt(&st, "EMLRT:runTime:TooManyOutputArguments", 3, 4, 24,
                         "navigation_codegen_entry");
   }

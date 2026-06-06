@@ -1,9 +1,9 @@
-﻿###########################################################################
+###########################################################################
 ## Makefile generated for component 'GNC_codegen'. 
 ## 
 ## Makefile     : GNC_codegen_rtw.mk
-## Generated on : Tue Jun 02 23:24:52 2026
-## Final product: .\GNC_codegen.lib
+## Generated on : Fri Jun 05 20:32:15 2026
+## Final product: ./GNC_codegen.a
 ## Product type : static-library
 ## 
 ###########################################################################
@@ -15,34 +15,29 @@
 # Macro Descriptions:
 # PRODUCT_NAME            Name of the system to build
 # MAKEFILE                Name of this makefile
-# COMPILER_COMMAND_FILE   Compiler command listing model reference header paths
-# CMD_FILE                Command file
 # MODELLIB                Static library target
 
 PRODUCT_NAME              = GNC_codegen
 MAKEFILE                  = GNC_codegen_rtw.mk
-MATLAB_ROOT               = C:\PROGRA~1\MATLAB\R2025b
-MATLAB_BIN                = C:\PROGRA~1\MATLAB\R2025b\bin
-MATLAB_ARCH_BIN           = $(MATLAB_BIN)\win64
-START_DIR                 = C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder
+MATLAB_ROOT               = /Applications/MATLAB_R2025b.app
+MATLAB_BIN                = /Applications/MATLAB_R2025b.app/bin
+MATLAB_ARCH_BIN           = $(MATLAB_BIN)/maca64
+START_DIR                 = /Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder
 TGT_FCN_LIB               = ISO_C
 SOLVER_OBJ                = 
 CLASSIC_INTERFACE         = 0
 MODEL_HAS_DYNAMICALLY_LOADED_SFCNS = 
-RELATIVE_PATH_TO_ANCHOR   = ..\..\..
-COMPILER_COMMAND_FILE     = GNC_codegen_rtw_comp.rsp
-CMD_FILE                  = GNC_codegen_rtw.rsp
-C_STANDARD_OPTS           = 
-CPP_STANDARD_OPTS         = 
-NODEBUG                   = 1
-MODELLIB                  = GNC_codegen.lib
+RELATIVE_PATH_TO_ANCHOR   = ../../..
+C_STANDARD_OPTS           = -fno-common -fexceptions -fwrapv
+CPP_STANDARD_OPTS         = -std=c++14 -fno-common -fexceptions -fwrapv
+MODELLIB                  = GNC_codegen.a
 
 ###########################################################################
 ## TOOLCHAIN SPECIFICATIONS
 ###########################################################################
 
-# Toolchain Name:          Microsoft Visual C++ 2022 v17.0 | nmake (64-bit Windows)
-# Supported Version(s):    17.0
+# Toolchain Name:          Xcode with Clang | gmake (64-bit Mac)
+# Supported Version(s):    
 # ToolchainInfo Version:   2025b
 # Specification Revision:  1.0
 # 
@@ -52,26 +47,20 @@ MODELLIB                  = GNC_codegen.lib
 
 # C_STANDARD_OPTS
 # CPP_STANDARD_OPTS
-# NODEBUG
-# cvarsdll
-# cvarsmt
-# conlibsmt
-# ldebug
-# conflags
-# cflags
 
 #-----------
 # MACROS
 #-----------
 
-MW_EXTERNLIB_DIR    = $(MATLAB_ROOT)\extern\lib\win64\microsoft
-MW_LIB_DIR          = $(MATLAB_ROOT)\lib\win64
-CPU                 = AMD64
-APPVER              = 5.02
-CVARSFLAG           = $(cvarsmt)
-CFLAGS_ADDITIONAL   = -D_CRT_SECURE_NO_WARNINGS
-CPPFLAGS_ADDITIONAL = -EHs -D_CRT_SECURE_NO_WARNINGS /wd4251 /Zc:__cplusplus
-LIBS_TOOLCHAIN      = $(conlibs)
+ARCHS                               = arm64
+XCODE_SDK_VER                       = $(shell perl $(MATLAB_ROOT)/rtw/c/tools/macsdkver.pl)
+XCODE_SDK                           = MacOSX$(XCODE_SDK_VER).sdk
+XCODE_DEVEL_DIR                     = $(shell xcode-select -print-path)
+XCODE_SDK_ROOT                      = $(XCODE_DEVEL_DIR)/Platforms/MacOSX.platform/Developer/SDKs/$(XCODE_SDK)
+XCODE_LD_VERSION                    = $(shell xcrun ld -v 2>&1 >/dev/null | head -n 1)
+XCODE_LD_VERSION_IS_LD64            = $(findstring ld64-,$(XCODE_LD_VERSION))
+XCODE_DYLD_NO_WARN_DUPLICATE_LDFLAG = -Wl,-no_warn_duplicate_libraries
+NO_WARN_DUPLICATE_LIBRARIES         = $(if $(XCODE_LD_VERSION_IS_LD64),,$(XCODE_DYLD_NO_WARN_DUPLICATE_LDFLAG))
 
 TOOLCHAIN_SRCS = 
 TOOLCHAIN_INCS = 
@@ -81,24 +70,24 @@ TOOLCHAIN_LIBS =
 # BUILD TOOL COMMANDS
 #------------------------
 
-# C Compiler: Microsoft Visual C Compiler
-CC = cl
+# C Compiler: Clang C Compiler
+CC = xcrun clang
 
-# Linker: Microsoft Visual C Linker
-LD = link
+# Linker: Clang Linker
+LD = xcrun clang++
 
-# C++ Compiler: Microsoft Visual C++ Compiler
-CPP = cl
+# C++ Compiler: Clang C++ Compiler
+CPP = xcrun clang++
 
-# C++ Linker: Microsoft Visual C++ Linker
-CPP_LD = link
+# C++ Linker: Clang C++ Linker
+CPP_LD = xcrun clang++
 
-# Archiver: Microsoft Visual C/C++ Archiver
-AR = lib
+# Archiver: Clang Archiver
+AR = xcrun ar
 
 # MEX Tool: MEX Tool
 MEX_PATH = $(MATLAB_ARCH_BIN)
-MEX = "$(MEX_PATH)\mex"
+MEX = "$(MEX_PATH)/mex"
 
 # Download: Download
 DOWNLOAD =
@@ -106,52 +95,57 @@ DOWNLOAD =
 # Execute: Execute
 EXECUTE = $(PRODUCT)
 
-# Builder: NMAKE Utility
-MAKE = nmake
+# Builder: GMAKE Utility
+MAKE_PATH = %MATLAB%/bin/maca64
+MAKE = "$(MAKE_PATH)/gmake"
 
 
 #-------------------------
 # Directives/Utilities
 #-------------------------
 
-CDEBUG              = -Zi
-C_OUTPUT_FLAG       = -Fo
-LDDEBUG             = /DEBUG
-OUTPUT_FLAG         = -out:
-CPPDEBUG            = -Zi
-CPP_OUTPUT_FLAG     = -Fo
-CPPLDDEBUG          = /DEBUG
-OUTPUT_FLAG         = -out:
+CDEBUG              = -g
+C_OUTPUT_FLAG       = -o
+LDDEBUG             = -g
+OUTPUT_FLAG         = -o
+CPPDEBUG            = -g
+CPP_OUTPUT_FLAG     = -o
+CPPLDDEBUG          = -g
+OUTPUT_FLAG         = -o
 ARDEBUG             =
-STATICLIB_OUTPUT_FLAG = -out:
+STATICLIB_OUTPUT_FLAG =
 MEX_DEBUG           = -g
-RM                  = @del
+RM                  = @rm -f
 ECHO                = @echo
-MV                  = @ren
-RUN                 = @cmd /C
+MV                  = @mv
+RUN                 =
 
 #--------------------------------------
 # "Faster Runs" Build Configuration
 #--------------------------------------
 
-ARFLAGS              = /nologo
-CFLAGS               = $(cflags) $(CVARSFLAG) $(CFLAGS_ADDITIONAL) $(C_STANDARD_OPTS) \
-                       /O2 /Oy-
-CPPFLAGS             = /TP $(cflags) $(CVARSFLAG) $(CPPFLAGS_ADDITIONAL) $(CPP_STANDARD_OPTS) \
-                       /O2 /Oy-
-CPP_LDFLAGS          = $(ldebug) $(conflags) $(LIBS_TOOLCHAIN)
-CPP_SHAREDLIB_LDFLAGS  = $(ldebug) $(conflags) $(LIBS_TOOLCHAIN) \
-                         -dll -def:$(DEF_FILE)
+ARFLAGS              = ruvs
+CFLAGS               = -c -isysroot $(XCODE_SDK_ROOT) -arch $(ARCHS) $(C_STANDARD_OPTS) -mmacosx-version-min=12.0 \
+                       -O3 -ffp-contract=off
+CPPFLAGS             = -c -isysroot $(XCODE_SDK_ROOT) -arch $(ARCHS) $(CPP_STANDARD_OPTS) -mmacosx-version-min=12.0 \
+                       -O3 -ffp-contract=off
+CPP_LDFLAGS          = -arch $(ARCHS) -isysroot $(XCODE_SDK_ROOT) -Wl,-rpath,@executable_path -Wl,-rpath,@executable_path/$(RELATIVE_PATH_TO_ANCHOR) $(NO_WARN_DUPLICATE_LIBRARIES)
+CPP_SHAREDLIB_LDFLAGS  = -arch $(ARCHS)  \
+                         -dynamiclib -install_name @rpath/$(notdir $(PRODUCT)) -isysroot $(XCODE_SDK_ROOT) \
+                         -Wl,$(LD_NAMESPACE) $(LD_UNDEFS) \
+                         $(NO_WARN_DUPLICATE_LIBRARIES)
 DOWNLOAD_FLAGS       =
 EXECUTE_FLAGS        =
-LDFLAGS              = $(ldebug) $(conflags) $(LIBS_TOOLCHAIN)
+LDFLAGS              = -arch $(ARCHS) -isysroot $(XCODE_SDK_ROOT) -Wl,-rpath,@executable_path -Wl,-rpath,@executable_path/$(RELATIVE_PATH_TO_ANCHOR) $(NO_WARN_DUPLICATE_LIBRARIES)
 MEX_CPPFLAGS         =
 MEX_CPPLDFLAGS       =
 MEX_CFLAGS           =
 MEX_LDFLAGS          =
-MAKE_FLAGS           = -f $(MAKEFILE)
-SHAREDLIB_LDFLAGS    = $(ldebug) $(conflags) $(LIBS_TOOLCHAIN) \
-                       -dll -def:$(DEF_FILE)
+MAKE_FLAGS           = -j $(MAX_MAKE_JOBS) -l $(MAX_MAKE_LOAD_AVG) -f $(MAKEFILE)
+SHAREDLIB_LDFLAGS    = -arch $(ARCHS)  \
+                       -dynamiclib -install_name @rpath/$(notdir $(PRODUCT)) -isysroot $(XCODE_SDK_ROOT) \
+                       -Wl,$(LD_NAMESPACE) $(LD_UNDEFS) \
+                       $(NO_WARN_DUPLICATE_LIBRARIES)
 
 
 
@@ -159,7 +153,7 @@ SHAREDLIB_LDFLAGS    = $(ldebug) $(conflags) $(LIBS_TOOLCHAIN) \
 ## OUTPUT INFO
 ###########################################################################
 
-PRODUCT = .\GNC_codegen.lib
+PRODUCT = ./GNC_codegen.a
 PRODUCT_TYPE = "static-library"
 BUILD_TYPE = "Static Library"
 
@@ -167,7 +161,7 @@ BUILD_TYPE = "Static Library"
 ## INCLUDE PATHS
 ###########################################################################
 
-INCLUDES_BUILDINFO = 
+INCLUDES_BUILDINFO = -I$(START_DIR)/codegen/lib/GNC_codegen -I$(START_DIR) -I$(MATLAB_ROOT)/extern/include
 
 INCLUDES = $(INCLUDES_BUILDINFO)
 
@@ -184,7 +178,7 @@ DEFINES = $(DEFINES_CUSTOM) $(DEFINES_STANDARD)
 ## SOURCE FILES
 ###########################################################################
 
-SRCS = $(START_DIR)\codegen\lib\GNC_codegen\GNC_codegen_data.c $(START_DIR)\codegen\lib\GNC_codegen\rt_nonfinite.c $(START_DIR)\codegen\lib\GNC_codegen\rtGetNaN.c $(START_DIR)\codegen\lib\GNC_codegen\rtGetInf.c $(START_DIR)\codegen\lib\GNC_codegen\GNC_codegen_initialize.c $(START_DIR)\codegen\lib\GNC_codegen\GNC_codegen_terminate.c $(START_DIR)\codegen\lib\GNC_codegen\controller_codegen_entry.c $(START_DIR)\codegen\lib\GNC_codegen\eye.c $(START_DIR)\codegen\lib\GNC_codegen\navigation_codegen_entry.c $(START_DIR)\codegen\lib\GNC_codegen\norm.c $(START_DIR)\codegen\lib\GNC_codegen\airdata_atmos.c $(START_DIR)\codegen\lib\GNC_codegen\mpower.c $(START_DIR)\codegen\lib\GNC_codegen\atan2.c $(START_DIR)\codegen\lib\GNC_codegen\inv.c $(START_DIR)\codegen\lib\GNC_codegen\ekf_correct.c $(START_DIR)\codegen\lib\GNC_codegen\dynamics.c $(START_DIR)\codegen\lib\GNC_codegen\dynamics_jacobian.c $(START_DIR)\codegen\lib\GNC_codegen\diag.c
+SRCS = $(START_DIR)/codegen/lib/GNC_codegen/GNC_codegen_data.c $(START_DIR)/codegen/lib/GNC_codegen/rt_nonfinite.c $(START_DIR)/codegen/lib/GNC_codegen/rtGetNaN.c $(START_DIR)/codegen/lib/GNC_codegen/rtGetInf.c $(START_DIR)/codegen/lib/GNC_codegen/GNC_codegen_initialize.c $(START_DIR)/codegen/lib/GNC_codegen/GNC_codegen_terminate.c $(START_DIR)/codegen/lib/GNC_codegen/controller_codegen_entry.c $(START_DIR)/codegen/lib/GNC_codegen/eye.c $(START_DIR)/codegen/lib/GNC_codegen/navigation_codegen_entry.c $(START_DIR)/codegen/lib/GNC_codegen/norm.c $(START_DIR)/codegen/lib/GNC_codegen/airdata_atmos.c $(START_DIR)/codegen/lib/GNC_codegen/mpower.c $(START_DIR)/codegen/lib/GNC_codegen/atan2.c $(START_DIR)/codegen/lib/GNC_codegen/inv.c $(START_DIR)/codegen/lib/GNC_codegen/ekf_correct.c $(START_DIR)/codegen/lib/GNC_codegen/svd.c $(START_DIR)/codegen/lib/GNC_codegen/xzlangeM.c $(START_DIR)/codegen/lib/GNC_codegen/xnrm2.c $(START_DIR)/codegen/lib/GNC_codegen/pad_filter.c $(START_DIR)/codegen/lib/GNC_codegen/dynamics.c $(START_DIR)/codegen/lib/GNC_codegen/dynamics_jacobian.c $(START_DIR)/codegen/lib/GNC_codegen/diag.c $(START_DIR)/codegen/lib/GNC_codegen/xrotg.c $(START_DIR)/codegen/lib/GNC_codegen/xzlascl.c
 
 ALL_SRCS = $(SRCS)
 
@@ -192,7 +186,7 @@ ALL_SRCS = $(SRCS)
 ## OBJECTS
 ###########################################################################
 
-OBJS = GNC_codegen_data.obj rt_nonfinite.obj rtGetNaN.obj rtGetInf.obj GNC_codegen_initialize.obj GNC_codegen_terminate.obj controller_codegen_entry.obj eye.obj navigation_codegen_entry.obj norm.obj airdata_atmos.obj mpower.obj atan2.obj inv.obj ekf_correct.obj dynamics.obj dynamics_jacobian.obj diag.obj
+OBJS = GNC_codegen_data.o rt_nonfinite.o rtGetNaN.o rtGetInf.o GNC_codegen_initialize.o GNC_codegen_terminate.o controller_codegen_entry.o eye.o navigation_codegen_entry.o norm.o airdata_atmos.o mpower.o atan2.o inv.o ekf_correct.o svd.o xzlangeM.o xnrm2.o pad_filter.o dynamics.o dynamics_jacobian.o diag.o xrotg.o xzlascl.o
 
 ALL_OBJS = $(OBJS)
 
@@ -212,7 +206,7 @@ LIBS =
 ## SYSTEM LIBRARIES
 ###########################################################################
 
-SYSTEM_LIBS = 
+SYSTEM_LIBS =  -lm
 
 ###########################################################################
 ## ADDITIONAL TOOLCHAIN FLAGS
@@ -222,40 +216,34 @@ SYSTEM_LIBS =
 # C Compiler
 #---------------
 
-CFLAGS_ = /source-charset:utf-8
-CFLAGS_BASIC = $(DEFINES) @$(COMPILER_COMMAND_FILE)
+CFLAGS_BASIC = $(DEFINES) $(INCLUDES)
 
-CFLAGS = $(CFLAGS) $(CFLAGS_) $(CFLAGS_BASIC)
+CFLAGS += $(CFLAGS_BASIC)
 
 #-----------------
 # C++ Compiler
 #-----------------
 
-CPPFLAGS_ = /source-charset:utf-8
-CPPFLAGS_BASIC = $(DEFINES) @$(COMPILER_COMMAND_FILE)
+CPPFLAGS_BASIC = $(DEFINES) $(INCLUDES)
 
-CPPFLAGS = $(CPPFLAGS) $(CPPFLAGS_) $(CPPFLAGS_BASIC)
+CPPFLAGS += $(CPPFLAGS_BASIC)
 
 ###########################################################################
 ## INLINED COMMANDS
 ###########################################################################
 
-
-!include $(MATLAB_ROOT)\rtw\c\tools\vcdefs.mak
-
-
 ###########################################################################
 ## PHONY TARGETS
 ###########################################################################
 
-.PHONY : all build clean info prebuild download execute set_environment_variables
+.PHONY : all build clean info prebuild download execute
 
 
 all : build
-	@cmd /C "@echo ### Successfully generated all binary outputs."
+	@echo "### Successfully generated all binary outputs."
 
 
-build : set_environment_variables prebuild $(PRODUCT)
+build : prebuild $(PRODUCT)
 
 
 prebuild : 
@@ -267,11 +255,6 @@ download : $(PRODUCT)
 execute : download
 
 
-set_environment_variables : 
-	@set INCLUDE=$(INCLUDES);$(INCLUDE)
-	@set LIB=$(LIB)
-
-
 ###########################################################################
 ## FINAL TARGET
 ###########################################################################
@@ -281,9 +264,9 @@ set_environment_variables :
 #---------------------------------
 
 $(PRODUCT) : $(OBJS) $(PREBUILT_OBJS)
-	@cmd /C "@echo ### Creating static library "$(PRODUCT)" ..."
-	$(AR) $(ARFLAGS) -out:$(PRODUCT) @$(CMD_FILE)
-	@cmd /C "@echo ### Created: $(PRODUCT)"
+	@echo "### Creating static library "$(PRODUCT)" ..."
+	$(AR) $(ARFLAGS)  $(PRODUCT) $(OBJS)
+	@echo "### Created: $(PRODUCT)"
 
 
 ###########################################################################
@@ -294,147 +277,283 @@ $(PRODUCT) : $(OBJS) $(PREBUILT_OBJS)
 # SOURCE-TO-OBJECT
 #---------------------
 
-.c.obj:
-	$(CC) $(CFLAGS) -Fo"$@" "$<"
+%.o : %.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
 
 
-.cpp.obj:
-	$(CPP) $(CPPFLAGS) -Fo"$@" "$<"
+%.o : %.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-.cc.obj:
-	$(CPP) $(CPPFLAGS) -Fo"$@" "$<"
+%.o : %.cc
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-.cxx.obj:
-	$(CPP) $(CPPFLAGS) -Fo"$@" "$<"
+%.o : %.CC
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-{$(RELATIVE_PATH_TO_ANCHOR)}.c.obj:
-	$(CC) $(CFLAGS) -Fo"$@" "$<"
+%.o : %.cp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-{$(RELATIVE_PATH_TO_ANCHOR)}.cpp.obj:
-	$(CPP) $(CPPFLAGS) -Fo"$@" "$<"
+%.o : %.CPP
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-{$(RELATIVE_PATH_TO_ANCHOR)}.cc.obj:
-	$(CPP) $(CPPFLAGS) -Fo"$@" "$<"
+%.o : %.c++
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-{$(RELATIVE_PATH_TO_ANCHOR)}.cxx.obj:
-	$(CPP) $(CPPFLAGS) -Fo"$@" "$<"
+%.o : %.C++
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-{$(START_DIR)\codegen\lib\GNC_codegen}.c.obj:
-	$(CC) $(CFLAGS) -Fo"$@" "$<"
+%.o : %.cxx
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-{$(START_DIR)\codegen\lib\GNC_codegen}.cpp.obj:
-	$(CPP) $(CPPFLAGS) -Fo"$@" "$<"
+%.o : %.CXX
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-{$(START_DIR)\codegen\lib\GNC_codegen}.cc.obj:
-	$(CPP) $(CPPFLAGS) -Fo"$@" "$<"
+%.o : %.C
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-{$(START_DIR)\codegen\lib\GNC_codegen}.cxx.obj:
-	$(CPP) $(CPPFLAGS) -Fo"$@" "$<"
+%.o : $(RELATIVE_PATH_TO_ANCHOR)/%.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
 
 
-{$(START_DIR)}.c.obj:
-	$(CC) $(CFLAGS) -Fo"$@" "$<"
+%.o : $(RELATIVE_PATH_TO_ANCHOR)/%.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-{$(START_DIR)}.cpp.obj:
-	$(CPP) $(CPPFLAGS) -Fo"$@" "$<"
+%.o : $(RELATIVE_PATH_TO_ANCHOR)/%.cc
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-{$(START_DIR)}.cc.obj:
-	$(CPP) $(CPPFLAGS) -Fo"$@" "$<"
+%.o : $(RELATIVE_PATH_TO_ANCHOR)/%.CC
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-{$(START_DIR)}.cxx.obj:
-	$(CPP) $(CPPFLAGS) -Fo"$@" "$<"
+%.o : $(RELATIVE_PATH_TO_ANCHOR)/%.cp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-GNC_codegen_data.obj : "$(START_DIR)\codegen\lib\GNC_codegen\GNC_codegen_data.c"
-	$(CC) $(CFLAGS) -Fo"$@" "$(START_DIR)\codegen\lib\GNC_codegen\GNC_codegen_data.c"
+%.o : $(RELATIVE_PATH_TO_ANCHOR)/%.CPP
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-rt_nonfinite.obj : "$(START_DIR)\codegen\lib\GNC_codegen\rt_nonfinite.c"
-	$(CC) $(CFLAGS) -Fo"$@" "$(START_DIR)\codegen\lib\GNC_codegen\rt_nonfinite.c"
+%.o : $(RELATIVE_PATH_TO_ANCHOR)/%.c++
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-rtGetNaN.obj : "$(START_DIR)\codegen\lib\GNC_codegen\rtGetNaN.c"
-	$(CC) $(CFLAGS) -Fo"$@" "$(START_DIR)\codegen\lib\GNC_codegen\rtGetNaN.c"
+%.o : $(RELATIVE_PATH_TO_ANCHOR)/%.C++
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-rtGetInf.obj : "$(START_DIR)\codegen\lib\GNC_codegen\rtGetInf.c"
-	$(CC) $(CFLAGS) -Fo"$@" "$(START_DIR)\codegen\lib\GNC_codegen\rtGetInf.c"
+%.o : $(RELATIVE_PATH_TO_ANCHOR)/%.cxx
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-GNC_codegen_initialize.obj : "$(START_DIR)\codegen\lib\GNC_codegen\GNC_codegen_initialize.c"
-	$(CC) $(CFLAGS) -Fo"$@" "$(START_DIR)\codegen\lib\GNC_codegen\GNC_codegen_initialize.c"
+%.o : $(RELATIVE_PATH_TO_ANCHOR)/%.CXX
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-GNC_codegen_terminate.obj : "$(START_DIR)\codegen\lib\GNC_codegen\GNC_codegen_terminate.c"
-	$(CC) $(CFLAGS) -Fo"$@" "$(START_DIR)\codegen\lib\GNC_codegen\GNC_codegen_terminate.c"
+%.o : $(RELATIVE_PATH_TO_ANCHOR)/%.C
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-controller_codegen_entry.obj : "$(START_DIR)\codegen\lib\GNC_codegen\controller_codegen_entry.c"
-	$(CC) $(CFLAGS) -Fo"$@" "$(START_DIR)\codegen\lib\GNC_codegen\controller_codegen_entry.c"
+%.o : $(START_DIR)/codegen/lib/GNC_codegen/%.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
 
 
-eye.obj : "$(START_DIR)\codegen\lib\GNC_codegen\eye.c"
-	$(CC) $(CFLAGS) -Fo"$@" "$(START_DIR)\codegen\lib\GNC_codegen\eye.c"
+%.o : $(START_DIR)/codegen/lib/GNC_codegen/%.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-navigation_codegen_entry.obj : "$(START_DIR)\codegen\lib\GNC_codegen\navigation_codegen_entry.c"
-	$(CC) $(CFLAGS) -Fo"$@" "$(START_DIR)\codegen\lib\GNC_codegen\navigation_codegen_entry.c"
+%.o : $(START_DIR)/codegen/lib/GNC_codegen/%.cc
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-norm.obj : "$(START_DIR)\codegen\lib\GNC_codegen\norm.c"
-	$(CC) $(CFLAGS) -Fo"$@" "$(START_DIR)\codegen\lib\GNC_codegen\norm.c"
+%.o : $(START_DIR)/codegen/lib/GNC_codegen/%.CC
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-airdata_atmos.obj : "$(START_DIR)\codegen\lib\GNC_codegen\airdata_atmos.c"
-	$(CC) $(CFLAGS) -Fo"$@" "$(START_DIR)\codegen\lib\GNC_codegen\airdata_atmos.c"
+%.o : $(START_DIR)/codegen/lib/GNC_codegen/%.cp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-mpower.obj : "$(START_DIR)\codegen\lib\GNC_codegen\mpower.c"
-	$(CC) $(CFLAGS) -Fo"$@" "$(START_DIR)\codegen\lib\GNC_codegen\mpower.c"
+%.o : $(START_DIR)/codegen/lib/GNC_codegen/%.CPP
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-atan2.obj : "$(START_DIR)\codegen\lib\GNC_codegen\atan2.c"
-	$(CC) $(CFLAGS) -Fo"$@" "$(START_DIR)\codegen\lib\GNC_codegen\atan2.c"
+%.o : $(START_DIR)/codegen/lib/GNC_codegen/%.c++
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-inv.obj : "$(START_DIR)\codegen\lib\GNC_codegen\inv.c"
-	$(CC) $(CFLAGS) -Fo"$@" "$(START_DIR)\codegen\lib\GNC_codegen\inv.c"
+%.o : $(START_DIR)/codegen/lib/GNC_codegen/%.C++
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-ekf_correct.obj : "$(START_DIR)\codegen\lib\GNC_codegen\ekf_correct.c"
-	$(CC) $(CFLAGS) -Fo"$@" "$(START_DIR)\codegen\lib\GNC_codegen\ekf_correct.c"
+%.o : $(START_DIR)/codegen/lib/GNC_codegen/%.cxx
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-dynamics.obj : "$(START_DIR)\codegen\lib\GNC_codegen\dynamics.c"
-	$(CC) $(CFLAGS) -Fo"$@" "$(START_DIR)\codegen\lib\GNC_codegen\dynamics.c"
+%.o : $(START_DIR)/codegen/lib/GNC_codegen/%.CXX
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-dynamics_jacobian.obj : "$(START_DIR)\codegen\lib\GNC_codegen\dynamics_jacobian.c"
-	$(CC) $(CFLAGS) -Fo"$@" "$(START_DIR)\codegen\lib\GNC_codegen\dynamics_jacobian.c"
+%.o : $(START_DIR)/codegen/lib/GNC_codegen/%.C
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-diag.obj : "$(START_DIR)\codegen\lib\GNC_codegen\diag.c"
-	$(CC) $(CFLAGS) -Fo"$@" "$(START_DIR)\codegen\lib\GNC_codegen\diag.c"
+%.o : $(START_DIR)/%.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
+
+
+%.o : $(START_DIR)/%.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
+
+
+%.o : $(START_DIR)/%.cc
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
+
+
+%.o : $(START_DIR)/%.CC
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
+
+
+%.o : $(START_DIR)/%.cp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
+
+
+%.o : $(START_DIR)/%.CPP
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
+
+
+%.o : $(START_DIR)/%.c++
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
+
+
+%.o : $(START_DIR)/%.C++
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
+
+
+%.o : $(START_DIR)/%.cxx
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
+
+
+%.o : $(START_DIR)/%.CXX
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
+
+
+%.o : $(START_DIR)/%.C
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
+
+
+GNC_codegen_data.o : $(START_DIR)/codegen/lib/GNC_codegen/GNC_codegen_data.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
+
+
+rt_nonfinite.o : $(START_DIR)/codegen/lib/GNC_codegen/rt_nonfinite.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
+
+
+rtGetNaN.o : $(START_DIR)/codegen/lib/GNC_codegen/rtGetNaN.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
+
+
+rtGetInf.o : $(START_DIR)/codegen/lib/GNC_codegen/rtGetInf.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
+
+
+GNC_codegen_initialize.o : $(START_DIR)/codegen/lib/GNC_codegen/GNC_codegen_initialize.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
+
+
+GNC_codegen_terminate.o : $(START_DIR)/codegen/lib/GNC_codegen/GNC_codegen_terminate.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
+
+
+controller_codegen_entry.o : $(START_DIR)/codegen/lib/GNC_codegen/controller_codegen_entry.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
+
+
+eye.o : $(START_DIR)/codegen/lib/GNC_codegen/eye.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
+
+
+navigation_codegen_entry.o : $(START_DIR)/codegen/lib/GNC_codegen/navigation_codegen_entry.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
+
+
+norm.o : $(START_DIR)/codegen/lib/GNC_codegen/norm.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
+
+
+airdata_atmos.o : $(START_DIR)/codegen/lib/GNC_codegen/airdata_atmos.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
+
+
+mpower.o : $(START_DIR)/codegen/lib/GNC_codegen/mpower.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
+
+
+atan2.o : $(START_DIR)/codegen/lib/GNC_codegen/atan2.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
+
+
+inv.o : $(START_DIR)/codegen/lib/GNC_codegen/inv.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
+
+
+ekf_correct.o : $(START_DIR)/codegen/lib/GNC_codegen/ekf_correct.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
+
+
+svd.o : $(START_DIR)/codegen/lib/GNC_codegen/svd.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
+
+
+xzlangeM.o : $(START_DIR)/codegen/lib/GNC_codegen/xzlangeM.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
+
+
+xnrm2.o : $(START_DIR)/codegen/lib/GNC_codegen/xnrm2.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
+
+
+pad_filter.o : $(START_DIR)/codegen/lib/GNC_codegen/pad_filter.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
+
+
+dynamics.o : $(START_DIR)/codegen/lib/GNC_codegen/dynamics.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
+
+
+dynamics_jacobian.o : $(START_DIR)/codegen/lib/GNC_codegen/dynamics_jacobian.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
+
+
+diag.o : $(START_DIR)/codegen/lib/GNC_codegen/diag.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
+
+
+xrotg.o : $(START_DIR)/codegen/lib/GNC_codegen/xrotg.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
+
+
+xzlascl.o : $(START_DIR)/codegen/lib/GNC_codegen/xzlascl.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
 
 
 ###########################################################################
 ## DEPENDENCIES
 ###########################################################################
 
-$(ALL_OBJS) : rtw_proj.tmw $(COMPILER_COMMAND_FILE) $(MAKEFILE)
+$(ALL_OBJS) : rtw_proj.tmw $(MAKEFILE)
 
 
 ###########################################################################
@@ -442,36 +561,36 @@ $(ALL_OBJS) : rtw_proj.tmw $(COMPILER_COMMAND_FILE) $(MAKEFILE)
 ###########################################################################
 
 info : 
-	@cmd /C "@echo ### PRODUCT = $(PRODUCT)"
-	@cmd /C "@echo ### PRODUCT_TYPE = $(PRODUCT_TYPE)"
-	@cmd /C "@echo ### BUILD_TYPE = $(BUILD_TYPE)"
-	@cmd /C "@echo ### INCLUDES = $(INCLUDES)"
-	@cmd /C "@echo ### DEFINES = $(DEFINES)"
-	@cmd /C "@echo ### ALL_SRCS = $(ALL_SRCS)"
-	@cmd /C "@echo ### ALL_OBJS = $(ALL_OBJS)"
-	@cmd /C "@echo ### LIBS = $(LIBS)"
-	@cmd /C "@echo ### MODELREF_LIBS = $(MODELREF_LIBS)"
-	@cmd /C "@echo ### SYSTEM_LIBS = $(SYSTEM_LIBS)"
-	@cmd /C "@echo ### TOOLCHAIN_LIBS = $(TOOLCHAIN_LIBS)"
-	@cmd /C "@echo ### CFLAGS = $(CFLAGS)"
-	@cmd /C "@echo ### LDFLAGS = $(LDFLAGS)"
-	@cmd /C "@echo ### SHAREDLIB_LDFLAGS = $(SHAREDLIB_LDFLAGS)"
-	@cmd /C "@echo ### CPPFLAGS = $(CPPFLAGS)"
-	@cmd /C "@echo ### CPP_LDFLAGS = $(CPP_LDFLAGS)"
-	@cmd /C "@echo ### CPP_SHAREDLIB_LDFLAGS = $(CPP_SHAREDLIB_LDFLAGS)"
-	@cmd /C "@echo ### ARFLAGS = $(ARFLAGS)"
-	@cmd /C "@echo ### MEX_CFLAGS = $(MEX_CFLAGS)"
-	@cmd /C "@echo ### MEX_CPPFLAGS = $(MEX_CPPFLAGS)"
-	@cmd /C "@echo ### MEX_LDFLAGS = $(MEX_LDFLAGS)"
-	@cmd /C "@echo ### MEX_CPPLDFLAGS = $(MEX_CPPLDFLAGS)"
-	@cmd /C "@echo ### DOWNLOAD_FLAGS = $(DOWNLOAD_FLAGS)"
-	@cmd /C "@echo ### EXECUTE_FLAGS = $(EXECUTE_FLAGS)"
-	@cmd /C "@echo ### MAKE_FLAGS = $(MAKE_FLAGS)"
+	@echo "### PRODUCT = $(PRODUCT)"
+	@echo "### PRODUCT_TYPE = $(PRODUCT_TYPE)"
+	@echo "### BUILD_TYPE = $(BUILD_TYPE)"
+	@echo "### INCLUDES = $(INCLUDES)"
+	@echo "### DEFINES = $(DEFINES)"
+	@echo "### ALL_SRCS = $(ALL_SRCS)"
+	@echo "### ALL_OBJS = $(ALL_OBJS)"
+	@echo "### LIBS = $(LIBS)"
+	@echo "### MODELREF_LIBS = $(MODELREF_LIBS)"
+	@echo "### SYSTEM_LIBS = $(SYSTEM_LIBS)"
+	@echo "### TOOLCHAIN_LIBS = $(TOOLCHAIN_LIBS)"
+	@echo "### CFLAGS = $(CFLAGS)"
+	@echo "### LDFLAGS = $(LDFLAGS)"
+	@echo "### SHAREDLIB_LDFLAGS = $(SHAREDLIB_LDFLAGS)"
+	@echo "### CPPFLAGS = $(CPPFLAGS)"
+	@echo "### CPP_LDFLAGS = $(CPP_LDFLAGS)"
+	@echo "### CPP_SHAREDLIB_LDFLAGS = $(CPP_SHAREDLIB_LDFLAGS)"
+	@echo "### ARFLAGS = $(ARFLAGS)"
+	@echo "### MEX_CFLAGS = $(MEX_CFLAGS)"
+	@echo "### MEX_CPPFLAGS = $(MEX_CPPFLAGS)"
+	@echo "### MEX_LDFLAGS = $(MEX_LDFLAGS)"
+	@echo "### MEX_CPPLDFLAGS = $(MEX_CPPLDFLAGS)"
+	@echo "### DOWNLOAD_FLAGS = $(DOWNLOAD_FLAGS)"
+	@echo "### EXECUTE_FLAGS = $(EXECUTE_FLAGS)"
+	@echo "### MAKE_FLAGS = $(MAKE_FLAGS)"
 
 
 clean : 
 	$(ECHO) "### Deleting all derived files ..."
-	@if exist $(PRODUCT) $(RM) $(PRODUCT)
+	$(RM) $(PRODUCT)
 	$(RM) $(ALL_OBJS)
 	$(ECHO) "### Deleted all derived files."
 

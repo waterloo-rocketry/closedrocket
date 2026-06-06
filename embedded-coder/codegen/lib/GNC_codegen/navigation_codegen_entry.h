@@ -5,7 +5,7 @@
  * File: navigation_codegen_entry.h
  *
  * MATLAB Coder version            : 25.2
- * C/C++ source code generated on  : 02-Jun-2026 23:24:33
+ * C/C++ source code generated on  : 05-Jun-2026 20:31:45
  */
 
 #ifndef NAVIGATION_CODEGEN_ENTRY_H
@@ -26,7 +26,8 @@ extern void navigation_codegen_entry(
     double dt, bool flight_phase, const double x[11], const double P[121],
     struct1_T *bias, const struct2_T *sens_filt, const struct3_T *sens_input,
     double x_ret[11], double P_ret[121], struct1_T *bias_ret,
-    struct2_T *sens_filt_ret);
+    struct2_T *sens_filt_ret, double *cov_norm, struct6_T *airdata,
+    double roll_state[2]);
 
 #ifdef __cplusplus
 }

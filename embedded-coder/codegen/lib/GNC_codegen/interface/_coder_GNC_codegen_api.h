@@ -5,7 +5,7 @@
  * File: _coder_GNC_codegen_api.h
  *
  * MATLAB Coder version            : 25.2
- * C/C++ source code generated on  : 02-Jun-2026 23:24:33
+ * C/C++ source code generated on  : 05-Jun-2026 20:31:45
  */
 
 #ifndef _CODER_GNC_CODEGEN_API_H
@@ -79,6 +79,18 @@ typedef struct {
 } struct3_T;
 #endif /* typedef_struct3_T */
 
+#ifndef typedef_struct6_T
+#define typedef_struct6_T
+typedef struct {
+  real_T pressure;
+  real_T temperature;
+  real_T density;
+  real_T sonic_speed;
+  real_T mach;
+  real_T dynamic_pressure;
+} struct6_T;
+#endif /* typedef_struct6_T */
+
 #ifndef typedef_struct0_T
 #define typedef_struct0_T
 typedef struct {
@@ -120,10 +132,12 @@ void navigation_codegen_entry(real_T dt, boolean_T flight_phase, real_T x[11],
                               real_T P[121], struct1_T *bias,
                               struct2_T *sens_filt, struct3_T *sens_input,
                               real_T x_ret[11], real_T P_ret[121],
-                              struct1_T *bias_ret, struct2_T *sens_filt_ret);
+                              struct1_T *bias_ret, struct2_T *sens_filt_ret,
+                              real_T *cov_norm, struct6_T *airdata,
+                              real_T roll_state[2]);
 
 void navigation_codegen_entry_api(const mxArray *const prhs[7], int32_T nlhs,
-                                  const mxArray *plhs[4]);
+                                  const mxArray *plhs[7]);
 
 #ifdef __cplusplus
 }

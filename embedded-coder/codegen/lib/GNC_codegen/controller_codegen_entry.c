@@ -5,7 +5,7 @@
  * File: controller_codegen_entry.c
  *
  * MATLAB Coder version            : 25.2
- * C/C++ source code generated on  : 02-Jun-2026 23:24:33
+ * C/C++ source code generated on  : 05-Jun-2026 20:31:45
  */
 
 /* Include Files */
@@ -18,6 +18,9 @@
 #include "rt_nonfinite.h"
 #include <math.h>
 #include <string.h>
+
+/* Variable Definitions */
+static struct_T param;
 
 /* Function Definitions */
 /*
@@ -84,7 +87,7 @@ void controller_codegen_entry(double b_time, double dt_ctrl, const double xR[2],
   /*     %% controller algorithm */
   /* %% Computes control signal of the adaptive LQR controller. */
   /* %% Coefficient Estimation */
-  pdyn_params = pdyn * 0.00061367415999999994;
+  pdyn_params = pdyn * param.c_canard;
   /*  estimates the canard aerodynamic coefficients from canard angle, roll
    * rates, air data */
   /*  coeffs : canard coefficients C_l_delta and C_l_0 */
@@ -182,7 +185,7 @@ void controller_codegen_entry(double b_time, double dt_ctrl, const double xR[2],
   ctrl_mem_out->w_old = xR[1];
   ctrl_mem_out->d_old = c_delta;
   ctrl_mem_out->w_dot_old = w_dot;
-  L_delta = 2.0 * ctrl_mem_out->coeffs[0] * pdyn_params;
+  L_delta = ctrl_mem_out->coeffs[0] * pdyn_params / 2.0;
   if (fabs(L_delta) < 10.0) {
     if (L_delta >= 0.0) {
       L_delta = 10.0;
@@ -225,6 +228,15 @@ void controller_codegen_entry(double b_time, double dt_ctrl, const double xR[2],
     /*  disable during low control authority */
     *u = 0.0;
   }
+}
+
+/*
+ * Arguments    : void
+ * Return Type  : void
+ */
+void controller_codegen_entry_init(void)
+{
+  param = r;
 }
 
 /*

@@ -55,6 +55,7 @@
               </EntryPoints>
               <EntryPoints id="13" type="coderapp.internal.interface.project.EntryPointFunction">
                 <Signatures id="14" type="coderapp.internal.interface.project.FunctionSignature">
+                  <HasUserSpecifiedNumOutputs>true</HasUserSpecifiedNumOutputs>
                   <Inputs id="15" type="coderapp.internal.interface.project.Input">
                     <Name>dt</Name>
                     <Type id="16" type="coderapp.internal.codertype.PrimitiveType"/>
@@ -83,7 +84,7 @@
                     <Name>sens_input</Name>
                     <Type id="28" type="coderapp.internal.codertype.StructType"/>
                   </Inputs>
-                  <NumOutputs>4</NumOutputs>
+                  <NumOutputs>7</NumOutputs>
                 </Signatures>
                 <File type="coderapp.internal.util.mfz.FileSpec">
                   <Path>../gnc/navigation/navigation_codegen_entry.m</Path>
@@ -1659,6 +1660,229 @@
                   <Size type="coderapp.internal.codertype.Dimension"/>
                   <Size type="coderapp.internal.codertype.Dimension"/>
                 </Types>
+                <Types id="350" type="coderapp.internal.codertype.PrimitiveType">
+                  <ClassName>double</ClassName>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                </Types>
+                <Types id="351" type="coderapp.internal.codertype.PrimitiveType">
+                  <ClassName>double</ClassName>
+                  <Size type="coderapp.internal.codertype.Dimension">
+                    <Length>2</Length>
+                  </Size>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                </Types>
+                <Types id="352" type="coderapp.internal.codertype.PrimitiveType">
+                  <ClassName>double</ClassName>
+                  <Size type="coderapp.internal.codertype.Dimension">
+                    <Length>2</Length>
+                  </Size>
+                  <Size type="coderapp.internal.codertype.Dimension">
+                    <Length>2</Length>
+                  </Size>
+                </Types>
+                <Types id="353" type="coderapp.internal.codertype.StructType">
+                  <Fields id="354" type="coderapp.internal.codertype.Property">
+                    <Name>coeffs</Name>
+                    <Type id="351" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="355" type="coderapp.internal.codertype.Property">
+                    <Name>w_old</Name>
+                    <Type id="350" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="356" type="coderapp.internal.codertype.Property">
+                    <Name>P_minus</Name>
+                    <Type id="352" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="357" type="coderapp.internal.codertype.Property">
+                    <Name>d_old</Name>
+                    <Type id="350" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="358" type="coderapp.internal.codertype.Property">
+                    <Name>w_dot_old</Name>
+                    <Type id="350" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <ClassName>struct</ClassName>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                </Types>
+                <Types id="359" type="coderapp.internal.codertype.PrimitiveType">
+                  <ClassName>double</ClassName>
+                  <Size type="coderapp.internal.codertype.Dimension">
+                    <Length>3</Length>
+                  </Size>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                </Types>
+                <Types id="360" type="coderapp.internal.codertype.PrimitiveType">
+                  <ClassName>logical</ClassName>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                </Types>
+                <Types id="361" type="coderapp.internal.codertype.StructType">
+                  <Fields id="362" type="coderapp.internal.codertype.Property">
+                    <Name>meas</Name>
+                    <Type id="359" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="363" type="coderapp.internal.codertype.Property">
+                    <Name>status</Name>
+                    <Type id="360" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <ClassName>struct</ClassName>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                </Types>
+                <Types id="364" type="coderapp.internal.codertype.StructType">
+                  <Fields id="365" type="coderapp.internal.codertype.Property">
+                    <Name>meas</Name>
+                    <Type id="350" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="366" type="coderapp.internal.codertype.Property">
+                    <Name>status</Name>
+                    <Type id="360" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <ClassName>struct</ClassName>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                </Types>
+                <Types id="367" type="coderapp.internal.codertype.StructType">
+                  <Fields id="368" type="coderapp.internal.codertype.Property">
+                    <Name>board_accel</Name>
+                    <Type id="361" type="coderapp.internal.codertype.StructType"/>
+                  </Fields>
+                  <Fields id="369" type="coderapp.internal.codertype.Property">
+                    <Name>board_gyro</Name>
+                    <Type id="361" type="coderapp.internal.codertype.StructType"/>
+                  </Fields>
+                  <Fields id="370" type="coderapp.internal.codertype.Property">
+                    <Name>mti_accel</Name>
+                    <Type id="361" type="coderapp.internal.codertype.StructType"/>
+                  </Fields>
+                  <Fields id="371" type="coderapp.internal.codertype.Property">
+                    <Name>mti_gyro</Name>
+                    <Type id="361" type="coderapp.internal.codertype.StructType"/>
+                  </Fields>
+                  <Fields id="372" type="coderapp.internal.codertype.Property">
+                    <Name>ad_accel</Name>
+                    <Type id="361" type="coderapp.internal.codertype.StructType"/>
+                  </Fields>
+                  <Fields id="373" type="coderapp.internal.codertype.Property">
+                    <Name>ad_gyro</Name>
+                    <Type id="361" type="coderapp.internal.codertype.StructType"/>
+                  </Fields>
+                  <Fields id="374" type="coderapp.internal.codertype.Property">
+                    <Name>board_baro</Name>
+                    <Type id="364" type="coderapp.internal.codertype.StructType"/>
+                  </Fields>
+                  <Fields id="375" type="coderapp.internal.codertype.Property">
+                    <Name>board_mag</Name>
+                    <Type id="361" type="coderapp.internal.codertype.StructType"/>
+                  </Fields>
+                  <Fields id="376" type="coderapp.internal.codertype.Property">
+                    <Name>mti_baro</Name>
+                    <Type id="364" type="coderapp.internal.codertype.StructType"/>
+                  </Fields>
+                  <Fields id="377" type="coderapp.internal.codertype.Property">
+                    <Name>mti_mag</Name>
+                    <Type id="361" type="coderapp.internal.codertype.StructType"/>
+                  </Fields>
+                  <ClassName>struct</ClassName>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                </Types>
+                <Types id="378" type="coderapp.internal.codertype.StructType">
+                  <Fields id="379" type="coderapp.internal.codertype.Property">
+                    <Name>board_accel_f</Name>
+                    <Type id="359" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="380" type="coderapp.internal.codertype.Property">
+                    <Name>board_gyro_f</Name>
+                    <Type id="359" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="381" type="coderapp.internal.codertype.Property">
+                    <Name>mti_accel_f</Name>
+                    <Type id="359" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="382" type="coderapp.internal.codertype.Property">
+                    <Name>mti_gyro_f</Name>
+                    <Type id="359" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="383" type="coderapp.internal.codertype.Property">
+                    <Name>ad_accel_f</Name>
+                    <Type id="359" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="384" type="coderapp.internal.codertype.Property">
+                    <Name>ad_gyro_f</Name>
+                    <Type id="359" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="385" type="coderapp.internal.codertype.Property">
+                    <Name>board_baro_f</Name>
+                    <Type id="350" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="386" type="coderapp.internal.codertype.Property">
+                    <Name>board_mag_f</Name>
+                    <Type id="359" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="387" type="coderapp.internal.codertype.Property">
+                    <Name>mti_baro_f</Name>
+                    <Type id="350" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="388" type="coderapp.internal.codertype.Property">
+                    <Name>mti_mag_f</Name>
+                    <Type id="359" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <ClassName>struct</ClassName>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                </Types>
+                <Types id="389" type="coderapp.internal.codertype.StructType">
+                  <Fields id="390" type="coderapp.internal.codertype.Property">
+                    <Name>board_gyro</Name>
+                    <Type id="359" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="391" type="coderapp.internal.codertype.Property">
+                    <Name>mti_gyro</Name>
+                    <Type id="359" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="392" type="coderapp.internal.codertype.Property">
+                    <Name>ad_gyro</Name>
+                    <Type id="359" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="393" type="coderapp.internal.codertype.Property">
+                    <Name>board_mag_earth</Name>
+                    <Type id="359" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="394" type="coderapp.internal.codertype.Property">
+                    <Name>mti_mag_earth</Name>
+                    <Type id="359" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="395" type="coderapp.internal.codertype.Property">
+                    <Name>board_baro</Name>
+                    <Type id="350" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="396" type="coderapp.internal.codertype.Property">
+                    <Name>mti_baro</Name>
+                    <Type id="350" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <ClassName>struct</ClassName>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                </Types>
+                <Types id="397" type="coderapp.internal.codertype.PrimitiveType">
+                  <ClassName>double</ClassName>
+                  <Size type="coderapp.internal.codertype.Dimension">
+                    <Length>11</Length>
+                  </Size>
+                  <Size type="coderapp.internal.codertype.Dimension">
+                    <Length>11</Length>
+                  </Size>
+                </Types>
+                <Types id="398" type="coderapp.internal.codertype.PrimitiveType">
+                  <ClassName>double</ClassName>
+                  <Size type="coderapp.internal.codertype.Dimension">
+                    <Length>11</Length>
+                  </Size>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                </Types>
               </Types>
             </coderapp.internal.interface.project.Interface>
           </MF0>
@@ -1680,264 +1904,336 @@
               </Activity>
               <MainBuildResult id="3" type="coderapp.internal.mlc.mfz.MatlabCoderCodegenResult">
                 <WorkflowTarget>LIB</WorkflowTarget>
-                <LogDirectory>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen</LogDirectory>
+                <LogDirectory>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen</LogDirectory>
                 <MainReport id="4" type="coderapp.internal.build.mfz.CodegenArtifact"/>
                 <Artifacts id="4" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <SubType>CODEGEN_REPORT</SubType>
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\html\report.mldatx</Path>
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/html/report.mldatx</Path>
                   </File>
                   <Type>CODEGEN_REPORT</Type>
                 </Artifacts>
                 <Artifacts id="5" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\GNC_codegen_data.c</Path>
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/GNC_codegen_data.c</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="6" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\GNC_codegen_data.h</Path>
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/GNC_codegen_data.h</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="7" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\GNC_codegen_initialize.c</Path>
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/GNC_codegen_initialize.c</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="8" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\GNC_codegen_initialize.h</Path>
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/GNC_codegen_initialize.h</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="9" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\GNC_codegen_terminate.c</Path>
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/GNC_codegen_terminate.c</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="10" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\GNC_codegen_terminate.h</Path>
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/GNC_codegen_terminate.h</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="11" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\GNC_codegen_types.h</Path>
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/GNC_codegen_types.h</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="12" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\airdata_atmos.c</Path>
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/airdata_atmos.c</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="13" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\airdata_atmos.h</Path>
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/airdata_atmos.h</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="14" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\atan2.c</Path>
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/atan2.c</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="15" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\atan2.h</Path>
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/atan2.h</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="16" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\controller_codegen_entry.c</Path>
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/controller_codegen_entry.c</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="17" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\controller_codegen_entry.h</Path>
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/controller_codegen_entry.h</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="18" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\diag.c</Path>
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/diag.c</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="19" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\diag.h</Path>
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/diag.h</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="20" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\dynamics.c</Path>
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/dynamics.c</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="21" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\dynamics.h</Path>
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/dynamics.h</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="22" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\dynamics_jacobian.c</Path>
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/dynamics_jacobian.c</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="23" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\dynamics_jacobian.h</Path>
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/dynamics_jacobian.h</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="24" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\ekf_correct.c</Path>
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/ekf_correct.c</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="25" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\ekf_correct.h</Path>
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/ekf_correct.h</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="26" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\eye.c</Path>
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/eye.c</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="27" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\eye.h</Path>
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/eye.h</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="28" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\inv.c</Path>
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/inv.c</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="29" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\inv.h</Path>
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/inv.h</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="30" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\mpower.c</Path>
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/mpower.c</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="31" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\mpower.h</Path>
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/mpower.h</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="32" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\navigation_codegen_entry.c</Path>
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/navigation_codegen_entry.c</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="33" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\navigation_codegen_entry.h</Path>
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/navigation_codegen_entry.h</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="34" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\norm.c</Path>
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/norm.c</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="35" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\norm.h</Path>
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/norm.h</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="36" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\rtGetInf.c</Path>
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/pad_filter.c</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="37" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\rtGetInf.h</Path>
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/pad_filter.h</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="38" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\rtGetNaN.c</Path>
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/rtGetInf.c</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="39" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\rtGetNaN.h</Path>
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/rtGetInf.h</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="40" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\rt_defines.h</Path>
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/rtGetNaN.c</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="41" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\rt_nonfinite.c</Path>
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/rtGetNaN.h</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="42" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\rt_nonfinite.h</Path>
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/rt_defines.h</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="43" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\rtwtypes.h</Path>
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/rt_nonfinite.c</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="44" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\examples\main.c</Path>
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/rt_nonfinite.h</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <Artifacts id="45" type="coderapp.internal.build.mfz.CodegenArtifact">
                   <File type="coderapp.internal.util.mfz.FileSpec">
-                    <Path>C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen\examples\main.h</Path>
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/rtwtypes.h</Path>
+                  </File>
+                  <Type>GENERATED_SOURCE</Type>
+                </Artifacts>
+                <Artifacts id="46" type="coderapp.internal.build.mfz.CodegenArtifact">
+                  <File type="coderapp.internal.util.mfz.FileSpec">
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/svd.c</Path>
+                  </File>
+                  <Type>GENERATED_SOURCE</Type>
+                </Artifacts>
+                <Artifacts id="47" type="coderapp.internal.build.mfz.CodegenArtifact">
+                  <File type="coderapp.internal.util.mfz.FileSpec">
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/svd.h</Path>
+                  </File>
+                  <Type>GENERATED_SOURCE</Type>
+                </Artifacts>
+                <Artifacts id="48" type="coderapp.internal.build.mfz.CodegenArtifact">
+                  <File type="coderapp.internal.util.mfz.FileSpec">
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/xnrm2.c</Path>
+                  </File>
+                  <Type>GENERATED_SOURCE</Type>
+                </Artifacts>
+                <Artifacts id="49" type="coderapp.internal.build.mfz.CodegenArtifact">
+                  <File type="coderapp.internal.util.mfz.FileSpec">
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/xnrm2.h</Path>
+                  </File>
+                  <Type>GENERATED_SOURCE</Type>
+                </Artifacts>
+                <Artifacts id="50" type="coderapp.internal.build.mfz.CodegenArtifact">
+                  <File type="coderapp.internal.util.mfz.FileSpec">
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/xrotg.c</Path>
+                  </File>
+                  <Type>GENERATED_SOURCE</Type>
+                </Artifacts>
+                <Artifacts id="51" type="coderapp.internal.build.mfz.CodegenArtifact">
+                  <File type="coderapp.internal.util.mfz.FileSpec">
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/xrotg.h</Path>
+                  </File>
+                  <Type>GENERATED_SOURCE</Type>
+                </Artifacts>
+                <Artifacts id="52" type="coderapp.internal.build.mfz.CodegenArtifact">
+                  <File type="coderapp.internal.util.mfz.FileSpec">
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/xzlangeM.c</Path>
+                  </File>
+                  <Type>GENERATED_SOURCE</Type>
+                </Artifacts>
+                <Artifacts id="53" type="coderapp.internal.build.mfz.CodegenArtifact">
+                  <File type="coderapp.internal.util.mfz.FileSpec">
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/xzlangeM.h</Path>
+                  </File>
+                  <Type>GENERATED_SOURCE</Type>
+                </Artifacts>
+                <Artifacts id="54" type="coderapp.internal.build.mfz.CodegenArtifact">
+                  <File type="coderapp.internal.util.mfz.FileSpec">
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/xzlascl.c</Path>
+                  </File>
+                  <Type>GENERATED_SOURCE</Type>
+                </Artifacts>
+                <Artifacts id="55" type="coderapp.internal.build.mfz.CodegenArtifact">
+                  <File type="coderapp.internal.util.mfz.FileSpec">
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/xzlascl.h</Path>
+                  </File>
+                  <Type>GENERATED_SOURCE</Type>
+                </Artifacts>
+                <Artifacts id="56" type="coderapp.internal.build.mfz.CodegenArtifact">
+                  <File type="coderapp.internal.util.mfz.FileSpec">
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/examples/main.c</Path>
+                  </File>
+                  <Type>GENERATED_SOURCE</Type>
+                </Artifacts>
+                <Artifacts id="57" type="coderapp.internal.build.mfz.CodegenArtifact">
+                  <File type="coderapp.internal.util.mfz.FileSpec">
+                    <Path>/Users/shiminghe/Desktop/Waterloo_Rocketry/closedrocket/embedded-coder/codegen/lib/GNC_codegen/examples/main.h</Path>
                   </File>
                   <Type>GENERATED_SOURCE</Type>
                 </Artifacts>
                 <BuildFolder type="coderapp.internal.util.mfz.FileSpec"/>
                 <Success>true</Success>
-                <Timestamp>2026-06-02T23:24:52</Timestamp>
+                <Timestamp>2026-06-05T20:32:15</Timestamp>
               </MainBuildResult>
             </coderapp.internal.mlc.mfz.MatlabCoderProjectState>
           </MF0>
@@ -1952,36 +2248,42 @@
                 </Data>
               </Values>
               <Values id="4" type="coderapp.internal.ext.ConfigEntry">
-                <Key>hardwareName</Key>
-                <Data id="5" type="coderapp.internal.config.data.EnumParamData">
-                  <Value>&lt;&lt;&lt;NONE&gt;&gt;&gt;</Value>
+                <Key>enableVariableSizing</Key>
+                <Data id="5" type="coderapp.internal.config.data.BooleanParamData">
                   <Help type="coderapp.internal.util.DocRef"/>
                 </Data>
               </Values>
               <Values id="6" type="coderapp.internal.ext.ConfigEntry">
-                <Key>highlightPotentialDataTypeIssues</Key>
-                <Data id="7" type="coderapp.internal.config.data.BooleanParamData">
-                  <Value>true</Value>
+                <Key>hardwareName</Key>
+                <Data id="7" type="coderapp.internal.config.data.EnumParamData">
+                  <Value>&lt;&lt;&lt;NONE&gt;&gt;&gt;</Value>
                   <Help type="coderapp.internal.util.DocRef"/>
                 </Data>
               </Values>
               <Values id="8" type="coderapp.internal.ext.ConfigEntry">
-                <Key>outputFile</Key>
-                <Data id="9" type="coderapp.internal.config.data.StringParamData">
-                  <Value>GNC_codegen</Value>
+                <Key>highlightPotentialDataTypeIssues</Key>
+                <Data id="9" type="coderapp.internal.config.data.BooleanParamData">
+                  <Value>true</Value>
                   <Help type="coderapp.internal.util.DocRef"/>
                 </Data>
               </Values>
               <Values id="10" type="coderapp.internal.ext.ConfigEntry">
-                <Key>prodDeviceType</Key>
-                <Data id="11" type="coderapp.internal.config.data.EnumParamData">
-                  <Value>32-bit Embedded Processor</Value>
+                <Key>outputFile</Key>
+                <Data id="11" type="coderapp.internal.config.data.StringParamData">
+                  <Value>GNC_codegen</Value>
                   <Help type="coderapp.internal.util.DocRef"/>
                 </Data>
               </Values>
               <Values id="12" type="coderapp.internal.ext.ConfigEntry">
-                <Key>targetLangStandard</Key>
+                <Key>prodDeviceType</Key>
                 <Data id="13" type="coderapp.internal.config.data.EnumParamData">
+                  <Value>32-bit Embedded Processor</Value>
+                  <Help type="coderapp.internal.util.DocRef"/>
+                </Data>
+              </Values>
+              <Values id="14" type="coderapp.internal.ext.ConfigEntry">
+                <Key>targetLangStandard</Key>
+                <Data id="15" type="coderapp.internal.config.data.EnumParamData">
                   <Value>C99 (ISO)</Value>
                   <Help type="coderapp.internal.util.DocRef"/>
                 </Data>

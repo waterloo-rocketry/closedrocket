@@ -5,14 +5,16 @@
  * File: GNC_codegen_initialize.c
  *
  * MATLAB Coder version            : 25.2
- * C/C++ source code generated on  : 02-Jun-2026 23:24:33
+ * C/C++ source code generated on  : 05-Jun-2026 20:31:45
  */
 
 /* Include Files */
 #include "GNC_codegen_initialize.h"
 #include "GNC_codegen_data.h"
+#include "controller_codegen_entry.h"
 #include "dynamics.h"
 #include "dynamics_jacobian.h"
+#include "pad_filter.h"
 #include "rt_nonfinite.h"
 
 /* Function Definitions */
@@ -22,6 +24,8 @@
  */
 void GNC_codegen_initialize(void)
 {
+  controller_codegen_entry_init();
+  pad_filter_init();
   dynamics_init();
   dynamics_jacobian_init();
   isInitialized_GNC_codegen = true;

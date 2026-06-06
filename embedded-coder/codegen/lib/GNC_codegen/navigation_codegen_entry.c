@@ -5,7 +5,7 @@
  * File: navigation_codegen_entry.c
  *
  * MATLAB Coder version            : 25.2
- * C/C++ source code generated on  : 02-Jun-2026 23:24:33
+ * C/C++ source code generated on  : 05-Jun-2026 20:31:45
  */
 
 /* Include Files */
@@ -38,6 +38,9 @@
  *                double P_ret[121]
  *                struct1_T *bias_ret
  *                struct2_T *sens_filt_ret
+ *                double *cov_norm
+ *                struct6_T *airdata
+ *                double roll_state[2]
  * Return Type  : void
  */
 void navigation_codegen_entry(double dt, bool flight_phase, const double x[11],
@@ -45,7 +48,8 @@ void navigation_codegen_entry(double dt, bool flight_phase, const double x[11],
                               const struct2_T *sens_filt,
                               const struct3_T *sens_input, double x_ret[11],
                               double P_ret[121], struct1_T *bias_ret,
-                              struct2_T *sens_filt_ret)
+                              struct2_T *sens_filt_ret, double *cov_norm,
+                              struct6_T *airdata, double roll_state[2])
 {
   static const double Q[121] = {
       1.0E-10, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
@@ -61,7 +65,7 @@ void navigation_codegen_entry(double dt, bool flight_phase, const double x[11],
       0.001};
   static const double R[9] = {1.0E-9, 0.0, 0.0, 0.0,   1.0E-9,
                               0.0,    0.0, 0.0, 1.0E-9};
-  static const double b[9] = {1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0};
+  static const double b_b[9] = {1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0};
   double E[121];
   double F[121];
   double b_F[121];
@@ -291,7 +295,7 @@ void navigation_codegen_entry(double dt, bool flight_phase, const double x[11],
     expl_temp = mti_accel_f_idx_2 / mti_accel_f_idx_1;
     q[3] = expl_temp;
     x_ret[3] = expl_temp;
-    x_ret[10] = 420.0;
+    x_ret[10] = b_param.elevation;
     /*     %% Bias determination */
     /* %% gyroscope */
     /* %% earth magnetic field */
@@ -329,9 +333,9 @@ void navigation_codegen_entry(double dt, bool flight_phase, const double x[11],
      * qy^2 + qz^2] */
     for (i = 0; i < 3; i++) {
       qw = 2.0 * q[i + 1];
-      ST[3 * i] = mti_accel_f_idx_2 * b[i] + qw * q[1];
-      ST[3 * i + 1] = mti_accel_f_idx_2 * b[i + 3] + qw * q[2];
-      ST[3 * i + 2] = mti_accel_f_idx_2 * b[i + 6] + qw * expl_temp;
+      ST[3 * i] = mti_accel_f_idx_2 * b_b[i] + qw * q[1];
+      ST[3 * i + 1] = mti_accel_f_idx_2 * b_b[i + 3] + qw * q[2];
+      ST[3 * i + 2] = mti_accel_f_idx_2 * b_b[i + 6] + qw * expl_temp;
     }
     mti_accel_f_idx_2 = mti_accel_f_idx_1 * 0.0;
     c_a[0] = mti_accel_f_idx_2;
@@ -371,7 +375,7 @@ void navigation_codegen_entry(double dt, bool flight_phase, const double x[11],
     bias->mti_mag_earth[0] = mti_accel_f_idx_2;
     /* %% barometer */
     mti_accel_f_idx_2 =
-        airdata_atmos(420.0, &mti_accel_f_idx_2, &t1_density, &qw,
+        airdata_atmos(b_param.elevation, &mti_accel_f_idx_2, &t1_density, &qw,
                       &mti_accel_f_idx_0, &mti_accel_f_idx_1);
     /*  what the pressure should be at launch elevation */
     bias->board_baro = board_baro_f - mti_accel_f_idx_2;
@@ -386,6 +390,7 @@ void navigation_codegen_entry(double dt, bool flight_phase, const double x[11],
     double c_dt[12];
     double w_exp_tilde_tmp[9];
     double dv[4];
+    double b;
     double b_a;
     double b_board_accel_f_tmp_tmp;
     double b_x;
@@ -399,7 +404,6 @@ void navigation_codegen_entry(double dt, bool flight_phase, const double x[11],
     double d5;
     double d6;
     double d7;
-    double d8;
     double dphi_tmp;
     int b_w_exp_tilde_tmp;
     int c_w_exp_tilde_tmp;
@@ -483,7 +487,7 @@ void navigation_codegen_entry(double dt, bool flight_phase, const double x[11],
     /* %% incremental quaternion */
     dphi_tmp = b_norm(&x[4]);
     mti_accel_f_idx_2 = dphi_tmp * dt;
-    board_baro_f = mti_accel_f_idx_2 / 2.0;
+    mti_baro_f = mti_accel_f_idx_2 / 2.0;
     if (dphi_tmp == 0.0) {
       ad_accel_f[0] = 0.0;
       ad_accel_f[1] = 0.0;
@@ -499,7 +503,7 @@ void navigation_codegen_entry(double dt, bool flight_phase, const double x[11],
       board_gyro_f_idx_2 = x[6] / dphi_tmp;
       ad_accel_f[2] = board_gyro_f_idx_2;
     }
-    mti_baro_f = sin(board_baro_f);
+    b = sin(mti_baro_f);
     /* %% quaternion update */
     /*  quaternion multiplication */
     /*  Quaternion product matrix */
@@ -554,6 +558,7 @@ void navigation_codegen_entry(double dt, bool flight_phase, const double x[11],
     /* %% angle of attack/sideslip */
     /* %% torques */
     /* torque_canards = Cl *  delta * param.c_canard * p_dyn *[1;0;0]; */
+    board_baro_f = c_param.c_aero * c_param.Cn_alpha;
     /* + param.Cn_omega*[0; w(2); w(3)] ) * param.c_aero; % commented */
     /*  out because timeline */
     /* torque = torque_canards + torque_aero; */
@@ -574,13 +579,13 @@ void navigation_codegen_entry(double dt, bool flight_phase, const double x[11],
     mti_accel_f_idx_1 = 2.0 * x[0];
     for (i = 0; i < 3; i++) {
       qw = x[i + 1];
-      ST[3 * i] = mti_accel_f_idx_2 * b[3 * i] + 2.0 * x[1] * qw;
+      ST[3 * i] = mti_accel_f_idx_2 * b_b[3 * i] + 2.0 * x[1] * qw;
       b_w_exp_tilde_tmp = 3 * i + 1;
       ST[b_w_exp_tilde_tmp] =
-          mti_accel_f_idx_2 * b[b_w_exp_tilde_tmp] + 2.0 * x[2] * qw;
+          mti_accel_f_idx_2 * b_b[b_w_exp_tilde_tmp] + 2.0 * x[2] * qw;
       b_w_exp_tilde_tmp = 3 * i + 2;
       ST[b_w_exp_tilde_tmp] =
-          mti_accel_f_idx_2 * b[b_w_exp_tilde_tmp] + 2.0 * x[3] * qw;
+          mti_accel_f_idx_2 * b_b[b_w_exp_tilde_tmp] + 2.0 * x[3] * qw;
     }
     mti_accel_f_idx_2 = mti_accel_f_idx_1 * 0.0;
     c_a[0] = mti_accel_f_idx_2;
@@ -623,16 +628,16 @@ void navigation_codegen_entry(double dt, bool flight_phase, const double x[11],
     b_q[7] = -q[2];
     b_q[11] = q[1];
     b_q[15] = q[0];
-    dv[0] = cos(board_baro_f);
+    dv[0] = cos(mti_baro_f);
     memset(&c_a[0], 0, 9U * sizeof(double));
     memset(&b_w_exp_tilde[0], 0, 3U * sizeof(double));
     for (i = 0; i < 3; i++) {
-      dv[i + 1] = ad_accel_f[i] * mti_baro_f;
+      dv[i + 1] = ad_accel_f[i] * b;
       qw = c_a[3 * i];
       b_w_exp_tilde_tmp = 3 * i + 1;
       c_w_exp_tilde_tmp = 3 * i + 2;
       for (i1 = 0; i1 < 3; i1++) {
-        mti_accel_f_idx_2 = param.J[i1 + 3 * i];
+        mti_accel_f_idx_2 = c_param.J[i1 + 3 * i];
         qw += w_exp_tilde[3 * i1] * mti_accel_f_idx_2;
         c_a[b_w_exp_tilde_tmp] += w_exp_tilde[3 * i1 + 1] * mti_accel_f_idx_2;
         c_a[c_w_exp_tilde_tmp] += w_exp_tilde[3 * i1 + 2] * mti_accel_f_idx_2;
@@ -643,38 +648,38 @@ void navigation_codegen_entry(double dt, bool flight_phase, const double x[11],
       b_w_exp_tilde[1] += c_a[3 * i + 1] * mti_accel_f_idx_2;
       b_w_exp_tilde[2] += c_a[3 * i + 2] * mti_accel_f_idx_2;
     }
-    ad_accel_f[0] = mti_accel_f_idx_0 * -0.0;
+    ad_accel_f[0] = mti_accel_f_idx_0 * (board_baro_f * 0.0);
     ad_accel_f[1] =
-        mti_accel_f_idx_0 * (-0.16182736457722724 * sin(b_atan2(x[9], x[7])));
+        mti_accel_f_idx_0 * (board_baro_f * sin(b_atan2(x[9], x[7])));
     ad_accel_f[2] =
-        mti_accel_f_idx_0 * (-0.16182736457722724 * -sin(b_atan2(x[8], x[7])));
+        mti_accel_f_idx_0 * (board_baro_f * -sin(b_atan2(x[8], x[7])));
     memset(&dv1[0], 0, 3U * sizeof(double));
     memset(&b_dt[0], 0, 3U * sizeof(double));
-    mti_baro_f = dv1[0];
-    t1_density = dv1[1];
-    d5 = dv1[2];
-    d6 = b_dt[0];
-    d7 = b_dt[1];
-    d8 = b_dt[2];
+    board_gyro_f_idx_2 = dv1[0];
+    b = dv1[1];
+    t1_density = dv1[2];
+    d5 = b_dt[0];
+    d6 = b_dt[1];
+    d7 = b_dt[2];
     mti_accel_f_idx_0 = x[7];
-    board_gyro_f_idx_0 = x[8];
-    expl_temp = x[9];
+    expl_temp = x[8];
+    board_baro_f = x[9];
     for (i = 0; i < 3; i++) {
-      mti_accel_f_idx_2 = param.Jinv[3 * i];
+      mti_accel_f_idx_2 = c_param.Jinv[3 * i];
       qw = b_w_exp_tilde[i];
-      mti_baro_f += mti_accel_f_idx_2 * qw;
+      board_gyro_f_idx_2 += mti_accel_f_idx_2 * qw;
       mti_accel_f_idx_1 = ad_accel_f[i];
+      d5 += dt * mti_accel_f_idx_2 * mti_accel_f_idx_1;
+      mti_accel_f_idx_2 = c_param.Jinv[3 * i + 1];
+      b += mti_accel_f_idx_2 * qw;
       d6 += dt * mti_accel_f_idx_2 * mti_accel_f_idx_1;
-      mti_accel_f_idx_2 = param.Jinv[3 * i + 1];
+      mti_accel_f_idx_2 = c_param.Jinv[3 * i + 2];
       t1_density += mti_accel_f_idx_2 * qw;
       d7 += dt * mti_accel_f_idx_2 * mti_accel_f_idx_1;
-      mti_accel_f_idx_2 = param.Jinv[3 * i + 2];
-      d5 += mti_accel_f_idx_2 * qw;
-      d8 += dt * mti_accel_f_idx_2 * mti_accel_f_idx_1;
       mti_accel_f_idx_2 = board_accel_f[i];
       b_w_exp_tilde[i] = ((w_exp_tilde[i] * mti_accel_f_idx_0 +
-                           w_exp_tilde[i + 3] * board_gyro_f_idx_0) +
-                          w_exp_tilde[i + 6] * expl_temp) +
+                           w_exp_tilde[i + 3] * expl_temp) +
+                          w_exp_tilde[i + 6] * board_baro_f) +
                          dt * ((board_accel_f_tmp_tmp / mti_accel_f_idx_2 *
                                     sens_input->board_accel.meas[i] +
                                 b_board_accel_f_tmp_tmp / mti_accel_f_idx_2 *
@@ -683,24 +688,24 @@ void navigation_codegen_entry(double dt, bool flight_phase, const double x[11],
                                    sens_input->ad_accel.meas[i]);
     }
     memset(&ad_accel_f[0], 0, 3U * sizeof(double));
-    board_gyro_f_idx_1 = ad_accel_f[0];
-    board_gyro_f_idx_2 = ad_accel_f[1];
-    board_baro_f = ad_accel_f[2];
+    mti_baro_f = ad_accel_f[0];
+    board_gyro_f_idx_1 = ad_accel_f[1];
+    board_gyro_f_idx_0 = ad_accel_f[2];
     mti_accel_f_idx_2 = x[7];
     qw = x[8];
     mti_accel_f_idx_1 = x[9];
     for (i = 0; i < 3; i++) {
       mti_accel_f_idx_0 = ST[3 * i];
-      board_gyro_f_idx_0 = param.g[i];
-      board_gyro_f_idx_1 += dt * mti_accel_f_idx_0 * board_gyro_f_idx_0;
-      expl_temp = mti_accel_f_idx_0 * mti_accel_f_idx_2;
+      expl_temp = c_param.g[i];
+      mti_baro_f += dt * mti_accel_f_idx_0 * expl_temp;
+      board_baro_f = mti_accel_f_idx_0 * mti_accel_f_idx_2;
       mti_accel_f_idx_0 = ST[3 * i + 1];
-      board_gyro_f_idx_2 += dt * mti_accel_f_idx_0 * board_gyro_f_idx_0;
-      expl_temp += mti_accel_f_idx_0 * qw;
+      board_gyro_f_idx_1 += dt * mti_accel_f_idx_0 * expl_temp;
+      board_baro_f += mti_accel_f_idx_0 * qw;
       mti_accel_f_idx_0 = ST[3 * i + 2];
-      board_baro_f += dt * mti_accel_f_idx_0 * board_gyro_f_idx_0;
-      expl_temp += mti_accel_f_idx_0 * mti_accel_f_idx_1;
-      board_accel_f[i] = expl_temp;
+      board_gyro_f_idx_0 += dt * mti_accel_f_idx_0 * expl_temp;
+      board_baro_f += mti_accel_f_idx_0 * mti_accel_f_idx_1;
+      board_accel_f[i] = board_baro_f;
     }
     memset(&c_q[0], 0, sizeof(double) << 2);
     mti_accel_f_idx_2 = c_q[0];
@@ -709,22 +714,22 @@ void navigation_codegen_entry(double dt, bool flight_phase, const double x[11],
     mti_accel_f_idx_0 = c_q[3];
     for (i = 0; i < 4; i++) {
       b_w_exp_tilde_tmp = i << 2;
-      board_gyro_f_idx_0 = dv[i];
-      mti_accel_f_idx_2 += b_q[b_w_exp_tilde_tmp] * board_gyro_f_idx_0;
-      qw += b_q[b_w_exp_tilde_tmp + 1] * board_gyro_f_idx_0;
-      mti_accel_f_idx_1 += b_q[b_w_exp_tilde_tmp + 2] * board_gyro_f_idx_0;
-      mti_accel_f_idx_0 += b_q[b_w_exp_tilde_tmp + 3] * board_gyro_f_idx_0;
+      expl_temp = dv[i];
+      mti_accel_f_idx_2 += b_q[b_w_exp_tilde_tmp] * expl_temp;
+      qw += b_q[b_w_exp_tilde_tmp + 1] * expl_temp;
+      mti_accel_f_idx_1 += b_q[b_w_exp_tilde_tmp + 2] * expl_temp;
+      mti_accel_f_idx_0 += b_q[b_w_exp_tilde_tmp + 3] * expl_temp;
     }
     x_pred[0] = mti_accel_f_idx_2;
     x_pred[1] = qw;
     x_pred[2] = mti_accel_f_idx_1;
     x_pred[3] = mti_accel_f_idx_0;
-    x_pred[4] = mti_baro_f + d6;
-    x_pred[7] = b_w_exp_tilde[0] + board_gyro_f_idx_1;
-    x_pred[5] = t1_density + d7;
-    x_pred[8] = b_w_exp_tilde[1] + board_gyro_f_idx_2;
-    x_pred[6] = d5 + d8;
-    x_pred[9] = b_w_exp_tilde[2] + board_baro_f;
+    x_pred[4] = board_gyro_f_idx_2 + d5;
+    x_pred[7] = b_w_exp_tilde[0] + mti_baro_f;
+    x_pred[5] = b + d6;
+    x_pred[8] = b_w_exp_tilde[1] + board_gyro_f_idx_1;
+    x_pred[6] = t1_density + d7;
+    x_pred[9] = b_w_exp_tilde[2] + board_gyro_f_idx_0;
     x_pred[10] = x[10] + dt * board_accel_f[0];
     /* %% discrete Jacobian: F = df/dx */
     /*  Computes state derivative with predictive model. Use ODE solver to
@@ -751,20 +756,20 @@ void navigation_codegen_entry(double dt, bool flight_phase, const double x[11],
     W_dt[4] = mti_accel_f_idx_1;
     mti_accel_f_idx_2 = board_gyro_f_idx_1 * -x[5];
     W_dt[8] = mti_accel_f_idx_2;
-    expl_temp = board_gyro_f_idx_1 * -x[6];
-    W_dt[12] = expl_temp;
-    mti_accel_f_idx_0 = board_gyro_f_idx_1 * x[4];
-    W_dt[1] = mti_accel_f_idx_0;
+    mti_accel_f_idx_0 = board_gyro_f_idx_1 * -x[6];
+    W_dt[12] = mti_accel_f_idx_0;
+    expl_temp = board_gyro_f_idx_1 * x[4];
+    W_dt[1] = expl_temp;
     W_dt[5] = qw;
-    board_gyro_f_idx_0 = board_gyro_f_idx_1 * x[6];
-    W_dt[9] = board_gyro_f_idx_0;
+    board_baro_f = board_gyro_f_idx_1 * x[6];
+    W_dt[9] = board_baro_f;
     W_dt[13] = mti_accel_f_idx_2;
     mti_accel_f_idx_2 = board_gyro_f_idx_1 * x[5];
     W_dt[2] = mti_accel_f_idx_2;
-    W_dt[6] = expl_temp;
+    W_dt[6] = mti_accel_f_idx_0;
     W_dt[10] = qw;
-    W_dt[14] = mti_accel_f_idx_0;
-    W_dt[3] = board_gyro_f_idx_0;
+    W_dt[14] = expl_temp;
+    W_dt[3] = board_baro_f;
     W_dt[7] = mti_accel_f_idx_2;
     W_dt[11] = mti_accel_f_idx_1;
     W_dt[15] = qw;
@@ -884,9 +889,10 @@ void navigation_codegen_entry(double dt, bool flight_phase, const double x[11],
     /* %% air data  */
     /* torque_vx = Cl * delta * param.c_canard * [v(1), v(2), v(3); 0, 0, 0; 0,
      * 0, 0]; */
+    board_baro_f = 0.5 * d_param.c_aero * d_param.Cn_alpha;
     /* torque_v =  airdata.density * (torque_vx + torque_vyz); */
     airdata_atmos(x[10], &mti_accel_f_idx_2, &t1_density, &qw,
-                  &mti_accel_f_idx_0, &mti_accel_f_idx_1);
+                  &mti_accel_f_idx_1, &expl_temp);
     /*  computes matrix exponential of rotation */
     /* %% incremental angle */
     /* %% normed skew-symmetric matrix */
@@ -929,24 +935,24 @@ void navigation_codegen_entry(double dt, bool flight_phase, const double x[11],
     }
     memset(&dv3[0], 0, 9U * sizeof(double));
     for (i = 0; i < 3; i++) {
-      qw = dv3[3 * i];
+      mti_accel_f_idx_0 = dv3[3 * i];
       b_w_exp_tilde_tmp = 3 * i + 1;
       c_w_exp_tilde_tmp = 3 * i + 2;
       for (i1 = 0; i1 < 3; i1++) {
-        mti_accel_f_idx_1 = w_exp_tilde[i1 + 3 * i];
-        qw += b_param.Jinv[3 * i1] * mti_accel_f_idx_1;
-        dv3[b_w_exp_tilde_tmp] += b_param.Jinv[3 * i1 + 1] * mti_accel_f_idx_1;
-        dv3[c_w_exp_tilde_tmp] += b_param.Jinv[3 * i1 + 2] * mti_accel_f_idx_1;
+        mti_accel_f_idx_2 = w_exp_tilde[i1 + 3 * i];
+        mti_accel_f_idx_0 += d_param.Jinv[3 * i1] * mti_accel_f_idx_2;
+        dv3[b_w_exp_tilde_tmp] += d_param.Jinv[3 * i1 + 1] * mti_accel_f_idx_2;
+        dv3[c_w_exp_tilde_tmp] += d_param.Jinv[3 * i1 + 2] * mti_accel_f_idx_2;
         F[(i1 + 11 * (i + 4)) + 4] = 0.0;
       }
-      dv3[3 * i] = qw;
+      dv3[3 * i] = mti_accel_f_idx_0;
     }
-    c_a[1] = t1_density * (-0.08091368228861362 * x[9]);
-    mti_accel_f_idx_2 = t1_density * -0.0;
+    c_a[1] = t1_density * (board_baro_f * x[9]);
+    mti_accel_f_idx_2 = t1_density * (board_baro_f * 0.0);
     c_a[4] = mti_accel_f_idx_2;
-    c_a[7] = t1_density * (-0.08091368228861362 * x[7]);
-    c_a[2] = t1_density * (-0.08091368228861362 * -x[8]);
-    c_a[5] = t1_density * (-0.08091368228861362 * -x[7]);
+    c_a[7] = t1_density * (board_baro_f * x[7]);
+    c_a[2] = t1_density * (board_baro_f * -x[8]);
+    c_a[5] = t1_density * (board_baro_f * -x[7]);
     c_a[8] = mti_accel_f_idx_2;
     /*  column w */
     /*  column v */
@@ -963,7 +969,7 @@ void navigation_codegen_entry(double dt, bool flight_phase, const double x[11],
       c_a[3 * i1] = mti_accel_f_idx_2;
       b_w_exp_tilde_tmp = 11 * (i1 + 4);
       for (i = 0; i < 3; i++) {
-        qw = b_param.J[i + 3 * i1];
+        qw = d_param.J[i + 3 * i1];
         F[b_w_exp_tilde_tmp + 4] += dv3[3 * i] * qw;
         F[b_w_exp_tilde_tmp + 5] += dv3[3 * i + 1] * qw;
         F[b_w_exp_tilde_tmp + 6] += dv3[3 * i + 2] * qw;
@@ -972,11 +978,11 @@ void navigation_codegen_entry(double dt, bool flight_phase, const double x[11],
       b_w_exp_tilde_tmp = 11 * (i1 + 7);
       for (i = 0; i < 3; i++) {
         qw = c_a[i + 3 * i1];
-        F[b_w_exp_tilde_tmp + 4] += dt * b_param.Jinv[3 * i] * qw;
-        F[b_w_exp_tilde_tmp + 5] += dt * b_param.Jinv[3 * i + 1] * qw;
-        F[b_w_exp_tilde_tmp + 6] += dt * b_param.Jinv[3 * i + 2] * qw;
+        F[b_w_exp_tilde_tmp + 4] += dt * d_param.Jinv[3 * i] * qw;
+        F[b_w_exp_tilde_tmp + 5] += dt * d_param.Jinv[3 * i + 1] * qw;
+        F[b_w_exp_tilde_tmp + 6] += dt * d_param.Jinv[3 * i + 2] * qw;
       }
-      mti_accel_f_idx_0 += x[i1 + 1] * b_param.g[i1];
+      mti_accel_f_idx_0 += x[i1 + 1] * d_param.g[i1];
     }
     /*  Sola */
     /* %% for hardcoding: */
@@ -986,41 +992,39 @@ void navigation_codegen_entry(double dt, bool flight_phase, const double x[11],
      * 2*qy*vy + 2*qz*vz, 2*qy*vz - 2*qw*vx - 2*qz*vy] */
     /*  [2*qw*vz - 2*qx*vy + 2*qy*vx, 2*qz*vx - 2*qx*vz - 2*qw*vy, 2*qw*vx -
      * 2*qy*vz + 2*qz*vy, 2*qx*vx + 2*qy*vy + 2*qz*vz] */
-    ad_accel_f[0] = x[2] * b_param.g[2] - b_param.g[1] * x[3];
-    ad_accel_f[1] = b_param.g[0] * x[3] - x[1] * b_param.g[2];
-    ad_accel_f[2] = x[1] * b_param.g[1] - b_param.g[0] * x[2];
+    ad_accel_f[0] = x[2] * d_param.g[2] - d_param.g[1] * x[3];
+    ad_accel_f[1] = d_param.g[0] * x[3] - x[1] * d_param.g[2];
+    ad_accel_f[2] = x[1] * d_param.g[1] - d_param.g[0] * x[2];
     mti_accel_f_idx_2 = x[0] * 0.0;
     c_a[0] = mti_accel_f_idx_2;
-    c_a[3] = x[0] * -b_param.g[2];
-    c_a[6] = x[0] * b_param.g[1];
-    c_a[1] = x[0] * b_param.g[2];
+    c_a[3] = x[0] * -d_param.g[2];
+    c_a[6] = x[0] * d_param.g[1];
+    c_a[1] = x[0] * d_param.g[2];
     c_a[4] = mti_accel_f_idx_2;
-    c_a[7] = x[0] * -b_param.g[0];
-    c_a[2] = x[0] * -b_param.g[1];
-    c_a[5] = x[0] * b_param.g[0];
+    c_a[7] = x[0] * -d_param.g[0];
+    c_a[2] = x[0] * -d_param.g[1];
+    c_a[5] = x[0] * d_param.g[0];
     c_a[8] = mti_accel_f_idx_2;
     for (i = 0; i < 3; i++) {
-      F[i + 7] = dt * (2.0 * (x[0] * b_param.g[i] - ad_accel_f[i]));
+      F[i + 7] = dt * (2.0 * (x[0] * d_param.g[i] - ad_accel_f[i]));
       mti_accel_f_idx_2 = x[i + 1];
       c_w_exp_tilde_tmp = 11 * (i + 1);
       F[c_w_exp_tilde_tmp + 7] =
-          dt * (2.0 * (((mti_accel_f_idx_0 * b[3 * i] + x[1] * b_param.g[i]) -
-                        b_param.g[0] * mti_accel_f_idx_2) +
+          dt * (2.0 * (((mti_accel_f_idx_0 * b_b[3 * i] + x[1] * d_param.g[i]) -
+                        d_param.g[0] * mti_accel_f_idx_2) +
                        c_a[3 * i]));
       b_w_exp_tilde_tmp = 3 * i + 1;
       F[c_w_exp_tilde_tmp + 8] =
-          dt *
-          (2.0 *
-           (((mti_accel_f_idx_0 * b[b_w_exp_tilde_tmp] + x[2] * b_param.g[i]) -
-             b_param.g[1] * mti_accel_f_idx_2) +
-            c_a[b_w_exp_tilde_tmp]));
+          dt * (2.0 * (((mti_accel_f_idx_0 * b_b[b_w_exp_tilde_tmp] +
+                         x[2] * d_param.g[i]) -
+                        d_param.g[1] * mti_accel_f_idx_2) +
+                       c_a[b_w_exp_tilde_tmp]));
       b_w_exp_tilde_tmp = 3 * i + 2;
       F[c_w_exp_tilde_tmp + 9] =
-          dt *
-          (2.0 *
-           (((mti_accel_f_idx_0 * b[b_w_exp_tilde_tmp] + x[3] * b_param.g[i]) -
-             b_param.g[2] * mti_accel_f_idx_2) +
-            c_a[b_w_exp_tilde_tmp]));
+          dt * (2.0 * (((mti_accel_f_idx_0 * b_b[b_w_exp_tilde_tmp] +
+                         x[3] * d_param.g[i]) -
+                        d_param.g[2] * mti_accel_f_idx_2) +
+                       c_a[b_w_exp_tilde_tmp]));
     }
     /*  jacobian of {exp(-tilde(w)*dt)*v} wrt w    */
     /*  skew symmetric matrix / cross-product jacobian */
@@ -1061,7 +1065,7 @@ void navigation_codegen_entry(double dt, bool flight_phase, const double x[11],
     /* %% rotation matrix */
     /*  S = (qw^2-qv'*qv)*eye(3) + 2*qv*qv' - 2*qw*q_tilde; % Stevens */
     /* %% Jacobian of rotation wrt quaternion */
-    board_gyro_f_idx_0 = 0.0;
+    board_baro_f = 0.0;
     for (i1 = 0; i1 < 3; i1++) {
       int d_w_exp_tilde_tmp;
       mti_accel_f_idx_2 = c_a[3 * i1];
@@ -1102,7 +1106,7 @@ void navigation_codegen_entry(double dt, bool flight_phase, const double x[11],
       F[d_w_exp_tilde_tmp + 9] = w_exp_tilde[b_w_exp_tilde_tmp];
       qw = -x[i1 + 1];
       q[i1 + 1] = qw;
-      board_gyro_f_idx_0 += qw * x[i1 + 7];
+      board_baro_f += qw * x[i1 + 7];
     }
     /*  Sola */
     /* %% for hardcoding: */
@@ -1121,21 +1125,19 @@ void navigation_codegen_entry(double dt, bool flight_phase, const double x[11],
       mti_accel_f_idx_1 = q[i + 1];
       c_w_exp_tilde_tmp = 3 * (i + 1);
       c_dt[c_w_exp_tilde_tmp] =
-          dt * (2.0 * (((board_gyro_f_idx_0 * b[3 * i] + q[1] * qw) -
+          dt * (2.0 * (((board_baro_f * b_b[3 * i] + q[1] * qw) -
                         x[7] * mti_accel_f_idx_1) +
                        q[0] * ST[3 * i]));
       b_w_exp_tilde_tmp = 3 * i + 1;
       c_dt[c_w_exp_tilde_tmp + 1] =
-          dt *
-          (2.0 * (((board_gyro_f_idx_0 * b[b_w_exp_tilde_tmp] + q[2] * qw) -
-                   x[8] * mti_accel_f_idx_1) +
-                  q[0] * ST[b_w_exp_tilde_tmp]));
+          dt * (2.0 * (((board_baro_f * b_b[b_w_exp_tilde_tmp] + q[2] * qw) -
+                        x[8] * mti_accel_f_idx_1) +
+                       q[0] * ST[b_w_exp_tilde_tmp]));
       b_w_exp_tilde_tmp = 3 * i + 2;
       c_dt[c_w_exp_tilde_tmp + 2] =
-          dt *
-          (2.0 * (((board_gyro_f_idx_0 * b[b_w_exp_tilde_tmp] + q[3] * qw) -
-                   x[9] * mti_accel_f_idx_1) +
-                  q[0] * ST[b_w_exp_tilde_tmp]));
+          dt * (2.0 * (((board_baro_f * b_b[b_w_exp_tilde_tmp] + q[3] * qw) -
+                        x[9] * mti_accel_f_idx_1) +
+                       q[0] * ST[b_w_exp_tilde_tmp]));
     }
     F[10] = c_dt[0];
     F[21] = c_dt[3];
@@ -1170,7 +1172,7 @@ void navigation_codegen_entry(double dt, bool flight_phase, const double x[11],
     c_a[8] = mti_accel_f_idx_0;
     for (i = 0; i < 3; i++) {
       F[11 * (i + 7) + 10] =
-          dt * ((qw * b[3 * i] + 2.0 * q[1] * q[i + 1]) - c_a[3 * i]);
+          dt * ((qw * b_b[3 * i] + 2.0 * q[1] * q[i + 1]) - c_a[3 * i]);
     }
     /*  r_r = eye(3); */
     /*  column q */
@@ -1343,16 +1345,47 @@ void navigation_codegen_entry(double dt, bool flight_phase, const double x[11],
       memcpy(&x_pred[0], &x_ret[0], 11U * sizeof(double));
       memcpy(&F[0], &P_ret[0], 121U * sizeof(double));
       ekf_correct(x_pred, F, sens_input->board_mag.meas, bias->board_mag_earth,
-                  b, x_ret, P_ret);
+                  b_b, x_ret, P_ret);
     }
     if (sens_input->mti_mag.status) {
       /* %% y = [  Mag(3) ] */
       memcpy(&x_pred[0], &x_ret[0], 11U * sizeof(double));
       memcpy(&F[0], &P_ret[0], 121U * sizeof(double));
-      ekf_correct(x_pred, F, sens_input->mti_mag.meas, bias->mti_mag_earth, b,
+      ekf_correct(x_pred, F, sens_input->mti_mag.meas, bias->mti_mag_earth, b_b,
                   x_ret, P_ret);
     }
   }
+  /*     %% return the other values */
+  /*      %% Compute variance norm  */
+  /* %% for evaluating EKF quality */
+  *cov_norm = d_norm(P_ret);
+  /*  scalar, 2-norm of the covariance matrix */
+  /*     %% Compute air data */
+  airdata->pressure = airdata_atmos(x_ret[10], &airdata->temperature,
+                                    &airdata->density, &airdata->sonic_speed,
+                                    &airdata->mach, &airdata->dynamic_pressure);
+  /*  appends airadata struct with dynamic air data from velocity vector */
+  /*  dynamic air data: dynamic pressure, mach number */
+  mti_accel_f_idx_2 = b_norm(&x_ret[7]);
+  /*  return values */
+  airdata->mach = mti_accel_f_idx_2 / airdata->sonic_speed;
+  /*  [-], Mach number */
+  airdata->dynamic_pressure =
+      0.5 * airdata->density * (mti_accel_f_idx_2 * mti_accel_f_idx_2);
+  /*  [Pa] */
+  /*     %% controller input vector */
+  /*  computes euler angles (yaw-pitch-roll sequence) from quaternion */
+  /* %% norm quaternions */
+  /*  q = quaternion_norm(q); */
+  /* %% quaternion definition */
+  /* %% Euler angles, after Zipfel */
+  /*  yaw = atan2( 2*(qx*qy + qw*qz), (qw^2+qx^2-qy^2-qz^2) ); */
+  /*  pitch = asin( - 2*(qx*qz - qw*qy) ); */
+  roll_state[0] = b_atan2(
+      2.0 * (x_ret[2] * x_ret[3] + x_ret[0] * x_ret[1]),
+      ((x_ret[0] * x_ret[0] - x_ret[1] * x_ret[1]) - x_ret[2] * x_ret[2]) +
+          x_ret[3] * x_ret[3]);
+  roll_state[1] = x_ret[4];
 }
 
 /*

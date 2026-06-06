@@ -5,7 +5,7 @@
  * File: _coder_GNC_codegen_api.c
  *
  * MATLAB Coder version            : 25.2
- * C/C++ source code generated on  : 02-Jun-2026 23:24:33
+ * C/C++ source code generated on  : 05-Jun-2026 20:31:45
  */
 
 /* Include Files */
@@ -84,8 +84,12 @@ static void fb_emlrt_marshallIn(const emlrtStack *sp, const mxArray *src,
 static void g_emlrt_marshallIn(const emlrtStack *sp, const mxArray *u,
                                const emlrtMsgIdentifier *parentId, real_T y[2]);
 
+static const mxArray *g_emlrt_marshallOut(const struct6_T u);
+
 static void h_emlrt_marshallIn(const emlrtStack *sp, const mxArray *u,
                                const emlrtMsgIdentifier *parentId, real_T y[4]);
+
+static const mxArray *h_emlrt_marshallOut(real_T u[2]);
 
 static boolean_T i_emlrt_marshallIn(const emlrtStack *sp,
                                     const mxArray *nullptr,
@@ -677,6 +681,28 @@ static void g_emlrt_marshallIn(const emlrtStack *sp, const mxArray *u,
 }
 
 /*
+ * Arguments    : const struct6_T u
+ * Return Type  : const mxArray *
+ */
+static const mxArray *g_emlrt_marshallOut(const struct6_T u)
+{
+  static const char_T *b_sv[6] = {"pressure", "temperature",
+                                  "density",  "sonic_speed",
+                                  "mach",     "dynamic_pressure"};
+  const mxArray *y;
+  y = NULL;
+  emlrtAssign(&y, emlrtCreateStructMatrix(1, 1, 6, (const char_T **)&b_sv[0]));
+  emlrtSetFieldR2017b(y, 0, "pressure", emlrt_marshallOut(u.pressure), 0);
+  emlrtSetFieldR2017b(y, 0, "temperature", emlrt_marshallOut(u.temperature), 1);
+  emlrtSetFieldR2017b(y, 0, "density", emlrt_marshallOut(u.density), 2);
+  emlrtSetFieldR2017b(y, 0, "sonic_speed", emlrt_marshallOut(u.sonic_speed), 3);
+  emlrtSetFieldR2017b(y, 0, "mach", emlrt_marshallOut(u.mach), 4);
+  emlrtSetFieldR2017b(y, 0, "dynamic_pressure",
+                      emlrt_marshallOut(u.dynamic_pressure), 5);
+  return y;
+}
+
+/*
  * Arguments    : const emlrtStack *sp
  *                const mxArray *u
  *                const emlrtMsgIdentifier *parentId
@@ -688,6 +714,24 @@ static void h_emlrt_marshallIn(const emlrtStack *sp, const mxArray *u,
 {
   bb_emlrt_marshallIn(sp, emlrtAlias(u), parentId, y);
   emlrtDestroyArray(&u);
+}
+
+/*
+ * Arguments    : real_T u[2]
+ * Return Type  : const mxArray *
+ */
+static const mxArray *h_emlrt_marshallOut(real_T u[2])
+{
+  static const int32_T i = 0;
+  static const int32_T i1 = 2;
+  const mxArray *m;
+  const mxArray *y;
+  y = NULL;
+  m = emlrtCreateNumericArray(1, (const void *)&i, mxDOUBLE_CLASS, mxREAL);
+  emlrtMxSetData((mxArray *)m, &u[0]);
+  emlrtSetDimensions((mxArray *)m, &i1, 1);
+  emlrtAssign(&y, m);
+  return y;
 }
 
 /*
@@ -1258,11 +1302,11 @@ void controller_codegen_entry_api(const mxArray *const prhs[6], int32_T nlhs,
 /*
  * Arguments    : const mxArray * const prhs[7]
  *                int32_T nlhs
- *                const mxArray *plhs[4]
+ *                const mxArray *plhs[7]
  * Return Type  : void
  */
 void navigation_codegen_entry_api(const mxArray *const prhs[7], int32_T nlhs,
-                                  const mxArray *plhs[4])
+                                  const mxArray *plhs[7])
 {
   emlrtStack st = {
       NULL, /* site */
@@ -1274,15 +1318,19 @@ void navigation_codegen_entry_api(const mxArray *const prhs[7], int32_T nlhs,
   struct2_T sens_filt;
   struct2_T sens_filt_ret;
   struct3_T sens_input;
+  struct6_T airdata;
   real_T(*P)[121];
   real_T(*P_ret)[121];
   real_T(*x)[11];
   real_T(*x_ret)[11];
+  real_T(*roll_state)[2];
+  real_T cov_norm;
   real_T dt;
   boolean_T flight_phase;
   st.tls = emlrtRootTLSGlobal;
   x_ret = (real_T(*)[11])mxMalloc(sizeof(real_T[11]));
   P_ret = (real_T(*)[121])mxMalloc(sizeof(real_T[121]));
+  roll_state = (real_T(*)[2])mxMalloc(sizeof(real_T[2]));
   /* Marshall function inputs */
   dt = emlrt_marshallIn(&st, emlrtAliasP(prhs[0]), "dt");
   flight_phase = i_emlrt_marshallIn(&st, emlrtAliasP(prhs[1]), "flight_phase");
@@ -1294,7 +1342,7 @@ void navigation_codegen_entry_api(const mxArray *const prhs[7], int32_T nlhs,
   /* Invoke the target function */
   navigation_codegen_entry(dt, flight_phase, *x, *P, &bias, &sens_filt,
                            &sens_input, *x_ret, *P_ret, &bias_ret,
-                           &sens_filt_ret);
+                           &sens_filt_ret, &cov_norm, &airdata, *roll_state);
   /* Marshall function outputs */
   plhs[0] = c_emlrt_marshallOut(*x_ret);
   if (nlhs > 1) {
@@ -1305,6 +1353,15 @@ void navigation_codegen_entry_api(const mxArray *const prhs[7], int32_T nlhs,
   }
   if (nlhs > 3) {
     plhs[3] = f_emlrt_marshallOut(&sens_filt_ret);
+  }
+  if (nlhs > 4) {
+    plhs[4] = emlrt_marshallOut(cov_norm);
+  }
+  if (nlhs > 5) {
+    plhs[5] = g_emlrt_marshallOut(airdata);
+  }
+  if (nlhs > 6) {
+    plhs[6] = h_emlrt_marshallOut(*roll_state);
   }
 }
 

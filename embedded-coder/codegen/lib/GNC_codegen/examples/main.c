@@ -5,7 +5,7 @@
  * File: main.c
  *
  * MATLAB Coder version            : 25.2
- * C/C++ source code generated on  : 02-Jun-2026 23:24:33
+ * C/C++ source code generated on  : 05-Jun-2026 20:31:45
  */
 
 /*************************************************************************/
@@ -347,10 +347,13 @@ void main_navigation_codegen_entry(void)
   struct2_T r1;
   struct2_T sens_filt_ret;
   struct3_T r2;
+  struct6_T airdata;
   double P_ret[121];
   double dv1[121];
   double dv[11];
   double x_ret[11];
+  double roll_state[2];
+  double cov_norm;
   /* Initialize function 'navigation_codegen_entry' input arguments. */
   /* Initialize function input argument 'x'. */
   /* Initialize function input argument 'P'. */
@@ -364,7 +367,8 @@ void main_navigation_codegen_entry(void)
   argInit_struct2_T(&r1);
   argInit_struct3_T(&r2);
   navigation_codegen_entry(argInit_real_T(), argInit_boolean_T(), dv, dv1, &b_r,
-                           &r1, &r2, x_ret, P_ret, &bias_ret, &sens_filt_ret);
+                           &r1, &r2, x_ret, P_ret, &bias_ret, &sens_filt_ret,
+                           &cov_norm, &airdata, roll_state);
 }
 
 /*
