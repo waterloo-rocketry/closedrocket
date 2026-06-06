@@ -21,6 +21,10 @@ static void b_eye(double b_I[9]);
 
 static double b_norm(const double x[3]);
 
+static double b_xnrm2(int n, const double x[11], int ix0);
+
+static void b_xzlascl(double cfrom, double cto, double A[11]);
+
 static void c_eye(double b_I[16]);
 
 static double c_norm(const double x[4]);
@@ -28,6 +32,8 @@ static double c_norm(const double x[4]);
 static void controller_codegen_entry_init(GNC_codegenStackData *SD);
 
 static void d_eye(double b_I[121]);
+
+static double d_norm(const double x[121]);
 
 static void diag(double d[4]);
 
@@ -44,6 +50,15 @@ static void eye(double b_I[4]);
 static void inv(const double x[9], double y[9]);
 
 static void pad_filter_init(GNC_codegenStackData *SD);
+
+static void xaxpy(int n, double a, const double x[11], int ix0, double y[121],
+                  int iy0);
+
+static double xnrm2(int n, const double x[121], int ix0);
+
+static double xrotg(double *a, double *b, double *s);
+
+static void xzlascl(double cfrom, double cto, double A[121]);
 
 static double airdata_atmos(double altitude, double *airdata_temperature,
                             double *airdata_density,
@@ -294,6 +309,68 @@ static double b_norm(const double x[3]) {
   return scale * sqrt(y);
 }
 
+static double b_xnrm2(int n, const double x[11], int ix0) {
+  double y;
+  int k;
+  y = 0.0;
+  if (n >= 1) {
+    if (n == 1) {
+      y = fabs(x[ix0 - 1]);
+    } else {
+      double scale;
+      int kend;
+      scale = 3.3121686421112381E-170;
+      kend = ix0 + n;
+      for (k = ix0; k < kend; k++) {
+        double absxk;
+        absxk = fabs(x[k - 1]);
+        if (absxk > scale) {
+          double t;
+          t = scale / absxk;
+          y = ((y * t) * t) + 1.0;
+          scale = absxk;
+        } else {
+          double t;
+          t = absxk / scale;
+          y += t * t;
+        }
+      }
+      y = scale * sqrt(y);
+    }
+  }
+  return y;
+}
+
+static void b_xzlascl(double cfrom, double cto, double A[11]) {
+  double cfromc;
+  double ctoc;
+  int i;
+  bool notdone;
+  cfromc = cfrom;
+  ctoc = cto;
+  notdone = true;
+  while (notdone) {
+    double cfrom1;
+    double cto1;
+    double mul;
+    cfrom1 = cfromc * 2.0041683600089728E-292;
+    cto1 = ctoc / 4.9896007738368E+291;
+    if ((fabs(cfrom1) > fabs(ctoc)) && (ctoc != 0.0)) {
+      mul = 2.0041683600089728E-292;
+      cfromc = cfrom1;
+    } else if (fabs(cto1) > fabs(cfromc)) {
+      mul = 4.9896007738368E+291;
+      ctoc = cto1;
+    } else {
+      mul = ctoc / cfromc;
+      notdone = false;
+    }
+    for (i = 0; i < 11; i++) {
+      A[i] *= mul;
+    }
+  }
+}
+
 static void c_eye(double b_I[16]) {
   memset(&b_I[0], 0, 16U * (sizeof(double)));
   b_I[0] = 1.0;
@@ -367,6 +444,397 @@ static void d_eye(double b_I[121]) {
   for (k = 0; k < 11; k++) {
     b_I[k + (11 * k)] = 1.0;
   }
+}
+
+static double d_norm(const double x[121]) {
+  double A[121];
+  double S[11];
+  double e[11];
+  double s[11];
+  double work[11];
+  double a__1;
+  double a__2;
+  double a__3;
+  double anrm;
+  double b_f;
+  double b_sn;
+  double c_sn;
+  double cscale;
+  double d_sn;
+  double f;
+  double rt;
+  double sn;
+  double snorm;
+  int b_jj;
+  int b_k;
+  int b_q;
+  int c_ii;
+  int c_jj;
+  int c_k;
+  int d_k;
+  int e_k;
+  int f_k;
+  int g_k;
+  int h_k;
+  int i_k;
+  int iter;
+  int j_k;
+  int jj;
+  int k;
+  int k_k;
+  int m;
+  int q;
+  int qp1;
+  bool doscale;
+  memcpy(&A[0], &x[0], 121U * (sizeof(double)));
+  memset(&s[0], 0, 11U * (sizeof(double)));
+  memset(&e[0], 0, 11U * (sizeof(double)));
+  memset(&work[0], 0, 11U * (sizeof(double)));
+  doscale = false;
+  anrm = 0.0;
+  for (k = 0; k < 121; k++) {
+    double absxk;
+    absxk = fabs(x[k]);
+    if (absxk > anrm) {
+      anrm = absxk;
+    }
+  }
+  cscale = anrm;
+  if ((anrm > 0.0) && (anrm < 6.7178761075670888E-139)) {
+    doscale = true;
+    cscale = 6.7178761075670888E-139;
+    xzlascl(anrm, cscale, A);
+  } else if (anrm > 1.4885657073574029E+138) {
+    doscale = true;
+    cscale = 1.4885657073574029E+138;
+    xzlascl(anrm, cscale, A);
+  }
+  for (q = 0; q < 10; q++) {
+    double nrm;
+    int qq;
+    int qq_tmp;
+    bool apply_transform;
+    qp1 = q + 2;
+    qq_tmp = q + (11 * q);
+    qq = qq_tmp + 1;
+    apply_transform = false;
+    nrm = xnrm2(11 - q, A, qq_tmp + 1);
+    if (nrm > 0.0) {
+      double d1;
+      apply_transform = true;
+      if (A[qq_tmp] < 0.0) {
+        d1 = -nrm;
+      } else {
+        d1 = nrm;
+      }
+      s[q] = d1;
+      if (fabs(d1) >= 1.0020841800044864E-292) {
+        double a;
+        int i1;
+        a = 1.0 / d1;
+        i1 = (qq_tmp - q) + 11;
+        for (d_k = qq; d_k <= i1; d_k++) {
+          A[d_k - 1] *= a;
+        }
+      } else {
+        int i;
+        i = (qq_tmp - q) + 11;
+        for (b_k = qq; b_k <= i; b_k++) {
+          A[b_k - 1] /= s[q];
+        }
+      }
+      A[qq_tmp]++;
+      s[q] = -s[q];
+    } else {
+      s[q] = 0.0;
+    }
+    for (jj = qp1; jj < 12; jj++) {
+      int qjj;
+      qjj = q + (11 * (jj - 1));
+      if (apply_transform) {
+        double b_d;
+        double c_a;
+        int n;
+        n = 10 - q;
+        b_d = 0.0;
+        for (c_k = 0; c_k <= n; c_k++) {
+          b_d += A[qq_tmp + c_k] * A[qjj + c_k];
+        }
+        c_a = -(b_d / A[qq_tmp]);
+        if (c_a != 0.0) {
+          int i2;
+          i2 = 11 - q;
+          for (g_k = 0; g_k < i2; g_k++) {
+            int A_tmp;
+            A_tmp = qjj + g_k;
+            A[A_tmp] += c_a * A[qq_tmp + g_k];
+          }
+        }
+      }
+      e[jj - 1] = A[qjj];
+    }
+    if ((q + 1) <= 9) {
+      nrm = b_xnrm2(10 - q, e, q + 2);
+      if (nrm == 0.0) {
+        e[q] = 0.0;
+      } else {
+        double b_a;
+        if (e[q + 1] < 0.0) {
+          e[q] = -nrm;
+        } else {
+          e[q] = nrm;
+        }
+        b_a = e[q];
+        if (fabs(e[q]) >= 1.0020841800044864E-292) {
+          double d_a;
+          d_a = 1.0 / e[q];
+          for (f_k = qp1; f_k < 12; f_k++) {
+            e[f_k - 1] *= d_a;
+          }
+        } else {
+          for (e_k = qp1; e_k < 12; e_k++) {
+            e[e_k - 1] /= b_a;
+          }
+        }
+        e[q + 1]++;
+        e[q] = -e[q];
+        for (c_ii = qp1; c_ii < 12; c_ii++) {
+          work[c_ii - 1] = 0.0;
+        }
+        for (b_jj = qp1; b_jj < 12; b_jj++) {
+          double d4;
+          d4 = e[b_jj - 1];
+          if (d4 != 0.0) {
+            int i4;
+            int ix;
+            ix = q + (11 * (b_jj - 1));
+            i4 = 10 - q;
+            for (j_k = 0; j_k < i4; j_k++) {
+              int work_tmp;
+              work_tmp = (q + j_k) + 1;
+              work[work_tmp] += d4 * A[(ix + j_k) + 1];
+            }
+          }
+        }
+        for (c_jj = qp1; c_jj < 12; c_jj++) {
+          xaxpy(10 - q, (-e[c_jj - 1]) / e[q + 1], work, q + 2, A,
+                (q + (11 * (c_jj - 1))) + 2);
+        }
+      }
+    }
+  }
+  m = 9;
+  s[10] = A[120];
+  e[9] = A[119];
+  e[10] = 0.0;
+  iter = 0;
+  snorm = 0.0;
+  for (b_q = 0; b_q < 11; b_q++) {
+    double d;
+    double d2;
+    d = s[b_q];
+    d2 = d;
+    if (d != 0.0) {
+      rt = fabs(d);
+      d2 = rt;
+      s[b_q] = rt;
+      if ((b_q + 1) < 11) {
+        e[b_q] /= d / rt;
+      }
+    }
+    if ((b_q + 1) < 11) {
+      double d3;
+      d3 = e[b_q];
+      if (d3 != 0.0) {
+        rt = fabs(d3);
+        e[b_q] = rt;
+        s[b_q + 1] *= rt / d3;
+      }
+    }
+    snorm = fmax(snorm, fmax(fabs(d2), fabs(e[b_q])));
+  }
+  while (((m + 2) > 0) && (iter < 75)) {
+    int c_q;
+    int ii;
+    int kase;
+    ii = m + 1;
+    int exitg1;
+    do {
+      exitg1 = 0;
+      c_q = ii;
+      if (ii == 0) {
+        exitg1 = 1;
+      } else {
+        double ztest0;
+        ztest0 = fabs(e[ii - 1]);
+        if (((ztest0 <=
+              (2.2204460492503131E-16 * (fabs(s[ii - 1]) + fabs(s[ii])))) ||
+             (ztest0 <= 1.0020841800044864E-292)) ||
+            ((iter > 20) && (ztest0 <= (2.2204460492503131E-16 * snorm)))) {
+          e[ii - 1] = 0.0;
+          exitg1 = 1;
+        } else {
+          ii--;
+        }
+      }
+    } while (exitg1 == 0);
+    if (ii == (m + 1)) {
+      kase = 4;
+    } else {
+      int b_ii;
+      int qs;
+      bool exitg2;
+      qs = m + 2;
+      b_ii = m + 2;
+      exitg2 = false;
+      while ((!((int)exitg2)) && (b_ii >= ii)) {
+        qs = b_ii;
+        if (b_ii == ii) {
+          exitg2 = true;
+        } else {
+          double test;
+          double ztest;
+          test = 0.0;
+          if (b_ii < (m + 2)) {
+            test = fabs(e[b_ii - 1]);
+          }
+          if (b_ii > (ii + 1)) {
+            test += fabs(e[b_ii - 2]);
+          }
+          ztest = fabs(s[b_ii - 1]);
+          if ((ztest <= (2.2204460492503131E-16 * test)) ||
+              (ztest <= 1.0020841800044864E-292)) {
+            s[b_ii - 1] = 0.0;
+            exitg2 = true;
+          } else {
+            b_ii--;
+          }
+        }
+      }
+      if (qs == ii) {
+        kase = 3;
+      } else if (qs == (m + 2)) {
+        kase = 1;
+      } else {
+        kase = 2;
+        c_q = qs;
+      }
+    }
+    switch (kase) {
+    case 1: {
+      int i3;
+      f = e[m];
+      e[m] = 0.0;
+      i3 = m + 1;
+      for (i_k = i3; i_k >= (c_q + 1); i_k--) {
+        double cs;
+        cs = xrotg(&s[i_k - 1], &f, &sn);
+        if (i_k > (c_q + 1)) {
+          double b_f_tmp;
+          b_f_tmp = e[i_k - 2];
+          f = (-sn) * b_f_tmp;
+          e[i_k - 2] = b_f_tmp * cs;
+        }
+      }
+    } break;
+    case 2: {
+      f = e[c_q - 1];
+      e[c_q - 1] = 0.0;
+      for (h_k = c_q + 1; h_k <= (m + 2); h_k++) {
+        double b_cs;
+        double f_tmp;
+        a__1 = f;
+        b_cs = xrotg(&s[h_k - 1], &a__1, &b_sn);
+        f_tmp = e[h_k - 1];
+        f = (-b_sn) * f_tmp;
+        e[h_k - 1] = f_tmp * b_cs;
+      }
+    } break;
+    case 3: {
+      double b;
+      double c;
+      double emm1;
+      double g;
+      double scale;
+      double scale_tmp;
+      double shift;
+      double sm;
+      double smm1;
+      double sqds;
+      int mm1;
+      mm1 = m + 1;
+      scale_tmp = s[m + 1];
+      scale = fmax(fmax(fmax(fmax(fabs(scale_tmp), fabs(s[m])), fabs(e[m])),
+                        fabs(s[c_q])),
+                   fabs(e[c_q]));
+      sm = scale_tmp / scale;
+      smm1 = s[m] / scale;
+      emm1 = e[m] / scale;
+      sqds = s[c_q] / scale;
+      b = (((smm1 + sm) * (smm1 - sm)) + (emm1 * emm1)) / 2.0;
+      c = sm * emm1;
+      c *= c;
+      if ((b != 0.0) || (c != 0.0)) {
+        shift = sqrt((b * b) + c);
+        if (b < 0.0) {
+          shift = -shift;
+        }
+        shift = c / (b + shift);
+      } else {
+        shift = 0.0;
+      }
+      f = ((sqds + sm) * (sqds - sm)) + shift;
+      g = sqds * (e[c_q] / scale);
+      for (k_k = c_q + 1; k_k <= mm1; k_k++) {
+        double c_cs;
+        double c_f_tmp;
+        double d_cs;
+        double d_f_tmp;
+        double e_f_tmp;
+        b_f = f;
+        a__2 = g;
+        c_cs = xrotg(&b_f, &a__2, &c_sn);
+        if (k_k > (c_q + 1)) {
+          e[k_k - 2] = b_f;
+        }
+        c_f_tmp = e[k_k - 1];
+        d_f_tmp = s[k_k - 1];
+        e[k_k - 1] = (c_cs * c_f_tmp) - (c_sn * d_f_tmp);
+        a__3 = c_sn * s[k_k];
+        s[k_k] *= c_cs;
+        s[k_k - 1] = (c_cs * d_f_tmp) + (c_sn * c_f_tmp);
+        d_cs = xrotg(&s[k_k - 1], &a__3, &d_sn);
+        e_f_tmp = e[k_k - 1];
+        f = (d_cs * e_f_tmp) + (d_sn * s[k_k]);
+        s[k_k] = ((-d_sn) * e_f_tmp) + (d_cs * s[k_k]);
+        g = d_sn * e[k_k];
+        e[k_k] *= d_cs;
+      }
+      e[m] = f;
+      iter++;
+    } break;
+    default:
+      if (s[c_q] < 0.0) {
+        s[c_q] = -s[c_q];
+      }
+      qp1 = c_q + 1;
+      while (((c_q + 1) < 11) && (s[c_q] < s[qp1])) {
+        rt = s[c_q];
+        s[c_q] = s[qp1];
+        s[qp1] = rt;
+        c_q = qp1;
+        qp1++;
+      }
+      iter = 0;
+      m--;
+      break;
+    }
+  }
+  memcpy(&S[0], &s[0], 11U * (sizeof(double)));
+  if (doscale) {
+    b_xzlascl(cscale, anrm, S);
+  }
+  return S[0];
 }
 
 static void diag(double d[4]) {
@@ -770,6 +1238,126 @@ static void pad_filter_init(GNC_codegenStackData *SD) {
   SD->pd->b_param.g[2] = 0.0;
 }
 
+static void xaxpy(int n, double a, const double x[11], int ix0, double y[121],
+                  int iy0) {
+  int k;
+  if ((n >= 1) && (a != 0.0)) {
+    for (k = 0; k < n; k++) {
+      int i;
+      i = (iy0 + k) - 1;
+      y[i] += a * x[(ix0 + k) - 1];
+    }
+  }
+}
+
+static double xnrm2(int n, const double x[121], int ix0) {
+  double y;
+  int k;
+  y = 0.0;
+  if (n >= 1) {
+    if (n == 1) {
+      y = fabs(x[ix0 - 1]);
+    } else {
+      double scale;
+      int kend;
+      scale = 3.3121686421112381E-170;
+      kend = ix0 + n;
+      for (k = ix0; k < kend; k++) {
+        double absxk;
+        absxk = fabs(x[k - 1]);
+        if (absxk > scale) {
+          double t;
+          t = scale / absxk;
+          y = ((y * t) * t) + 1.0;
+          scale = absxk;
+        } else {
+          double t;
+          t = absxk / scale;
+          y += t * t;
+        }
+      }
+      y = scale * sqrt(y);
+    }
+  }
+  return y;
+}
+
+static double xrotg(double *a, double *b, double *s) {
+  double absa;
+  double absb;
+  double b_c;
+  double b_s;
+  double c;
+  double roe;
+  double scale;
+  roe = *b;
+  absa = fabs(*a);
+  absb = fabs(*b);
+  if (absa > absb) {
+    roe = *a;
+  }
+  scale = absa + absb;
+  if (scale == 0.0) {
+    b_s = 0.0;
+    b_c = 1.0;
+    *a = 0.0;
+    *b = 0.0;
+  } else {
+    double ads;
+    double bds;
+    double r;
+    ads = absa / scale;
+    bds = absb / scale;
+    r = scale * sqrt((ads * ads) + (bds * bds));
+    if (roe < 0.0) {
+      r = -r;
+    }
+    b_c = (*a) / r;
+    b_s = (*b) / r;
+    if (absa > absb) {
+      *b = b_s;
+    } else if (b_c != 0.0) {
+      *b = 1.0 / b_c;
+    } else {
+      *b = 1.0;
+    }
+    *a = r;
+  }
+  c = b_c;
+  *s = b_s;
+  return c;
+}
+
+static void xzlascl(double cfrom, double cto, double A[121]) {
+  double cfromc;
+  double ctoc;
+  int i;
+  bool notdone;
+  cfromc = cfrom;
+  ctoc = cto;
+  notdone = true;
+  while (notdone) {
+    double cfrom1;
+    double cto1;
+    double mul;
+    cfrom1 = cfromc * 2.0041683600089728E-292;
+    cto1 = ctoc / 4.9896007738368E+291;
+    if ((fabs(cfrom1) > fabs(ctoc)) && (ctoc != 0.0)) {
+      mul = 2.0041683600089728E-292;
+      cfromc = cfrom1;
+    } else if (fabs(cto1) > fabs(cfromc)) {
+      mul = 4.9896007738368E+291;
+      ctoc = cto1;
+    } else {
+      mul = ctoc / cfromc;
+      notdone = false;
+    }
+    for (i = 0; i < 121; i++) {
+      A[i] *= mul;
+    }
+  }
+}
+
 void GNC_codegen_initialize(GNC_codegenStackData *SD) {
   controller_codegen_entry_init(SD);
   pad_filter_init(SD);
@@ -931,7 +1519,8 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
                               const struct2_T *sens_filt,
                               const struct3_T *sens_input, double x_ret[11],
                               double P_ret[121], struct1_T *bias_ret,
-                              struct2_T *sens_filt_ret) {
+                              struct2_T *sens_filt_ret, double *cov_norm,
+                              struct6_T *airdata, double roll_state[2]) {
   static const double Q[121] = {
       1.0E-10, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
       1.0E-10, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
@@ -987,6 +1576,7 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
   double c_dt[3];
   double c_w_exp_tilde[3];
   double dv3[3];
+  double airspeed;
   double b_expl_temp;
   double c_expl_temp;
   double d_expl_temp;
@@ -2175,4 +2765,15 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
                   bias->mti_mag_earth, b_b, x_ret, P_ret);
     }
   }
+  *cov_norm = d_norm(P);
+  airdata->pressure = airdata_atmos(x[10], &airdata->temperature,
+                                    &airdata->density, &airdata->sonic_speed,
+                                    &airdata->mach, &airdata->dynamic_pressure);
+  airspeed = b_norm(&x[7]);
+  airdata->mach = airspeed / airdata->sonic_speed;
+  airdata->dynamic_pressure = (0.5 * airdata->density) * (airspeed * airspeed);
+  roll_state[0] =
+      atan2(2.0 * ((x[2] * x[3]) + (x[0] * x[1])),
+            (((x[0] * x[0]) - (x[1] * x[1])) - (x[2] * x[2])) + (x[3] * x[3]));
+  roll_state[1] = x[4];
 }

@@ -64,6 +64,18 @@ typedef struct {
 } struct3_T;
 #endif
 
+#ifndef typedef_struct6_T
+#define typedef_struct6_T
+typedef struct {
+  double pressure;
+  double temperature;
+  double density;
+  double sonic_speed;
+  double mach;
+  double dynamic_pressure;
+} struct6_T;
+#endif
+
 #ifndef typedef_struct0_T
 #define typedef_struct0_T
 typedef struct {
