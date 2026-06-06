@@ -3268,7 +3268,7 @@
                 </Artifacts>
                 <BuildFolder type="coderapp.internal.util.mfz.FileSpec"/>
                 <Success>true</Success>
-                <Timestamp>2026-06-06T15:21:06</Timestamp>
+                <Timestamp>2026-06-06T16:08:43</Timestamp>
               </MainBuildResult>
             </coderapp.internal.mlc.mfz.MatlabCoderProjectState>
           </MF0>
@@ -3277,15 +3277,36 @@
           <MF0 packageUris="http://schema.mathworks.com/mf0/coderapp_config_datamodel/R2021a.001" version="1.1">
             <coderapp.internal.ext.ConfigStore id="1" type="coderapp.internal.ext.ConfigStore">
               <Values id="2" type="coderapp.internal.ext.ConfigEntry">
-                <Key>hardwareName</Key>
-                <Data id="3" type="coderapp.internal.config.data.EnumParamData">
-                  <Value>STM32H7xx Based (Single-core)</Value>
+                <Key>convertIfToSwitch</Key>
+                <Data id="3" type="coderapp.internal.config.data.BooleanParamData">
+                  <Value>true</Value>
                   <Help type="coderapp.internal.util.DocRef"/>
                 </Data>
               </Values>
               <Values id="4" type="coderapp.internal.ext.ConfigEntry">
+                <Key>dataTypeReplacement</Key>
+                <Data id="5" type="coderapp.internal.config.data.EnumParamData">
+                  <Value>CoderTypedefs</Value>
+                  <Help type="coderapp.internal.util.DocRef"/>
+                </Data>
+              </Values>
+              <Values id="6" type="coderapp.internal.ext.ConfigEntry">
+                <Key>hardwareName</Key>
+                <Data id="7" type="coderapp.internal.config.data.EnumParamData">
+                  <Value>STM32H7xx Based (Single-core)</Value>
+                  <Help type="coderapp.internal.util.DocRef"/>
+                </Data>
+              </Values>
+              <Values id="8" type="coderapp.internal.ext.ConfigEntry">
+                <Key>inlineMWFunctionsInUserFunctions</Key>
+                <Data id="9" type="coderapp.internal.config.data.EnumParamData">
+                  <Value>Speed</Value>
+                  <Help type="coderapp.internal.util.DocRef"/>
+                </Data>
+              </Values>
+              <Values id="10" type="coderapp.internal.ext.ConfigEntry">
                 <Key>outputFile</Key>
-                <Data id="5" type="coderapp.internal.config.data.StringParamData">
+                <Data id="11" type="coderapp.internal.config.data.StringParamData">
                   <Value>GNC_codegen</Value>
                   <Help type="coderapp.internal.util.DocRef"/>
                 </Data>

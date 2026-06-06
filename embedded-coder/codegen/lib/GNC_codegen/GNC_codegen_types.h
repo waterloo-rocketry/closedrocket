@@ -6,45 +6,45 @@
 #ifndef typedef_struct1_T
 #define typedef_struct1_T
 typedef struct {
-  double board_gyro[3];
-  double mti_gyro[3];
-  double ad_gyro[3];
-  double board_mag_earth[3];
-  double mti_mag_earth[3];
-  double board_baro;
-  double mti_baro;
+  real_T board_gyro[3];
+  real_T mti_gyro[3];
+  real_T ad_gyro[3];
+  real_T board_mag_earth[3];
+  real_T mti_mag_earth[3];
+  real_T board_baro;
+  real_T mti_baro;
 } struct1_T;
 #endif
 
 #ifndef typedef_struct2_T
 #define typedef_struct2_T
 typedef struct {
-  double board_accel_f[3];
-  double board_gyro_f[3];
-  double mti_accel_f[3];
-  double mti_gyro_f[3];
-  double ad_accel_f[3];
-  double ad_gyro_f[3];
-  double board_baro_f;
-  double board_mag_f[3];
-  double mti_baro_f;
-  double mti_mag_f[3];
+  real_T board_accel_f[3];
+  real_T board_gyro_f[3];
+  real_T mti_accel_f[3];
+  real_T mti_gyro_f[3];
+  real_T ad_accel_f[3];
+  real_T ad_gyro_f[3];
+  real_T board_baro_f;
+  real_T board_mag_f[3];
+  real_T mti_baro_f;
+  real_T mti_mag_f[3];
 } struct2_T;
 #endif
 
 #ifndef typedef_struct4_T
 #define typedef_struct4_T
 typedef struct {
-  double meas[3];
-  bool status;
+  real_T meas[3];
+  boolean_T status;
 } struct4_T;
 #endif
 
 #ifndef typedef_struct5_T
 #define typedef_struct5_T
 typedef struct {
-  double meas;
-  bool status;
+  real_T meas;
+  boolean_T status;
 } struct5_T;
 #endif
 
@@ -67,36 +67,36 @@ typedef struct {
 #ifndef typedef_struct6_T
 #define typedef_struct6_T
 typedef struct {
-  double pressure;
-  double temperature;
-  double density;
-  double sonic_speed;
-  double mach;
-  double dynamic_pressure;
+  real_T pressure;
+  real_T temperature;
+  real_T density;
+  real_T sonic_speed;
+  real_T mach;
+  real_T dynamic_pressure;
 } struct6_T;
 #endif
 
 #ifndef typedef_struct0_T
 #define typedef_struct0_T
 typedef struct {
-  double coeffs[2];
-  double w_old;
-  double P_minus[4];
-  double d_old;
-  double w_dot_old;
+  real_T coeffs[2];
+  real_T w_old;
+  real_T P_minus[4];
+  real_T d_old;
+  real_T w_dot_old;
 } struct0_T;
 #endif
 
 #ifndef typedef_struct_T
 #define typedef_struct_T
 typedef struct {
-  double Cn_alpha;
-  double J[9];
-  double Jinv[9];
-  double c_aero;
-  double c_canard;
-  double elevation;
-  double g[3];
+  real_T Cn_alpha;
+  real_T J[9];
+  real_T Jinv[9];
+  real_T c_aero;
+  real_T c_canard;
+  real_T elevation;
+  real_T g[3];
 } struct_T;
 #endif
 
