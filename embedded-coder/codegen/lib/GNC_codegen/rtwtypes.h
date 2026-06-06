@@ -11,12 +11,12 @@ extern "C" {
 
 /*=======================================================================*
  * Target hardware information
- *   Device type: Generic->32-bit Embedded Processor
+ *   Device type: ARM Compatible->ARM Cortex-M
  *   Number of bits:     char:   8    short:   16    int:  32
  *                       long:  32
  *                       native word size:  32
- *   Byte ordering: Unspecified
- *   Signed integer division rounds to: Undefined
+ *   Byte ordering: LittleEndian
+ *   Signed integer division rounds to: Zero
  *   Shift right on a signed integer as arithmetic shift: on
  *=======================================================================*/
 
