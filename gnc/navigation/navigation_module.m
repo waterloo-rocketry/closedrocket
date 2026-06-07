@@ -86,11 +86,16 @@ function [state, cov_norm, airdata, roll_state] = navigation_module(timestamp, b
     sens_input.mti_baro = mti_baro;
     sens_input.mti_mag = mti_mag;
 
-    [x_ret, P_ret, b_ret, sf_ret, cov_norm, airdata, roll_state] = navigation_codegen_entry(dt, flight_phase, x, P, bias, sens_filt, sens_input);
+    [x_ret, P_ret, b_ret, sf_ret, airdata, roll_state] = navigation_codegen_entry(dt, flight_phase, x, P, bias, sens_filt, sens_input);
 
     x = x_ret;
     P = P_ret;
     bias = b_ret;
+
+    %% Compute variance norm 
+    %%% for evaluating EKF quality
+    cov_norm = norm(P); % scalar, 2-norm of the covariance matrix
+
 
     %% Pack state as struct
     %%% use union in C or smth

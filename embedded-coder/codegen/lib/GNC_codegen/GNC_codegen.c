@@ -980,8 +980,8 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
                               const struct2_T *sens_filt,
                               const struct3_T *sens_input, double x_ret[11],
                               double P_ret[121], struct1_T *bias_ret,
-                              struct2_T *sens_filt_ret, double *cov_norm,
-                              struct6_T *airdata, double roll_state[2]) {
+                              struct2_T *sens_filt_ret, struct6_T *airdata,
+                              double roll_state[2]) {
   static const double Q[121] = {
       1.0E-10, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
       1.0E-10, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
@@ -2395,15 +2395,15 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
                   bias->mti_mag_earth, b_b, x_ret, P_ret);
     }
   }
-  *cov_norm = 0.0;
-  airdata->pressure = airdata_atmos(x[10], &airdata->temperature,
+  airdata->pressure = airdata_atmos(x_ret[10], &airdata->temperature,
                                     &airdata->density, &airdata->sonic_speed,
                                     &airdata->mach, &airdata->dynamic_pressure);
-  airspeed = b_norm(&x[7]);
+  airspeed = b_norm(&x_ret[7]);
   airdata->mach = airspeed / airdata->sonic_speed;
   airdata->dynamic_pressure = (0.5 * airdata->density) * (airspeed * airspeed);
-  roll_state[0] =
-      atan2(2.0 * ((x[2] * x[3]) + (x[0] * x[1])),
-            (((x[0] * x[0]) - (x[1] * x[1])) - (x[2] * x[2])) + (x[3] * x[3]));
-  roll_state[1] = x[4];
+  roll_state[0] = atan2(2.0 * ((x_ret[2] * x_ret[3]) + (x_ret[0] * x_ret[1])),
+                        (((x_ret[0] * x_ret[0]) - (x_ret[1] * x_ret[1])) -
+                         (x_ret[2] * x_ret[2])) +
+                            (x_ret[3] * x_ret[3]));
+  roll_state[1] = x_ret[4];
 }

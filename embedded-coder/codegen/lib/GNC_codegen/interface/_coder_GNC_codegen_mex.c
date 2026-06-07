@@ -72,12 +72,12 @@ void unsafe_controller_codegen_entry_mexFunction(int32_T nlhs, mxArray *plhs[3],
   emlrtReturnArrays(i1, &plhs[0], &outputs[0]);
 }
 
-void unsafe_navigation_codegen_entry_mexFunction(int32_T nlhs, mxArray *plhs[7],
+void unsafe_navigation_codegen_entry_mexFunction(int32_T nlhs, mxArray *plhs[6],
                                                  int32_T nrhs,
                                                  const mxArray *prhs[7]) {
   emlrtStack st = {NULL, NULL, NULL};
   const mxArray *b_prhs[7];
-  const mxArray *outputs[7];
+  const mxArray *outputs[6];
   int32_T i;
   int32_T i1;
   st.tls = emlrtRootTLSGlobal;
@@ -86,7 +86,7 @@ void unsafe_navigation_codegen_entry_mexFunction(int32_T nlhs, mxArray *plhs[7],
     emlrtErrMsgIdAndTxt(&st, "EMLRT:runTime:WrongNumberOfInputs", 5, 12, 7, 4,
                         24, "navigation_codegen_entry");
   }
-  if (nlhs > 7) {
+  if (nlhs > 6) {
     emlrtErrMsgIdAndTxt(&st, "EMLRT:runTime:TooManyOutputArguments", 3, 4, 24,
                         "navigation_codegen_entry");
   }

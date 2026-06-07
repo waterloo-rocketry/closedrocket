@@ -1010,7 +1010,7 @@ void controller_codegen_entry_api(const mxArray *const prhs[6], int32_T nlhs,
 }
 
 void navigation_codegen_entry_api(const mxArray *const prhs[7], int32_T nlhs,
-                                  const mxArray *plhs[7]) {
+                                  const mxArray *plhs[6]) {
   emlrtStack st = {NULL, NULL, NULL};
   struct1_T bias;
   struct1_T bias_ret;
@@ -1023,7 +1023,6 @@ void navigation_codegen_entry_api(const mxArray *const prhs[7], int32_T nlhs,
   real_T(*x)[11];
   real_T(*x_ret)[11];
   real_T(*roll_state)[2];
-  real_T cov_norm;
   real_T dt;
   boolean_T flight_phase;
   st.tls = emlrtRootTLSGlobal;
@@ -1041,7 +1040,7 @@ void navigation_codegen_entry_api(const mxArray *const prhs[7], int32_T nlhs,
 
   navigation_codegen_entry(dt, flight_phase, *x, *P, &bias, &sens_filt,
                            &sens_input, *x_ret, *P_ret, &bias_ret,
-                           &sens_filt_ret, &cov_norm, &airdata, *roll_state);
+                           &sens_filt_ret, &airdata, *roll_state);
 
   plhs[0] = c_emlrt_marshallOut(*x_ret);
   if (nlhs > 1) {
@@ -1054,12 +1053,9 @@ void navigation_codegen_entry_api(const mxArray *const prhs[7], int32_T nlhs,
     plhs[3] = f_emlrt_marshallOut(&sens_filt_ret);
   }
   if (nlhs > 4) {
-    plhs[4] = emlrt_marshallOut(cov_norm);
+    plhs[4] = g_emlrt_marshallOut(airdata);
   }
   if (nlhs > 5) {
-    plhs[5] = g_emlrt_marshallOut(airdata);
-  }
-  if (nlhs > 6) {
-    plhs[6] = h_emlrt_marshallOut(*roll_state);
+    plhs[5] = h_emlrt_marshallOut(*roll_state);
   }
 }

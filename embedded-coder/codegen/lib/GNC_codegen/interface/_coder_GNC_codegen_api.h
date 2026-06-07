@@ -119,11 +119,10 @@ void navigation_codegen_entry(real_T dt, boolean_T flight_phase, real_T x[11],
                               struct2_T *sens_filt, struct3_T *sens_input,
                               real_T x_ret[11], real_T P_ret[121],
                               struct1_T *bias_ret, struct2_T *sens_filt_ret,
-                              real_T *cov_norm, struct6_T *airdata,
-                              real_T roll_state[2]);
+                              struct6_T *airdata, real_T roll_state[2]);
 
 void navigation_codegen_entry_api(const mxArray *const prhs[7], int32_T nlhs,
-                                  const mxArray *plhs[7]);
+                                  const mxArray *plhs[6]);
 
 #ifdef __cplusplus
 }
