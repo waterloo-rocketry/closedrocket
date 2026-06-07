@@ -30,7 +30,7 @@ function [x_ret, P_ret, bias_ret, sens_filt_ret, cov_norm, airdata, roll_state] 
 
         %% Compute variance norm 
     %%% for evaluating EKF quality
-    cov_norm = norm(P); % scalar, 2-norm of the covariance matrix
+    cov_norm = 0; % norm(P); % scalar, 2-norm of the covariance matrix
 
     %% Compute air data
     airdata = airdata_atmos(x(11));

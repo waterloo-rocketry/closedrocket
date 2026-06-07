@@ -1,52 +1,64 @@
+/*
+ * Academic License - for use in teaching, academic research, and meeting
+ * course requirements at degree granting institutions only.  Not for
+ * government, commercial, or other organizational use.
+ * File: GNC_codegen_types.h
+ *
+ * MATLAB Coder version            : 25.2
+ * C/C++ source code generated on  : 06-Jun-2026 20:09:37
+ */
+
 #ifndef GNC_CODEGEN_TYPES_H
 #define GNC_CODEGEN_TYPES_H
 
+/* Include Files */
 #include "rtwtypes.h"
 
+/* Type Definitions */
 #ifndef typedef_struct1_T
 #define typedef_struct1_T
 typedef struct {
-  real_T board_gyro[3];
-  real_T mti_gyro[3];
-  real_T ad_gyro[3];
-  real_T board_mag_earth[3];
-  real_T mti_mag_earth[3];
-  real_T board_baro;
-  real_T mti_baro;
+  double board_gyro[3];
+  double mti_gyro[3];
+  double ad_gyro[3];
+  double board_mag_earth[3];
+  double mti_mag_earth[3];
+  double board_baro;
+  double mti_baro;
 } struct1_T;
-#endif
+#endif /* typedef_struct1_T */
 
 #ifndef typedef_struct2_T
 #define typedef_struct2_T
 typedef struct {
-  real_T board_accel_f[3];
-  real_T board_gyro_f[3];
-  real_T mti_accel_f[3];
-  real_T mti_gyro_f[3];
-  real_T ad_accel_f[3];
-  real_T ad_gyro_f[3];
-  real_T board_baro_f;
-  real_T board_mag_f[3];
-  real_T mti_baro_f;
-  real_T mti_mag_f[3];
+  double board_accel_f[3];
+  double board_gyro_f[3];
+  double mti_accel_f[3];
+  double mti_gyro_f[3];
+  double ad_accel_f[3];
+  double ad_gyro_f[3];
+  double board_baro_f;
+  double board_mag_f[3];
+  double mti_baro_f;
+  double mti_mag_f[3];
 } struct2_T;
-#endif
+#endif /* typedef_struct2_T */
 
 #ifndef typedef_struct4_T
 #define typedef_struct4_T
 typedef struct {
-  real_T meas[3];
-  boolean_T status;
+  double meas[3];
+  bool status;
 } struct4_T;
-#endif
+#endif /* typedef_struct4_T */
 
 #ifndef typedef_struct5_T
 #define typedef_struct5_T
 typedef struct {
-  real_T meas;
-  boolean_T status;
+  double meas;
+  bool status;
 } struct5_T;
-#endif
+#endif /* typedef_struct5_T */
 
 #ifndef typedef_struct3_T
 #define typedef_struct3_T
@@ -62,59 +74,43 @@ typedef struct {
   struct5_T mti_baro;
   struct4_T mti_mag;
 } struct3_T;
-#endif
+#endif /* typedef_struct3_T */
 
 #ifndef typedef_struct6_T
 #define typedef_struct6_T
 typedef struct {
-  real_T pressure;
-  real_T temperature;
-  real_T density;
-  real_T sonic_speed;
-  real_T mach;
-  real_T dynamic_pressure;
+  double pressure;
+  double temperature;
+  double density;
+  double sonic_speed;
+  double mach;
+  double dynamic_pressure;
 } struct6_T;
-#endif
+#endif /* typedef_struct6_T */
 
 #ifndef typedef_struct0_T
 #define typedef_struct0_T
 typedef struct {
-  real_T coeffs[2];
-  real_T w_old;
-  real_T P_minus[4];
-  real_T d_old;
-  real_T w_dot_old;
+  double coeffs[2];
+  double w_old;
+  double P_minus[4];
+  double d_old;
+  double w_dot_old;
 } struct0_T;
-#endif
+#endif /* typedef_struct0_T */
 
 #ifndef typedef_struct_T
 #define typedef_struct_T
 typedef struct {
-  real_T Cn_alpha;
-  real_T J[9];
-  real_T Jinv[9];
-  real_T c_aero;
-  real_T c_canard;
-  real_T elevation;
-  real_T g[3];
+  double J[9];
+  double Jinv[9];
+  double g[3];
 } struct_T;
-#endif
-
-#ifndef c_typedef_GNC_codegenPersistent
-#define c_typedef_GNC_codegenPersistent
-typedef struct {
-  struct_T param;
-  struct_T b_param;
-  struct_T c_param;
-  struct_T d_param;
-} GNC_codegenPersistentData;
-#endif
-
-#ifndef typedef_GNC_codegenStackData
-#define typedef_GNC_codegenStackData
-typedef struct {
-  GNC_codegenPersistentData *pd;
-} GNC_codegenStackData;
-#endif
+#endif /* typedef_struct_T */
 
 #endif
+/*
+ * File trailer for GNC_codegen_types.h
+ *
+ * [EOF]
+ */
