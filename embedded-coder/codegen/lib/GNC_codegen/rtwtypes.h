@@ -1,17 +1,5 @@
-/*
- * Academic License - for use in teaching, academic research, and meeting
- * course requirements at degree granting institutions only.  Not for
- * government, commercial, or other organizational use.
- * File: rtwtypes.h
- *
- * MATLAB Coder version            : 25.2
- * C/C++ source code generated on  : 06-Jun-2026 20:09:37
- */
-
 #ifndef RTWTYPES_H
 #define RTWTYPES_H
-
-/* Include Files */
 
 #ifndef __cplusplus
 #include <stdbool.h>
@@ -130,6 +118,10 @@ typedef struct {
 #define MAX_uint32_T ((uint32_T)(0xFFFFFFFFU))
 #define MIN_uint32_T ((uint32_T)(0))
 
+/*===========================================================================*
+ * User defined type names                                                   *
+ *===========================================================================*/
+
 /* Logical type definitions */
 #if (!defined(__cplusplus)) && (!defined(__true_false_are_keywords)) &&        \
     (!defined(__bool_true_false_are_defined))
@@ -145,8 +137,3 @@ typedef struct {
 }
 #endif
 #endif
-/*
- * File trailer for rtwtypes.h
- *
- * [EOF]
- */
