@@ -71,52 +71,10 @@ lookup_table = unique_data;
 CD_input = lookup_table(:, 1); % Mach #
 CD_data = lookup_table(:, 2); % Cd
 
-%% Canard CL GPR-smoothed lookup table
-% Transcribed from Python delta_wing GPR approach
-
-delta_data = readmatrix("plant-model/Data/Aero/delta.csv");
-
-canard_CL_Mach_raw  = delta_data(:,1);
-canard_CL_alpha_raw = delta_data(:,2);   % deg
-canard_CL_raw       = delta_data(:,4);   % CL column
-
-X = [canard_CL_Mach_raw(:), canard_CL_alpha_raw(:)];
-Y = canard_CL_raw(:);
-
-valid_idx = all(~isnan(X), 2) & ~isnan(Y);
-X = X(valid_idx,:);
-Y = Y(valid_idx);
-
-%% Fit GPR
-% MATLAB does not map exactly to sklearn's DotProduct + RBF + WhiteKernel
-% unless using a custom kernel. This is the practical close version.
-
-canard_CL_gpr = fitrgp( ...
-    X, ...
-    Y, ...
-    "KernelFunction", "ardsquaredexponential", ...
-    "BasisFunction", "linear", ...
-    "Standardize", true);
-
-%% Precompute GPR into numeric lookup table for Simulink
-
-canard_CL_Mach_input  = 0.5:0.01:2.5;
-canard_CL_alpha_input = 0:0.1:15;   % deg
-
-[canard_CL_Mach_grid, canard_CL_alpha_grid] = meshgrid( ...
-    canard_CL_Mach_input, ...
-    canard_CL_alpha_input);
-
-X_query = [canard_CL_Mach_grid(:), canard_CL_alpha_grid(:)];
-
-canard_CL_query = predict(canard_CL_gpr, X_query);
-
-canard_CL_data = reshape(canard_CL_query, size(canard_CL_Mach_grid));
 
 %% Aero scripts
 % Nose
 [nosecone_area_planform, nosecone_area_bow, nosecone_area_aft, nosecone_volume, nosecone_pos_x_cp] = aerobody(nosecone_length, 0, 2 * nosecone_radius, 0);
-
 
 % Body
 [body_area_planform, body_area_bow, body_area_aft, body_volume, body_pos_x_cp] = aerobody(body_length, rocket_diameter, rocket_diameter, - nosecone_length);
@@ -125,10 +83,43 @@ canard_CL_data = reshape(canard_CL_query, size(canard_CL_Mach_grid));
 % [fin_pos_x_cp, fin_Cnfdelta, fin_CndNi, fin_CNa, fin_aspectratio, fin_area, fin_midchord_angle, fin_dist_chord_mean, fin_pos_r_chord_mean, fin_leading_edge] = fins(fin_chord_root, fin_chord_tip, fin_height, fin_sweep, fin_pos_x_roottip, fin_number, rocket_area_frontal, rocket_diameter);
 [fin_pos_x_cp, fin_pos_r_mean, fin_area, fin_aspectratio, fin_midchord_angle, fin_factor, fin_pos_x_cp_mach2] = aerosurface(fin_chord_root, fin_chord_tip, fin_height, fin_sweep_angle, fin_pos_x_roottip, fin_number, rocket_diameter);
 
-
 % Tail
 [tail_area_planform, tail_area_bow, tail_area_aft, tail_volume, tail_pos_x_cp] = aerobody(tail_length, 2 * tail_radius_outer, 2 * tail_radius_smallest, - nosecone_length - body_length);
 
 % Canards 
 % [canard_pos_x, canard_Cnalfat, canard_Cnfdelta, canard_CndNi, canard_aspectratio, canard_area, canard_midchord_angle, canard_dist_chord_mean, canard_pos_r_mean, canard_leading_edge] = canards(canard_chord_root, canard_chord_tip, canard_height, canard_pos_x_roottip, canard_number, rocket_area_frontal, rocket_diameter);
 [canard_pos_x, canard_pos_r_mean, canard_area, canard_aspectratio, canard_midchord_angle, canard_factor, canard_pos_x_cp_mach2] = aerosurface(canard_chord_root, canard_chord_tip, canard_height, canard_sweep_angle, canard_pos_x_roottip, canard_number, rocket_diameter);
+
+%% Canard CL GPR-smoothed lookup table
+% Transcribed from Python delta_wing GPR approach
+
+delta_data = readmatrix("plant-model/Data/aero/delta.csv");
+canard_CL_samples = rmmissing(delta_data(:, [1 2 4])); % Mach, alpha, CL
+canard_CL_samples(:, 2) = deg2rad(canard_CL_samples(:, 2)); % deg -> rad
+
+%%% Fit GPR
+% MATLAB does not map exactly to sklearns DotProduct + RBF + WhiteKernel
+% unless using a custom kernel. This is the practical close version.
+canard_CL_gpr = fitrgp( ...
+    canard_CL_samples(:, 1:2), ...
+    canard_CL_samples(:, 3), ...
+    "KernelFunction", "ardsquaredexponential", ...
+    "BasisFunction", "linear", ...
+    "Standardize", true);
+
+%%% Precompute GPR into numeric lookup table for Simulink
+canard_CL_Mach_input  = 0.5:0.01:2.5;
+canard_CL_alpha_input = deg2rad(0:0.1:15);
+
+[canard_CL_Mach_grid, canard_CL_alpha_grid] = meshgrid( ...
+    canard_CL_Mach_input, ...
+    canard_CL_alpha_input);
+
+canard_CL_data = reshape( ...
+    predict(canard_CL_gpr, [canard_CL_Mach_grid(:), canard_CL_alpha_grid(:)]), ...
+    size(canard_CL_Mach_grid));
+
+[~, canard_CL_alpha_data] = gradient( ...
+    canard_CL_data, ...
+    canard_CL_Mach_input, ...
+    canard_CL_alpha_input);
