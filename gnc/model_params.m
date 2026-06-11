@@ -4,22 +4,24 @@ clear
 elevation = 420; % [m], launch altitude above sea level
 
 %% Rocket body
-m = 54.9; % [kg], rocket dry mass 
-Jx = 0.46; % [kg m^2] rocket dry roll inertia
-Jy = 49.5; % [kg m^2] rocket dry pitch, yaw inertia
+m = 66.342; % [kg], rocket dry mass 
+Jx = 0.64; % [kg m^2] rocket dry roll inertia
+Jy = 189.5; % [kg m^2] rocket dry pitch, yaw inertia
 J = diag([Jx, Jy, Jy]);
 Jinv = inv(J); % precompute inverse inertia
 
 length_cg = 0; % [m], center of gravity
-length_cp = -0.5; % [m], center of pressure (negative is aft of cg)
+length_cp = -1.1; % [m], center of pressure (negative is aft of cg)
 area_reference = pi*(0.203/2)^2; % [m^2], cross section of body tube
 c_aero = area_reference * (length_cp-length_cg); % precompute aero constants
 Cn_alpha = 10; % [-], pitch forcing coefficent 
 Cn_omega = 0; % [-], pitch damping coefficent 
 
 %% Canards
-area_canard = 2 * 0.102 * 0.0508 / 2; % [m^2], total canard area 
-length_canard = 0.203/2 + 0.0508/3; % [m], lever arm of canard to x-axis 
+root_chord = 0.13;
+sweep = deg2rad(16);
+area_canard = root_chord^2 * tan(sweep); % [m^2], total canard area 
+length_canard = 0.203/2 + 0.02 + rootchord * tan(sweep) / 3; % [m], lever arm of canard to x-axis 
 c_canard = area_canard*length_canard; % precompute aero constants
 
 %% Environment

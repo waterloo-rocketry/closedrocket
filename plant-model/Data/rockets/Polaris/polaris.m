@@ -1,5 +1,5 @@
 %% OR Simulation Output Data
-or_data = readtable('plant-model/data/rockets/Polaris/polaris_cycle_1.csv');
+or_data = readtable('plant-model/data/rockets/Polaris/polaris_cycle_2.csv');
 
 %% Initial values
 location = [420; 43.47; -80.54]; % launch location on earth. Altitude, Latitude, Longitude [m, deg, deg]
@@ -28,24 +28,24 @@ sensor_3_S = [1, 0, 0;
               0, 0, 1];
 
 %% Actuator parameters
-act_freq = 150; % natural frequency, approx 1/timeconstant [1/s]
+act_freq = 167; % natural frequency, approx 1/timeconstant [1/s]
 act_deadtime = 0.02; % delay in servo internal control loop [s]
 act_damping = 0.9; % damping ratio
-act_backlash = 0.25; % play [deg]
+act_backlash = 0.3; % play [deg]
 act_anglelimit = 12; % max deflection [deg]
-act_ratelimit = 480; % max rate [deg/s]
+act_ratelimit = 600; % max rate [deg/s]
 act_gear_ratio = 0.5; % speed ratio of gearing between motor and canard
 
 %% Misc Rocket parameters
 engine_thrust_factor = 1; % perfomance gain
-drag_factor = 1.1; % drag gain
+drag_factor = 1; % drag gain
 canard_roll_reversal_factor = 1; % coefficient gain
 
 %% Aerodynamics Reference Geometry
 %Reference parameters   
 rocket_diameter = 0.203; % reference length [m]
 rocket_area_frontal = pi * rocket_diameter^2 / 4; % reference area [m^2]
-rocket_length = 5.56; % rocket length [m]
+rocket_length = 5.58; % rocket length [m]
 
 %Parachutes
 chute_pos_x = -1.1; % chute attachment [m]
@@ -61,7 +61,7 @@ nosecone_radius = rocket_diameter / 2; % nosecone radius [m]
 
 %Tail parameters
 tail_radius_outer = 0.203 / 2; % tail radius [m]
-tail_length = 0.0413; % tail length [m]
+tail_length = 0.0254; % tail length [m]
 tail_radius_smallest = 0.19 / 2; % smallest tail radius(?) [m]
 tail_pos_x_roottip = -rocket_length + tail_length; % tail position measured from nosecone
 
@@ -70,21 +70,21 @@ body_length = rocket_length - nosecone_length - tail_length; % fuselage length o
 body_surface_roughness = 20 / 10^6; % RMC(?) roughness 20 um smooth paint
 
 %Fin parameters
-fin_chord_root = 0.508; %[m] root chord?
-fin_chord_tip = 0.0635; %[m] tip chord?
+fin_chord_root = 0.483; %[m] root chord?
+fin_chord_tip = 0.114; %[m] tip chord?
 fin_height = 0.229; %[m] height?
-fin_sweep = 0.495; % [m]
-fin_sweep_angle = deg2rad(65.2); % angle from radial normal [rad]
-fin_pos_x_roottip = - ( rocket_length - tail_length - 0.475 - 0.0508 ); % position of fins measured from nosecone [m]
+fin_sweep = 0.432; % [m]
+fin_sweep_angle = deg2rad(62.1); % angle from radial normal [rad]
+fin_pos_x_roottip = - ( rocket_length - tail_length - 0.483 - 0.0127); % position of fins measured from nosecone [m]
 fin_number = 4; % Number of fins
 fin_cant_angle_rad = deg2rad(0); % fin cant angle [rad]
 
 % Canards parameters 
 canard_number = 2;
-canard_chord_root = 0.102; % root chord
+canard_chord_root = 0.13; % root chord
 canard_chord_tip = 0.001; % tip chord 
-canard_height = 0.0508; % root to tip length
-canard_sweep_angle = deg2rad(60.3); % angle from radial normal [rad]
+canard_height = 0.0373; % root to tip length
+canard_sweep_angle = deg2rad(74); % angle from radial normal [rad]
 canard_delta_max = deg2rad(12); % Canard maximum angle of attack
-canard_pos_x_roottip = - (nosecone_length + 0.241 + 0.518 + 0.102 - 0.0254); % position of the most forward tip of the canards
+canard_pos_x_roottip = - (nosecone_length + 0.508 + 0.102 / 2 - 0.03); % approximate position of the most forward tip of the canards
 canard_cant_zero = deg2rad(0.2); % zero roll not perfect
