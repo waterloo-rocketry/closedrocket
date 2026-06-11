@@ -35,47 +35,50 @@ F_thrust = fillmissing(F_thrust, 'linear');
 
 %%% reference trajectory 
 alt = or_data.Altitude_m_;
-vel_ver = or_data.VerticalVelocity_m_s_;
+vel_vert = or_data.VerticalVelocity_m_s_;
 drag = or_data.DragForce_N_;
 crossrange = or_data.LateralDistance_m_;
 v_crossrange = or_data.LateralVelocity_m_s_;
 angle_vert_deg = 90 - or_data.VerticalOrientation_zenith____;
 
 %%% import Mach/Cd
-Cd = or_data.DragCoefficient___;
-Mach = or_data.MachNumber___;
+cd_time = or_data.DragCoefficient___;
+mach_time = or_data.MachNumber___;
 
 %% Cd vs Mach table
 % Combine the two vectors into a 2-column matrix
-data = [Mach(:), Cd(:)];  % Create a 2-column matrix (Mach, Cd)
-
-% Sort the rows by the Mach number (first column)
-sorted_data = sortrows(data, 1);  % Sort by Mach number (first column)
-
-% Remove rows with duplicate Mach values (keep the first occurrence)
-[~, unique_idx] = unique(sorted_data(:, 1), 'first');  % Find unique Mach numbers
-unique_data = sorted_data(unique_idx, :);  % Keep only rows with unique Mach numbers
-
+cd_data_raw = [mach_time(:), cd_time(:), vel_vert(:)];
+% Remove rows where vertical velocity is negative
+cd_neg_vel_idx = cd_data_raw(:,3) <= 0; % logical index for rows with vel_vert < 0
+cd_data_raw(cd_neg_vel_idx, :) = []; % remove those rows from cd_data
 % Remove rows with any NaN values
-unique_data = unique_data(~any(isnan(unique_data), 2), :);  % Remove rows with NaN
+cd_data_raw = cd_data_raw(~any(isnan(cd_data_raw), 2), :);  % Remove rows with NaN
+% Sort the rows by the Mach number (first column)
+cd_data_sorted = sortrows(cd_data_raw, 1);  % Sort by Mach number (first column)
+% Remove rows with duplicate Mach values (keep the first occurrence)
+[~, cd_unique_idx] = unique(cd_data_sorted(:, 1), 'first');  % Find unique Mach numbers
+cd_data_unique = cd_data_sorted(cd_unique_idx,1:2);
 
 % Get the Cd value corresponding to Mach 0.3
-mach_03_idx = find(unique_data(:, 1) >= 0.3, 1, 'first');  % Find the index of Mach closest to or equal to 0.3
-Cd_at_03 = unique_data(mach_03_idx, 2);  % Cd value at Mach 0.3
+mach_03_idx = find(cd_data_unique(:, 1) >= 0.3, 1, 'first');  % Find the index of Mach closest to or equal to 0.3
+cd_at_03 = cd_data_unique(mach_03_idx,2);  % Cd value at Mach 0.3
 
 % Replace Cd values for Mach < 0.3 with Cd value at Mach 0.3
-unique_data(unique_data(:, 1) < 0.3, 2) = Cd_at_03;
+cd_data_unique(cd_data_unique(:, 1) < 0.3, 2) = cd_at_03;
+
+% smooth (necessary because using OR export is dumb)
+cd_data_smooth = cd_data_unique;
+cd_data_smooth(:,2) = movmean(cd_data_smooth(:,2), 40);
 
 % Final lookup table
-lookup_table = unique_data;
-CD_input = lookup_table(:, 1); % Mach #
-CD_data = lookup_table(:, 2); % Cd
+cd_lookup_table = cd_data_smooth(:,1:2);
+cd_input = cd_lookup_table(:, 1); % Mach #
+cd_data = cd_lookup_table(:, 2); % Cd
 
 
 %% Aero scripts
 % Nose
 [nosecone_area_planform, nosecone_area_bow, nosecone_area_aft, nosecone_volume, nosecone_pos_x_cp] = aerobody(nosecone_length, 0, 2 * nosecone_radius, 0);
-
 
 % Body
 [body_area_planform, body_area_bow, body_area_aft, body_volume, body_pos_x_cp] = aerobody(body_length, rocket_diameter, rocket_diameter, - nosecone_length);
@@ -83,7 +86,6 @@ CD_data = lookup_table(:, 2); % Cd
 % Fins 
 % [fin_pos_x_cp, fin_Cnfdelta, fin_CndNi, fin_CNa, fin_aspectratio, fin_area, fin_midchord_angle, fin_dist_chord_mean, fin_pos_r_chord_mean, fin_leading_edge] = fins(fin_chord_root, fin_chord_tip, fin_height, fin_sweep, fin_pos_x_roottip, fin_number, rocket_area_frontal, rocket_diameter);
 [fin_pos_x_cp, fin_pos_r_mean, fin_area, fin_aspectratio, fin_midchord_angle, fin_factor, fin_pos_x_cp_mach2] = aerosurface(fin_chord_root, fin_chord_tip, fin_height, fin_sweep_angle, fin_pos_x_roottip, fin_number, rocket_diameter);
-
 
 % Tail
 [tail_area_planform, tail_area_bow, tail_area_aft, tail_volume, tail_pos_x_cp] = aerobody(tail_length, 2 * tail_radius_outer, 2 * tail_radius_smallest, - nosecone_length - body_length);
