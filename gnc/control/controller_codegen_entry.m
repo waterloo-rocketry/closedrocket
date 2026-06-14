@@ -17,7 +17,7 @@ function [u_motor, r, ctrl_mem] = controller_codegen_entry(time, dt_ctrl, xR, pd
     time_program = 15; % (s) time from launch to start of roll program
     gear_ratio = 2; % gear reduction ratio, motor angle / canard angle
     u_max = deg2rad(10); % (rad) limit canard output to this angle
-    L_min = 10 * gear_ratio; % (rad/s^2 / rad) limit roll control derivative for low authority conditions
+    L_min = 10; % (rad/s^2 / rad) limit roll control derivative for low authority conditions
     pdyn_min = 500; % (Pa) deactivate at low authority near apogee
 
     %% Reference signal

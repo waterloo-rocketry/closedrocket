@@ -1,7 +1,7 @@
 function [state, cov_norm, airdata, roll_state] = navigation_module(timestamp, board_accel, board_gyro, mti_accel, mti_gyro, ad_accel, ad_gyro, board_baro, board_mag, mti_baro, mti_mag)
-    % Top-level navigation module. Calls code generation entry point.  
+    % Top-level navigation module. Calls code generation entry point.
     % Mocks firmware higher-level stuff
-    
+
     persistent t flight_phase k first_run;
 
     %% Pad Filter
@@ -9,35 +9,35 @@ function [state, cov_norm, airdata, roll_state] = navigation_module(timestamp, b
     persistent sens_filt x P bias
 
     %% initialize at beginning
-    xhat = zeros(11,1); 
-    xhat(1) = 1; 
+    xhat = zeros(11,1);
+    xhat(1) = 1;
     Phat = zeros(11);
 
     if isempty(x)
-        x = xhat; 
+        x = xhat;
         P = Phat;
     end
 
     if isempty(sens_filt)
-        sens_filt.board_accel_f = board_accel.meas;
-        sens_filt.board_gyro_f = board_gyro.meas;
-        sens_filt.mti_accel_f = mti_accel.meas;
-        sens_filt.mti_gyro_f = mti_gyro.meas; 
-        sens_filt.ad_accel_f = ad_accel.meas; 
-        sens_filt.ad_gyro_f = ad_gyro.meas;  
-        sens_filt.board_baro_f = board_baro.meas; 
-        sens_filt.board_mag_f = board_mag.meas; 
-        sens_filt.mti_baro_f = mti_baro.meas; 
-        sens_filt.mti_mag_f = mti_mag.meas; 
-        bias.board_gyro = zeros(3,1); 
-        bias.mti_gyro = zeros(3,1); 
-        bias.ad_gyro = zeros(3,1); 
-        bias.board_mag_earth = zeros(3,1); 
-        bias.mti_mag_earth = zeros(3,1); 
+        sens_filt.board_accel = board_accel.meas;
+        sens_filt.board_gyro = board_gyro.meas;
+        sens_filt.mti_accel = mti_accel.meas;
+        sens_filt.mti_gyro = mti_gyro.meas;
+        sens_filt.ad_accel = ad_accel.meas;
+        sens_filt.ad_gyro = ad_gyro.meas;
+        sens_filt.board_baro = board_baro.meas;
+        sens_filt.board_mag = board_mag.meas;
+        sens_filt.mti_baro = mti_baro.meas;
+        sens_filt.mti_mag = mti_mag.meas;
+        bias.board_gyro = zeros(3,1);
+        bias.mti_gyro = zeros(3,1);
+        bias.ad_gyro = zeros(3,1);
+        bias.board_mag_earth = zeros(3,1);
+        bias.mti_mag_earth = zeros(3,1);
         bias.board_baro = 0;
-        bias.mti_baro = 0; 
+        bias.mti_baro = 0;
     end
-    
+
     %% config settings
     idle_time = 15; % [s], wait time to handover from pad to flight, 5s before liftoff
     sampling_imu = 0.002; % [s], sampling period of imu
@@ -49,15 +49,15 @@ function [state, cov_norm, airdata, roll_state] = navigation_module(timestamp, b
         k = 1;
         if timestamp >= 0.005
                 t = timestamp-0.005;
-        else 
+        else
                 t = 0;
         end
     end
-    
+
     %% timecode
     dt = timestamp - t; % [s], time step size for dynamics integration
     t = timestamp;
-    
+
     %% flight phase
     if t >= idle_time % mock for flight phase
             flight_phase = true;
@@ -74,7 +74,6 @@ function [state, cov_norm, airdata, roll_state] = navigation_module(timestamp, b
         mti_mag.status = false;
     end
 
-
     sens_input.board_accel = board_accel;
     sens_input.board_gyro = board_gyro;
     sens_input.mti_accel = mti_accel;
@@ -86,34 +85,17 @@ function [state, cov_norm, airdata, roll_state] = navigation_module(timestamp, b
     sens_input.mti_baro = mti_baro;
     sens_input.mti_mag = mti_mag;
 
-    [x_ret, P_ret, b_ret, sf_ret, airdata, roll_state] = navigation_codegen_entry(dt, flight_phase, x, P, bias, sens_filt, sens_input);
+    [x, P, bias, sens_filt, airdata, roll_state] = navigation_codegen_entry(dt, flight_phase, x, P, bias, sens_filt, sens_input);
 
-    x = x_ret;
-    P = P_ret;
-    bias = b_ret;
-
-    %% Compute variance norm 
+    %% Compute variance norm
     %%% for evaluating EKF quality
     cov_norm = norm(P); % scalar, 2-norm of the covariance matrix
-
 
     %% Pack state as struct
     %%% use union in C or smth
     state.q = x(1:4); % [1], attitude quaternion
-    state.w = x(5:7); % [rad/s], angular rate 
+    state.w = x(5:7); % [rad/s], angular rate
     state.v = x(8:10); % [m/s], velocity
     state.alt = x(11); % [m], altitude
     state.x = x; % also full state as vector is needed in simulink
-
-    sens_filt.board_accel_f = sf_ret.board_accel_f;
-    sens_filt.board_gyro_f = sf_ret.board_gyro_f;
-    sens_filt.mti_accel_f = sf_ret.mti_accel_f;
-    sens_filt.mti_gyro_f = sf_ret.mti_gyro_f;
-    sens_filt.ad_accel_f = sf_ret.ad_accel_f;
-    sens_filt.ad_gyro_f = sf_ret.ad_gyro_f;
-    sens_filt.board_baro_f = sf_ret.board_baro_f;
-    sens_filt.board_mag_f = sf_ret.board_mag_f;
-    sens_filt.mti_baro_f = sf_ret.mti_baro_f;
-    sens_filt.mti_mag_f = sf_ret.mti_mag_f;
-    
 end
