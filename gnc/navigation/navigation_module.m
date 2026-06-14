@@ -1,11 +1,11 @@
-function [state, cov_norm, airdata, roll_state] = navigation_module(timestamp, board_accel, board_gyro, mti_accel, mti_gyro, ad_accel, ad_gyro, board_baro, board_mag, mti_baro, mti_mag)
+function [state, cov_norm, roll_state, pdyn] = navigation_module(timestamp, board_accel, board_gyro, mti_accel, mti_gyro, ad_accel, ad_gyro, board_baro, board_mag, mti_baro, mti_mag)
     % Top-level navigation module. Calls code generation entry point.
     % Mocks firmware higher-level stuff
 
+    %% Memory 
+    %%% module states
     persistent t flight_phase k first_run;
-
-    %% Pad Filter
-    %%% remember filtered values from last iteration
+    %%% filter states
     persistent sens_filt x P bias
 
     %% initialize at beginning
@@ -74,18 +74,18 @@ function [state, cov_norm, airdata, roll_state] = navigation_module(timestamp, b
         mti_mag.status = false;
     end
 
-    sens_input.board_accel = board_accel;
-    sens_input.board_gyro = board_gyro;
-    sens_input.mti_accel = mti_accel;
-    sens_input.mti_gyro = mti_gyro;
-    sens_input.ad_accel = ad_accel;
-    sens_input.ad_gyro = ad_gyro;
-    sens_input.board_baro = board_baro;
-    sens_input.board_mag = board_mag;
-    sens_input.mti_baro = mti_baro;
-    sens_input.mti_mag = mti_mag;
+    sens_in.board_accel = board_accel;
+    sens_in.board_gyro = board_gyro;
+    sens_in.mti_accel = mti_accel;
+    sens_in.mti_gyro = mti_gyro;
+    sens_in.ad_accel = ad_accel;
+    sens_in.ad_gyro = ad_gyro;
+    sens_in.board_baro = board_baro;
+    sens_in.board_mag = board_mag;
+    sens_in.mti_baro = mti_baro;
+    sens_in.mti_mag = mti_mag;
 
-    [x, P, bias, sens_filt, airdata, roll_state] = navigation_codegen_entry(dt, flight_phase, x, P, bias, sens_filt, sens_input);
+    [x, P, bias, sens_filt, roll_state, pdyn] = navigation_codegen_entry(dt, flight_phase, x, P, bias, sens_filt, sens_in);
 
     %% Compute variance norm
     %%% for evaluating EKF quality
@@ -98,4 +98,5 @@ function [state, cov_norm, airdata, roll_state] = navigation_module(timestamp, b
     state.v = x(8:10); % [m/s], velocity
     state.alt = x(11); % [m], altitude
     state.x = x; % also full state as vector is needed in simulink
+
 end
