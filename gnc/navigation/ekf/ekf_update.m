@@ -32,7 +32,7 @@ function [x_new, P_new] = ekf_update(dt, x, P, a_meas, w_meas, Q, R)
 
     %%% compute Kalman gain (and helper matrices)
     L = P_pred(5:7, 5:7) + R; % hardcoded H*P*H' 
-    K = P_pred(:, 5:7) * inv(L); % hardcoded P*H
+    K = P_pred(:, 5:7) / L; % hardcoded P*H
     E = eye(11) - [zeros(11,4), K, zeros(11,4)]; % hardcoded K*H
     
     %%% correct covariance estimate
