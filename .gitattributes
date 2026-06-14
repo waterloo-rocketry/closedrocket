@@ -1,5 +1,13 @@
 * text=auto
 
+*.m text eol=lf
+*.c text eol=lf
+*.h text eol=lf
+*.py text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+*.json text eol=lf
+
 *.fig binary
 *.mat binary
 *.mdl binary diff merge=mlAutoMerge
