@@ -1,54 +1,49 @@
-function [u, r, ctrl_mem_out] = controller_codegen_entry(time, dt_ctrl, xR, pdyn, delta, ctrl_mem_in)
+function [u, r, ctrl_mem] = controller_codegen_entry(time, dt_ctrl, xR, pdyn, delta, ctrl_mem)
     %#codegen
 
-    % u : control command, desired canard angle (rad)
-    % r : roll angle target (rad)
-    % time : current time stamp (s)    
-    % xR : roll state [roll angle (rad), roll rate (rad/s)]
-    % pdyn : dynamic pressure (Pa)
+    % u : (rad) control command, desired canard angle
+    % r : (rad) roll angle target
+    % time : (s) current time stamp
+    % xR : [(rad) roll angle, (rad/s) roll rate] reduced roll state
+    % pdyn : (Pa) dynamic pressure
 
     persistent param
     if isempty(param)
         param = coder.load('gnc/model_params.mat');
     end
 
-    coeffs = ctrl_mem_in.coeffs;
-    w_old = ctrl_mem_in.w_old;
-    P_minus = ctrl_mem_in.P_minus;
-    d_old = ctrl_mem_in.d_old;
-    w_dot_old = ctrl_mem_in.w_dot_old;
-
     %% Constants
-    time_program = 15;
-    u_max = deg2rad(20); % [rad], limit output to this angle
-    L_min = 10; % [rad/s^2 (angular accelaration) / rad (canard angle)] limit roll control derivative for low authority conditions
-    pdyn_min = 500; % [Pa] deactivate at low authority near apogee
-    
+    time_program = 15; % (s) time from launch to start of roll program
+    u_max = deg2rad(20); % (rad) limit output to this angle
+    L_min = 10; % (rad/s^2 / rad) limit roll control derivative for low authority conditions
+    pdyn_min = 500; % (Pa) deactivate at low authority near apogee
+
     %% Reference signal
-    %%% Generates reference signal r (rad) for roll program
+    %%% Generates reference signal r for roll program
     %%% includes multiple roll angle steps
-    if time >= (time_program + 7) && time < (time_program + 12)
-        r = 0.5;
-    elseif time >= (time_program + 12) && time < (time_program + 17)
-        r = -0.5;
-    elseif time >= (time_program + 17) && time < (time_program + 24)
-        r = 0.5;
-    else
-        r = 0;
+    roll_step_times = [7, 12, 17, 24] + time_program;
+    roll_step_targets = [0.5, -0.5, 0.5];
+
+    r = 0;
+    for step_idx = 1:(numel(roll_step_times) - 1)
+        if time >= roll_step_times(step_idx) && time < roll_step_times(step_idx + 1)
+            r = roll_step_targets(step_idx);
+            break;
+        end
     end
     % r = 0; % deactivate roll program
 
     %% controller algorithm
     %%% Computes control signal of the adaptive LQR controller.
-  
+
     %%% Coefficient Estimation
     pdyn_params = pdyn * param.c_canard;
 
-    [coeffs_ret, w_old_ret, P_minus_ret, d_old_ret, w_dot_old_ret] = controller_estimator(dt_ctrl, xR(2), delta, pdyn_params, w_old, coeffs, P_minus, d_old, w_dot_old);
-    
-    C_l_delta = coeffs_ret(1);
+    ctrl_mem = controller_estimator(dt_ctrl, xR(2), delta, pdyn_params, ctrl_mem);
+
+    C_l_delta = ctrl_mem.coeffs(1);
     L_delta = C_l_delta * pdyn_params / 2;
-    
+
     if abs(L_delta) < L_min
         if L_delta >= 0
             L_delta = L_min;
@@ -56,9 +51,8 @@ function [u, r, ctrl_mem_out] = controller_codegen_entry(time, dt_ctrl, xR, pdyn
             L_delta = -L_min;
         end
     end
-   
+
     %%% Control Law, Feedback + Feedforward tracking
-    u = 0;
     u = controller_law(xR, r, L_delta);
 
     %%% limit output to allowable angle
@@ -67,10 +61,5 @@ function [u, r, ctrl_mem_out] = controller_codegen_entry(time, dt_ctrl, xR, pdyn
     if pdyn < pdyn_min % disable during low control authority
         u = 0;
     end
-    
-    ctrl_mem_out.coeffs = coeffs_ret;
-    ctrl_mem_out.w_old = w_old_ret;
-    ctrl_mem_out.P_minus = P_minus_ret;
-    ctrl_mem_out.d_old = d_old_ret;
-    ctrl_mem_out.w_dot_old = w_dot_old_ret;
+
 end

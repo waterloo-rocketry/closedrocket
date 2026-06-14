@@ -1,45 +1,44 @@
-function [coeffs_ret, w_old_ret, P_minus_ret, d_old_ret, w_dot_old_ret] = controller_estimator(dt_ctrl, w, enc_delta, pdyn_params, w_old, coeffs, P_minus, d_old, w_dot_old)
+function ctrl_mem = controller_estimator(dt_ctrl, w, enc_delta, pdyn_params, ctrl_mem)
     %#codegen
     % estimates the canard aerodynamic coefficients from canard angle, roll rates, air data
-    % coeffs : canard coefficients C_l_delta and C_l_0
-    % time : current time stamp (s)
-    % w : angular rate measurement (rad/s)
-    % d : canard angle measurement or command (rad)
-    % pdyn_params : dynamic pressure * constant parameters (pressure * area * arm / inertia)
- 
+    % w : (rad/s) angular rate measurement
+    % enc_delta : (rad) canard angle measurement or command
+    % pdyn_params : (pressure * area * arm / inertia) dynamic pressure * constant parameters
+    % ctrl_mem : estimator state, including coeffs, covariance, and filtered previous values
+
     % dw/dt = c * Cl * d + C0 * c = phi_k' * p
     % C_l_delta = canard lift coeff
-    % C_l_0 = rocket induced angular acceleration / (rho * area * arm)
+    % C_l_0 = (angular acceleration / (rho * area * arm)) rocket induced coefficient
 
     %% tuning parameters
     %%% covariance
     Q = diag([1e-5, 1e-9]);
 
-    c_delta = enc_delta / 2;
-    
+    c_delta = enc_delta / 2; % gear reduction ratio
+
     %%% small angle cutoff
     if abs(c_delta) < 0.005 % prevents high noise density for small delta from affecting estimate
         c_delta = 0;  % probably should make more rigorous
     end
 
     %%% lowpass
-    tau = 0.25; % time constant
+    tau = 0.25; % (1/s) time constant
 
     %% lowpass command and measurement
-    c_delta = (1 - tau) * d_old + tau * c_delta;
-    w_dot = (1 - tau) * w_dot_old + tau * (w - w_old) / dt_ctrl;
+    c_delta = (1 - tau) * ctrl_mem.c_delta + tau * c_delta;
+    w_dot = (1 - tau) * ctrl_mem.w_dot + tau * (w - ctrl_mem.w) / dt_ctrl;
 
     %% Kalman filter
-    r = pdyn_params * [c_delta; 1]; % regression 
-    P = P_minus + Q; % covariance prediction
+    r = pdyn_params * [c_delta; 1]; % regression
+    P = ctrl_mem.P + Q; % covariance prediction
     K = P * r / (r' * P * r + 1); % correction gain. the stuff inside in brackets is just a scalar so you can just divide
-    coeffs = coeffs + K * (w_dot - r' * coeffs); % coefficient correction
+    coeffs = ctrl_mem.coeffs + K * (w_dot - r' * ctrl_mem.coeffs); % coefficient correction
     P_plus = (eye(2) - K * r') * P * (eye(2) - K * r')' + K * 1* K'; % covariance correction. Joseph form for numerical stability
-    
+
     %% update for next cycle
-    coeffs_ret = coeffs;
-    P_minus_ret = P_plus;
-    w_old_ret = w;
-    d_old_ret = c_delta;
-    w_dot_old_ret = w_dot; 
+    ctrl_mem.coeffs = coeffs;
+    ctrl_mem.P = P_plus;
+    ctrl_mem.w = w;
+    ctrl_mem.c_delta = c_delta;
+    ctrl_mem.w_dot = w_dot;
 end

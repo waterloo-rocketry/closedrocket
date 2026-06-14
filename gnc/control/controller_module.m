@@ -1,54 +1,37 @@
 function [u, r, C_l_delta] = controller_module(time, xR, pdyn, delta)
     % Top-level controller module.
-    % u : control command, desired canard angle (rad)
-    % r : roll angle target (rad)
-    % time : current time stamp (s)    
-    % xR : roll state [roll angle (rad), roll rate (rad/s)]
-    % pdyn : dynamic pressure (Pa)
+    % u : (rad) control command, desired canard angle
+    % r : (rad) roll angle target
+    % time : (s) current time stamp
+    % xR : [(rad) roll angle, (rad/s) roll rate] roll state
+    % pdyn : (Pa) dynamic pressure
 
-    persistent time_old ctrl_mem_in
+    persistent time_prev ctrl_mem
 
-    if isempty(time_old)
-        time_old = -0.01;
+    if isempty(time_prev)
+        time_prev = -0.01;
     end
-    if isempty(ctrl_mem_in)
-        ctrl_mem_in.coeffs = [2; 0];
-        ctrl_mem_in.w_old = xR(2);
-        ctrl_mem_in.P_minus = diag([1e-5, 1e-9]);
-        ctrl_mem_in.d_old = 0;
-        ctrl_mem_in.w_dot_old = 0;
+    if isempty(ctrl_mem)
+        ctrl_mem.coeffs = [2; 0];
+        ctrl_mem.w = xR(2);
+        ctrl_mem.P = diag([1e-5, 1e-9]);
+        ctrl_mem.c_delta = 0;
+        ctrl_mem.w_dot = 0;
     end
-    % 
-    % if isempty(coeffs)
-    %     coeffs = [2; 0];
-    % end
-    % if isempty(w_old)
-    %     w_old = xR(2);
-    % end
-    % if isempty(P_minus)
-    %     P_minus = diag([1e-5, 1e-9]);
-    % end
-    % if isempty(d_old)
-    %     d_old = 0;
-    % end
-    % if isempty(w_dot_old)
-    %     w_dot_old = 0;
-    % end
 
-    time_launch = 20; % [s], pad delay time
-    time_actuate = 10; % [s], time to actuation
+    time_launch = 20; % (s) pad delay time
+    time_actuate = 10; % (s) time to actuation
 
     flight_time = time - time_launch;
-    dt_ctrl = time - time_old;
+    dt_ctrl = time - time_prev;
 
-    [u, r, ctrl_mem_out] = controller_codegen_entry(flight_time, dt_ctrl, xR, pdyn, delta, ctrl_mem_in);
+    [u, r, ctrl_mem] = controller_codegen_entry(flight_time, dt_ctrl, xR, pdyn, delta, ctrl_mem);
 
     if flight_time < time_actuate
         u = 0;
     end
 
-    C_l_delta = ctrl_mem_out.coeffs(1);
+    C_l_delta = ctrl_mem.coeffs(1);
 
-    ctrl_mem_in = ctrl_mem_out;
-    time_old = time;
+    time_prev = time;
 end
