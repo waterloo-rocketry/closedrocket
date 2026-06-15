@@ -93,10 +93,10 @@ function [state, cov_norm, roll_state, pdyn] = navigation_module(timestamp, boar
 
     %% Pack state as struct
     %%% use union in C or smth
-    state.q = x(1:4); % [1], attitude quaternion
-    state.w = x(5:7); % [rad/s], angular rate
-    state.v = x(8:10); % [m/s], velocity
-    state.alt = x(11); % [m], altitude
-    state.x = x; % also full state as vector is needed in simulink
+    % state.q = x(1:4); % [1], attitude quaternion
+    % state.w = x(5:7); % [rad/s], angular rate
+    % state.v = x(8:10); % [m/s], velocity
+    % state.alt = x(11); % [m], altitude
+    state = x; % also full state as vector is needed in simulink
 
 end
