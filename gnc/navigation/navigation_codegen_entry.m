@@ -1,4 +1,4 @@
-function [x, P, bias, sens_filt, roll_state, pdyn] = navigation_codegen_entry(dt, flight_phase, x, P, bias, sens_filt, sens_in)
+function [x, P, bias, sens_filt, cov_norm, roll_state, pdyn] = navigation_codegen_entry(dt, flight_phase, x, P, bias, sens_filt, sens_in)
     %#codegen
     % Calls the pad and flight filters.
 
@@ -16,6 +16,10 @@ function [x, P, bias, sens_filt, roll_state, pdyn] = navigation_codegen_entry(dt
     airdata = airdata_atmos(x(11));
     airdata = airdata_dynamic(airdata, x(8:10));
     pdyn = airdata.dynamic_pressure;
+
+    %% Compute variance norm
+    %%% for evaluating EKF quality
+    cov_norm = norm(P, inf); % scalar, infinity norm of the covariance matrix
 
     %% controller input vector
     phi = quaternion_to_roll(x(1:4));
