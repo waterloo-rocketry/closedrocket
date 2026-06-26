@@ -18,7 +18,7 @@ void unsafe_controller_codegen_entry_mexFunction(int32_T nlhs, mxArray *plhs[4],
                                                  int32_T nrhs,
                                                  const mxArray *prhs[6]);
 
-void unsafe_navigation_codegen_entry_mexFunction(int32_T nlhs, mxArray *plhs[7],
+void unsafe_navigation_codegen_entry_mexFunction(int32_T nlhs, mxArray *plhs[8],
                                                  int32_T nrhs,
                                                  const mxArray *prhs[7]);
 

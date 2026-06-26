@@ -19,16 +19,6 @@ typedef struct {
 #ifndef typedef_struct2_T
 #define typedef_struct2_T
 typedef struct {
-  double board_accel_f[3];
-  double board_gyro_f[3];
-  double mti_accel_f[3];
-  double mti_gyro_f[3];
-  double ad_accel_f[3];
-  double ad_gyro_f[3];
-  double board_baro_f;
-  double board_mag_f[3];
-  double mti_baro_f;
-  double mti_mag_f[3];
   double board_accel[3];
   double board_gyro[3];
   double mti_accel[3];
@@ -78,14 +68,10 @@ typedef struct {
 #define typedef_struct0_T
 typedef struct {
   double coeffs[2];
-  double w_old;
-  double P_minus[4];
-  double d_old;
-  double w_dot_old;
-  double delta_lp;
-  double w_dot_lp;
   double w;
   double P[4];
+  double delta_lp;
+  double w_dot_lp;
 } struct0_T;
 #endif
 

@@ -12,9 +12,6 @@ ctrl_mem_in.w_dot_lp = 3.4;
 
 controller_codegen_entry(time, dt_ctrl, xR, pdyn, delta, ctrl_mem_in);
 
-
-% [u, r, ctrl_mem_out, w_status_ctrl] = GNC_codegen_SIL_sil('controller_codegen_entry', time, dt_ctrl, xR, pdyn, delta, ctrl_mem_in);
-
 dt = 0.03;
 
 flight_phase = true;
@@ -206,5 +203,3 @@ sens_input.mti_mag.meas = [
 sens_input.mti_mag.status = false;
 
 navigation_codegen_entry(dt, flight_phase, x, P, bias, sens_filt, sens_input)
-
-%[x_ret, P_ret, bias_ret, sens_filt_ret, cov_norm, airdata, roll_state, w_status_nav] = GNC_codegen_SIL_sil('navigation_codegen_entry', dt, flight_phase, x, P, bias, sens_filt, sens_input)

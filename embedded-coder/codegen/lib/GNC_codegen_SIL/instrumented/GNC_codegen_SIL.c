@@ -479,20 +479,10 @@ double mti_baro;
 
 #ifndef typedef_struct2_T
 #define typedef_struct2_T
-#line 42
+#line 32
 typedef 
 #line 21
 struct { 
-double board_accel_f[3]; 
-double board_gyro_f[3]; 
-double mti_accel_f[3]; 
-double mti_gyro_f[3]; 
-double ad_accel_f[3]; 
-double ad_gyro_f[3]; 
-double board_baro_f; 
-double board_mag_f[3]; 
-double mti_baro_f; 
-double mti_mag_f[3]; 
 double board_accel[3]; 
 double board_gyro[3]; 
 double mti_accel[3]; 
@@ -512,7 +502,7 @@ double mti_mag[3];
 
 
 typedef 
-#line 47
+#line 37
 struct { 
 double meas[3]; 
 boolean_T status; 
@@ -525,7 +515,7 @@ boolean_T status;
 
 
 typedef 
-#line 55
+#line 45
 struct { 
 double meas; 
 boolean_T status; 
@@ -534,9 +524,9 @@ boolean_T status;
 
 #ifndef typedef_struct3_T
 #define typedef_struct3_T
-#line 74
+#line 64
 typedef 
-#line 63
+#line 53
 struct { 
 struct4_T board_accel; 
 struct4_T board_gyro; 
@@ -553,27 +543,23 @@ struct4_T mti_mag;
 
 #ifndef typedef_struct0_T
 #define typedef_struct0_T
-#line 89
+#line 75
 typedef 
-#line 79
+#line 69
 struct { 
 double coeffs[2]; 
-double w_old; 
-double P_minus[4]; 
-double d_old; 
-double w_dot_old; 
-double delta_lp; 
-double w_dot_lp; 
 double w; 
 double P[4]; 
+double delta_lp; 
+double w_dot_lp; 
 } struct0_T; 
 #endif /* typedef_struct0_T */
 
 #ifndef typedef_struct_T
 #define typedef_struct_T
-#line 102
+#line 88
 typedef 
-#line 94
+#line 80
 struct { 
 double Cn_alpha; 
 double J[9]; 
@@ -593,7 +579,7 @@ double g[3];
 
 
 typedef 
-#line 107
+#line 93
 struct { 
 struct_T param; 
 struct_T b_param; 
@@ -607,7 +593,7 @@ struct_T d_param;
 
 
 typedef 
-#line 117
+#line 103
 struct { 
 GNC_codegen_SILPersistentData *pd; 
 } GNC_codegen_SILStackData; 
@@ -1339,7 +1325,7 @@ extern void GNC_codegen_SIL_terminate(void);
 
 extern void controller_codegen_entry(GNC_codegen_SILStackData * b_SD, double b_time, double dt_ctrl, const double  xR[2], double pdyn, double delta_encoder, struct0_T * ctrl_mem, double * u_motor, double * r, boolean_T * w_status_ctrl); 
 #line 24
-extern void navigation_codegen_entry(GNC_codegen_SILStackData * b_SD, double dt, boolean_T flight_phase, double  x[11], double  P[121], struct1_T * bias, struct2_T * sens_filt, const struct3_T * sens_in, double  roll_state[2], double * pdyn, boolean_T * w_status_nav); 
+extern void navigation_codegen_entry(GNC_codegen_SILStackData * b_SD, double dt, boolean_T flight_phase, double  x[11], double  P[121], struct1_T * bias, struct2_T * sens_filt, const struct3_T * sens_in, double * cov_norm, double  roll_state[2], double * pdyn, boolean_T * w_status_nav); 
 #line 36
 #endif /* GNC_CODEGEN_SIL_H */
 #line 9 "C:\\Program Files (x86)\\Windows Kits\\10\\include\\10.0.22621.0\\ucrt\\corecrt_math.h"
@@ -3246,9 +3232,9 @@ if (pdyn < (500.0)) {
 void navigation_codegen_entry(GNC_codegen_SILStackData *b_SD, double dt, boolean_T 
 flight_phase, double x[11], double 
 P[121], struct1_T *bias, struct2_T *
-sens_filt, const struct3_T *sens_in, double 
-roll_state[2], double *pdyn, boolean_T *
-w_status_nav) { 
+sens_filt, const struct3_T *sens_in, double *
+cov_norm, double roll_state[2], double *
+pdyn, boolean_T *w_status_nav) { 
 static const double Q[121] = {(1.0E-10), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (1.0E-10), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (1.0E-10), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (1.0E-10), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.01), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.01), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.01), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0001), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0001), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0001), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.001)}; 
 #line 905
 static const double R[9] = {(1.0E-9), (0.0), (0.0), (0.0), (1.0E-9), (0.0), (0.0), (0.0), (1.0E-9)}; 
@@ -3299,6 +3285,7 @@ double n_expl_temp;
 double o_expl_temp; 
 double p_expl_temp; 
 double t1_density; 
+int b_i; 
 int b_k; 
 int c_k; 
 int i; 
@@ -3355,6 +3342,7 @@ int i6;
 int i7; 
 int i8; 
 int i9; 
+int j; 
 int k; 
 char c_I[121]; { 
 if (!flight_phase) { 
@@ -3901,7 +3889,7 @@ d26 += (dt * d34) * d35;
 d36 += d34 * d23; 
 d38 = C_total_a[i11]; 
 c_w_exp_tilde[i11] = ((w_exp_tilde[i11] * d21 + w_exp_tilde[i11 + 3] * d22) + w_exp_tilde[i11 + 6] * d23) + dt * (((C_total_a_tmp_tmp / d38) * (sens_in->board_accel).meas[i11] + (b_C_total_a_tmp_tmp / d38) * (sens_in->mti_accel).meas[i11]) + (c_C_total_a_tmp_tmp / d38) * (sens_in->ad_accel).meas[i11]); 
-#line 1560
+#line 1562
 b_S[i11] = d36; 
 }  } 
 profileStart_GNC_codegen_SIL(66U); memset(&(c_q[0]), 0, sizeof(double) << 2); profileEnd_GNC_codegen_SIL(66U); 
@@ -4504,6 +4492,17 @@ profileStart_GNC_codegen_SIL(98U); k_a = b_norm(&(x[7])); profileEnd_GNC_codegen
 profileStart_GNC_codegen_SIL(99U); airdata_atmos(x[10], &i_expl_temp, &t1_density, &j_expl_temp, &k_expl_temp, &l_expl_temp); profileEnd_GNC_codegen_SIL(99U); 
 
 *pdyn = ((0.5) * t1_density) * (k_a * k_a); 
+*cov_norm = (0.0); { 
+for (b_i = 0; b_i < 11; b_i++) { 
+double s; 
+s = (0.0); { 
+for (j = 0; j < 11; j++) { 
+profileStart_GNC_codegen_SIL(100U); s += fabs(P[b_i + 11 * j]); profileEnd_GNC_codegen_SIL(100U); 
+}  } { 
+if (s > *cov_norm) { 
+*cov_norm = s; 
+}  } 
+}  } 
 roll_state[0] = atan2((2.0) * (x[2] * x[3] + x[0] * x[1]), ((x[0] * x[0] - x[1] * x[1]) - x[2] * x[2]) + x[3] * x[3]); 
 
 

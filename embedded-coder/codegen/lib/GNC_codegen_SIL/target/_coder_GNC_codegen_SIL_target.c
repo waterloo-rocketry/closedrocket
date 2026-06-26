@@ -58,26 +58,18 @@ static void b_xilTargetDeserializer(double r[2]) {
 
 static void b_xilTargetSerializer(const struct0_T *r) {
   c_xilTargetSerializer(r->coeffs);
-  xilTargetSerializer(&r->w_old);
-  d_xilTargetSerializer(r->P_minus);
-  xilTargetSerializer(&r->d_old);
-  xilTargetSerializer(&r->w_dot_old);
-  xilTargetSerializer(&r->delta_lp);
-  xilTargetSerializer(&r->w_dot_lp);
   xilTargetSerializer(&r->w);
   d_xilTargetSerializer(r->P);
+  xilTargetSerializer(&r->delta_lp);
+  xilTargetSerializer(&r->w_dot_lp);
 }
 
 static void c_xilTargetDeserializer(struct0_T *r) {
   b_xilTargetDeserializer(r->coeffs);
-  xilTargetDeserializer(&r->w_old);
-  d_xilTargetDeserializer(r->P_minus);
-  xilTargetDeserializer(&r->d_old);
-  xilTargetDeserializer(&r->w_dot_old);
-  xilTargetDeserializer(&r->delta_lp);
-  xilTargetDeserializer(&r->w_dot_lp);
   xilTargetDeserializer(&r->w);
   d_xilTargetDeserializer(r->P);
+  xilTargetDeserializer(&r->delta_lp);
+  xilTargetDeserializer(&r->w_dot_lp);
 }
 
 static void c_xilTargetSerializer(const double r[2]) {
@@ -155,16 +147,6 @@ static void i_xilTargetSerializer(const double r[3]) {
 }
 
 static void j_xilTargetDeserializer(struct2_T *r) {
-  i_xilTargetDeserializer(r->board_accel_f);
-  i_xilTargetDeserializer(r->board_gyro_f);
-  i_xilTargetDeserializer(r->mti_accel_f);
-  i_xilTargetDeserializer(r->mti_gyro_f);
-  i_xilTargetDeserializer(r->ad_accel_f);
-  i_xilTargetDeserializer(r->ad_gyro_f);
-  xilTargetDeserializer(&r->board_baro_f);
-  i_xilTargetDeserializer(r->board_mag_f);
-  xilTargetDeserializer(&r->mti_baro_f);
-  i_xilTargetDeserializer(r->mti_mag_f);
   i_xilTargetDeserializer(r->board_accel);
   i_xilTargetDeserializer(r->board_gyro);
   i_xilTargetDeserializer(r->mti_accel);
@@ -178,16 +160,6 @@ static void j_xilTargetDeserializer(struct2_T *r) {
 }
 
 static void j_xilTargetSerializer(const struct2_T *r) {
-  i_xilTargetSerializer(r->board_accel_f);
-  i_xilTargetSerializer(r->board_gyro_f);
-  i_xilTargetSerializer(r->mti_accel_f);
-  i_xilTargetSerializer(r->mti_gyro_f);
-  i_xilTargetSerializer(r->ad_accel_f);
-  i_xilTargetSerializer(r->ad_gyro_f);
-  xilTargetSerializer(&r->board_baro_f);
-  i_xilTargetSerializer(r->board_mag_f);
-  xilTargetSerializer(&r->mti_baro_f);
-  i_xilTargetSerializer(r->mti_mag_f);
   i_xilTargetSerializer(r->board_accel);
   i_xilTargetSerializer(r->board_gyro);
   i_xilTargetSerializer(r->mti_accel);
@@ -300,6 +272,7 @@ xilTarget_navigation_codegen_entry(unsigned int fcnId) {
   double P[121];
   double x[11];
   double roll_state[2];
+  double cov_norm;
   double dt;
   double pdyn;
   boolean_T flight_phase;
@@ -323,7 +296,8 @@ xilTarget_navigation_codegen_entry(unsigned int fcnId) {
   xilPreEntryPoint(fcnId);
 
   navigation_codegen_entry(SD, dt, flight_phase, x, P, &bias, &sens_filt,
-                           &sens_in, roll_state, &pdyn, &w_status_nav);
+                           &sens_in, &cov_norm, roll_state, &pdyn,
+                           &w_status_nav);
 
   xilPostEntryPoint(fcnId);
 
@@ -334,6 +308,8 @@ xilTarget_navigation_codegen_entry(unsigned int fcnId) {
   h_xilTargetSerializer(&bias);
 
   j_xilTargetSerializer(&sens_filt);
+
+  xilTargetSerializer(&cov_norm);
 
   c_xilTargetSerializer(roll_state);
 

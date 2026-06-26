@@ -943,8 +943,9 @@ void controller_codegen_entry(GNC_codegenStackData *SD, double b_time,
 void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
                               bool flight_phase, double x[11], double P[121],
                               struct1_T *bias, struct2_T *sens_filt,
-                              const struct3_T *sens_in, double roll_state[2],
-                              double *pdyn, bool *w_status_nav) {
+                              const struct3_T *sens_in, double *cov_norm,
+                              double roll_state[2], double *pdyn,
+                              bool *w_status_nav) {
   static const double Q[121] = {
       1.0E-10, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
       1.0E-10, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
@@ -1005,6 +1006,7 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
   double o_expl_temp;
   double p_expl_temp;
   double t1_density;
+  int b_i;
   int c_k;
   int f_k;
   int h_k;
@@ -1066,6 +1068,7 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
   int i96;
   int i97;
   int i98;
+  int j;
   signed char c_I[121];
   if (!((int)flight_phase)) {
     double ST[9];
@@ -2290,6 +2293,17 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
   airdata_atmos(x[10], &i_expl_temp, &t1_density, &j_expl_temp, &k_expl_temp,
                 &l_expl_temp);
   *pdyn = (0.5 * t1_density) * (k_a * k_a);
+  *cov_norm = 0.0;
+  for (b_i = 0; b_i < 11; b_i++) {
+    double s;
+    s = 0.0;
+    for (j = 0; j < 11; j++) {
+      s += fabs(P[b_i + (11 * j)]);
+    }
+    if (s > (*cov_norm)) {
+      *cov_norm = s;
+    }
+  }
   roll_state[0] =
       atan2(2.0 * ((x[2] * x[3]) + (x[0] * x[1])),
             (((x[0] * x[0]) - (x[1] * x[1])) - (x[2] * x[2])) + (x[3] * x[3]));
