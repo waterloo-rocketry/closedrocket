@@ -1,0 +1,5 @@
+﻿-IC:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen_SIL
+-I"C:\Program Files\MATLAB\R2025b\toolbox\rtw\targets\pil\c"
+-IC:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder\codegen\lib\GNC_codegen_SIL\coderassumptions
+-IC:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder
+-I"C:\Program Files\MATLAB\R2025b\extern\include"

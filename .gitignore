@@ -18,9 +18,6 @@ helpsearch*/
 slprj/
 sccprj/
 
-# Matlab code generation folders
-codegen/
-
 # Simulink autosave extension
 *.autosave
 
@@ -35,3 +32,15 @@ octave-workspace
 
 # Simulation results
 monte-carlo/*/*.mat.DS_Store
+monte-carlo/*/*.mat
+hil/*/*.mat
+
+# Plots
+*.pdf
+
+# Old files
+design/*/*
+design-support/*/*
+
+# Large data files
+analysis/*/*

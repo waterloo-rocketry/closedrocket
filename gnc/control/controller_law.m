@@ -1,10 +1,11 @@
 function [u, K, Kr] = controller_law(xR, r, L_delta)
-    % computes the optimal control signal for a flight condition 
-    % u : control signal, desired canard angle (rad)
-    % xR : roll state [roll angle (rad); roll rate (rad/s)]
-    % r : reference signal, desired roll angle (rad)
-    % L_delta : roll acceleration control derivative (rad/s^2 / rad)
-    
+    %#codegen
+    % computes the optimal control signal for a flight condition
+    % u : (rad) control signal, desired canard angle
+    % xR : [(rad) roll angle; (rad/s) roll rate] reduced roll state
+    % r : (rad) reference signal, desired roll angle
+    % L_delta : (rad/s^2 / rad) roll acceleration control derivative
+
     %% tuning parameters
     %%% Q_phi : weight of angle error, Q_omega : weight of rate error
     %%% Mode 1: Tracking (low rates), Mode 2: Damping only (high rates)
@@ -26,7 +27,7 @@ function [u, K, Kr] = controller_law(xR, r, L_delta)
     Q_omega = (1-blend)*Q_omega_mode1 + blend*Q_omega_mode2;
 
     %% feedback gains
-    K = - 1/L_delta * [ sqrt(Q_phi), sqrt( 2*sqrt(Q_phi) + Q_omega ) ];
+    K = - 1/L_delta * [ sqrt(Q_phi), sqrt( 2*sqrt(Q_phi) + Q_omega ) ]; % explicit LQR
 
     %% feedforward gain
     Kr = - K(1); % simplifies to this

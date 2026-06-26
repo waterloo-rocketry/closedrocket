@@ -1,0 +1,50 @@
+# CompilerName=msvc170
+# Mode=optim
+ninja_required_version = 1.3
+
+# Basic folders
+root = .
+builddir = $root\build\win64
+matlabdir = C:\Program Files\MATLAB\R2025b
+startdir = C:\Users\trist\Documents\GitHub\simulink-canards\embedded-coder
+
+# Toolchain information
+cc = cl
+cxx = cl
+linker = link
+linkerxx = link
+
+cflags =  /c /Zc:__cplusplus /Zp8 /GR /W3 /EHs /nologo /MD /D_CRT_SECURE_NO_DEPRECATE /D_SCL_SECURE_NO_DEPRECATE /D_SECURE_SCL=0   /DMATLAB_MEX_FILE  /DMATLAB_MEX_FILE /O2 /Oy- /DNDEBUG /fp:strict /utf-8 /I "$startdir" /I "$startdir\codegen\lib\GNC_codegen_SIL\interface" /I "$startdir\codegen\lib\GNC_codegen_SIL" /I "$matlabdir\toolbox\coder\profile\src" /I "$matlabdir\toolbox\coder\rtiostream\src\utils_host" /I "$matlabdir\extern\include" /I "." -DMODEL=GNC_codegen_SIL_sil -DMATLAB_MEX_FILE 
+
+cxxflags =  /c /Zc:__cplusplus /Zp8 /GR /W3 /EHs /nologo /MD /D_CRT_SECURE_NO_DEPRECATE /D_SCL_SECURE_NO_DEPRECATE /D_SECURE_SCL=0   /DMATLAB_MEX_FILE  /DMATLAB_MEX_FILE /O2 /Oy- /DNDEBUG /fp:strict /utf-8 /I "$startdir" /I "$startdir\codegen\lib\GNC_codegen_SIL\interface" /I "$startdir\codegen\lib\GNC_codegen_SIL" /I "$matlabdir\toolbox\coder\profile\src" /I "$matlabdir\toolbox\coder\rtiostream\src\utils_host" /I "$matlabdir\extern\include" /I "." -DMODEL=GNC_codegen_SIL_sil -DMATLAB_MEX_FILE 
+
+ldflags =  /nologo    /DLL /LIBPATH:"$matlabdir\extern\lib\win64\microsoft" libmx.lib libmex.lib libmat.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib  /out:"GNC_codegen_SIL_sil.mexw64" libfixedpoint.lib libmwcoder_CodeInstrHostAppSvc.lib libmwcoder_CoderAssumpHostAppSvc.lib libmwcoder_XILHostAppSvc.lib libmwrtiostreamutils.lib libmwxilcomms_rtiostream.lib libmwxilutils.lib libemlrt.lib libcovrt.lib libut.lib libmwmathutil.lib  /export:mexFunction /export:mexfilerequiredapiversion /export:emlrtMexFcnProperties
+
+ldxxflags =  /nologo    /DLL /LIBPATH:"$matlabdir\extern\lib\win64\microsoft" libmx.lib libmex.lib libmat.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib libMatlabDataArray.lib libMatlabEngine.lib  /out:"GNC_codegen_SIL_sil.mexw64" libfixedpoint.lib libmwcoder_CodeInstrHostAppSvc.lib libmwcoder_CoderAssumpHostAppSvc.lib libmwcoder_XILHostAppSvc.lib libmwrtiostreamutils.lib libmwxilcomms_rtiostream.lib libmwxilutils.lib libemlrt.lib libcovrt.lib libut.lib libmwmathutil.lib  /export:mexFunction /export:mexfilerequiredapiversion /export:emlrtMexFcnProperties
+
+linkobjs = 
+
+# Build Rules
+rule cc
+    command = $cc $cflags $in /Fo$out
+
+rule cxx
+    command = $cxx $cxxflags $in /Fo$out
+
+rule link
+    command = $linker @$out.rsp $linkobjs $ldflags
+    rspfile = $out.rsp
+    rspfile_content = $in
+
+rule linkxx
+    command = $linkerxx $in $linkobjs $ldxxflags
+
+# Build
+build $builddir\GNC_codegen_SIL_sil.obj : cc $root\GNC_codegen_SIL_sil.c
+build $builddir\_coder_GNC_codegen_SIL_info.obj : cc $startdir\codegen\lib\GNC_codegen_SIL\interface\_coder_GNC_codegen_SIL_info.c
+build $builddir\_coder_GNC_codegen_SIL_api.obj : cc $startdir\codegen\lib\GNC_codegen_SIL\interface\_coder_GNC_codegen_SIL_api.c
+build $builddir\_coder_GNC_codegen_SIL_mex.obj : cc $startdir\codegen\lib\GNC_codegen_SIL\interface\_coder_GNC_codegen_SIL_mex.c
+build $builddir\c_mexapi_version.obj : cc $matlabdir\extern\version\c_mexapi_version.c
+
+# Link
+build $root\GNC_codegen_SIL_sil.mexw64 : link $builddir\GNC_codegen_SIL_sil.obj $builddir\_coder_GNC_codegen_SIL_info.obj $builddir\_coder_GNC_codegen_SIL_api.obj $builddir\_coder_GNC_codegen_SIL_mex.obj $builddir\c_mexapi_version.obj 

@@ -1,7 +1,7 @@
 clear
 
 %% Launch site
-elevation = 420; % [m], launch altitude above sea level
+altitude_initial = 420; % [m], launch altitude above sea level
 
 %% Rocket body
 m = 66.342; % [kg], rocket dry mass 
@@ -21,7 +21,7 @@ Cn_omega = 0; % [-], pitch damping coefficent
 root_chord = 0.13;
 sweep = deg2rad(16);
 area_canard = root_chord^2 * tan(sweep); % [m^2], total canard area 
-length_canard = 0.203/2 + 0.02 + rootchord * tan(sweep) / 3; % [m], lever arm of canard to x-axis 
+length_canard = 0.203/2 + 0.02 + root_chord * tan(sweep) / 3; % [m], lever arm of canard to x-axis 
 c_canard = area_canard*length_canard; % precompute aero constants
 
 %% Environment
