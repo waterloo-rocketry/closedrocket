@@ -18,29 +18,29 @@ static void d_xilTargetSerializer(const double r[4]);
 
 static void e_xilTargetDeserializer(boolean_T *r);
 
-static void e_xilTargetSerializer(const double r[11]);
+static void e_xilTargetSerializer(const boolean_T *r);
 
 static void f_xilTargetDeserializer(double r[11]);
 
-static void f_xilTargetSerializer(const double r[121]);
+static void f_xilTargetSerializer(const double r[11]);
 
 static void g_xilTargetDeserializer(double r[121]);
 
-static void g_xilTargetSerializer(const struct1_T *r);
+static void g_xilTargetSerializer(const double r[121]);
 
 static GNC_codegen_SILStackData *getGNC_codegen_SILStackData(void);
 
 static void h_xilTargetDeserializer(struct1_T *r);
 
-static void h_xilTargetSerializer(const double r[3]);
+static void h_xilTargetSerializer(const struct1_T *r);
 
 static void i_xilTargetDeserializer(double r[3]);
 
-static void i_xilTargetSerializer(const struct2_T *r);
+static void i_xilTargetSerializer(const double r[3]);
 
 static void j_xilTargetDeserializer(struct2_T *r);
 
-static void j_xilTargetSerializer(const struct6_T *r);
+static void j_xilTargetSerializer(const struct2_T *r);
 
 static void k_xilTargetDeserializer(struct3_T *r);
 
@@ -62,6 +62,10 @@ static void b_xilTargetSerializer(const struct0_T *r) {
   d_xilTargetSerializer(r->P_minus);
   xilTargetSerializer(&r->d_old);
   xilTargetSerializer(&r->w_dot_old);
+  xilTargetSerializer(&r->delta_lp);
+  xilTargetSerializer(&r->w_dot_lp);
+  xilTargetSerializer(&r->w);
+  d_xilTargetSerializer(r->P);
 }
 
 static void c_xilTargetDeserializer(struct0_T *r) {
@@ -70,6 +74,10 @@ static void c_xilTargetDeserializer(struct0_T *r) {
   d_xilTargetDeserializer(r->P_minus);
   xilTargetDeserializer(&r->d_old);
   xilTargetDeserializer(&r->w_dot_old);
+  xilTargetDeserializer(&r->delta_lp);
+  xilTargetDeserializer(&r->w_dot_lp);
+  xilTargetDeserializer(&r->w);
+  d_xilTargetDeserializer(r->P);
 }
 
 static void c_xilTargetSerializer(const double r[2]) {
@@ -88,32 +96,26 @@ static void e_xilTargetDeserializer(boolean_T *r) {
   xilReadData((MemUnit_T *)r, sizeof(boolean_T));
 }
 
-static void e_xilTargetSerializer(const double r[11]) {
-  xilWriteData((const MemUnit_T *)&r[0],
-               (unsigned int)(11 * (int)sizeof(double)));
+static void e_xilTargetSerializer(const boolean_T *r) {
+  xilWriteData((const MemUnit_T *)r, sizeof(boolean_T));
 }
 
 static void f_xilTargetDeserializer(double r[11]) {
   xilReadData((MemUnit_T *)&r[0], (unsigned int)(11 * (int)sizeof(double)));
 }
 
-static void f_xilTargetSerializer(const double r[121]) {
+static void f_xilTargetSerializer(const double r[11]) {
   xilWriteData((const MemUnit_T *)&r[0],
-               (unsigned int)(121 * (int)sizeof(double)));
+               (unsigned int)(11 * (int)sizeof(double)));
 }
 
 static void g_xilTargetDeserializer(double r[121]) {
   xilReadData((MemUnit_T *)&r[0], (unsigned int)(121 * (int)sizeof(double)));
 }
 
-static void g_xilTargetSerializer(const struct1_T *r) {
-  h_xilTargetSerializer(r->board_gyro);
-  h_xilTargetSerializer(r->mti_gyro);
-  h_xilTargetSerializer(r->ad_gyro);
-  h_xilTargetSerializer(r->board_mag_earth);
-  h_xilTargetSerializer(r->mti_mag_earth);
-  xilTargetSerializer(&r->board_baro);
-  xilTargetSerializer(&r->mti_baro);
+static void g_xilTargetSerializer(const double r[121]) {
+  xilWriteData((const MemUnit_T *)&r[0],
+               (unsigned int)(121 * (int)sizeof(double)));
 }
 
 static GNC_codegen_SILStackData *getGNC_codegen_SILStackData(void) {
@@ -133,26 +135,23 @@ static void h_xilTargetDeserializer(struct1_T *r) {
   xilTargetDeserializer(&r->mti_baro);
 }
 
-static void h_xilTargetSerializer(const double r[3]) {
-  xilWriteData((const MemUnit_T *)&r[0],
-               (unsigned int)(3 * (int)sizeof(double)));
+static void h_xilTargetSerializer(const struct1_T *r) {
+  i_xilTargetSerializer(r->board_gyro);
+  i_xilTargetSerializer(r->mti_gyro);
+  i_xilTargetSerializer(r->ad_gyro);
+  i_xilTargetSerializer(r->board_mag_earth);
+  i_xilTargetSerializer(r->mti_mag_earth);
+  xilTargetSerializer(&r->board_baro);
+  xilTargetSerializer(&r->mti_baro);
 }
 
 static void i_xilTargetDeserializer(double r[3]) {
   xilReadData((MemUnit_T *)&r[0], (unsigned int)(3 * (int)sizeof(double)));
 }
 
-static void i_xilTargetSerializer(const struct2_T *r) {
-  h_xilTargetSerializer(r->board_accel_f);
-  h_xilTargetSerializer(r->board_gyro_f);
-  h_xilTargetSerializer(r->mti_accel_f);
-  h_xilTargetSerializer(r->mti_gyro_f);
-  h_xilTargetSerializer(r->ad_accel_f);
-  h_xilTargetSerializer(r->ad_gyro_f);
-  xilTargetSerializer(&r->board_baro_f);
-  h_xilTargetSerializer(r->board_mag_f);
-  xilTargetSerializer(&r->mti_baro_f);
-  h_xilTargetSerializer(r->mti_mag_f);
+static void i_xilTargetSerializer(const double r[3]) {
+  xilWriteData((const MemUnit_T *)&r[0],
+               (unsigned int)(3 * (int)sizeof(double)));
 }
 
 static void j_xilTargetDeserializer(struct2_T *r) {
@@ -166,15 +165,39 @@ static void j_xilTargetDeserializer(struct2_T *r) {
   i_xilTargetDeserializer(r->board_mag_f);
   xilTargetDeserializer(&r->mti_baro_f);
   i_xilTargetDeserializer(r->mti_mag_f);
+  i_xilTargetDeserializer(r->board_accel);
+  i_xilTargetDeserializer(r->board_gyro);
+  i_xilTargetDeserializer(r->mti_accel);
+  i_xilTargetDeserializer(r->mti_gyro);
+  i_xilTargetDeserializer(r->ad_accel);
+  i_xilTargetDeserializer(r->ad_gyro);
+  xilTargetDeserializer(&r->board_baro);
+  i_xilTargetDeserializer(r->board_mag);
+  xilTargetDeserializer(&r->mti_baro);
+  i_xilTargetDeserializer(r->mti_mag);
 }
 
-static void j_xilTargetSerializer(const struct6_T *r) {
-  xilTargetSerializer(&r->pressure);
-  xilTargetSerializer(&r->temperature);
-  xilTargetSerializer(&r->density);
-  xilTargetSerializer(&r->sonic_speed);
-  xilTargetSerializer(&r->mach);
-  xilTargetSerializer(&r->dynamic_pressure);
+static void j_xilTargetSerializer(const struct2_T *r) {
+  i_xilTargetSerializer(r->board_accel_f);
+  i_xilTargetSerializer(r->board_gyro_f);
+  i_xilTargetSerializer(r->mti_accel_f);
+  i_xilTargetSerializer(r->mti_gyro_f);
+  i_xilTargetSerializer(r->ad_accel_f);
+  i_xilTargetSerializer(r->ad_gyro_f);
+  xilTargetSerializer(&r->board_baro_f);
+  i_xilTargetSerializer(r->board_mag_f);
+  xilTargetSerializer(&r->mti_baro_f);
+  i_xilTargetSerializer(r->mti_mag_f);
+  i_xilTargetSerializer(r->board_accel);
+  i_xilTargetSerializer(r->board_gyro);
+  i_xilTargetSerializer(r->mti_accel);
+  i_xilTargetSerializer(r->mti_gyro);
+  i_xilTargetSerializer(r->ad_accel);
+  i_xilTargetSerializer(r->ad_gyro);
+  xilTargetSerializer(&r->board_baro);
+  i_xilTargetSerializer(r->board_mag);
+  xilTargetSerializer(&r->mti_baro);
+  i_xilTargetSerializer(r->mti_mag);
 }
 
 static void k_xilTargetDeserializer(struct3_T *r) {
@@ -229,15 +252,15 @@ void XILTarget_terminate(unsigned int fcnId) {
 
 XIL_PROCESSDATA_ERROR_CODE
 xilTarget_controller_codegen_entry(unsigned int fcnId) {
-  struct0_T ctrl_mem_in;
-  struct0_T ctrl_mem_out;
+  struct0_T ctrl_mem;
   double xR[2];
   double b_time;
-  double delta;
+  double delta_encoder;
   double dt_ctrl;
   double pdyn;
   double r;
-  double u;
+  double u_motor;
+  boolean_T w_status_ctrl;
   SD = getGNC_codegen_SILStackData();
 
   xilTargetDeserializer(&b_time);
@@ -248,40 +271,39 @@ xilTarget_controller_codegen_entry(unsigned int fcnId) {
 
   xilTargetDeserializer(&pdyn);
 
-  xilTargetDeserializer(&delta);
+  xilTargetDeserializer(&delta_encoder);
 
-  c_xilTargetDeserializer(&ctrl_mem_in);
+  c_xilTargetDeserializer(&ctrl_mem);
 
   xilPreEntryPoint(fcnId);
 
-  controller_codegen_entry(SD, b_time, dt_ctrl, xR, pdyn, delta, &ctrl_mem_in,
-                           &u, &r, &ctrl_mem_out);
+  controller_codegen_entry(SD, b_time, dt_ctrl, xR, pdyn, delta_encoder,
+                           &ctrl_mem, &u_motor, &r, &w_status_ctrl);
 
   xilPostEntryPoint(fcnId);
 
-  xilTargetSerializer(&u);
+  xilTargetSerializer(&u_motor);
 
   xilTargetSerializer(&r);
 
-  b_xilTargetSerializer(&ctrl_mem_out);
+  b_xilTargetSerializer(&ctrl_mem);
+
+  e_xilTargetSerializer(&w_status_ctrl);
   return XIL_PROCESSDATA_SUCCESS;
 }
 
 XIL_PROCESSDATA_ERROR_CODE
 xilTarget_navigation_codegen_entry(unsigned int fcnId) {
   struct1_T bias;
-  struct1_T bias_ret;
   struct2_T sens_filt;
-  struct2_T sens_filt_ret;
-  struct3_T sens_input;
-  struct6_T airdata;
+  struct3_T sens_in;
   double P[121];
-  double P_ret[121];
   double x[11];
-  double x_ret[11];
   double roll_state[2];
   double dt;
+  double pdyn;
   boolean_T flight_phase;
+  boolean_T w_status_nav;
   SD = getGNC_codegen_SILStackData();
 
   xilTargetDeserializer(&dt);
@@ -296,26 +318,27 @@ xilTarget_navigation_codegen_entry(unsigned int fcnId) {
 
   j_xilTargetDeserializer(&sens_filt);
 
-  k_xilTargetDeserializer(&sens_input);
+  k_xilTargetDeserializer(&sens_in);
 
   xilPreEntryPoint(fcnId);
 
   navigation_codegen_entry(SD, dt, flight_phase, x, P, &bias, &sens_filt,
-                           &sens_input, x_ret, P_ret, &bias_ret, &sens_filt_ret,
-                           &airdata, roll_state);
+                           &sens_in, roll_state, &pdyn, &w_status_nav);
 
   xilPostEntryPoint(fcnId);
 
-  e_xilTargetSerializer(x_ret);
+  f_xilTargetSerializer(x);
 
-  f_xilTargetSerializer(P_ret);
+  g_xilTargetSerializer(P);
 
-  g_xilTargetSerializer(&bias_ret);
+  h_xilTargetSerializer(&bias);
 
-  i_xilTargetSerializer(&sens_filt_ret);
-
-  j_xilTargetSerializer(&airdata);
+  j_xilTargetSerializer(&sens_filt);
 
   c_xilTargetSerializer(roll_state);
+
+  xilTargetSerializer(&pdyn);
+
+  e_xilTargetSerializer(&w_status_nav);
   return XIL_PROCESSDATA_SUCCESS;
 }

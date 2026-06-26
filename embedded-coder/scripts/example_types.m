@@ -1,16 +1,19 @@
-% time = 12;
-% dt_ctrl = 0.01;
-% xR = [0.6; 0.4];
-% pdyn = 80000;
-% delta = 0.2;
-% 
-% ctrl_mem_in.coeffs = [2; 0];
-% ctrl_mem_in.w_old = 0.38;
-% ctrl_mem_in.P_minus = diag([1e-9, 1e-9]);
-% ctrl_mem_in.d_old = 0.22;
-% ctrl_mem_in.w_dot_old = 3.5;
-% 
-% [u, r, ctrl_mem_out] = GNC_codegen_SIL_sil('controller_codegen_entry', time, dt_ctrl, xR, pdyn, delta, ctrl_mem_in);
+time = 12;
+dt_ctrl = 0.01;
+xR = [0.6; 0.4];
+pdyn = 80000;
+delta = 0.2;
+
+ctrl_mem_in.coeffs = [2; 0];
+ctrl_mem_in.w = 0.38;
+ctrl_mem_in.P = diag([1e-9, 1e-9]);
+ctrl_mem_in.delta_lp = 0.18;
+ctrl_mem_in.w_dot_lp = 3.4;
+
+controller_codegen_entry(time, dt_ctrl, xR, pdyn, delta, ctrl_mem_in);
+
+
+% [u, r, ctrl_mem_out, w_status_ctrl] = GNC_codegen_SIL_sil('controller_codegen_entry', time, dt_ctrl, xR, pdyn, delta, ctrl_mem_in);
 
 dt = 0.03;
 
@@ -78,53 +81,53 @@ bias.board_baro = 99500.0;
 
 bias.mti_baro = 0;
 
-sens_filt.board_accel_f = [
+sens_filt.board_accel = [
     0.0;
     0.0;
     12.0
 ];
 
-sens_filt.board_gyro_f = [
+sens_filt.board_gyro = [
     0.0;
     0.0;
     0.0
 ];
 
-sens_filt.mti_accel_f = [
+sens_filt.mti_accel = [
     0;
     0;
     0
 ];
 
-sens_filt.mti_gyro_f = [
+sens_filt.mti_gyro = [
     0;
     0;
     0
 ];
 
-sens_filt.ad_accel_f = [
+sens_filt.ad_accel = [
     0;
     0;
     0
 ];
 
-sens_filt.ad_gyro_f = [
+sens_filt.ad_gyro = [
     0;
     0;
     0
 ];
 
-sens_filt.board_baro_f = 99500.0;
+sens_filt.board_baro = 99500.0;
 
-sens_filt.board_mag_f = [
+sens_filt.board_mag = [
     0.2;
     0.0;
     0.44
 ];
 
-sens_filt.mti_baro_f = 0;
+sens_filt.mti_baro = 0;
 
-sens_filt.mti_mag_f = [
+sens_filt.mti_mag = [
     0;
     0;
     0
@@ -202,6 +205,6 @@ sens_input.mti_mag.meas = [
 
 sens_input.mti_mag.status = false;
 
-% navigation_codegen_entry(dt, flight_phase, x, P, bias, sens_filt, sens_input)
+navigation_codegen_entry(dt, flight_phase, x, P, bias, sens_filt, sens_input)
 
-[x_ret, P_ret, bias_ret, sens_filt_ret, cov_norm, airdata, roll_state] = GNC_codegen_SIL_sil('navigation_codegen_entry', dt, flight_phase, x, P, bias, sens_filt, sens_input)
+%[x_ret, P_ret, bias_ret, sens_filt_ret, cov_norm, airdata, roll_state, w_status_nav] = GNC_codegen_SIL_sil('navigation_codegen_entry', dt, flight_phase, x, P, bias, sens_filt, sens_input)

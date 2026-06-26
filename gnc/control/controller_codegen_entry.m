@@ -1,4 +1,4 @@
-function [u_motor, r, ctrl_mem] = controller_codegen_entry(time, dt_ctrl, xR, pdyn, delta_encoder, ctrl_mem)
+function [u_motor, r, ctrl_mem, w_status_ctrl] = controller_codegen_entry(time, dt_ctrl, xR, pdyn, delta_encoder, ctrl_mem)
     %#codegen
 
     % u_motor : (rad) control command, desired motor angle
@@ -7,6 +7,8 @@ function [u_motor, r, ctrl_mem] = controller_codegen_entry(time, dt_ctrl, xR, pd
     % xR : [(rad) roll angle, (rad/s) roll rate] reduced roll state
     % pdyn : (Pa) dynamic pressure
     % delta_encoder : (rad) motor angle measurement from encoder
+
+    w_status_ctrl = true;
 
     persistent param
     if isempty(param)
@@ -63,6 +65,7 @@ function [u_motor, r, ctrl_mem] = controller_codegen_entry(time, dt_ctrl, xR, pd
 
     if pdyn < pdyn_min % disable during low control authority
         u_motor = 0;
+        w_status_ctrl = false;
     end
 
 end

@@ -40,12 +40,12 @@ emlrtCTX mexFunctionCreateRootTLS(void) {
   return emlrtRootTLSGlobal;
 }
 
-void unsafe_controller_codegen_entry_mexFunction(int32_T nlhs, mxArray *plhs[3],
+void unsafe_controller_codegen_entry_mexFunction(int32_T nlhs, mxArray *plhs[4],
                                                  int32_T nrhs,
                                                  const mxArray *prhs[6]) {
   emlrtStack st = {NULL, NULL, NULL};
   const mxArray *b_prhs[6];
-  const mxArray *outputs[3];
+  const mxArray *outputs[4];
   int32_T i;
   int32_T i1;
   st.tls = emlrtRootTLSGlobal;
@@ -54,7 +54,7 @@ void unsafe_controller_codegen_entry_mexFunction(int32_T nlhs, mxArray *plhs[3],
     emlrtErrMsgIdAndTxt(&st, "EMLRT:runTime:WrongNumberOfInputs", 5, 12, 6, 4,
                         24, "controller_codegen_entry");
   }
-  if (nlhs > 3) {
+  if (nlhs > 4) {
     emlrtErrMsgIdAndTxt(&st, "EMLRT:runTime:TooManyOutputArguments", 3, 4, 24,
                         "controller_codegen_entry");
   }
@@ -72,12 +72,12 @@ void unsafe_controller_codegen_entry_mexFunction(int32_T nlhs, mxArray *plhs[3],
   emlrtReturnArrays(i1, &plhs[0], &outputs[0]);
 }
 
-void unsafe_navigation_codegen_entry_mexFunction(int32_T nlhs, mxArray *plhs[6],
+void unsafe_navigation_codegen_entry_mexFunction(int32_T nlhs, mxArray *plhs[7],
                                                  int32_T nrhs,
                                                  const mxArray *prhs[7]) {
   emlrtStack st = {NULL, NULL, NULL};
   const mxArray *b_prhs[7];
-  const mxArray *outputs[6];
+  const mxArray *outputs[7];
   int32_T i;
   int32_T i1;
   st.tls = emlrtRootTLSGlobal;
@@ -86,7 +86,7 @@ void unsafe_navigation_codegen_entry_mexFunction(int32_T nlhs, mxArray *plhs[6],
     emlrtErrMsgIdAndTxt(&st, "EMLRT:runTime:WrongNumberOfInputs", 5, 12, 7, 4,
                         24, "navigation_codegen_entry");
   }
-  if (nlhs > 6) {
+  if (nlhs > 7) {
     emlrtErrMsgIdAndTxt(&st, "EMLRT:runTime:TooManyOutputArguments", 3, 4, 24,
                         "navigation_codegen_entry");
   }

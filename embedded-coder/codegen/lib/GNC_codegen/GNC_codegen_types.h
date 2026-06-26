@@ -29,6 +29,16 @@ typedef struct {
   double board_mag_f[3];
   double mti_baro_f;
   double mti_mag_f[3];
+  double board_accel[3];
+  double board_gyro[3];
+  double mti_accel[3];
+  double mti_gyro[3];
+  double ad_accel[3];
+  double ad_gyro[3];
+  double board_baro;
+  double board_mag[3];
+  double mti_baro;
+  double mti_mag[3];
 } struct2_T;
 #endif
 
@@ -64,18 +74,6 @@ typedef struct {
 } struct3_T;
 #endif
 
-#ifndef typedef_struct6_T
-#define typedef_struct6_T
-typedef struct {
-  double pressure;
-  double temperature;
-  double density;
-  double sonic_speed;
-  double mach;
-  double dynamic_pressure;
-} struct6_T;
-#endif
-
 #ifndef typedef_struct0_T
 #define typedef_struct0_T
 typedef struct {
@@ -84,6 +82,10 @@ typedef struct {
   double P_minus[4];
   double d_old;
   double w_dot_old;
+  double delta_lp;
+  double w_dot_lp;
+  double w;
+  double P[4];
 } struct0_T;
 #endif
 
@@ -93,9 +95,9 @@ typedef struct {
   double Cn_alpha;
   double J[9];
   double Jinv[9];
+  double altitude_initial;
   double c_aero;
   double c_canard;
-  double elevation;
   double g[3];
 } struct_T;
 #endif

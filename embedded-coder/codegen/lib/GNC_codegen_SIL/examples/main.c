@@ -108,11 +108,18 @@ static void argInit_struct0_T(struct0_T *result) {
   double result_tmp;
 
   result_tmp = argInit_real_T();
+  argInit_2x2_real_T(result->P_minus);
   argInit_2x1_real_T(result->coeffs);
   result->w_old = result_tmp;
-  argInit_2x2_real_T(result->P_minus);
   result->d_old = result_tmp;
   result->w_dot_old = result_tmp;
+  result->delta_lp = result_tmp;
+  result->w_dot_lp = result_tmp;
+  result->w = result_tmp;
+  result->P[0] = result->P_minus[0];
+  result->P[1] = result->P_minus[1];
+  result->P[2] = result->P_minus[2];
+  result->P[3] = result->P_minus[3];
 }
 
 static void argInit_struct1_T(struct1_T *result) {
@@ -143,6 +150,8 @@ static void argInit_struct2_T(struct2_T *result) {
   result_tmp = argInit_real_T();
   result->board_baro_f = result_tmp;
   result->mti_baro_f = result_tmp;
+  result->board_baro = result_tmp;
+  result->mti_baro = result_tmp;
   result->board_gyro_f[0] = result->board_accel_f[0];
   result->mti_accel_f[0] = result->board_accel_f[0];
   result->mti_gyro_f[0] = result->board_accel_f[0];
@@ -150,6 +159,14 @@ static void argInit_struct2_T(struct2_T *result) {
   result->ad_gyro_f[0] = result->board_accel_f[0];
   result->board_mag_f[0] = result->board_accel_f[0];
   result->mti_mag_f[0] = result->board_accel_f[0];
+  result->board_accel[0] = result->board_accel_f[0];
+  result->board_gyro[0] = result->board_accel_f[0];
+  result->mti_accel[0] = result->board_accel_f[0];
+  result->mti_gyro[0] = result->board_accel_f[0];
+  result->ad_accel[0] = result->board_accel_f[0];
+  result->ad_gyro[0] = result->board_accel_f[0];
+  result->board_mag[0] = result->board_accel_f[0];
+  result->mti_mag[0] = result->board_accel_f[0];
   result->board_gyro_f[1] = result->board_accel_f[1];
   result->mti_accel_f[1] = result->board_accel_f[1];
   result->mti_gyro_f[1] = result->board_accel_f[1];
@@ -157,6 +174,14 @@ static void argInit_struct2_T(struct2_T *result) {
   result->ad_gyro_f[1] = result->board_accel_f[1];
   result->board_mag_f[1] = result->board_accel_f[1];
   result->mti_mag_f[1] = result->board_accel_f[1];
+  result->board_accel[1] = result->board_accel_f[1];
+  result->board_gyro[1] = result->board_accel_f[1];
+  result->mti_accel[1] = result->board_accel_f[1];
+  result->mti_gyro[1] = result->board_accel_f[1];
+  result->ad_accel[1] = result->board_accel_f[1];
+  result->ad_gyro[1] = result->board_accel_f[1];
+  result->board_mag[1] = result->board_accel_f[1];
+  result->mti_mag[1] = result->board_accel_f[1];
   result->board_gyro_f[2] = result->board_accel_f[2];
   result->mti_accel_f[2] = result->board_accel_f[2];
   result->mti_gyro_f[2] = result->board_accel_f[2];
@@ -164,6 +189,14 @@ static void argInit_struct2_T(struct2_T *result) {
   result->ad_gyro_f[2] = result->board_accel_f[2];
   result->board_mag_f[2] = result->board_accel_f[2];
   result->mti_mag_f[2] = result->board_accel_f[2];
+  result->board_accel[2] = result->board_accel_f[2];
+  result->board_gyro[2] = result->board_accel_f[2];
+  result->mti_accel[2] = result->board_accel_f[2];
+  result->mti_gyro[2] = result->board_accel_f[2];
+  result->ad_accel[2] = result->board_accel_f[2];
+  result->ad_gyro[2] = result->board_accel_f[2];
+  result->board_mag[2] = result->board_accel_f[2];
+  result->mti_mag[2] = result->board_accel_f[2];
 }
 
 static void argInit_struct3_T(struct3_T *result) {
@@ -212,42 +245,38 @@ int main(int argc, char **argv) {
 }
 
 void main_controller_codegen_entry(void) {
-  struct0_T ctrl_mem_out;
-  struct0_T r;
+  struct0_T ctrl_mem;
   double b_dv[2];
-  double b_r;
+  double r;
   double time_tmp;
-  double u;
+  double u_motor;
+  boolean_T w_status_ctrl;
 
   time_tmp = argInit_real_T();
 
+  argInit_struct0_T(&ctrl_mem);
   argInit_2x1_real_T(b_dv);
-  argInit_struct0_T(&r);
   controller_codegen_entry(&GNC_codegen_SILStackDataGlobal, time_tmp, time_tmp,
-                           b_dv, time_tmp, time_tmp, &r, &u, &b_r,
-                           &ctrl_mem_out);
+                           b_dv, time_tmp, time_tmp, &ctrl_mem, &u_motor, &r,
+                           &w_status_ctrl);
 }
 
 void main_navigation_codegen_entry(void) {
-  struct1_T bias_ret;
-  struct1_T r;
-  struct2_T r1;
-  struct2_T sens_filt_ret;
-  struct3_T r2;
-  struct6_T airdata;
-  double P_ret[121];
-  double b_dv1[121];
-  double b_dv[11];
-  double x_ret[11];
+  struct1_T bias;
+  struct2_T sens_filt;
+  struct3_T r;
+  double P[121];
+  double x[11];
   double roll_state[2];
+  double pdyn;
+  boolean_T w_status_nav;
 
-  argInit_11x1_real_T(b_dv);
-  argInit_11x11_real_T(b_dv1);
-  argInit_struct1_T(&r);
-  argInit_struct2_T(&r1);
-  argInit_struct3_T(&r2);
+  argInit_11x1_real_T(x);
+  argInit_11x11_real_T(P);
+  argInit_struct1_T(&bias);
+  argInit_struct2_T(&sens_filt);
+  argInit_struct3_T(&r);
   navigation_codegen_entry(&GNC_codegen_SILStackDataGlobal, argInit_real_T(),
-                           argInit_boolean_T(), b_dv, b_dv1, &r, &r1, &r2,
-                           x_ret, P_ret, &bias_ret, &sens_filt_ret, &airdata,
-                           roll_state);
+                           argInit_boolean_T(), x, P, &bias, &sens_filt, &r,
+                           roll_state, &pdyn, &w_status_nav);
 }
