@@ -203,6 +203,6 @@ sens_input.mti_mag.meas = [
 
 sens_input.mti_mag.status = false;
 
-[x_ret, P_ret, bias_ret, sens_filt_ret, roll_state, pdyn, w_status_nav] = navigation_codegen_entry(dt, flight_phase, x, P, bias, sens_filt, sens_input)
+[x_ret, P_ret, bias_ret, sens_filt_ret, cov_norm, roll_state, pdyn, w_status_nav] = navigation_codegen_entry(dt, flight_phase, x, P, bias, sens_filt, sens_input)
 
-[x_ret, P_ret, bias_ret, sens_filt_ret, roll_state, pdyn, w_status_nav] = GNC_codegen_SIL_sil('navigation_codegen_entry', dt, flight_phase, x, P, bias, sens_filt, sens_input)
+[x_ret, P_ret, bias_ret, sens_filt_ret, cov_norm, roll_state, pdyn, w_status_nav] = GNC_codegen_SIL_sil('navigation_codegen_entry', dt, flight_phase, x, P, bias, sens_filt, sens_input)
