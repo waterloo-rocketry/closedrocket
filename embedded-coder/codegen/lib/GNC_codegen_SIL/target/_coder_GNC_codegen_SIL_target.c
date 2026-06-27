@@ -225,8 +225,8 @@ void XILTarget_terminate(unsigned int fcnId) {
 XIL_PROCESSDATA_ERROR_CODE
 xilTarget_controller_codegen_entry(unsigned int fcnId) {
   struct0_T ctrl_mem;
-  double r[2];
-  double xR[2];
+  double where_it_is[2];
+  double where_it_isnt[2];
   double b_time;
   double delta_encoder;
   double dt_ctrl;
@@ -239,7 +239,7 @@ xilTarget_controller_codegen_entry(unsigned int fcnId) {
 
   xilTargetDeserializer(&dt_ctrl);
 
-  b_xilTargetDeserializer(xR);
+  b_xilTargetDeserializer(where_it_is);
 
   xilTargetDeserializer(&pdyn);
 
@@ -249,14 +249,15 @@ xilTarget_controller_codegen_entry(unsigned int fcnId) {
 
   xilPreEntryPoint(fcnId);
 
-  controller_codegen_entry(SD, b_time, dt_ctrl, xR, pdyn, delta_encoder,
-                           &ctrl_mem, &u_motor, r, &w_status_ctrl);
+  controller_codegen_entry(SD, b_time, dt_ctrl, where_it_is, pdyn,
+                           delta_encoder, &ctrl_mem, &u_motor, where_it_isnt,
+                           &w_status_ctrl);
 
   xilPostEntryPoint(fcnId);
 
   xilTargetSerializer(&u_motor);
 
-  b_xilTargetSerializer(r);
+  b_xilTargetSerializer(where_it_isnt);
 
   c_xilTargetSerializer(&ctrl_mem);
 

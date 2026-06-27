@@ -1323,7 +1323,7 @@ extern void GNC_codegen_SIL_initialize(GNC_codegen_SILStackData * b_SD);
 
 extern void GNC_codegen_SIL_terminate(void); 
 
-extern void controller_codegen_entry(GNC_codegen_SILStackData * b_SD, double b_time, double dt_ctrl, const double  xR[2], double pdyn, double delta_encoder, struct0_T * ctrl_mem, double * u_motor, double  r[2], boolean_T * w_status_ctrl); 
+extern void controller_codegen_entry(GNC_codegen_SILStackData * b_SD, double b_time, double dt_ctrl, const double  where_it_is[2], double pdyn, double delta_encoder, struct0_T * ctrl_mem, double * u_motor, double  where_it_isnt[2], boolean_T * w_status_ctrl); 
 #line 24
 extern void navigation_codegen_entry(GNC_codegen_SILStackData * b_SD, double dt, boolean_T flight_phase, double  x[11], double  P[121], struct1_T * bias, struct2_T * sens_filt, const struct3_T * sens_in, double * cov_norm, double  roll_state[2], double * pdyn, boolean_T * w_status_nav); 
 #line 36
@@ -3083,9 +3083,10 @@ dynamics_jacobian_init(b_SD);
 void GNC_codegen_SIL_terminate(void) { } 
 
 void controller_codegen_entry(GNC_codegen_SILStackData *b_SD, double b_time, double 
-dt_ctrl, const double xR[2], double pdyn, double 
-delta_encoder, struct0_T *ctrl_mem, double *
-u_motor, double r[2], boolean_T *
+dt_ctrl, const double where_it_is[2], double 
+pdyn, double delta_encoder, struct0_T *
+ctrl_mem, double *u_motor, double 
+where_it_isnt[2], boolean_T *
 w_status_ctrl) { 
 static const double b_dv[5] = {(-(1.5707963267948966)), (0.0), (0.0), (0.0), (0.0)}; 
 static const char iv[5] = {(7), (15), (25), (35), (45)}; 
@@ -3096,12 +3097,13 @@ double b_dv1[4];
 double dv2[4]; 
 double dv3[4]; 
 double K[2]; 
-double c_r[2]; 
+double b_r[2]; 
 double L_delta; 
 double a; 
 double b; 
 double b_x; 
 double blend; 
+double c_r; 
 double d1; 
 double d11; 
 double d12; 
@@ -3112,7 +3114,6 @@ double d4;
 double d5; 
 double d6; 
 double d9; 
-double d_r; 
 double delta; 
 double delta_lp; 
 double deviation_idx_0; 
@@ -3133,49 +3134,50 @@ for (step_idx = 0; step_idx < 5; step_idx++) {
 int i; 
 i = iv[step_idx]; { 
 if (b_time >= i) { 
-double b_r; 
 double d; 
 double q; 
+double r; 
 double x; 
 d = b_dv[step_idx]; 
 x = ((double)(iv1[step_idx]) + (b_time - (double)i) * d) + (3.1415926535897931); 
 
 profileStart_GNC_codegen_SIL(35U); q = fabs(x / (6.2831853071795862)); profileEnd_GNC_codegen_SIL(35U); { 
 if (fabs(q - floor(q + (0.5))) > (2.2204460492503131E-16) * q) { 
-profileStart_GNC_codegen_SIL(36U); b_r = fmod(x, (6.2831853071795862)); profileEnd_GNC_codegen_SIL(36U); 
+profileStart_GNC_codegen_SIL(36U); r = fmod(x, (6.2831853071795862)); profileEnd_GNC_codegen_SIL(36U); 
 } else { 
-b_r = (0.0); 
+r = (0.0); 
 }  } { 
-if (b_r == (0.0)) { 
-b_r = (0.0); 
-} else { { if (b_r < (0.0)) { 
-b_r += (6.2831853071795862); 
+if (r == (0.0)) { 
+r = (0.0); 
+} else { { if (r < (0.0)) { 
+r += (6.2831853071795862); 
 }  } }  } 
-r_phi = b_r - (3.1415926535897931); 
+r_phi = r - (3.1415926535897931); 
 r_w = d; 
 }  } 
 }  } 
-r[0] = r_phi; 
-r[1] = r_w; 
+where_it_isnt[0] = r_phi; 
+where_it_isnt[1] = r_w; 
 delta = delta_encoder / (2.0); 
 pdyn_params = pdyn * (b_SD->pd->param).c_canard; { 
 if (fabs(delta) < (0.005)) { 
 delta = (0.0); 
 }  } 
 delta_lp = (0.75) * ctrl_mem->delta_lp + (0.25) * delta; 
-w_dot_lp = (0.75) * ctrl_mem->w_dot_lp + ((0.25) * (xR[1] - ctrl_mem->w)) / dt_ctrl; 
+w_dot_lp = (0.75) * ctrl_mem->w_dot_lp + ((0.25) * (where_it_is[1] - ctrl_mem->w)) / dt_ctrl; 
+
 r_idx_0 = pdyn_params * delta_lp; 
 P[0] = ctrl_mem->P[0] + (1.0E-5); 
 P[1] = ctrl_mem->P[1]; 
 P[2] = ctrl_mem->P[2]; 
 P[3] = ctrl_mem->P[3] + (1.0E-9); 
-profileStart_GNC_codegen_SIL(37U); memset(&(c_r[0]), 0, sizeof(double) << 1); profileEnd_GNC_codegen_SIL(37U); 
+profileStart_GNC_codegen_SIL(37U); memset(&(b_r[0]), 0, sizeof(double) << 1); profileEnd_GNC_codegen_SIL(37U); 
 d1 = r_idx_0 * P[0]; 
 d2 = pdyn_params * P[3]; 
-d_r = ((c_r[0] + d1) + pdyn_params * P[1]) * r_idx_0 + ((c_r[1] + r_idx_0 * P[2]) + d2) * pdyn_params; 
+c_r = ((b_r[0] + d1) + pdyn_params * P[1]) * r_idx_0 + ((b_r[1] + r_idx_0 * P[2]) + d2) * pdyn_params; 
 
-K[0] = (d1 + P[2] * pdyn_params) / (d_r + (1.0)); 
-K[1] = (P[1] * r_idx_0 + d2) / (d_r + (1.0)); 
+K[0] = (d1 + P[2] * pdyn_params) / (c_r + (1.0)); 
+K[1] = (P[1] * r_idx_0 + d2) / (c_r + (1.0)); 
 b = w_dot_lp - (r_idx_0 * ctrl_mem->coeffs[0] + pdyn_params * ctrl_mem->coeffs[1]); 
 
 ctrl_mem->coeffs[0] += K[0] * b; 
@@ -3230,7 +3232,7 @@ ctrl_mem->P[0] = dv3[0] + b_K[0];
 ctrl_mem->P[1] = dv3[1] + b_K[1]; 
 ctrl_mem->P[2] = dv3[2] + b_K[2]; 
 ctrl_mem->P[3] = dv3[3] + b_K[3]; 
-ctrl_mem->w = xR[1]; 
+ctrl_mem->w = where_it_is[1]; 
 ctrl_mem->delta_lp = delta_lp; 
 ctrl_mem->w_dot_lp = w_dot_lp; 
 L_delta = ctrl_mem->coeffs[0] * pdyn_params; { 
@@ -3241,8 +3243,8 @@ L_delta = (10.0);
 L_delta = -(10.0); 
 }  } 
 }  } 
-deviation_idx_0 = xR[0] - r_phi; 
-deviation_idx_1 = xR[1] - r_w; 
+deviation_idx_0 = where_it_is[0] - r_phi; 
+deviation_idx_1 = where_it_is[1] - r_w; 
 profileStart_GNC_codegen_SIL(40U); blend = fmax((0.0), fmin((1.0), (fabs(deviation_idx_1) - (0.5)) / (0.5))); profileEnd_GNC_codegen_SIL(40U); 
 a = -(1.0) / L_delta; 
 x_tmp = ((1.0) - blend) * (5.0); 
@@ -3253,7 +3255,7 @@ deviation_idx_0 -= (6.2831853071795862);
 deviation_idx_0 += (6.2831853071795862); 
 }  } }  } 
 profileStart_GNC_codegen_SIL(42U); *u_motor = fmin(fmax((a * b_x) * deviation_idx_0 + (a * sqrt((2.0) * b_x + (x_tmp + blend * (20.0)))) * deviation_idx_1, -(0.17453292519943295)), (0.17453292519943295)) * (2.0); profileEnd_GNC_codegen_SIL(42U); { 
-#line 912
+#line 914
 if (pdyn < (500.0)) { 
 *u_motor = (0.0); 
 *w_status_ctrl = (0); 
@@ -3267,7 +3269,7 @@ sens_filt, const struct3_T *sens_in, double *
 cov_norm, double roll_state[2], double *
 pdyn, boolean_T *w_status_nav) { 
 static const double Q[121] = {(1.0E-10), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (1.0E-10), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (1.0E-10), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (1.0E-10), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.01), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.01), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.01), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0001), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0001), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0001), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.001)}; 
-#line 936
+#line 938
 static const double R[9] = {(1.0E-9), (0.0), (0.0), (0.0), (1.0E-9), (0.0), (0.0), (0.0), (1.0E-9)}; 
 
 static const double b_b[9] = {(1.0), (0.0), (0.0), (0.0), (1.0), (0.0), (0.0), (0.0), (1.0)}; 
@@ -3920,7 +3922,7 @@ d26 += (dt * d34) * d35;
 d36 += d34 * d23; 
 d38 = C_total_a[i11]; 
 c_w_exp_tilde[i11] = ((w_exp_tilde[i11] * d21 + w_exp_tilde[i11 + 3] * d22) + w_exp_tilde[i11 + 6] * d23) + dt * (((C_total_a_tmp_tmp / d38) * (sens_in->board_accel).meas[i11] + (b_C_total_a_tmp_tmp / d38) * (sens_in->mti_accel).meas[i11]) + (c_C_total_a_tmp_tmp / d38) * (sens_in->ad_accel).meas[i11]); 
-#line 1593
+#line 1595
 b_S[i11] = d36; 
 }  } 
 profileStart_GNC_codegen_SIL(68U); memset(&(c_q[0]), 0, sizeof(double) << 2); profileEnd_GNC_codegen_SIL(68U); 

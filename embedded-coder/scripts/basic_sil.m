@@ -161,3 +161,5 @@ function compare_value(name, a, b, absTol, relTol)
             'Value mismatch in %s', name);
     end
 end
+
+clear GNC_codegen_SIL_sil;

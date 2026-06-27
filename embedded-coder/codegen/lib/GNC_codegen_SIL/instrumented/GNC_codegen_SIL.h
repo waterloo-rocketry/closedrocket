@@ -16,9 +16,9 @@ extern void GNC_codegen_SIL_terminate(void);
 
 extern void controller_codegen_entry(GNC_codegen_SILStackData *b_SD,
                                      double b_time, double dt_ctrl,
-                                     const double xR[2], double pdyn,
+                                     const double where_it_is[2], double pdyn,
                                      double delta_encoder, struct0_T *ctrl_mem,
-                                     double *u_motor, double r[2],
+                                     double *u_motor, double where_it_isnt[2],
                                      boolean_T *w_status_ctrl);
 
 extern void navigation_codegen_entry(GNC_codegen_SILStackData *b_SD, double dt,

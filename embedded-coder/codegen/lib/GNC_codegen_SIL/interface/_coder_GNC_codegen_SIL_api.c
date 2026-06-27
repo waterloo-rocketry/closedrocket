@@ -1145,16 +1145,17 @@ void GNC_codegen_SIL_terminate(void) {
 }
 
 void controller_codegen_entryXilWrapper(real_T b_time, real_T dt_ctrl,
-                                        const real_T xR[2], real_T pdyn,
-                                        real_T delta_encoder,
+                                        const real_T where_it_is[2],
+                                        real_T pdyn, real_T delta_encoder,
                                         struct0_T *ctrl_mem, real_T *u_motor,
-                                        real_T r[2], boolean_T *w_status_ctrl) {
+                                        real_T where_it_isnt[2],
+                                        boolean_T *w_status_ctrl) {
 
   xilHostSerializer(&b_time);
 
   xilHostSerializer(&dt_ctrl);
 
-  b_xilHostSerializer(xR);
+  b_xilHostSerializer(where_it_is);
 
   xilHostSerializer(&pdyn);
 
@@ -1166,7 +1167,7 @@ void controller_codegen_entryXilWrapper(real_T b_time, real_T dt_ctrl,
 
   xilHostDeserializer(u_motor);
 
-  b_xilHostDeserializer(r);
+  b_xilHostDeserializer(where_it_isnt);
 
   c_xilHostDeserializer(ctrl_mem);
 
@@ -1177,8 +1178,8 @@ void controller_codegen_entry_api(const mxArray *const prhs[6], int32_T nlhs,
                                   const mxArray *plhs[4]) {
   emlrtStack st = {NULL, NULL, NULL};
   struct0_T ctrl_mem;
-  real_T(*r)[2];
-  real_T(*xR)[2];
+  real_T(*where_it_is)[2];
+  real_T(*where_it_isnt)[2];
   real_T b_time;
   real_T delta_encoder;
   real_T dt_ctrl;
@@ -1186,25 +1187,26 @@ void controller_codegen_entry_api(const mxArray *const prhs[6], int32_T nlhs,
   real_T u_motor;
   boolean_T w_status_ctrl;
   st.tls = emlrtRootTLSGlobal;
-  r = (real_T(*)[2])mxMalloc(sizeof(real_T[2]));
+  where_it_isnt = (real_T(*)[2])mxMalloc(sizeof(real_T[2]));
 
   b_time = emlrt_marshallIn(&st, emlrtAliasP(prhs[0]), "time");
   dt_ctrl = emlrt_marshallIn(&st, emlrtAliasP(prhs[1]), "dt_ctrl");
-  xR = c_emlrt_marshallIn(&st, emlrtAlias(prhs[2]), "xR");
+  where_it_is = c_emlrt_marshallIn(&st, emlrtAlias(prhs[2]), "where_it_is");
   pdyn = emlrt_marshallIn(&st, emlrtAliasP(prhs[3]), "pdyn");
   delta_encoder = emlrt_marshallIn(&st, emlrtAliasP(prhs[4]), "delta_encoder");
   e_emlrt_marshallIn(&st, emlrtAliasP(prhs[5]), "ctrl_mem", &ctrl_mem);
 
   xilPreEntryPointHost(1U);
 
-  controller_codegen_entryXilWrapper(b_time, dt_ctrl, *xR, pdyn, delta_encoder,
-                                     &ctrl_mem, &u_motor, *r, &w_status_ctrl);
+  controller_codegen_entryXilWrapper(b_time, dt_ctrl, *where_it_is, pdyn,
+                                     delta_encoder, &ctrl_mem, &u_motor,
+                                     *where_it_isnt, &w_status_ctrl);
 
   xilPostEntryPointHost(1U);
 
   plhs[0] = emlrt_marshallOut(u_motor);
   if (nlhs > 1) {
-    plhs[1] = b_emlrt_marshallOut(*r);
+    plhs[1] = b_emlrt_marshallOut(*where_it_isnt);
   }
   if (nlhs > 2) {
     plhs[2] = c_emlrt_marshallOut(&ctrl_mem);

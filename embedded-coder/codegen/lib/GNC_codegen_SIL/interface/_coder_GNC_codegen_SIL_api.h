@@ -96,10 +96,11 @@ void GNC_codegen_SIL_xil_shutdown(void);
 void GNC_codegen_SIL_xil_terminate(void);
 
 void controller_codegen_entryXilWrapper(real_T b_time, real_T dt_ctrl,
-                                        const real_T xR[2], real_T pdyn,
-                                        real_T delta_encoder,
+                                        const real_T where_it_is[2],
+                                        real_T pdyn, real_T delta_encoder,
                                         struct0_T *ctrl_mem, real_T *u_motor,
-                                        real_T r[2], boolean_T *w_status_ctrl);
+                                        real_T where_it_isnt[2],
+                                        boolean_T *w_status_ctrl);
 
 void controller_codegen_entry_api(const mxArray *const prhs[6], int32_T nlhs,
                                   const mxArray *plhs[4]);

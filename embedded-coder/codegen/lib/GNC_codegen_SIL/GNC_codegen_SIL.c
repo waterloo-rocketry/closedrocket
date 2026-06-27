@@ -734,9 +734,10 @@ void GNC_codegen_SIL_initialize(GNC_codegen_SILStackData *b_SD) {
 void GNC_codegen_SIL_terminate(void) {}
 
 void controller_codegen_entry(GNC_codegen_SILStackData *b_SD, double b_time,
-                              double dt_ctrl, const double xR[2], double pdyn,
-                              double delta_encoder, struct0_T *ctrl_mem,
-                              double *u_motor, double r[2],
+                              double dt_ctrl, const double where_it_is[2],
+                              double pdyn, double delta_encoder,
+                              struct0_T *ctrl_mem, double *u_motor,
+                              double where_it_isnt[2],
                               boolean_T *w_status_ctrl) {
   static const double b_dv[5] = {-1.5707963267948966, 0.0, 0.0, 0.0, 0.0};
   static const signed char iv[5] = {7, 15, 25, 35, 45};
@@ -747,12 +748,13 @@ void controller_codegen_entry(GNC_codegen_SILStackData *b_SD, double b_time,
   double dv2[4];
   double dv3[4];
   double K[2];
-  double c_r[2];
+  double b_r[2];
   double L_delta;
   double a;
   double b;
   double b_x;
   double blend;
+  double c_r;
   double d1;
   double d11;
   double d12;
@@ -763,7 +765,6 @@ void controller_codegen_entry(GNC_codegen_SILStackData *b_SD, double b_time,
   double d5;
   double d6;
   double d9;
-  double d_r;
   double delta;
   double delta_lp;
   double deviation_idx_0;
@@ -784,49 +785,50 @@ void controller_codegen_entry(GNC_codegen_SILStackData *b_SD, double b_time,
     int i;
     i = iv[step_idx];
     if (b_time >= i) {
-      double b_r;
       double d;
       double q;
+      double r;
       double x;
       d = b_dv[step_idx];
       x = ((double)iv1[step_idx] + (b_time - (double)i) * d) +
           3.1415926535897931;
       q = fabs(x / 6.2831853071795862);
       if (fabs(q - floor(q + 0.5)) > 2.2204460492503131E-16 * q) {
-        b_r = fmod(x, 6.2831853071795862);
+        r = fmod(x, 6.2831853071795862);
       } else {
-        b_r = 0.0;
+        r = 0.0;
       }
-      if (b_r == 0.0) {
-        b_r = 0.0;
-      } else if (b_r < 0.0) {
-        b_r += 6.2831853071795862;
+      if (r == 0.0) {
+        r = 0.0;
+      } else if (r < 0.0) {
+        r += 6.2831853071795862;
       }
-      r_phi = b_r - 3.1415926535897931;
+      r_phi = r - 3.1415926535897931;
       r_w = d;
     }
   }
-  r[0] = r_phi;
-  r[1] = r_w;
+  where_it_isnt[0] = r_phi;
+  where_it_isnt[1] = r_w;
   delta = delta_encoder / 2.0;
   pdyn_params = pdyn * b_SD->pd->param.c_canard;
   if (fabs(delta) < 0.005) {
     delta = 0.0;
   }
   delta_lp = 0.75 * ctrl_mem->delta_lp + 0.25 * delta;
-  w_dot_lp = 0.75 * ctrl_mem->w_dot_lp + 0.25 * (xR[1] - ctrl_mem->w) / dt_ctrl;
+  w_dot_lp = 0.75 * ctrl_mem->w_dot_lp +
+             0.25 * (where_it_is[1] - ctrl_mem->w) / dt_ctrl;
   r_idx_0 = pdyn_params * delta_lp;
   P[0] = ctrl_mem->P[0] + 1.0E-5;
   P[1] = ctrl_mem->P[1];
   P[2] = ctrl_mem->P[2];
   P[3] = ctrl_mem->P[3] + 1.0E-9;
-  memset(&c_r[0], 0, sizeof(double) << 1);
+  memset(&b_r[0], 0, sizeof(double) << 1);
   d1 = r_idx_0 * P[0];
   d2 = pdyn_params * P[3];
-  d_r = ((c_r[0] + d1) + pdyn_params * P[1]) * r_idx_0 +
-        ((c_r[1] + r_idx_0 * P[2]) + d2) * pdyn_params;
-  K[0] = (d1 + P[2] * pdyn_params) / (d_r + 1.0);
-  K[1] = (P[1] * r_idx_0 + d2) / (d_r + 1.0);
+  c_r = ((b_r[0] + d1) + pdyn_params * P[1]) * r_idx_0 +
+        ((b_r[1] + r_idx_0 * P[2]) + d2) * pdyn_params;
+  K[0] = (d1 + P[2] * pdyn_params) / (c_r + 1.0);
+  K[1] = (P[1] * r_idx_0 + d2) / (c_r + 1.0);
   b = w_dot_lp -
       (r_idx_0 * ctrl_mem->coeffs[0] + pdyn_params * ctrl_mem->coeffs[1]);
   ctrl_mem->coeffs[0] += K[0] * b;
@@ -881,7 +883,7 @@ void controller_codegen_entry(GNC_codegen_SILStackData *b_SD, double b_time,
   ctrl_mem->P[1] = dv3[1] + b_K[1];
   ctrl_mem->P[2] = dv3[2] + b_K[2];
   ctrl_mem->P[3] = dv3[3] + b_K[3];
-  ctrl_mem->w = xR[1];
+  ctrl_mem->w = where_it_is[1];
   ctrl_mem->delta_lp = delta_lp;
   ctrl_mem->w_dot_lp = w_dot_lp;
   L_delta = ctrl_mem->coeffs[0] * pdyn_params;
@@ -892,8 +894,8 @@ void controller_codegen_entry(GNC_codegen_SILStackData *b_SD, double b_time,
       L_delta = -10.0;
     }
   }
-  deviation_idx_0 = xR[0] - r_phi;
-  deviation_idx_1 = xR[1] - r_w;
+  deviation_idx_0 = where_it_is[0] - r_phi;
+  deviation_idx_1 = where_it_is[1] - r_w;
   blend = fmax(0.0, fmin(1.0, (fabs(deviation_idx_1) - 0.5) / 0.5));
   a = -1.0 / L_delta;
   x_tmp = (1.0 - blend) * 5.0;
