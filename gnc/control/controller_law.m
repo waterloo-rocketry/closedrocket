@@ -1,4 +1,4 @@
-function [u, K, Kr] = controller_law(where_it_is, where_it_isnt, L_delta)
+function [u, K] = controller_law(where_it_is, where_it_isnt, L_delta)
     %#codegen
     % computes the optimal control signal for a flight condition
     % u : (rad) control signal, desired canard angle
