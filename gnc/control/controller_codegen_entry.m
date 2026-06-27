@@ -1,10 +1,10 @@
-function [u_motor, r, ctrl_mem, w_status_ctrl] = controller_codegen_entry(time, dt_ctrl, xR, pdyn, delta_encoder, ctrl_mem)
+function [u_motor, where_it_isnt, ctrl_mem, w_status_ctrl] = controller_codegen_entry(time, dt_ctrl, where_it_is, pdyn, delta_encoder, ctrl_mem)
     %#codegen
 
     % u_motor : (rad) control command, desired motor angle
     % r : (rad) roll angle target
     % time : (s) current time stamp
-    % xR : [(rad) roll angle, (rad/s) roll rate] reduced roll state
+    % where_it_is : [(rad) roll angle, (rad/s) roll rate] reduced roll state
     % pdyn : (Pa) dynamic pressure
     % delta_encoder : (rad) motor angle measurement from encoder
 
@@ -37,8 +37,8 @@ function [u_motor, r, ctrl_mem, w_status_ctrl] = controller_codegen_entry(time, 
             r_w = roll_step_rate(step_idx);
         end
     end
-    r = [r_phi; r_w];
-    % r = [0; 0]; deactivate roll program
+    where_it_isnt = [r_phi; r_w];
+    % where_it_isnt = [0; 0]; deactivate roll program
 
     %% controller algorithm
     %%% Computes control signal of the adaptive LQR controller.
@@ -47,7 +47,7 @@ function [u_motor, r, ctrl_mem, w_status_ctrl] = controller_codegen_entry(time, 
     delta = delta_encoder / gear_ratio;
     pdyn_params = pdyn * param.c_canard;
 
-    ctrl_mem = controller_estimator(dt_ctrl, xR(2), delta, pdyn_params, ctrl_mem);
+    ctrl_mem = controller_estimator(dt_ctrl, where_it_is(2), delta, pdyn_params, ctrl_mem);
 
     C_l_delta = ctrl_mem.coeffs(1);
     L_delta = C_l_delta * pdyn_params;
@@ -61,7 +61,7 @@ function [u_motor, r, ctrl_mem, w_status_ctrl] = controller_codegen_entry(time, 
     end
 
     %%% Control Law, Feedback + Feedforward tracking
-    u = controller_law(xR, r, L_delta);
+    u = controller_law(where_it_is, where_it_isnt, L_delta);
 
     %%% limit output to allowable angle
     u = min(max(u, -u_max), u_max); % upper bounds
