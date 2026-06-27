@@ -1,8 +1,8 @@
-% time = 12;
-% dt_ctrl = 0.01;
-% xR = [0.6; 0.4];
-% pdyn = 80000;
-% delta = 0.2;
+time = 12;
+dt_ctrl = 0.01;
+xR = [0.6; 0.4];
+pdyn = 80000;
+delta = 0.2;
 
 ctrl_mem_in.coeffs = [2; 0];
 ctrl_mem_in.w = 0.38;

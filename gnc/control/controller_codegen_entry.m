@@ -16,7 +16,7 @@ function [u_motor, r, ctrl_mem, w_status_ctrl] = controller_codegen_entry(time, 
     end
 
     %% Constants
-    time_program = 15; % (s) time from launch to start of roll program
+    time_program = 7; % (s) time from launch to start of roll program
     gear_ratio = 2; % gear reduction ratio, motor angle / canard angle
     u_max = deg2rad(10); % (rad) limit canard output to this angle
     L_min = 10; % (rad/s^2 / rad) limit roll control derivative for low authority conditions
@@ -25,16 +25,20 @@ function [u_motor, r, ctrl_mem, w_status_ctrl] = controller_codegen_entry(time, 
     %% Reference signal
     %%% Generates reference signal r for roll program
     %%% includes multiple roll angle steps
-    roll_step_times = [7, 12, 17, 24] + time_program;
-    roll_step_targets = [0.5, -0.5, 0.5, 0];
-
-    r = 0;
+    roll_step_times = [0, 8, 18, 28, 38] + time_program;
+    roll_step_targets = [0, 0, 1, -1, 0]; % Starting angle
+    roll_step_rate = [-0.25, 0, 0, 0, 0] * 2 * pi; % Rotation frequency
+    
+    r_phi = 0;
+    r_w = 0;
     for step_idx = 1:numel(roll_step_times)
         if time >= roll_step_times(step_idx)
-            r = roll_step_targets(step_idx);
+            r_phi = mod(roll_step_targets(step_idx) + (time - roll_step_times(step_idx)) * roll_step_rate(step_idx) + pi, 2 * pi) - pi;
+            r_w = roll_step_rate(step_idx);
         end
     end
-    % r = 0; % deactivate roll program
+    r = [r_phi; r_w];
+    % r = [0; 0]; deactivate roll program
 
     %% controller algorithm
     %%% Computes control signal of the adaptive LQR controller.

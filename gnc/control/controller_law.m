@@ -3,8 +3,13 @@ function [u, K, Kr] = controller_law(xR, r, L_delta)
     % computes the optimal control signal for a flight condition
     % u : (rad) control signal, desired canard angle
     % xR : [(rad) roll angle; (rad/s) roll rate] reduced roll state
-    % r : (rad) reference signal, desired roll angle
+    % r : [(rad); (rad)] reference signal, desired roll angle and rate
     % L_delta : (rad/s^2 / rad) roll acceleration control derivative
+
+    where_it_is = xR;
+    where_it_isnt = r;
+    
+    deviation = where_it_is - where_it_isnt;
 
     %% tuning parameters
     %%% Q_phi : weight of angle error, Q_omega : weight of rate error
@@ -19,8 +24,8 @@ function [u, K, Kr] = controller_law(xR, r, L_delta)
     w_high = 1; % w > w_high: fully mode 2
 
     %% Control mode switching: linear crossfade
-    w = abs(xR(2));
-    blend = (w - w_low) / (w_high - w_low);
+    w_rel = abs(deviation(2));
+    blend = (w_rel - w_low) / (w_high - w_low);
     blend = max(0, min(1, blend)); % clamp to [0,1]
 
     Q_phi = (1-blend)*Q_phi_mode1 + blend*Q_phi_mode2;
@@ -29,9 +34,17 @@ function [u, K, Kr] = controller_law(xR, r, L_delta)
     %% feedback gains
     K = - 1/L_delta * [ sqrt(Q_phi), sqrt( 2*sqrt(Q_phi) + Q_omega ) ]; % explicit LQR
 
-    %% feedforward gain
-    Kr = - K(1); % simplifies to this
-
     %% control command
-    u = K * xR + Kr * r;
+
+    % wrap subtraction around circle, note inputs are already wrapped
+    if deviation(1) > pi
+        deviation(1) = - 2*pi + deviation(1);
+    elseif deviation(1) < -pi
+        deviation(1) = 2*pi + deviation(1);
+    end
+
+    % safer for unwrapped inputs but slower compute
+    % deviation(1) = atan2(sin(deviation(1)), cos(deviation(1)));
+    
+    u = K * deviation;
 end

@@ -97,7 +97,7 @@ void GNC_codegen_xil_terminate(void);
 
 void controller_codegen_entry(real_T b_time, real_T dt_ctrl, real_T xR[2],
                               real_T pdyn, real_T delta_encoder,
-                              struct0_T *ctrl_mem, real_T *u_motor, real_T *r,
+                              struct0_T *ctrl_mem, real_T *u_motor, real_T r[2],
                               boolean_T *w_status_ctrl);
 
 void controller_codegen_entry_api(const mxArray *const prhs[6], int32_T nlhs,

@@ -18,7 +18,7 @@ extern void controller_codegen_entry(GNC_codegenStackData *SD, double b_time,
                                      double dt_ctrl, const double xR[2],
                                      double pdyn, double delta_encoder,
                                      struct0_T *ctrl_mem, double *u_motor,
-                                     double *r, bool *w_status_ctrl);
+                                     double r[2], bool *w_status_ctrl);
 
 extern void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
                                      bool flight_phase, double x[11],

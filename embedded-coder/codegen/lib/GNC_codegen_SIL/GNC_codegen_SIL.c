@@ -736,55 +736,80 @@ void GNC_codegen_SIL_terminate(void) {}
 void controller_codegen_entry(GNC_codegen_SILStackData *b_SD, double b_time,
                               double dt_ctrl, const double xR[2], double pdyn,
                               double delta_encoder, struct0_T *ctrl_mem,
-                              double *u_motor, double *r,
+                              double *u_motor, double r[2],
                               boolean_T *w_status_ctrl) {
+  static const double b_dv[5] = {-1.5707963267948966, 0.0, 0.0, 0.0, 0.0};
+  static const signed char iv[5] = {7, 15, 25, 35, 45};
+  static const signed char iv1[5] = {0, 0, 1, -1, 0};
   double P[4];
   double b_K[4];
-  double b_dv[4];
   double b_dv1[4];
   double dv2[4];
+  double dv3[4];
   double K[2];
-  double b_r[2];
+  double c_r[2];
   double L_delta;
   double a;
   double b;
+  double b_x;
   double blend;
-  double c_r;
-  double d;
   double d1;
-  double d10;
   double d11;
   double d12;
+  double d13;
   double d2;
   double d3;
   double d4;
   double d5;
-  double d8;
+  double d6;
+  double d9;
+  double d_r;
   double delta;
   double delta_lp;
+  double deviation_idx_0;
+  double deviation_idx_1;
   double pdyn_params;
   double r_idx_0;
+  double r_phi;
+  double r_w;
   double w_dot_lp;
-  double x;
   double x_tmp;
-  int i;
-  int i2;
+  int i1;
+  int i3;
+  int step_idx;
   *w_status_ctrl = true;
-  *r = 0.0;
+  r_phi = 0.0;
+  r_w = 0.0;
+  for (step_idx = 0; step_idx < 5; step_idx++) {
+    int i;
+    i = iv[step_idx];
+    if (b_time >= i) {
+      double b_r;
+      double d;
+      double q;
+      double x;
+      d = b_dv[step_idx];
+      x = ((double)iv1[step_idx] + (b_time - (double)i) * d) +
+          3.1415926535897931;
+      q = fabs(x / 6.2831853071795862);
+      if (fabs(q - floor(q + 0.5)) > 2.2204460492503131E-16 * q) {
+        b_r = fmod(x, 6.2831853071795862);
+      } else {
+        b_r = 0.0;
+      }
+      if (b_r == 0.0) {
+        b_r = 0.0;
+      } else if (b_r < 0.0) {
+        b_r += 6.2831853071795862;
+      }
+      r_phi = b_r - 3.1415926535897931;
+      r_w = d;
+    }
+  }
+  r[0] = r_phi;
+  r[1] = r_w;
   delta = delta_encoder / 2.0;
   pdyn_params = pdyn * b_SD->pd->param.c_canard;
-  if (b_time >= 22.0) {
-    *r = 0.5;
-  }
-  if (b_time >= 27.0) {
-    *r = -0.5;
-  }
-  if (b_time >= 32.0) {
-    *r = 0.5;
-  }
-  if (b_time >= 39.0) {
-    *r = 0.0;
-  }
   if (fabs(delta) < 0.005) {
     delta = 0.0;
   }
@@ -795,67 +820,67 @@ void controller_codegen_entry(GNC_codegen_SILStackData *b_SD, double b_time,
   P[1] = ctrl_mem->P[1];
   P[2] = ctrl_mem->P[2];
   P[3] = ctrl_mem->P[3] + 1.0E-9;
-  memset(&b_r[0], 0, sizeof(double) << 1);
-  d = r_idx_0 * P[0];
-  d1 = pdyn_params * P[3];
-  c_r = ((b_r[0] + d) + pdyn_params * P[1]) * r_idx_0 +
-        ((b_r[1] + r_idx_0 * P[2]) + d1) * pdyn_params;
-  K[0] = (d + P[2] * pdyn_params) / (c_r + 1.0);
-  K[1] = (P[1] * r_idx_0 + d1) / (c_r + 1.0);
+  memset(&c_r[0], 0, sizeof(double) << 1);
+  d1 = r_idx_0 * P[0];
+  d2 = pdyn_params * P[3];
+  d_r = ((c_r[0] + d1) + pdyn_params * P[1]) * r_idx_0 +
+        ((c_r[1] + r_idx_0 * P[2]) + d2) * pdyn_params;
+  K[0] = (d1 + P[2] * pdyn_params) / (d_r + 1.0);
+  K[1] = (P[1] * r_idx_0 + d2) / (d_r + 1.0);
   b = w_dot_lp -
       (r_idx_0 * ctrl_mem->coeffs[0] + pdyn_params * ctrl_mem->coeffs[1]);
   ctrl_mem->coeffs[0] += K[0] * b;
   ctrl_mem->coeffs[1] += K[1] * b;
-  b_dv[0] = 1.0 - K[0] * r_idx_0;
-  b_dv[1] = 0.0 - K[1] * r_idx_0;
-  b_dv[2] = 0.0 - K[0] * pdyn_params;
-  b_dv[3] = 1.0 - K[1] * pdyn_params;
-  memset(&b_dv1[0], 0, sizeof(double) << 2);
-  d2 = b_dv[0];
-  d3 = b_dv[1];
-  d4 = b_dv[2];
-  d5 = b_dv[3];
-  for (i = 0; i < 2; i++) {
-    double d6;
-    double d7;
-    double d9;
-    int i1;
-    i1 = i << 1;
-    d6 = P[i1];
-    d7 = b_dv1[i1] + d2 * d6;
-    d9 = b_dv1[i1 + 1] + d3 * d6;
-    d6 = P[i1 + 1];
-    d7 += d4 * d6;
-    b_dv1[i1] = d7;
-    d9 += d5 * d6;
-    b_dv1[i1 + 1] = d9;
-  }
+  b_dv1[0] = 1.0 - K[0] * r_idx_0;
+  b_dv1[1] = 0.0 - K[1] * r_idx_0;
+  b_dv1[2] = 0.0 - K[0] * pdyn_params;
+  b_dv1[3] = 1.0 - K[1] * pdyn_params;
   memset(&dv2[0], 0, sizeof(double) << 2);
-  d8 = b_dv1[0];
-  d10 = b_dv1[1];
-  d11 = b_dv1[2];
-  d12 = b_dv1[3];
-  for (i2 = 0; i2 < 2; i2++) {
-    double d13;
+  d3 = b_dv1[0];
+  d4 = b_dv1[1];
+  d5 = b_dv1[2];
+  d6 = b_dv1[3];
+  for (i1 = 0; i1 < 2; i1++) {
+    double d10;
+    double d7;
+    double d8;
+    int i2;
+    i2 = i1 << 1;
+    d7 = P[i2];
+    d8 = dv2[i2] + d3 * d7;
+    d10 = dv2[i2 + 1] + d4 * d7;
+    d7 = P[i2 + 1];
+    d8 += d5 * d7;
+    dv2[i2] = d8;
+    d10 += d6 * d7;
+    dv2[i2 + 1] = d10;
+  }
+  memset(&dv3[0], 0, sizeof(double) << 2);
+  d9 = dv2[0];
+  d11 = dv2[1];
+  d12 = dv2[2];
+  d13 = dv2[3];
+  for (i3 = 0; i3 < 2; i3++) {
     double d14;
     double d15;
-    int i3;
-    d13 = b_dv[i2];
-    i3 = i2 << 1;
-    d14 = dv2[i3] + d8 * d13;
-    d15 = dv2[i3 + 1] + d10 * d13;
-    b_K[i3] = K[0] * K[i2];
-    d13 = b_dv[i2 + 2];
-    d14 += d11 * d13;
-    dv2[i3] = d14;
-    d15 += d12 * d13;
-    dv2[i3 + 1] = d15;
-    b_K[i3 + 1] = K[1] * K[i2];
+    double d16;
+    int i4;
+    d14 = b_dv1[i3];
+    i4 = i3 << 1;
+    d15 = dv3[i4] + d9 * d14;
+    d16 = dv3[i4 + 1] + d11 * d14;
+    b_K[i4] = K[0] * K[i3];
+    d14 = b_dv1[i3 + 2];
+    d15 += d12 * d14;
+    dv3[i4] = d15;
+    d16 += d13 * d14;
+    dv3[i4 + 1] = d16;
+    b_K[i4 + 1] = K[1] * K[i3];
   }
-  ctrl_mem->P[0] = dv2[0] + b_K[0];
-  ctrl_mem->P[1] = dv2[1] + b_K[1];
-  ctrl_mem->P[2] = dv2[2] + b_K[2];
-  ctrl_mem->P[3] = dv2[3] + b_K[3];
+  ctrl_mem->P[0] = dv3[0] + b_K[0];
+  ctrl_mem->P[1] = dv3[1] + b_K[1];
+  ctrl_mem->P[2] = dv3[2] + b_K[2];
+  ctrl_mem->P[3] = dv3[3] + b_K[3];
   ctrl_mem->w = xR[1];
   ctrl_mem->delta_lp = delta_lp;
   ctrl_mem->w_dot_lp = w_dot_lp;
@@ -867,14 +892,20 @@ void controller_codegen_entry(GNC_codegen_SILStackData *b_SD, double b_time,
       L_delta = -10.0;
     }
   }
-  blend = fmax(0.0, fmin(1.0, (fabs(xR[1]) - 0.5) / 0.5));
+  deviation_idx_0 = xR[0] - r_phi;
+  deviation_idx_1 = xR[1] - r_w;
+  blend = fmax(0.0, fmin(1.0, (fabs(deviation_idx_1) - 0.5) / 0.5));
   a = -1.0 / L_delta;
   x_tmp = (1.0 - blend) * 5.0;
-  x = sqrt(x_tmp);
-  K[0] = a * x;
-  *u_motor = fmin(fmax((K[0] * xR[0] +
-                        a * sqrt(2.0 * x + (x_tmp + blend * 20.0)) * xR[1]) +
-                           -K[0] * *r,
+  b_x = sqrt(x_tmp);
+  if (deviation_idx_0 > 3.1415926535897931) {
+    deviation_idx_0 -= 6.2831853071795862;
+  } else if (deviation_idx_0 < -3.1415926535897931) {
+    deviation_idx_0 += 6.2831853071795862;
+  }
+  *u_motor = fmin(fmax(a * b_x * deviation_idx_0 +
+                           a * sqrt(2.0 * b_x + (x_tmp + blend * 20.0)) *
+                               deviation_idx_1,
                        -0.17453292519943295),
                   0.17453292519943295) *
              2.0;

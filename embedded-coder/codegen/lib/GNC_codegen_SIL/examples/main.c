@@ -214,7 +214,7 @@ int main(int argc, char **argv) {
 void main_controller_codegen_entry(void) {
   struct0_T ctrl_mem;
   double b_dv[2];
-  double r;
+  double r[2];
   double time_tmp;
   double u_motor;
   boolean_T w_status_ctrl;
@@ -224,7 +224,7 @@ void main_controller_codegen_entry(void) {
   argInit_struct0_T(&ctrl_mem);
   argInit_2x1_real_T(b_dv);
   controller_codegen_entry(&GNC_codegen_SILStackDataGlobal, time_tmp, time_tmp,
-                           b_dv, time_tmp, time_tmp, &ctrl_mem, &u_motor, &r,
+                           b_dv, time_tmp, time_tmp, &ctrl_mem, &u_motor, r,
                            &w_status_ctrl);
 }
 
