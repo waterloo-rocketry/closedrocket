@@ -81,10 +81,13 @@ fin_cant_angle_rad = deg2rad(0); % fin cant angle [rad]
 
 % Canards parameters 
 canard_number = 2;
-canard_chord_root = 0.13; % root chord
-canard_chord_tip = 0.001; % tip chord 
-canard_height = 0.0373; % root to tip length
+canard_chord_root = 0.10; % root chord
+canard_chord_tip = 0; % tip chord
 canard_sweep_angle = deg2rad(74); % angle from radial normal [rad]
+canard_height = canard_chord_root / tan(canard_sweep_angle); % root to tip length
+canard_spine_width = 0.015;
+canard_spine_effectiveness = 0.5;
+canard_radial_offset = 0.02;
 canard_delta_max = deg2rad(12); % Canard maximum angle of attack
 canard_pos_x_roottip = - (nosecone_length + 0.508 + 0.102 / 2 - 0.03); % approximate position of the most forward tip of the canards
 canard_cant_zero = deg2rad(0.2); % zero roll not perfect
