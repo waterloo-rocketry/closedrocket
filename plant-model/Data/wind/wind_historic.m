@@ -6,6 +6,7 @@ function [wind_heights, wind_vectors] = wind_historic(wind_layer_threshold)
     %% pick a random timestamp and process
     for iter = 1:100
         row_idx = randi(height(wind_data));
+        %row_idx = find(wind_data{:,1}==datetime(2024, 08, 10, 14, 0, 0)); % select specific date
     
         row = wind_data(row_idx, :);
         wind_time = row.date;

@@ -85,7 +85,6 @@ static void growTargetIOFd(targetIOFd_T * IOFd, mwSize requiredSize)
 {
   if (IOFd->size < requiredSize) {
     IOFd->Fd = (FILE**)mxRealloc(IOFd->Fd, requiredSize * sizeof(FILE*));
-    mexPrintf("Reallocating IOFd: new size %lu\n", requiredSize);
     if (IOFd->Fd == NULL) {
       mexErrMsgTxt( "growTargetIOFd: mxRealloc failed.");
     } else {
@@ -154,8 +153,6 @@ static boolean_T commandDispatch(XIL_IOBuffer_T* IOBuffer, mwSize dataOutSize)
     mexErrMsgTxt( "pXILService is NULL!");
     return XILHOSTAPPSVC_ERROR;
   }                                    /* if */
-
-  mexPrintf("commandDispatch: tx --> %u * uint8_T\n", dataOutSize);
 
   /* send the data */
   if (sendData(pXILService, IOBuffer, dataOutSize) != XILHOSTAPPSVC_SUCCESS) {
@@ -431,17 +428,6 @@ static boolean_T processResponsePrintf( )
               != XILHOSTAPPSVC_SUCCESS) {
             return XILHOSTAPPSVC_ERROR;
           }                            /* if */
-
-          {
-            int elementIdx;
-            mexPrintf("Copying target to host data: ");
-            for (elementIdx = 0; elementIdx < 1 * sizeof(uint8_T); elementIdx++)
-            {
-              mexPrintf("%u, ", (unsigned int) (simDataMemUnitPtr)[elementIdx]);
-            }                          /* for */
-
-            mexPrintf("\n");
-          }
         }
       }
     }
@@ -460,24 +446,11 @@ static boolean_T processResponsePrintf( )
               != XILHOSTAPPSVC_SUCCESS) {
             return XILHOSTAPPSVC_ERROR;
           }                            /* if */
-
-          {
-            int elementIdx;
-            mexPrintf("Copying target to host data: ");
-            for (elementIdx = 0; elementIdx < 1 * sizeof(uint16_T); elementIdx++)
-            {
-              mexPrintf("%u, ", (unsigned int) (simDataMemUnitPtr)[elementIdx]);
-            }                          /* for */
-
-            mexPrintf("\n");
-          }
         }
       }
     }
   }
 
-  mexPrintf("RESPONSE_PRINTF, PRINTF_ERROR = %u, PRINTF_SIZE = %u\n",
-            PRINTF_ERROR, PRINTF_SIZE);
   if (PRINTF_ERROR != TARGET_IO_SUCCESS) {
     pKeepUtilsActive = 1;
     callStopHookAndFreeSFcnMemory();
@@ -534,17 +507,6 @@ static boolean_T processResponseFopen( )
               != XILHOSTAPPSVC_SUCCESS) {
             return XILHOSTAPPSVC_ERROR;
           }                            /* if */
-
-          {
-            int elementIdx;
-            mexPrintf("Copying target to host data: ");
-            for (elementIdx = 0; elementIdx < 1 * sizeof(uint16_T); elementIdx++)
-            {
-              mexPrintf("%u, ", (unsigned int) (simDataMemUnitPtr)[elementIdx]);
-            }                          /* for */
-
-            mexPrintf("\n");
-          }
         }
       }
     }
@@ -563,24 +525,11 @@ static boolean_T processResponseFopen( )
               != XILHOSTAPPSVC_SUCCESS) {
             return XILHOSTAPPSVC_ERROR;
           }                            /* if */
-
-          {
-            int elementIdx;
-            mexPrintf("Copying target to host data: ");
-            for (elementIdx = 0; elementIdx < 1 * sizeof(uint16_T); elementIdx++)
-            {
-              mexPrintf("%u, ", (unsigned int) (simDataMemUnitPtr)[elementIdx]);
-            }                          /* for */
-
-            mexPrintf("\n");
-          }
         }
       }
     }
   }
 
-  mexPrintf("RESPONSE_FOPEN, FOPEN_FID = %u, FOPEN_NAME_SIZE = %u\n", FOPEN_FID,
-            FOPEN_NAME_SIZE);
   if (targetIOFdPtr != NULL) {
     /* check fid increments by 1 */
     if (targetIOFdPtr->fidOffset + 1 == FOPEN_FID) {
@@ -668,17 +617,6 @@ static boolean_T processResponseFprintf( )
               != XILHOSTAPPSVC_SUCCESS) {
             return XILHOSTAPPSVC_ERROR;
           }                            /* if */
-
-          {
-            int elementIdx;
-            mexPrintf("Copying target to host data: ");
-            for (elementIdx = 0; elementIdx < 1 * sizeof(uint8_T); elementIdx++)
-            {
-              mexPrintf("%u, ", (unsigned int) (simDataMemUnitPtr)[elementIdx]);
-            }                          /* for */
-
-            mexPrintf("\n");
-          }
         }
       }
     }
@@ -697,17 +635,6 @@ static boolean_T processResponseFprintf( )
               != XILHOSTAPPSVC_SUCCESS) {
             return XILHOSTAPPSVC_ERROR;
           }                            /* if */
-
-          {
-            int elementIdx;
-            mexPrintf("Copying target to host data: ");
-            for (elementIdx = 0; elementIdx < 1 * sizeof(uint16_T); elementIdx++)
-            {
-              mexPrintf("%u, ", (unsigned int) (simDataMemUnitPtr)[elementIdx]);
-            }                          /* for */
-
-            mexPrintf("\n");
-          }
         }
       }
     }
@@ -726,24 +653,11 @@ static boolean_T processResponseFprintf( )
               != XILHOSTAPPSVC_SUCCESS) {
             return XILHOSTAPPSVC_ERROR;
           }                            /* if */
-
-          {
-            int elementIdx;
-            mexPrintf("Copying target to host data: ");
-            for (elementIdx = 0; elementIdx < 1 * sizeof(uint16_T); elementIdx++)
-            {
-              mexPrintf("%u, ", (unsigned int) (simDataMemUnitPtr)[elementIdx]);
-            }                          /* for */
-
-            mexPrintf("\n");
-          }
         }
       }
     }
   }
 
-  mexPrintf("RESPONSE_FPRINTF, FPRINTF_ERROR = %u, FPRINTF_FID = %u, FPRINTF_SIZE = %u\n",
-            FPRINTF_ERROR, FPRINTF_FID, FPRINTF_SIZE);
   if (FPRINTF_ERROR != TARGET_IO_SUCCESS) {
     pKeepUtilsActive = 1;
     callStopHookAndFreeSFcnMemory();
@@ -840,35 +754,30 @@ static boolean_T processErrorAndTargetIOResponseCases( const int responseId)
   switch (responseId) {
    case RESPONSE_ERROR:
     {
-      mexPrintf("RESPONSE_ERROR\n");
       processResponseStatus = processResponseError( );
       break;
     }
 
    case RESPONSE_PRINTF:
     {
-      mexPrintf("RESPONSE_PRINTF\n");
       processResponseStatus = processResponsePrintf( );
       break;
     }
 
    case RESPONSE_FOPEN:
     {
-      mexPrintf("RESPONSE_FOPEN\n");
       processResponseStatus = processResponseFopen( );
       break;
     }
 
    case RESPONSE_FPRINTF:
     {
-      mexPrintf("RESPONSE_FPRINTF\n");
       processResponseStatus = processResponseFprintf( );
       break;
     }
 
    case RESPONSE_SIGNAL_RAISED:
     {
-      mexPrintf("RESPONSE_SIGNAL_RAISED\n");
       processResponseStatus = processResponseSignalRaised( );
       break;
     }
@@ -1037,7 +946,7 @@ static boolean_T startAndSetupApplication()
     CodeInstrServiceData_T* pCodeInstrServiceData = codeInstrServiceData
       (memUnitSizeBytes);
     if (xilCommsCreate(&pComms, rtIOStreamDataPtr, silDebuggingDataPtr,
-                       memUnitSizeBytes, pMemUnitTransformer, pXILUtils, 1) !=
+                       memUnitSizeBytes, pMemUnitTransformer, pXILUtils, 0) !=
         XILCOMMS_RTIOSTREAM_SUCCESS) {
       xilThrowException(pXILUtils);
       return false;
@@ -1086,10 +995,9 @@ static boolean_T startAndSetupApplication()
   }
 
   {
-    mexPrintf("XIL_INIT_COMMAND:\n");
     if (IOBufferPtr != NULL) {
       if (pXILService != NULL) {
-        if (xilHostAppSvcGrowIOBuffer(pXILService, IOBufferPtr, 5, 1)!=
+        if (xilHostAppSvcGrowIOBuffer(pXILService, IOBufferPtr, 5, 0)!=
             XILHOSTAPPSVC_SUCCESS) {
           xilThrowException(pXILUtils);
           return false;
@@ -1116,18 +1024,6 @@ static boolean_T startAndSetupApplication()
                 size_t num_elements = 1;
 
                 {
-                  {
-                    int elementIdx;
-                    mexPrintf("Copying host to target data: ");
-                    for (elementIdx = 0; elementIdx < 1 * sizeof(uint32_T);
-                         elementIdx++) {
-                      mexPrintf("%u, ", (unsigned int) (simDataMemUnitPtr)
-                                [elementIdx]);
-                    }                  /* for */
-
-                    mexPrintf("\n");
-                  }
-
                   if (xilWriteData(simDataMemUnitPtr, num_elements,
                                    MEM_UNIT_UINT32_TYPE) !=
                       XILHOSTAPPSVC_SUCCESS) {
@@ -1144,8 +1040,6 @@ static boolean_T startAndSetupApplication()
 
   {
     if (IOBufferPtr != NULL) {
-      mexPrintf("XIL_INIT_COMMAND:\n");
-
       /* provide the time information to the code instrumentation service */
       {
         if (pCodeInstrService != NULL) {
@@ -1173,7 +1067,6 @@ static boolean_T startAndSetupApplication()
 
 #define RESPONSE_TYPE_SIZE             8
 
-            mexPrintf("XIL_INIT_COMMAND: processing response...\n");
             while (IOBufferPtr->readData) {
               /* read response id */
               if (xilReadData(&responseId, 1, MEM_UNIT_UINT8_TYPE) !=
@@ -1197,14 +1090,12 @@ static boolean_T startAndSetupApplication()
 
                case RESPONSE_OUTPUT_PRE_DATA:
                 {
-                  mexPrintf("XIL_INIT_COMMAND: RESPONSE_OUTPUT_DATA, (1 + 0) * uint8_T\n");
                   return false;
                   break;
                 }
 
                case RESPONSE_OUTPUT_DATA:
                 {
-                  mexPrintf("XIL_INIT_COMMAND: RESPONSE_OUTPUT_DATA, (1 + 0) * uint8_T\n");
                   return false;
                   break;
                 }
@@ -1336,10 +1227,9 @@ static boolean_T startAndSetupApplication()
 static void sendInitializeCommand()
 {
   {
-    mexPrintf("XIL_INITIALIZE_COMMAND:\n");
     if (IOBufferPtr != NULL) {
       if (pXILService != NULL) {
-        if (xilHostAppSvcGrowIOBuffer(pXILService, IOBufferPtr, 5, 1)!=
+        if (xilHostAppSvcGrowIOBuffer(pXILService, IOBufferPtr, 5, 0)!=
             XILHOSTAPPSVC_SUCCESS) {
           xilThrowException(pXILUtils);
           return;
@@ -1366,18 +1256,6 @@ static void sendInitializeCommand()
                 size_t num_elements = 1;
 
                 {
-                  {
-                    int elementIdx;
-                    mexPrintf("Copying host to target data: ");
-                    for (elementIdx = 0; elementIdx < 1 * sizeof(uint32_T);
-                         elementIdx++) {
-                      mexPrintf("%u, ", (unsigned int) (simDataMemUnitPtr)
-                                [elementIdx]);
-                    }                  /* for */
-
-                    mexPrintf("\n");
-                  }
-
                   if (xilWriteData(simDataMemUnitPtr, num_elements,
                                    MEM_UNIT_UINT32_TYPE) !=
                       XILHOSTAPPSVC_SUCCESS) {
@@ -1394,8 +1272,6 @@ static void sendInitializeCommand()
 
   {
     if (IOBufferPtr != NULL) {
-      mexPrintf("XIL_INITIALIZE_COMMAND:\n");
-
       /* provide the time information to the code instrumentation service */
       {
         if (pCodeInstrService != NULL) {
@@ -1420,7 +1296,6 @@ static void sendInitializeCommand()
 
           if (IOBufferPtr->readData) {
             uint8_T responseId = 0;
-            mexPrintf("XIL_INITIALIZE_COMMAND: processing response...\n");
             while (IOBufferPtr->readData) {
               /* read response id */
               if (xilReadData(&responseId, 1, MEM_UNIT_UINT8_TYPE) !=
@@ -1444,14 +1319,12 @@ static void sendInitializeCommand()
 
                case RESPONSE_OUTPUT_PRE_DATA:
                 {
-                  mexPrintf("XIL_INITIALIZE_COMMAND: RESPONSE_OUTPUT_DATA, (1 + 0) * uint8_T\n");
                   return;
                   break;
                 }
 
                case RESPONSE_OUTPUT_DATA:
                 {
-                  mexPrintf("XIL_INITIALIZE_COMMAND: RESPONSE_OUTPUT_DATA, (1 + 0) * uint8_T\n");
                   return;
                   break;
                 }
@@ -1650,10 +1523,9 @@ static void mdlStart()
 
 void xilPreEntryPointHost(uint32_T taskID)
 {
-  mexPrintf("XIL_OUTPUT_COMMAND:\n");
   if (IOBufferPtr != NULL) {
     if (pXILService != NULL) {
-      if (xilHostAppSvcGrowIOBuffer(pXILService, IOBufferPtr, 9, 1)!=
+      if (xilHostAppSvcGrowIOBuffer(pXILService, IOBufferPtr, 9, 0)!=
           XILHOSTAPPSVC_SUCCESS) {
         xilThrowException(pXILUtils);
         return;
@@ -1682,18 +1554,6 @@ void xilPreEntryPointHost(uint32_T taskID)
               size_t num_elements = 2;
 
               {
-                {
-                  int elementIdx;
-                  mexPrintf("Copying host to target data: ");
-                  for (elementIdx = 0; elementIdx < 2 * sizeof(uint32_T);
-                       elementIdx++) {
-                    mexPrintf("%u, ", (unsigned int) (simDataMemUnitPtr)
-                              [elementIdx]);
-                  }                    /* for */
-
-                  mexPrintf("\n");
-                }
-
                 if (xilWriteData(simDataMemUnitPtr, num_elements,
                                  MEM_UNIT_UINT32_TYPE) != XILHOSTAPPSVC_SUCCESS)
                 {
@@ -1711,8 +1571,6 @@ void xilPreEntryPointHost(uint32_T taskID)
 void xilEntryPointHost(uint32_T taskID)
 {
   if (IOBufferPtr != NULL) {
-    mexPrintf("XIL_OUTPUT_COMMAND:\n");
-
     /* provide the time information to the code instrumentation service */
     {
       if (pCodeInstrService != NULL) {
@@ -1737,7 +1595,6 @@ void xilEntryPointHost(uint32_T taskID)
 
         if (IOBufferPtr->readData) {
           uint8_T responseId = 0;
-          mexPrintf("XIL_OUTPUT_COMMAND: processing response...\n");
           while (IOBufferPtr->readData) {
             /* read response id */
             if (xilReadData(&responseId, 1, MEM_UNIT_UINT8_TYPE) !=
@@ -1761,14 +1618,12 @@ void xilEntryPointHost(uint32_T taskID)
 
              case RESPONSE_OUTPUT_PRE_DATA:
               {
-                mexPrintf("XIL_OUTPUT_COMMAND: RESPONSE_OUTPUT_DATA, (1 + 0) * uint8_T\n");
                 return;
                 break;
               }
 
              case RESPONSE_OUTPUT_DATA:
               {
-                mexPrintf("XIL_OUTPUT_COMMAND: RESPONSE_OUTPUT_DATA, (1 + 0) * uint8_T\n");
                 return;
                 break;
               }
@@ -1804,10 +1659,8 @@ void xilEntryPointHost(uint32_T taskID)
 
 void xilPostEntryPointHost(uint32_T taskID)
 {
-  mexPrintf("XIL_OUTPUT_COMMAND:\n");
   if (IOBufferPtr->readData) {
     uint8_T responseId = 0;
-    mexPrintf("XIL_OUTPUT_COMMAND: processing response...\n");
     while (IOBufferPtr->readData) {
       /* read response id */
       if (xilReadData(&responseId, 1, MEM_UNIT_UINT8_TYPE) !=
@@ -1877,10 +1730,9 @@ void GNC_codegen_SIL_xil_terminate()
   if (isXILApplicationStarted) {
     if (!commErrorOccurred) {
       {
-        mexPrintf("XIL_TERMINATE_COMMAND:\n");
         if (IOBufferPtr != NULL) {
           if (pXILService != NULL) {
-            if (xilHostAppSvcGrowIOBuffer(pXILService, IOBufferPtr, 5, 1)!=
+            if (xilHostAppSvcGrowIOBuffer(pXILService, IOBufferPtr, 5, 0)!=
                 XILHOSTAPPSVC_SUCCESS) {
               xilThrowException(pXILUtils);
               return;
@@ -1907,18 +1759,6 @@ void GNC_codegen_SIL_xil_terminate()
                     size_t num_elements = 1;
 
                     {
-                      {
-                        int elementIdx;
-                        mexPrintf("Copying host to target data: ");
-                        for (elementIdx = 0; elementIdx < 1 * sizeof(uint32_T);
-                             elementIdx++) {
-                          mexPrintf("%u, ", (unsigned int) (simDataMemUnitPtr)
-                                    [elementIdx]);
-                        }              /* for */
-
-                        mexPrintf("\n");
-                      }
-
                       if (xilWriteData(simDataMemUnitPtr, num_elements,
                                        MEM_UNIT_UINT32_TYPE) !=
                           XILHOSTAPPSVC_SUCCESS) {
@@ -1935,8 +1775,6 @@ void GNC_codegen_SIL_xil_terminate()
 
       {
         if (IOBufferPtr != NULL) {
-          mexPrintf("XIL_TERMINATE_COMMAND:\n");
-
           /* provide the time information to the code instrumentation service */
           {
             if (pCodeInstrService != NULL) {
@@ -1962,7 +1800,6 @@ void GNC_codegen_SIL_xil_terminate()
 
               if (IOBufferPtr->readData) {
                 uint8_T responseId = 0;
-                mexPrintf("XIL_TERMINATE_COMMAND: processing response...\n");
                 while (IOBufferPtr->readData) {
                   /* read response id */
                   if (xilReadData(&responseId, 1, MEM_UNIT_UINT8_TYPE) !=
@@ -1986,14 +1823,12 @@ void GNC_codegen_SIL_xil_terminate()
 
                    case RESPONSE_OUTPUT_PRE_DATA:
                     {
-                      mexPrintf("XIL_TERMINATE_COMMAND: RESPONSE_OUTPUT_DATA, (1 + 0) * uint8_T\n");
                       return;
                       break;
                     }
 
                    case RESPONSE_OUTPUT_DATA:
                     {
-                      mexPrintf("XIL_TERMINATE_COMMAND: RESPONSE_OUTPUT_DATA, (1 + 0) * uint8_T\n");
                       return;
                       break;
                     }
@@ -2051,10 +1886,9 @@ void GNC_codegen_SIL_xil_shutdown()
   if (isXILApplicationStarted) {
     if (!commErrorOccurred) {
       {
-        mexPrintf("XIL_SHUTDOWN_COMMAND:\n");
         if (IOBufferPtr != NULL) {
           if (pXILService != NULL) {
-            if (xilHostAppSvcGrowIOBuffer(pXILService, IOBufferPtr, 1, 1)!=
+            if (xilHostAppSvcGrowIOBuffer(pXILService, IOBufferPtr, 1, 0)!=
                 XILHOSTAPPSVC_SUCCESS) {
               xilThrowException(pXILUtils);
               callStopHookAndFreeSFcnMemory();
@@ -2078,8 +1912,6 @@ void GNC_codegen_SIL_xil_shutdown()
 
       {
         if (IOBufferPtr != NULL) {
-          mexPrintf("XIL_SHUTDOWN_COMMAND:\n");
-
           /* provide the time information to the code instrumentation service */
           {
             if (pCodeInstrService != NULL) {

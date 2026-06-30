@@ -6,11 +6,11 @@ static GNC_codegen_SILStackData *SD;
 
 static void b_xilTargetDeserializer(double r[2]);
 
-static void b_xilTargetSerializer(const struct0_T *r);
+static void b_xilTargetSerializer(const double r[2]);
 
 static void c_xilTargetDeserializer(struct0_T *r);
 
-static void c_xilTargetSerializer(const double r[2]);
+static void c_xilTargetSerializer(const struct0_T *r);
 
 static void d_xilTargetDeserializer(double r[4]);
 
@@ -56,12 +56,8 @@ static void b_xilTargetDeserializer(double r[2]) {
   xilReadData((MemUnit_T *)&r[0], sizeof(double) << 1);
 }
 
-static void b_xilTargetSerializer(const struct0_T *r) {
-  c_xilTargetSerializer(r->coeffs);
-  xilTargetSerializer(&r->w);
-  d_xilTargetSerializer(r->P);
-  xilTargetSerializer(&r->delta_lp);
-  xilTargetSerializer(&r->w_dot_lp);
+static void b_xilTargetSerializer(const double r[2]) {
+  xilWriteData((const MemUnit_T *)&r[0], sizeof(double) << 1);
 }
 
 static void c_xilTargetDeserializer(struct0_T *r) {
@@ -72,8 +68,12 @@ static void c_xilTargetDeserializer(struct0_T *r) {
   xilTargetDeserializer(&r->w_dot_lp);
 }
 
-static void c_xilTargetSerializer(const double r[2]) {
-  xilWriteData((const MemUnit_T *)&r[0], sizeof(double) << 1);
+static void c_xilTargetSerializer(const struct0_T *r) {
+  b_xilTargetSerializer(r->coeffs);
+  xilTargetSerializer(&r->w);
+  d_xilTargetSerializer(r->P);
+  xilTargetSerializer(&r->delta_lp);
+  xilTargetSerializer(&r->w_dot_lp);
 }
 
 static void d_xilTargetDeserializer(double r[4]) {
@@ -225,12 +225,12 @@ void XILTarget_terminate(unsigned int fcnId) {
 XIL_PROCESSDATA_ERROR_CODE
 xilTarget_controller_codegen_entry(unsigned int fcnId) {
   struct0_T ctrl_mem;
-  double xR[2];
+  double where_it_is[2];
+  double where_it_isnt[2];
   double b_time;
   double delta_encoder;
   double dt_ctrl;
   double pdyn;
-  double r;
   double u_motor;
   boolean_T w_status_ctrl;
   SD = getGNC_codegen_SILStackData();
@@ -239,7 +239,7 @@ xilTarget_controller_codegen_entry(unsigned int fcnId) {
 
   xilTargetDeserializer(&dt_ctrl);
 
-  b_xilTargetDeserializer(xR);
+  b_xilTargetDeserializer(where_it_is);
 
   xilTargetDeserializer(&pdyn);
 
@@ -249,16 +249,17 @@ xilTarget_controller_codegen_entry(unsigned int fcnId) {
 
   xilPreEntryPoint(fcnId);
 
-  controller_codegen_entry(SD, b_time, dt_ctrl, xR, pdyn, delta_encoder,
-                           &ctrl_mem, &u_motor, &r, &w_status_ctrl);
+  controller_codegen_entry(SD, b_time, dt_ctrl, where_it_is, pdyn,
+                           delta_encoder, &ctrl_mem, &u_motor, where_it_isnt,
+                           &w_status_ctrl);
 
   xilPostEntryPoint(fcnId);
 
   xilTargetSerializer(&u_motor);
 
-  xilTargetSerializer(&r);
+  b_xilTargetSerializer(where_it_isnt);
 
-  b_xilTargetSerializer(&ctrl_mem);
+  c_xilTargetSerializer(&ctrl_mem);
 
   e_xilTargetSerializer(&w_status_ctrl);
   return XIL_PROCESSDATA_SUCCESS;
@@ -311,7 +312,7 @@ xilTarget_navigation_codegen_entry(unsigned int fcnId) {
 
   xilTargetSerializer(&cov_norm);
 
-  c_xilTargetSerializer(roll_state);
+  b_xilTargetSerializer(roll_state);
 
   xilTargetSerializer(&pdyn);
 

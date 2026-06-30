@@ -31,9 +31,9 @@ static void ab_emlrt_marshallIn(const emlrtStack *sp, const mxArray *src,
 static real_T b_emlrt_marshallIn(const emlrtStack *sp, const mxArray *u,
                                  const emlrtMsgIdentifier *parentId);
 
-static const mxArray *b_emlrt_marshallOut(const struct0_T *u);
+static const mxArray *b_emlrt_marshallOut(real_T u[2]);
 
-static void b_xilHostDeserializer(struct0_T *r);
+static void b_xilHostDeserializer(real_T r[2]);
 
 static void b_xilHostSerializer(const real_T r[2]);
 
@@ -43,9 +43,9 @@ static void bb_emlrt_marshallIn(const emlrtStack *sp, const mxArray *src,
 static real_T (*c_emlrt_marshallIn(const emlrtStack *sp, const mxArray *nullptr,
                                    const char_T *identifier))[2];
 
-static const mxArray *c_emlrt_marshallOut(const boolean_T u);
+static const mxArray *c_emlrt_marshallOut(const struct0_T *u);
 
-static void c_xilHostDeserializer(real_T r[2]);
+static void c_xilHostDeserializer(struct0_T *r);
 
 static void c_xilHostSerializer(const struct0_T *r);
 
@@ -55,7 +55,7 @@ static boolean_T cb_emlrt_marshallIn(const emlrtStack *sp, const mxArray *src,
 static real_T (*d_emlrt_marshallIn(const emlrtStack *sp, const mxArray *u,
                                    const emlrtMsgIdentifier *parentId))[2];
 
-static void d_emlrt_marshallOut(real_T u[11], const mxArray *y);
+static const mxArray *d_emlrt_marshallOut(const boolean_T u);
 
 static void d_xilHostDeserializer(real_T r[4]);
 
@@ -67,7 +67,7 @@ static real_T (*db_emlrt_marshallIn(const emlrtStack *sp, const mxArray *src,
 static void e_emlrt_marshallIn(const emlrtStack *sp, const mxArray *nullptr,
                                const char_T *identifier, struct0_T *y);
 
-static void e_emlrt_marshallOut(real_T u[121], const mxArray *y);
+static void e_emlrt_marshallOut(real_T u[11], const mxArray *y);
 
 static void e_xilHostDeserializer(boolean_T *r);
 
@@ -87,7 +87,7 @@ static void f_emlrt_marshallIn(const emlrtStack *sp, const mxArray *u,
                                const emlrtMsgIdentifier *parentId,
                                struct0_T *y);
 
-static const mxArray *f_emlrt_marshallOut(const struct1_T *u);
+static void f_emlrt_marshallOut(real_T u[121], const mxArray *y);
 
 static void f_xilHostDeserializer(real_T r[11]);
 
@@ -99,7 +99,7 @@ static void fb_emlrt_marshallIn(const emlrtStack *sp, const mxArray *src,
 static void g_emlrt_marshallIn(const emlrtStack *sp, const mxArray *u,
                                const emlrtMsgIdentifier *parentId, real_T y[2]);
 
-static const mxArray *g_emlrt_marshallOut(const struct2_T *u);
+static const mxArray *g_emlrt_marshallOut(const struct1_T *u);
 
 static void g_xilHostDeserializer(real_T r[121]);
 
@@ -108,7 +108,7 @@ static void g_xilHostSerializer(const real_T r[121]);
 static void h_emlrt_marshallIn(const emlrtStack *sp, const mxArray *u,
                                const emlrtMsgIdentifier *parentId, real_T y[4]);
 
-static const mxArray *h_emlrt_marshallOut(real_T u[2]);
+static const mxArray *h_emlrt_marshallOut(const struct2_T *u);
 
 static void h_xilHostDeserializer(struct1_T *r);
 
@@ -210,7 +210,55 @@ static real_T b_emlrt_marshallIn(const emlrtStack *sp, const mxArray *u,
   return y;
 }
 
-static const mxArray *b_emlrt_marshallOut(const struct0_T *u) {
+static const mxArray *b_emlrt_marshallOut(real_T u[2]) {
+  static const int32_T i = 0;
+  static const int32_T i1 = 2;
+  const mxArray *m;
+  const mxArray *y;
+  y = NULL;
+  m = emlrtCreateNumericArray(1, (const void *)&i, mxDOUBLE_CLASS, mxREAL);
+  emlrtMxSetData((mxArray *)m, &u[0]);
+  emlrtSetDimensions((mxArray *)m, &i1, 1);
+  emlrtAssign(&y, m);
+  return y;
+}
+
+static void b_xilHostDeserializer(real_T r[2]) {
+  xilReadData((uint8_T *)&r[0], (size_t)2, MEM_UNIT_DOUBLE_TYPE);
+}
+
+static void b_xilHostSerializer(const real_T r[2]) {
+  xilWriteData((uint8_T *)&r[0], (size_t)2, MEM_UNIT_DOUBLE_TYPE);
+}
+
+static void bb_emlrt_marshallIn(const emlrtStack *sp, const mxArray *src,
+                                const emlrtMsgIdentifier *msgId,
+                                real_T ret[4]) {
+  static const int32_T dims[2] = {2, 2};
+  real_T(*r)[4];
+  emlrtCheckBuiltInR2012b((emlrtConstCTX)sp, msgId, src, "double", false, 2U,
+                          (const void *)&dims[0]);
+  r = (real_T(*)[4])emlrtMxGetData(src);
+  ret[0] = (*r)[0];
+  ret[1] = (*r)[1];
+  ret[2] = (*r)[2];
+  ret[3] = (*r)[3];
+  emlrtDestroyArray(&src);
+}
+
+static real_T (*c_emlrt_marshallIn(const emlrtStack *sp, const mxArray *nullptr,
+                                   const char_T *identifier))[2] {
+  emlrtMsgIdentifier thisId;
+  real_T(*y)[2];
+  thisId.fIdentifier = (const char_T *)identifier;
+  thisId.fParent = NULL;
+  thisId.bParentIsCell = false;
+  y = d_emlrt_marshallIn(sp, emlrtAlias(nullptr), &thisId);
+  emlrtDestroyArray(&nullptr);
+  return y;
+}
+
+static const mxArray *c_emlrt_marshallOut(const struct0_T *u) {
   static const int32_T iv[2] = {2, 2};
   static const int32_T i = 2;
   static const char_T *b_sv[5] = {"coeffs", "w", "P", "delta_lp", "w_dot_lp"};
@@ -245,56 +293,12 @@ static const mxArray *b_emlrt_marshallOut(const struct0_T *u) {
   return y;
 }
 
-static void b_xilHostDeserializer(struct0_T *r) {
-  c_xilHostDeserializer(r->coeffs);
+static void c_xilHostDeserializer(struct0_T *r) {
+  b_xilHostDeserializer(r->coeffs);
   xilHostDeserializer(&r->w);
   d_xilHostDeserializer(r->P);
   xilHostDeserializer(&r->delta_lp);
   xilHostDeserializer(&r->w_dot_lp);
-}
-
-static void b_xilHostSerializer(const real_T r[2]) {
-  xilWriteData((uint8_T *)&r[0], (size_t)2, MEM_UNIT_DOUBLE_TYPE);
-}
-
-static void bb_emlrt_marshallIn(const emlrtStack *sp, const mxArray *src,
-                                const emlrtMsgIdentifier *msgId,
-                                real_T ret[4]) {
-  static const int32_T dims[2] = {2, 2};
-  real_T(*r)[4];
-  emlrtCheckBuiltInR2012b((emlrtConstCTX)sp, msgId, src, "double", false, 2U,
-                          (const void *)&dims[0]);
-  r = (real_T(*)[4])emlrtMxGetData(src);
-  ret[0] = (*r)[0];
-  ret[1] = (*r)[1];
-  ret[2] = (*r)[2];
-  ret[3] = (*r)[3];
-  emlrtDestroyArray(&src);
-}
-
-static real_T (*c_emlrt_marshallIn(const emlrtStack *sp, const mxArray *nullptr,
-                                   const char_T *identifier))[2] {
-  emlrtMsgIdentifier thisId;
-  real_T(*y)[2];
-  thisId.fIdentifier = (const char_T *)identifier;
-  thisId.fParent = NULL;
-  thisId.bParentIsCell = false;
-  y = d_emlrt_marshallIn(sp, emlrtAlias(nullptr), &thisId);
-  emlrtDestroyArray(&nullptr);
-  return y;
-}
-
-static const mxArray *c_emlrt_marshallOut(const boolean_T u) {
-  const mxArray *m;
-  const mxArray *y;
-  y = NULL;
-  m = emlrtCreateLogicalScalar(u);
-  emlrtAssign(&y, m);
-  return y;
-}
-
-static void c_xilHostDeserializer(real_T r[2]) {
-  xilReadData((uint8_T *)&r[0], (size_t)2, MEM_UNIT_DOUBLE_TYPE);
 }
 
 static void c_xilHostSerializer(const struct0_T *r) {
@@ -324,10 +328,13 @@ static real_T (*d_emlrt_marshallIn(const emlrtStack *sp, const mxArray *u,
   return y;
 }
 
-static void d_emlrt_marshallOut(real_T u[11], const mxArray *y) {
-  static const int32_T i = 11;
-  emlrtMxSetData((mxArray *)y, &u[0]);
-  emlrtSetDimensions((mxArray *)y, &i, 1);
+static const mxArray *d_emlrt_marshallOut(const boolean_T u) {
+  const mxArray *m;
+  const mxArray *y;
+  y = NULL;
+  m = emlrtCreateLogicalScalar(u);
+  emlrtAssign(&y, m);
+  return y;
 }
 
 static void d_xilHostDeserializer(real_T r[4]) {
@@ -361,10 +368,10 @@ static void e_emlrt_marshallIn(const emlrtStack *sp, const mxArray *nullptr,
   emlrtDestroyArray(&nullptr);
 }
 
-static void e_emlrt_marshallOut(real_T u[121], const mxArray *y) {
-  static const int32_T iv[2] = {11, 11};
+static void e_emlrt_marshallOut(real_T u[11], const mxArray *y) {
+  static const int32_T i = 11;
   emlrtMxSetData((mxArray *)y, &u[0]);
-  emlrtSetDimensions((mxArray *)y, &iv[0], 2);
+  emlrtSetDimensions((mxArray *)y, &i, 1);
 }
 
 static void e_xilHostDeserializer(boolean_T *r) {
@@ -450,7 +457,42 @@ static void f_emlrt_marshallIn(const emlrtStack *sp, const mxArray *u,
   emlrtDestroyArray(&u);
 }
 
-static const mxArray *f_emlrt_marshallOut(const struct1_T *u) {
+static void f_emlrt_marshallOut(real_T u[121], const mxArray *y) {
+  static const int32_T iv[2] = {11, 11};
+  emlrtMxSetData((mxArray *)y, &u[0]);
+  emlrtSetDimensions((mxArray *)y, &iv[0], 2);
+}
+
+static void f_xilHostDeserializer(real_T r[11]) {
+  xilReadData((uint8_T *)&r[0], (size_t)11, MEM_UNIT_DOUBLE_TYPE);
+}
+
+static void f_xilHostSerializer(const real_T r[11]) {
+  xilWriteData((uint8_T *)&r[0], (size_t)11, MEM_UNIT_DOUBLE_TYPE);
+}
+
+static void fb_emlrt_marshallIn(const emlrtStack *sp, const mxArray *src,
+                                const emlrtMsgIdentifier *msgId,
+                                real_T ret[3]) {
+  static const int32_T dims = 3;
+  real_T(*r)[3];
+  emlrtCheckBuiltInR2012b((emlrtConstCTX)sp, msgId, src, "double", false, 1U,
+                          (const void *)&dims);
+  r = (real_T(*)[3])emlrtMxGetData(src);
+  ret[0] = (*r)[0];
+  ret[1] = (*r)[1];
+  ret[2] = (*r)[2];
+  emlrtDestroyArray(&src);
+}
+
+static void g_emlrt_marshallIn(const emlrtStack *sp, const mxArray *u,
+                               const emlrtMsgIdentifier *parentId,
+                               real_T y[2]) {
+  ab_emlrt_marshallIn(sp, emlrtAlias(u), parentId, y);
+  emlrtDestroyArray(&u);
+}
+
+static const mxArray *g_emlrt_marshallOut(const struct1_T *u) {
   static const int32_T i = 3;
   static const int32_T i1 = 3;
   static const int32_T i2 = 3;
@@ -522,36 +564,22 @@ static const mxArray *f_emlrt_marshallOut(const struct1_T *u) {
   return y;
 }
 
-static void f_xilHostDeserializer(real_T r[11]) {
-  xilReadData((uint8_T *)&r[0], (size_t)11, MEM_UNIT_DOUBLE_TYPE);
+static void g_xilHostDeserializer(real_T r[121]) {
+  xilReadData((uint8_T *)&r[0], (size_t)121, MEM_UNIT_DOUBLE_TYPE);
 }
 
-static void f_xilHostSerializer(const real_T r[11]) {
-  xilWriteData((uint8_T *)&r[0], (size_t)11, MEM_UNIT_DOUBLE_TYPE);
+static void g_xilHostSerializer(const real_T r[121]) {
+  xilWriteData((uint8_T *)&r[0], (size_t)121, MEM_UNIT_DOUBLE_TYPE);
 }
 
-static void fb_emlrt_marshallIn(const emlrtStack *sp, const mxArray *src,
-                                const emlrtMsgIdentifier *msgId,
-                                real_T ret[3]) {
-  static const int32_T dims = 3;
-  real_T(*r)[3];
-  emlrtCheckBuiltInR2012b((emlrtConstCTX)sp, msgId, src, "double", false, 1U,
-                          (const void *)&dims);
-  r = (real_T(*)[3])emlrtMxGetData(src);
-  ret[0] = (*r)[0];
-  ret[1] = (*r)[1];
-  ret[2] = (*r)[2];
-  emlrtDestroyArray(&src);
-}
-
-static void g_emlrt_marshallIn(const emlrtStack *sp, const mxArray *u,
+static void h_emlrt_marshallIn(const emlrtStack *sp, const mxArray *u,
                                const emlrtMsgIdentifier *parentId,
-                               real_T y[2]) {
-  ab_emlrt_marshallIn(sp, emlrtAlias(u), parentId, y);
+                               real_T y[4]) {
+  bb_emlrt_marshallIn(sp, emlrtAlias(u), parentId, y);
   emlrtDestroyArray(&u);
 }
 
-static const mxArray *g_emlrt_marshallOut(const struct2_T *u) {
+static const mxArray *h_emlrt_marshallOut(const struct2_T *u) {
   static const int32_T i = 3;
   static const int32_T i1 = 3;
   static const int32_T i2 = 3;
@@ -656,34 +684,6 @@ static const mxArray *g_emlrt_marshallOut(const struct2_T *u) {
   h_pData[2] = u->mti_mag[2];
   emlrtAssign(&i_y, m7);
   emlrtSetFieldR2017b(y, 0, "mti_mag", i_y, 9);
-  return y;
-}
-
-static void g_xilHostDeserializer(real_T r[121]) {
-  xilReadData((uint8_T *)&r[0], (size_t)121, MEM_UNIT_DOUBLE_TYPE);
-}
-
-static void g_xilHostSerializer(const real_T r[121]) {
-  xilWriteData((uint8_T *)&r[0], (size_t)121, MEM_UNIT_DOUBLE_TYPE);
-}
-
-static void h_emlrt_marshallIn(const emlrtStack *sp, const mxArray *u,
-                               const emlrtMsgIdentifier *parentId,
-                               real_T y[4]) {
-  bb_emlrt_marshallIn(sp, emlrtAlias(u), parentId, y);
-  emlrtDestroyArray(&u);
-}
-
-static const mxArray *h_emlrt_marshallOut(real_T u[2]) {
-  static const int32_T i = 0;
-  static const int32_T i1 = 2;
-  const mxArray *m;
-  const mxArray *y;
-  y = NULL;
-  m = emlrtCreateNumericArray(1, (const void *)&i, mxDOUBLE_CLASS, mxREAL);
-  emlrtMxSetData((mxArray *)m, &u[0]);
-  emlrtSetDimensions((mxArray *)m, &i1, 1);
-  emlrtAssign(&y, m);
   return y;
 }
 
@@ -1145,16 +1145,17 @@ void GNC_codegen_SIL_terminate(void) {
 }
 
 void controller_codegen_entryXilWrapper(real_T b_time, real_T dt_ctrl,
-                                        const real_T xR[2], real_T pdyn,
-                                        real_T delta_encoder,
+                                        const real_T where_it_is[2],
+                                        real_T pdyn, real_T delta_encoder,
                                         struct0_T *ctrl_mem, real_T *u_motor,
-                                        real_T *r, boolean_T *w_status_ctrl) {
+                                        real_T where_it_isnt[2],
+                                        boolean_T *w_status_ctrl) {
 
   xilHostSerializer(&b_time);
 
   xilHostSerializer(&dt_ctrl);
 
-  b_xilHostSerializer(xR);
+  b_xilHostSerializer(where_it_is);
 
   xilHostSerializer(&pdyn);
 
@@ -1166,9 +1167,9 @@ void controller_codegen_entryXilWrapper(real_T b_time, real_T dt_ctrl,
 
   xilHostDeserializer(u_motor);
 
-  xilHostDeserializer(r);
+  b_xilHostDeserializer(where_it_isnt);
 
-  b_xilHostDeserializer(ctrl_mem);
+  c_xilHostDeserializer(ctrl_mem);
 
   e_xilHostDeserializer(w_status_ctrl);
 }
@@ -1177,39 +1178,41 @@ void controller_codegen_entry_api(const mxArray *const prhs[6], int32_T nlhs,
                                   const mxArray *plhs[4]) {
   emlrtStack st = {NULL, NULL, NULL};
   struct0_T ctrl_mem;
-  real_T(*xR)[2];
+  real_T(*where_it_is)[2];
+  real_T(*where_it_isnt)[2];
   real_T b_time;
   real_T delta_encoder;
   real_T dt_ctrl;
   real_T pdyn;
-  real_T r;
   real_T u_motor;
   boolean_T w_status_ctrl;
   st.tls = emlrtRootTLSGlobal;
+  where_it_isnt = (real_T(*)[2])mxMalloc(sizeof(real_T[2]));
 
   b_time = emlrt_marshallIn(&st, emlrtAliasP(prhs[0]), "time");
   dt_ctrl = emlrt_marshallIn(&st, emlrtAliasP(prhs[1]), "dt_ctrl");
-  xR = c_emlrt_marshallIn(&st, emlrtAlias(prhs[2]), "xR");
+  where_it_is = c_emlrt_marshallIn(&st, emlrtAlias(prhs[2]), "where_it_is");
   pdyn = emlrt_marshallIn(&st, emlrtAliasP(prhs[3]), "pdyn");
   delta_encoder = emlrt_marshallIn(&st, emlrtAliasP(prhs[4]), "delta_encoder");
   e_emlrt_marshallIn(&st, emlrtAliasP(prhs[5]), "ctrl_mem", &ctrl_mem);
 
   xilPreEntryPointHost(1U);
 
-  controller_codegen_entryXilWrapper(b_time, dt_ctrl, *xR, pdyn, delta_encoder,
-                                     &ctrl_mem, &u_motor, &r, &w_status_ctrl);
+  controller_codegen_entryXilWrapper(b_time, dt_ctrl, *where_it_is, pdyn,
+                                     delta_encoder, &ctrl_mem, &u_motor,
+                                     *where_it_isnt, &w_status_ctrl);
 
   xilPostEntryPointHost(1U);
 
   plhs[0] = emlrt_marshallOut(u_motor);
   if (nlhs > 1) {
-    plhs[1] = emlrt_marshallOut(r);
+    plhs[1] = b_emlrt_marshallOut(*where_it_isnt);
   }
   if (nlhs > 2) {
-    plhs[2] = b_emlrt_marshallOut(&ctrl_mem);
+    plhs[2] = c_emlrt_marshallOut(&ctrl_mem);
   }
   if (nlhs > 3) {
-    plhs[3] = c_emlrt_marshallOut(w_status_ctrl);
+    plhs[3] = d_emlrt_marshallOut(w_status_ctrl);
   }
 }
 
@@ -1246,7 +1249,7 @@ void navigation_codegen_entryXilWrapper(real_T dt, boolean_T flight_phase,
 
   xilHostDeserializer(cov_norm);
 
-  c_xilHostDeserializer(roll_state);
+  b_xilHostDeserializer(roll_state);
 
   xilHostDeserializer(pdyn);
 
@@ -1290,29 +1293,29 @@ void navigation_codegen_entry_api(const mxArray *const prhs[7], int32_T nlhs,
 
   xilPostEntryPointHost(2U);
 
-  d_emlrt_marshallOut(*x, prhs_copy_idx_2);
+  e_emlrt_marshallOut(*x, prhs_copy_idx_2);
   plhs[0] = prhs_copy_idx_2;
   if (nlhs > 1) {
-    e_emlrt_marshallOut(*P, prhs_copy_idx_3);
+    f_emlrt_marshallOut(*P, prhs_copy_idx_3);
     plhs[1] = prhs_copy_idx_3;
   }
   if (nlhs > 2) {
-    plhs[2] = f_emlrt_marshallOut(&bias);
+    plhs[2] = g_emlrt_marshallOut(&bias);
   }
   if (nlhs > 3) {
-    plhs[3] = g_emlrt_marshallOut(&sens_filt);
+    plhs[3] = h_emlrt_marshallOut(&sens_filt);
   }
   if (nlhs > 4) {
     plhs[4] = emlrt_marshallOut(cov_norm);
   }
   if (nlhs > 5) {
-    plhs[5] = h_emlrt_marshallOut(*roll_state);
+    plhs[5] = b_emlrt_marshallOut(*roll_state);
   }
   if (nlhs > 6) {
     plhs[6] = emlrt_marshallOut(pdyn);
   }
   if (nlhs > 7) {
-    plhs[7] = c_emlrt_marshallOut(w_status_nav);
+    plhs[7] = d_emlrt_marshallOut(w_status_nav);
   }
 }
 

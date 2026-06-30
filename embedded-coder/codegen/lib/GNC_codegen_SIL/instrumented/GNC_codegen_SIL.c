@@ -1323,7 +1323,7 @@ extern void GNC_codegen_SIL_initialize(GNC_codegen_SILStackData * b_SD);
 
 extern void GNC_codegen_SIL_terminate(void); 
 
-extern void controller_codegen_entry(GNC_codegen_SILStackData * b_SD, double b_time, double dt_ctrl, const double  xR[2], double pdyn, double delta_encoder, struct0_T * ctrl_mem, double * u_motor, double * r, boolean_T * w_status_ctrl); 
+extern void controller_codegen_entry(GNC_codegen_SILStackData * b_SD, double b_time, double dt_ctrl, const double  where_it_is[2], double pdyn, double delta_encoder, struct0_T * ctrl_mem, double * u_motor, double  where_it_isnt[2], boolean_T * w_status_ctrl); 
 #line 24
 extern void navigation_codegen_entry(GNC_codegen_SILStackData * b_SD, double dt, boolean_T flight_phase, double  x[11], double  P[121], struct1_T * bias, struct2_T * sens_filt, const struct3_T * sens_in, double * cov_norm, double  roll_state[2], double * pdyn, boolean_T * w_status_nav); 
 #line 36
@@ -3083,129 +3083,156 @@ dynamics_jacobian_init(b_SD);
 void GNC_codegen_SIL_terminate(void) { } 
 
 void controller_codegen_entry(GNC_codegen_SILStackData *b_SD, double b_time, double 
-dt_ctrl, const double xR[2], double pdyn, double 
-delta_encoder, struct0_T *ctrl_mem, double *
-u_motor, double *r, boolean_T *
+dt_ctrl, const double where_it_is[2], double 
+pdyn, double delta_encoder, struct0_T *
+ctrl_mem, double *u_motor, double 
+where_it_isnt[2], boolean_T *
 w_status_ctrl) { 
+static const double b_dv[5] = {(-(1.5707963267948966)), (0.0), (0.0), (0.0), (0.0)}; 
+static const char iv[5] = {(7), (15), (25), (35), (45)}; 
+static const char iv1[5] = {(0), (0), (1), (-1), (0)}; 
 double P[4]; 
 double b_K[4]; 
-double b_dv[4]; 
 double b_dv1[4]; 
 double dv2[4]; 
+double dv3[4]; 
 double K[2]; 
 double b_r[2]; 
 double L_delta; 
 double a; 
 double b; 
+double b_x; 
 double blend; 
 double c_r; 
-double d; 
 double d1; 
-double d10; 
 double d11; 
 double d12; 
+double d13; 
 double d2; 
 double d3; 
 double d4; 
 double d5; 
-double d8; 
+double d6; 
+double d9; 
 double delta; 
 double delta_lp; 
+double deviation_idx_0; 
+double deviation_idx_1; 
 double pdyn_params; 
 double r_idx_0; 
+double r_phi; 
+double r_w; 
 double w_dot_lp; 
-double x; 
 double x_tmp; 
-int i; 
-int i2; 
+int i1; 
+int i3; 
+int step_idx; 
 *w_status_ctrl = (1); 
-*r = (0.0); 
+r_phi = (0.0); 
+r_w = (0.0); { 
+for (step_idx = 0; step_idx < 5; step_idx++) { 
+int i; 
+i = iv[step_idx]; { 
+if (b_time >= i) { 
+double d; 
+double q; 
+double r; 
+double x; 
+d = b_dv[step_idx]; 
+x = ((double)(iv1[step_idx]) + (b_time - (double)i) * d) + (3.1415926535897931); 
+
+profileStart_GNC_codegen_SIL(35U); q = fabs(x / (6.2831853071795862)); profileEnd_GNC_codegen_SIL(35U); { 
+if (fabs(q - floor(q + (0.5))) > (2.2204460492503131E-16) * q) { 
+profileStart_GNC_codegen_SIL(36U); r = fmod(x, (6.2831853071795862)); profileEnd_GNC_codegen_SIL(36U); 
+} else { 
+r = (0.0); 
+}  } { 
+if (r == (0.0)) { 
+r = (0.0); 
+} else { { if (r < (0.0)) { 
+r += (6.2831853071795862); 
+}  } }  } 
+r_phi = r - (3.1415926535897931); 
+r_w = d; 
+}  } 
+}  } 
+where_it_isnt[0] = r_phi; 
+where_it_isnt[1] = r_w; 
 delta = delta_encoder / (2.0); 
 pdyn_params = pdyn * (b_SD->pd->param).c_canard; { 
-if (b_time >= (22.0)) { 
-*r = (0.5); 
-}  } { 
-if (b_time >= (27.0)) { 
-*r = -(0.5); 
-}  } { 
-if (b_time >= (32.0)) { 
-*r = (0.5); 
-}  } { 
-if (b_time >= (39.0)) { 
-*r = (0.0); 
-}  } { 
 if (fabs(delta) < (0.005)) { 
 delta = (0.0); 
 }  } 
 delta_lp = (0.75) * ctrl_mem->delta_lp + (0.25) * delta; 
-w_dot_lp = (0.75) * ctrl_mem->w_dot_lp + ((0.25) * (xR[1] - ctrl_mem->w)) / dt_ctrl; 
+w_dot_lp = (0.75) * ctrl_mem->w_dot_lp + ((0.25) * (where_it_is[1] - ctrl_mem->w)) / dt_ctrl; 
+
 r_idx_0 = pdyn_params * delta_lp; 
 P[0] = ctrl_mem->P[0] + (1.0E-5); 
 P[1] = ctrl_mem->P[1]; 
 P[2] = ctrl_mem->P[2]; 
 P[3] = ctrl_mem->P[3] + (1.0E-9); 
-profileStart_GNC_codegen_SIL(35U); memset(&(b_r[0]), 0, sizeof(double) << 1); profileEnd_GNC_codegen_SIL(35U); 
-d = r_idx_0 * P[0]; 
-d1 = pdyn_params * P[3]; 
-c_r = ((b_r[0] + d) + pdyn_params * P[1]) * r_idx_0 + ((b_r[1] + r_idx_0 * P[2]) + d1) * pdyn_params; 
+profileStart_GNC_codegen_SIL(37U); memset(&(b_r[0]), 0, sizeof(double) << 1); profileEnd_GNC_codegen_SIL(37U); 
+d1 = r_idx_0 * P[0]; 
+d2 = pdyn_params * P[3]; 
+c_r = ((b_r[0] + d1) + pdyn_params * P[1]) * r_idx_0 + ((b_r[1] + r_idx_0 * P[2]) + d2) * pdyn_params; 
 
-K[0] = (d + P[2] * pdyn_params) / (c_r + (1.0)); 
-K[1] = (P[1] * r_idx_0 + d1) / (c_r + (1.0)); 
+K[0] = (d1 + P[2] * pdyn_params) / (c_r + (1.0)); 
+K[1] = (P[1] * r_idx_0 + d2) / (c_r + (1.0)); 
 b = w_dot_lp - (r_idx_0 * ctrl_mem->coeffs[0] + pdyn_params * ctrl_mem->coeffs[1]); 
 
 ctrl_mem->coeffs[0] += K[0] * b; 
 ctrl_mem->coeffs[1] += K[1] * b; 
-b_dv[0] = (1.0) - K[0] * r_idx_0; 
-b_dv[1] = (0.0) - K[1] * r_idx_0; 
-b_dv[2] = (0.0) - K[0] * pdyn_params; 
-b_dv[3] = (1.0) - K[1] * pdyn_params; 
-profileStart_GNC_codegen_SIL(36U); memset(&(b_dv1[0]), 0, sizeof(double) << 2); profileEnd_GNC_codegen_SIL(36U); 
-d2 = b_dv[0]; 
-d3 = b_dv[1]; 
-d4 = b_dv[2]; 
-d5 = b_dv[3]; { 
-for (i = 0; i < 2; i++) { 
-double d6; 
+b_dv1[0] = (1.0) - K[0] * r_idx_0; 
+b_dv1[1] = (0.0) - K[1] * r_idx_0; 
+b_dv1[2] = (0.0) - K[0] * pdyn_params; 
+b_dv1[3] = (1.0) - K[1] * pdyn_params; 
+profileStart_GNC_codegen_SIL(38U); memset(&(dv2[0]), 0, sizeof(double) << 2); profileEnd_GNC_codegen_SIL(38U); 
+d3 = b_dv1[0]; 
+d4 = b_dv1[1]; 
+d5 = b_dv1[2]; 
+d6 = b_dv1[3]; { 
+for (i1 = 0; i1 < 2; i1++) { 
+double d10; 
 double d7; 
-double d9; 
-int i1; 
-i1 = i << 1; 
-d6 = P[i1]; 
-d7 = b_dv1[i1] + d2 * d6; 
-d9 = b_dv1[i1 + 1] + d3 * d6; 
-d6 = P[i1 + 1]; 
-d7 += d4 * d6; 
-b_dv1[i1] = d7; 
-d9 += d5 * d6; 
-b_dv1[i1 + 1] = d9; 
+double d8; 
+int i2; 
+i2 = i1 << 1; 
+d7 = P[i2]; 
+d8 = dv2[i2] + d3 * d7; 
+d10 = dv2[i2 + 1] + d4 * d7; 
+d7 = P[i2 + 1]; 
+d8 += d5 * d7; 
+dv2[i2] = d8; 
+d10 += d6 * d7; 
+dv2[i2 + 1] = d10; 
 }  } 
-profileStart_GNC_codegen_SIL(37U); memset(&(dv2[0]), 0, sizeof(double) << 2); profileEnd_GNC_codegen_SIL(37U); 
-d8 = b_dv1[0]; 
-d10 = b_dv1[1]; 
-d11 = b_dv1[2]; 
-d12 = b_dv1[3]; { 
-for (i2 = 0; i2 < 2; i2++) { 
-double d13; 
+profileStart_GNC_codegen_SIL(39U); memset(&(dv3[0]), 0, sizeof(double) << 2); profileEnd_GNC_codegen_SIL(39U); 
+d9 = dv2[0]; 
+d11 = dv2[1]; 
+d12 = dv2[2]; 
+d13 = dv2[3]; { 
+for (i3 = 0; i3 < 2; i3++) { 
 double d14; 
 double d15; 
-int i3; 
-d13 = b_dv[i2]; 
-i3 = i2 << 1; 
-d14 = dv2[i3] + d8 * d13; 
-d15 = dv2[i3 + 1] + d10 * d13; 
-b_K[i3] = K[0] * K[i2]; 
-d13 = b_dv[i2 + 2]; 
-d14 += d11 * d13; 
-dv2[i3] = d14; 
-d15 += d12 * d13; 
-dv2[i3 + 1] = d15; 
-b_K[i3 + 1] = K[1] * K[i2]; 
+double d16; 
+int i4; 
+d14 = b_dv1[i3]; 
+i4 = i3 << 1; 
+d15 = dv3[i4] + d9 * d14; 
+d16 = dv3[i4 + 1] + d11 * d14; 
+b_K[i4] = K[0] * K[i3]; 
+d14 = b_dv1[i3 + 2]; 
+d15 += d12 * d14; 
+dv3[i4] = d15; 
+d16 += d13 * d14; 
+dv3[i4 + 1] = d16; 
+b_K[i4 + 1] = K[1] * K[i3]; 
 }  } 
-ctrl_mem->P[0] = dv2[0] + b_K[0]; 
-ctrl_mem->P[1] = dv2[1] + b_K[1]; 
-ctrl_mem->P[2] = dv2[2] + b_K[2]; 
-ctrl_mem->P[3] = dv2[3] + b_K[3]; 
-ctrl_mem->w = xR[1]; 
+ctrl_mem->P[0] = dv3[0] + b_K[0]; 
+ctrl_mem->P[1] = dv3[1] + b_K[1]; 
+ctrl_mem->P[2] = dv3[2] + b_K[2]; 
+ctrl_mem->P[3] = dv3[3] + b_K[3]; 
+ctrl_mem->w = where_it_is[1]; 
 ctrl_mem->delta_lp = delta_lp; 
 ctrl_mem->w_dot_lp = w_dot_lp; 
 L_delta = ctrl_mem->coeffs[0] * pdyn_params; { 
@@ -3216,13 +3243,19 @@ L_delta = (10.0);
 L_delta = -(10.0); 
 }  } 
 }  } 
-profileStart_GNC_codegen_SIL(38U); blend = fmax((0.0), fmin((1.0), (fabs(xR[1]) - (0.5)) / (0.5))); profileEnd_GNC_codegen_SIL(38U); 
+deviation_idx_0 = where_it_is[0] - r_phi; 
+deviation_idx_1 = where_it_is[1] - r_w; 
+profileStart_GNC_codegen_SIL(40U); blend = fmax((0.0), fmin((1.0), (fabs(deviation_idx_1) - (0.5)) / (0.5))); profileEnd_GNC_codegen_SIL(40U); 
 a = -(1.0) / L_delta; 
 x_tmp = ((1.0) - blend) * (5.0); 
-profileStart_GNC_codegen_SIL(39U); x = sqrt(x_tmp); profileEnd_GNC_codegen_SIL(39U); 
-K[0] = a * x; 
-profileStart_GNC_codegen_SIL(40U); *u_motor = fmin(fmax((K[0] * xR[0] + (a * sqrt((2.0) * x + (x_tmp + blend * (20.0)))) * xR[1]) + -K[0] * *r, -(0.17453292519943295)), (0.17453292519943295)) * (2.0); profileEnd_GNC_codegen_SIL(40U); { 
-#line 881
+profileStart_GNC_codegen_SIL(41U); b_x = sqrt(x_tmp); profileEnd_GNC_codegen_SIL(41U); { 
+if (deviation_idx_0 > (3.1415926535897931)) { 
+deviation_idx_0 -= (6.2831853071795862); 
+} else { { if (deviation_idx_0 < -(3.1415926535897931)) { 
+deviation_idx_0 += (6.2831853071795862); 
+}  } }  } 
+profileStart_GNC_codegen_SIL(42U); *u_motor = fmin(fmax((a * b_x) * deviation_idx_0 + (a * sqrt((2.0) * b_x + (x_tmp + blend * (20.0)))) * deviation_idx_1, -(0.17453292519943295)), (0.17453292519943295)) * (2.0); profileEnd_GNC_codegen_SIL(42U); { 
+#line 914
 if (pdyn < (500.0)) { 
 *u_motor = (0.0); 
 *w_status_ctrl = (0); 
@@ -3236,7 +3269,7 @@ sens_filt, const struct3_T *sens_in, double *
 cov_norm, double roll_state[2], double *
 pdyn, boolean_T *w_status_nav) { 
 static const double Q[121] = {(1.0E-10), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (1.0E-10), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (1.0E-10), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (1.0E-10), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.01), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.01), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.01), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0001), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0001), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0001), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.001)}; 
-#line 905
+#line 938
 static const double R[9] = {(1.0E-9), (0.0), (0.0), (0.0), (1.0E-9), (0.0), (0.0), (0.0), (1.0E-9)}; 
 
 static const double b_b[9] = {(1.0), (0.0), (0.0), (0.0), (1.0), (0.0), (0.0), (0.0), (1.0)}; 
@@ -3439,7 +3472,7 @@ a[1] = (sens_filt->board_accel[1] + sens_filt->mti_accel[1]) + sens_filt->ad_acc
 
 a[2] = (sens_filt->board_accel[2] + sens_filt->mti_accel[2]) + sens_filt->ad_accel[2]; 
 
-profileStart_GNC_codegen_SIL(41U); a_norm = b_norm(a); profileEnd_GNC_codegen_SIL(41U); { 
+profileStart_GNC_codegen_SIL(43U); a_norm = b_norm(a); profileEnd_GNC_codegen_SIL(43U); { 
 if (a_norm < (1.0E-6)) { 
 q[0] = (1.0); 
 q[1] = (0.0); 
@@ -3453,7 +3486,7 @@ double qw;
 double qy; 
 double qz; 
 double y; 
-profileStart_GNC_codegen_SIL(42U); qw = sqrt((0.5) * (a[0] / a_norm) + (0.5)); profileEnd_GNC_codegen_SIL(42U); { 
+profileStart_GNC_codegen_SIL(44U); qw = sqrt((0.5) * (a[0] / a_norm) + (0.5)); profileEnd_GNC_codegen_SIL(44U); { 
 if (qw == (0.0)) { 
 qy = (1.0); 
 qz = (0.0); 
@@ -3469,7 +3502,7 @@ b_scale = qw;
 b_t = qw / (3.3121686421112381E-170); 
 y = b_t * b_t; 
 }  } 
-profileStart_GNC_codegen_SIL(43U); b_absxk = fabs(qy); profileEnd_GNC_codegen_SIL(43U); { 
+profileStart_GNC_codegen_SIL(45U); b_absxk = fabs(qy); profileEnd_GNC_codegen_SIL(45U); { 
 if (b_absxk > b_scale) { 
 b_t = b_scale / b_absxk; 
 y = (y * b_t) * b_t + (1.0); 
@@ -3478,7 +3511,7 @@ b_scale = b_absxk;
 b_t = b_absxk / b_scale; 
 y += b_t * b_t; 
 }  } 
-profileStart_GNC_codegen_SIL(44U); b_absxk = fabs(qz); profileEnd_GNC_codegen_SIL(44U); { 
+profileStart_GNC_codegen_SIL(46U); b_absxk = fabs(qz); profileEnd_GNC_codegen_SIL(46U); { 
 if (b_absxk > b_scale) { 
 b_t = b_scale / b_absxk; 
 y = (y * b_t) * b_t + (1.0); 
@@ -3487,7 +3520,7 @@ b_scale = b_absxk;
 b_t = b_absxk / b_scale; 
 y += b_t * b_t; 
 }  } 
-profileStart_GNC_codegen_SIL(45U); y = b_scale * sqrt(y); profileEnd_GNC_codegen_SIL(45U); 
+profileStart_GNC_codegen_SIL(47U); y = b_scale * sqrt(y); profileEnd_GNC_codegen_SIL(47U); 
 q[0] = qw / y; 
 q[1] = (0.0) / y; 
 q[2] = qy / y; 
@@ -3669,7 +3702,7 @@ C_total_a[1] = C_total_a_tmp;
 d = (0.0) / d3; 
 C_total_a[2] = C_total_a_tmp; 
 scale = (3.3121686421112381E-170); 
-profileStart_GNC_codegen_SIL(46U); absxk = fabs(x[0]); profileEnd_GNC_codegen_SIL(46U); { 
+profileStart_GNC_codegen_SIL(48U); absxk = fabs(x[0]); profileEnd_GNC_codegen_SIL(48U); { 
 if (absxk > (3.3121686421112381E-170)) { 
 q_mag = (1.0); 
 scale = absxk; 
@@ -3677,7 +3710,7 @@ scale = absxk;
 t = absxk / (3.3121686421112381E-170); 
 q_mag = t * t; 
 }  } 
-profileStart_GNC_codegen_SIL(47U); absxk = fabs(x[1]); profileEnd_GNC_codegen_SIL(47U); { 
+profileStart_GNC_codegen_SIL(49U); absxk = fabs(x[1]); profileEnd_GNC_codegen_SIL(49U); { 
 if (absxk > scale) { 
 t = scale / absxk; 
 q_mag = (q_mag * t) * t + (1.0); 
@@ -3686,7 +3719,7 @@ scale = absxk;
 t = absxk / scale; 
 q_mag += t * t; 
 }  } 
-profileStart_GNC_codegen_SIL(48U); absxk = fabs(x[2]); profileEnd_GNC_codegen_SIL(48U); { 
+profileStart_GNC_codegen_SIL(50U); absxk = fabs(x[2]); profileEnd_GNC_codegen_SIL(50U); { 
 if (absxk > scale) { 
 t = scale / absxk; 
 q_mag = (q_mag * t) * t + (1.0); 
@@ -3695,7 +3728,7 @@ scale = absxk;
 t = absxk / scale; 
 q_mag += t * t; 
 }  } 
-profileStart_GNC_codegen_SIL(49U); absxk = fabs(x[3]); profileEnd_GNC_codegen_SIL(49U); { 
+profileStart_GNC_codegen_SIL(51U); absxk = fabs(x[3]); profileEnd_GNC_codegen_SIL(51U); { 
 if (absxk > scale) { 
 t = scale / absxk; 
 q_mag = (q_mag * t) * t + (1.0); 
@@ -3704,12 +3737,12 @@ scale = absxk;
 t = absxk / scale; 
 q_mag += t * t; 
 }  } 
-profileStart_GNC_codegen_SIL(50U); q_mag = scale * sqrt(q_mag); profileEnd_GNC_codegen_SIL(50U); 
+profileStart_GNC_codegen_SIL(52U); q_mag = scale * sqrt(q_mag); profileEnd_GNC_codegen_SIL(52U); 
 q[0] = x[0] / q_mag; 
 q[1] = x[1] / q_mag; 
 q[2] = x[2] / q_mag; 
 q[3] = x[3] / q_mag; 
-profileStart_GNC_codegen_SIL(51U); dphi_tmp = b_norm(&(x[4])); profileEnd_GNC_codegen_SIL(51U); 
+profileStart_GNC_codegen_SIL(53U); dphi_tmp = b_norm(&(x[4])); profileEnd_GNC_codegen_SIL(53U); 
 b_dphi_tmp = dphi_tmp * dt; 
 dphi = b_dphi_tmp / (2.0); { 
 if (dphi_tmp == (0.0)) { 
@@ -3727,7 +3760,7 @@ n_idx_0 = x[4] / dphi_tmp;
 n_idx_1 = x[5] / dphi_tmp; 
 n_idx_2 = x[6] / dphi_tmp; 
 }  } 
-profileStart_GNC_codegen_SIL(52U); b = sin(dphi); profileEnd_GNC_codegen_SIL(52U); 
+profileStart_GNC_codegen_SIL(54U); b = sin(dphi); profileEnd_GNC_codegen_SIL(54U); 
 n_tilde[0] = (0.0); 
 n_tilde[3] = -n_idx_2; 
 n_tilde[6] = n_idx_1; 
@@ -3737,12 +3770,12 @@ n_tilde[7] = -n_idx_0;
 n_tilde[2] = -n_idx_1; 
 n_tilde[5] = n_idx_0; 
 n_tilde[8] = (0.0); 
-profileStart_GNC_codegen_SIL(53U); e_a = sin(b_dphi_tmp); profileEnd_GNC_codegen_SIL(53U); 
-profileStart_GNC_codegen_SIL(54U); b_x = cos(b_dphi_tmp); profileEnd_GNC_codegen_SIL(54U); { 
+profileStart_GNC_codegen_SIL(55U); e_a = sin(b_dphi_tmp); profileEnd_GNC_codegen_SIL(55U); 
+profileStart_GNC_codegen_SIL(56U); b_x = cos(b_dphi_tmp); profileEnd_GNC_codegen_SIL(56U); { 
 for (i1 = 0; i1 < 9; i1++) { 
 w_exp_tilde_tmp[i1] = (0); 
 }  } 
-profileStart_GNC_codegen_SIL(55U); memset(&(b_n_tilde[0]), 0, (9U) * sizeof(double)); profileEnd_GNC_codegen_SIL(55U); { 
+profileStart_GNC_codegen_SIL(57U); memset(&(b_n_tilde[0]), 0, (9U) * sizeof(double)); profileEnd_GNC_codegen_SIL(57U); { 
 for (k = 0; k < 3; k++) { 
 double d5; 
 int b_n_tilde_tmp; 
@@ -3765,8 +3798,8 @@ w_exp_tilde[i3] = ((double)(w_exp_tilde_tmp[i3]) - e_a * n_tilde[i3]) + ((1.0) -
 
 }  } 
 double f_a; 
-profileStart_GNC_codegen_SIL(56U); f_a = b_norm(&(x[7])); profileEnd_GNC_codegen_SIL(56U); 
-profileStart_GNC_codegen_SIL(57U); airdata_atmos(x[10], &expl_temp, &t1_density, &b_expl_temp, &c_expl_temp, &d_expl_temp); profileEnd_GNC_codegen_SIL(57U); 
+profileStart_GNC_codegen_SIL(58U); f_a = b_norm(&(x[7])); profileEnd_GNC_codegen_SIL(58U); 
+profileStart_GNC_codegen_SIL(59U); airdata_atmos(x[10], &expl_temp, &t1_density, &b_expl_temp, &c_expl_temp, &d_expl_temp); profileEnd_GNC_codegen_SIL(59U); 
 
 g_a = ((0.5) * t1_density) * (f_a * f_a); 
 h_a = (b_SD->pd->c_param).c_aero * (b_SD->pd->c_param).Cn_alpha; 
@@ -3811,9 +3844,9 @@ b_q[3] = q[3];
 b_q[7] = -q[2]; 
 b_q[11] = q[1]; 
 b_q[15] = q[0]; 
-profileStart_GNC_codegen_SIL(58U); b_dv1[0] = cos(dphi); profileEnd_GNC_codegen_SIL(58U); 
-profileStart_GNC_codegen_SIL(59U); memset(&(b_w_exp_tilde[0]), 0, (9U) * sizeof(double)); profileEnd_GNC_codegen_SIL(59U); 
-profileStart_GNC_codegen_SIL(60U); memset(&(c_w_exp_tilde[0]), 0, (3U) * sizeof(double)); profileEnd_GNC_codegen_SIL(60U); { 
+profileStart_GNC_codegen_SIL(60U); b_dv1[0] = cos(dphi); profileEnd_GNC_codegen_SIL(60U); 
+profileStart_GNC_codegen_SIL(61U); memset(&(b_w_exp_tilde[0]), 0, (9U) * sizeof(double)); profileEnd_GNC_codegen_SIL(61U); 
+profileStart_GNC_codegen_SIL(62U); memset(&(c_w_exp_tilde[0]), 0, (3U) * sizeof(double)); profileEnd_GNC_codegen_SIL(62U); { 
 for (i9 = 0; i9 < 3; i9++) { 
 double d12; 
 int b_w_exp_tilde_tmp; 
@@ -3837,11 +3870,11 @@ c_w_exp_tilde[1] += b_w_exp_tilde[3 * i9 + 1] * d14;
 c_w_exp_tilde[2] += b_w_exp_tilde[3 * i9 + 2] * d14; 
 }  } 
 dv2[0] = (0.0); 
-profileStart_GNC_codegen_SIL(61U); dv2[1] = g_a * (h_a * sin(atan2(x[9], x[7]))); profileEnd_GNC_codegen_SIL(61U); 
-profileStart_GNC_codegen_SIL(62U); dv2[2] = g_a * (h_a * -sin(atan2(x[8], x[7]))); profileEnd_GNC_codegen_SIL(62U); 
-profileStart_GNC_codegen_SIL(63U); memset(&(dv3[0]), 0, (3U) * sizeof(double)); profileEnd_GNC_codegen_SIL(63U); 
-profileStart_GNC_codegen_SIL(64U); memset(&(b_dt[0]), 0, (3U) * sizeof(double)); profileEnd_GNC_codegen_SIL(64U); 
-profileStart_GNC_codegen_SIL(65U); memset(&(c_dt[0]), 0, (3U) * sizeof(double)); profileEnd_GNC_codegen_SIL(65U); 
+profileStart_GNC_codegen_SIL(63U); dv2[1] = g_a * (h_a * sin(atan2(x[9], x[7]))); profileEnd_GNC_codegen_SIL(63U); 
+profileStart_GNC_codegen_SIL(64U); dv2[2] = g_a * (h_a * -sin(atan2(x[8], x[7]))); profileEnd_GNC_codegen_SIL(64U); 
+profileStart_GNC_codegen_SIL(65U); memset(&(dv3[0]), 0, (3U) * sizeof(double)); profileEnd_GNC_codegen_SIL(65U); 
+profileStart_GNC_codegen_SIL(66U); memset(&(b_dt[0]), 0, (3U) * sizeof(double)); profileEnd_GNC_codegen_SIL(66U); 
+profileStart_GNC_codegen_SIL(67U); memset(&(c_dt[0]), 0, (3U) * sizeof(double)); profileEnd_GNC_codegen_SIL(67U); 
 d15 = dv3[0]; 
 d16 = dv3[1]; 
 d17 = dv3[2]; 
@@ -3889,10 +3922,10 @@ d26 += (dt * d34) * d35;
 d36 += d34 * d23; 
 d38 = C_total_a[i11]; 
 c_w_exp_tilde[i11] = ((w_exp_tilde[i11] * d21 + w_exp_tilde[i11 + 3] * d22) + w_exp_tilde[i11 + 6] * d23) + dt * (((C_total_a_tmp_tmp / d38) * (sens_in->board_accel).meas[i11] + (b_C_total_a_tmp_tmp / d38) * (sens_in->mti_accel).meas[i11]) + (c_C_total_a_tmp_tmp / d38) * (sens_in->ad_accel).meas[i11]); 
-#line 1562
+#line 1595
 b_S[i11] = d36; 
 }  } 
-profileStart_GNC_codegen_SIL(66U); memset(&(c_q[0]), 0, sizeof(double) << 2); profileEnd_GNC_codegen_SIL(66U); 
+profileStart_GNC_codegen_SIL(68U); memset(&(c_q[0]), 0, sizeof(double) << 2); profileEnd_GNC_codegen_SIL(68U); 
 d29 = c_q[0]; 
 d30 = c_q[1]; 
 d32 = c_q[2]; 
@@ -3918,7 +3951,7 @@ x_pred[8] = c_w_exp_tilde[1] + d25;
 x_pred[6] = d17 + d20; 
 x_pred[9] = c_w_exp_tilde[2] + d26; 
 x_pred[10] = x[10] + dt * b_S[0]; 
-profileStart_GNC_codegen_SIL(67U); memset(&(F[0]), 0, (121U) * sizeof(double)); profileEnd_GNC_codegen_SIL(67U); 
+profileStart_GNC_codegen_SIL(69U); memset(&(F[0]), 0, (121U) * sizeof(double)); profileEnd_GNC_codegen_SIL(69U); 
 l_a = (0.5) * dt; 
 W_dt[0] = (0.0); 
 W_dt[4] = l_a * -x[4]; 
@@ -3936,7 +3969,7 @@ W_dt[3] = l_a * x[6];
 W_dt[7] = l_a * x[5]; 
 W_dt[11] = l_a * -x[4]; 
 W_dt[15] = (0.0); 
-profileStart_GNC_codegen_SIL(68U); memset(&(c_b[0]), 0, sizeof(double) << 4); profileEnd_GNC_codegen_SIL(68U); { 
+profileStart_GNC_codegen_SIL(70U); memset(&(c_b[0]), 0, sizeof(double) << 4); profileEnd_GNC_codegen_SIL(70U); { 
 for (i15 = 0; i15 < 4; i15++) { 
 int i16; 
 i16 = i15 << 2; { 
@@ -3954,8 +3987,8 @@ c_b[i16 + 3] += W_dt[b_tmp + 3] * d39;
 for (i17 = 0; i17 < 16; i17++) { 
 b_I[i17] = (0); 
 }  } 
-profileStart_GNC_codegen_SIL(69U); memset(&(b_W_dt[0]), 0, sizeof(double) << 4); profileEnd_GNC_codegen_SIL(69U); 
-profileStart_GNC_codegen_SIL(70U); memset(&(d_b[0]), 0, sizeof(double) << 4); profileEnd_GNC_codegen_SIL(70U); { 
+profileStart_GNC_codegen_SIL(71U); memset(&(b_W_dt[0]), 0, sizeof(double) << 4); profileEnd_GNC_codegen_SIL(71U); 
+profileStart_GNC_codegen_SIL(72U); memset(&(d_b[0]), 0, sizeof(double) << 4); profileEnd_GNC_codegen_SIL(72U); { 
 for (b_k = 0; b_k < 4; b_k++) { 
 double d40; 
 double d41; 
@@ -4055,7 +4088,7 @@ F[b_F_tmp + 2] = m_a[F_tmp + 2];
 F[b_F_tmp + 3] = m_a[F_tmp + 3]; 
 }  } 
 n_a = ((0.5) * (b_SD->pd->d_param).c_aero) * (b_SD->pd->d_param).Cn_alpha; 
-profileStart_GNC_codegen_SIL(71U); airdata_atmos(x[10], &m_expl_temp, &t1_density, &n_expl_temp, &o_expl_temp, &p_expl_temp); profileEnd_GNC_codegen_SIL(71U); { 
+profileStart_GNC_codegen_SIL(73U); airdata_atmos(x[10], &m_expl_temp, &t1_density, &n_expl_temp, &o_expl_temp, &p_expl_temp); profileEnd_GNC_codegen_SIL(73U); { 
 
 if (dphi_tmp == (0.0)) { 
 n_idx_0 = (0.0); 
@@ -4075,7 +4108,7 @@ n_tilde[7] = -n_idx_0;
 n_tilde[2] = -n_idx_1; 
 n_tilde[5] = n_idx_0; 
 n_tilde[8] = (0.0); 
-profileStart_GNC_codegen_SIL(72U); memset(&(b_n_tilde[0]), 0, (9U) * sizeof(double)); profileEnd_GNC_codegen_SIL(72U); { 
+profileStart_GNC_codegen_SIL(74U); memset(&(b_n_tilde[0]), 0, (9U) * sizeof(double)); profileEnd_GNC_codegen_SIL(74U); { 
 for (i21 = 0; i21 < 3; i21++) { 
 double d49; 
 int c_n_tilde_tmp; 
@@ -4096,7 +4129,7 @@ for (i22 = 0; i22 < 9; i22++) {
 w_exp_tilde[i22] = ((double)(w_exp_tilde_tmp[i22]) - e_a * n_tilde[i22]) + ((1.0) - b_x) * b_n_tilde[i22]; 
 
 }  } 
-profileStart_GNC_codegen_SIL(73U); memset(&(b_dv[0]), 0, (9U) * sizeof(double)); profileEnd_GNC_codegen_SIL(73U); { 
+profileStart_GNC_codegen_SIL(75U); memset(&(b_dv[0]), 0, (9U) * sizeof(double)); profileEnd_GNC_codegen_SIL(75U); { 
 for (i24 = 0; i24 < 3; i24++) { 
 double d51; 
 int i26; 
@@ -4186,8 +4219,8 @@ b_skewed_exp_w_tmp[2] = -x[5];
 b_skewed_exp_w_tmp[5] = x[4]; 
 b_skewed_exp_w_tmp[8] = (0.0); 
 o_a = (0.5) * (dt * dt); 
-profileStart_GNC_codegen_SIL(74U); memset(&(c_skewed_exp_w_tmp[0]), 0, (9U) * sizeof(double)); profileEnd_GNC_codegen_SIL(74U); 
-profileStart_GNC_codegen_SIL(75U); memset(&(b_dv[0]), 0, (9U) * sizeof(double)); profileEnd_GNC_codegen_SIL(75U); 
+profileStart_GNC_codegen_SIL(76U); memset(&(c_skewed_exp_w_tmp[0]), 0, (9U) * sizeof(double)); profileEnd_GNC_codegen_SIL(76U); 
+profileStart_GNC_codegen_SIL(77U); memset(&(b_dv[0]), 0, (9U) * sizeof(double)); profileEnd_GNC_codegen_SIL(77U); 
 r_q_tmp[0] = x[0]; 
 b_r_q_tmp = (0.0); { 
 for (i32 = 0; i32 < 3; i32++) { 
@@ -4305,7 +4338,7 @@ F[11 * (i36 + 7) + 10] = dt * ((p_a * b_b[3 * i36] + ((2.0) * r_q_tmp[1]) * r_q_
 
 }  } 
 F[120] = (1.0); 
-profileStart_GNC_codegen_SIL(76U); memset(&(b_F[0]), 0, (121U) * sizeof(double)); profileEnd_GNC_codegen_SIL(76U); { 
+profileStart_GNC_codegen_SIL(78U); memset(&(b_F[0]), 0, (121U) * sizeof(double)); profileEnd_GNC_codegen_SIL(78U); { 
 for (i37 = 0; i37 < 11; i37++) { { 
 for (i38 = 0; i38 < 11; i38++) { 
 double d62; 
@@ -4340,8 +4373,8 @@ b_P_pred[b_P_pred_tmp] = P_pred[P_pred_tmp + 5] + R[b_P_pred_tmp];
 d_P_pred_tmp = 3 * i42 + 2; 
 b_P_pred[d_P_pred_tmp] = P_pred[P_pred_tmp + 6] + R[d_P_pred_tmp]; 
 }  } 
-profileStart_GNC_codegen_SIL(77U); mrdiv(&(P_pred[44]), b_P_pred, K); profileEnd_GNC_codegen_SIL(77U); 
-profileStart_GNC_codegen_SIL(78U); memset(&(c_I[0]), 0, (121U) * sizeof(char)); profileEnd_GNC_codegen_SIL(78U); { 
+profileStart_GNC_codegen_SIL(79U); mrdiv(&(P_pred[44]), b_P_pred, K); profileEnd_GNC_codegen_SIL(79U); 
+profileStart_GNC_codegen_SIL(80U); memset(&(c_I[0]), 0, (121U) * sizeof(char)); profileEnd_GNC_codegen_SIL(80U); { 
 for (c_k = 0; c_k < 11; c_k++) { 
 c_I[c_k + 11 * c_k] = (1); 
 }  } { 
@@ -4354,7 +4387,7 @@ E[i45 + 44] = (double)(c_I[i45 + 44]) - K[i45];
 for (i46 = 0; i46 < 44; i46++) { 
 E[i46 + 77] = c_I[i46 + 77]; 
 }  } 
-profileStart_GNC_codegen_SIL(79U); memset(&(b_E[0]), 0, (121U) * sizeof(double)); profileEnd_GNC_codegen_SIL(79U); { 
+profileStart_GNC_codegen_SIL(81U); memset(&(b_E[0]), 0, (121U) * sizeof(double)); profileEnd_GNC_codegen_SIL(81U); { 
 for (i47 = 0; i47 < 11; i47++) { { 
 for (i48 = 0; i48 < 11; i48++) { 
 double d64; 
@@ -4366,7 +4399,7 @@ b_E[E_tmp] += E[i50 + 11 * i48] * d64;
 }  } 
 }  } 
 }  } 
-profileStart_GNC_codegen_SIL(80U); memset(&(b_K[0]), 0, (33U) * sizeof(double)); profileEnd_GNC_codegen_SIL(80U); { 
+profileStart_GNC_codegen_SIL(82U); memset(&(b_K[0]), 0, (33U) * sizeof(double)); profileEnd_GNC_codegen_SIL(82U); { 
 for (i49 = 0; i49 < 3; i49++) { { 
 for (i51 = 0; i51 < 3; i51++) { 
 double d65; 
@@ -4378,8 +4411,8 @@ b_K[K_tmp] += K[i52 + 11 * i51] * d65;
 }  } 
 }  } 
 }  } 
-profileStart_GNC_codegen_SIL(81U); memset(&(c_E[0]), 0, (121U) * sizeof(double)); profileEnd_GNC_codegen_SIL(81U); 
-profileStart_GNC_codegen_SIL(82U); memset(&(c_K[0]), 0, (121U) * sizeof(double)); profileEnd_GNC_codegen_SIL(82U); { 
+profileStart_GNC_codegen_SIL(83U); memset(&(c_E[0]), 0, (121U) * sizeof(double)); profileEnd_GNC_codegen_SIL(83U); 
+profileStart_GNC_codegen_SIL(84U); memset(&(c_K[0]), 0, (121U) * sizeof(double)); profileEnd_GNC_codegen_SIL(84U); { 
 for (i53 = 0; i53 < 11; i53++) { { 
 for (i55 = 0; i55 < 11; i55++) { 
 double d66; 
@@ -4424,7 +4457,7 @@ x[i59] = x_pred[i59] + ((K[i59] * d70 + K[i59 + 11] * d71) + K[i59 + 22] * d72);
 
 }  } 
 c_scale = (3.3121686421112381E-170); 
-profileStart_GNC_codegen_SIL(83U); c_absxk = fabs(x[0]); profileEnd_GNC_codegen_SIL(83U); { 
+profileStart_GNC_codegen_SIL(85U); c_absxk = fabs(x[0]); profileEnd_GNC_codegen_SIL(85U); { 
 if (c_absxk > (3.3121686421112381E-170)) { 
 b_q_mag = (1.0); 
 c_scale = c_absxk; 
@@ -4432,7 +4465,7 @@ c_scale = c_absxk;
 c_t = c_absxk / (3.3121686421112381E-170); 
 b_q_mag = c_t * c_t; 
 }  } 
-profileStart_GNC_codegen_SIL(84U); c_absxk = fabs(x[1]); profileEnd_GNC_codegen_SIL(84U); { 
+profileStart_GNC_codegen_SIL(86U); c_absxk = fabs(x[1]); profileEnd_GNC_codegen_SIL(86U); { 
 if (c_absxk > c_scale) { 
 c_t = c_scale / c_absxk; 
 b_q_mag = (b_q_mag * c_t) * c_t + (1.0); 
@@ -4441,7 +4474,7 @@ c_scale = c_absxk;
 c_t = c_absxk / c_scale; 
 b_q_mag += c_t * c_t; 
 }  } 
-profileStart_GNC_codegen_SIL(85U); c_absxk = fabs(x[2]); profileEnd_GNC_codegen_SIL(85U); { 
+profileStart_GNC_codegen_SIL(87U); c_absxk = fabs(x[2]); profileEnd_GNC_codegen_SIL(87U); { 
 if (c_absxk > c_scale) { 
 c_t = c_scale / c_absxk; 
 b_q_mag = (b_q_mag * c_t) * c_t + (1.0); 
@@ -4450,7 +4483,7 @@ c_scale = c_absxk;
 c_t = c_absxk / c_scale; 
 b_q_mag += c_t * c_t; 
 }  } 
-profileStart_GNC_codegen_SIL(86U); c_absxk = fabs(x[3]); profileEnd_GNC_codegen_SIL(86U); { 
+profileStart_GNC_codegen_SIL(88U); c_absxk = fabs(x[3]); profileEnd_GNC_codegen_SIL(88U); { 
 if (c_absxk > c_scale) { 
 c_t = c_scale / c_absxk; 
 b_q_mag = (b_q_mag * c_t) * c_t + (1.0); 
@@ -4459,37 +4492,37 @@ c_scale = c_absxk;
 c_t = c_absxk / c_scale; 
 b_q_mag += c_t * c_t; 
 }  } 
-profileStart_GNC_codegen_SIL(87U); b_q_mag = c_scale * sqrt(b_q_mag); profileEnd_GNC_codegen_SIL(87U); 
+profileStart_GNC_codegen_SIL(89U); b_q_mag = c_scale * sqrt(b_q_mag); profileEnd_GNC_codegen_SIL(89U); 
 x[0] /= b_q_mag; 
 x[1] /= b_q_mag; 
 x[2] /= b_q_mag; 
 x[3] /= b_q_mag; { 
 if ((sens_in->board_baro).status) { 
-profileStart_GNC_codegen_SIL(88U); memcpy(&(f_x[0]), &(x[0]), (11U) * sizeof(double)); profileEnd_GNC_codegen_SIL(88U); 
-profileStart_GNC_codegen_SIL(89U); memcpy(&(b_P[0]), &(P[0]), (121U) * sizeof(double)); profileEnd_GNC_codegen_SIL(89U); 
+profileStart_GNC_codegen_SIL(90U); memcpy(&(f_x[0]), &(x[0]), (11U) * sizeof(double)); profileEnd_GNC_codegen_SIL(90U); 
+profileStart_GNC_codegen_SIL(91U); memcpy(&(b_P[0]), &(P[0]), (121U) * sizeof(double)); profileEnd_GNC_codegen_SIL(91U); 
 b_ekf_correct(f_x, b_P, (sens_in->board_baro).meas, bias->board_baro, x, P); 
 }  } { 
 if ((sens_in->mti_baro).status) { 
-profileStart_GNC_codegen_SIL(90U); memcpy(&(g_x[0]), &(x[0]), (11U) * sizeof(double)); profileEnd_GNC_codegen_SIL(90U); 
-profileStart_GNC_codegen_SIL(91U); memcpy(&(c_P[0]), &(P[0]), (121U) * sizeof(double)); profileEnd_GNC_codegen_SIL(91U); 
+profileStart_GNC_codegen_SIL(92U); memcpy(&(g_x[0]), &(x[0]), (11U) * sizeof(double)); profileEnd_GNC_codegen_SIL(92U); 
+profileStart_GNC_codegen_SIL(93U); memcpy(&(c_P[0]), &(P[0]), (121U) * sizeof(double)); profileEnd_GNC_codegen_SIL(93U); 
 b_ekf_correct(g_x, c_P, (sens_in->mti_baro).meas, bias->mti_baro, x, P); 
 }  } { 
 if ((sens_in->board_mag).status) { 
-profileStart_GNC_codegen_SIL(92U); memcpy(&(h_x[0]), &(x[0]), (11U) * sizeof(double)); profileEnd_GNC_codegen_SIL(92U); 
-profileStart_GNC_codegen_SIL(93U); memcpy(&(d_P[0]), &(P[0]), (121U) * sizeof(double)); profileEnd_GNC_codegen_SIL(93U); 
-profileStart_GNC_codegen_SIL(94U); ekf_correct(h_x, d_P, (sens_in->board_mag).meas, bias->board_mag_earth, b_b, x, P); profileEnd_GNC_codegen_SIL(94U); 
+profileStart_GNC_codegen_SIL(94U); memcpy(&(h_x[0]), &(x[0]), (11U) * sizeof(double)); profileEnd_GNC_codegen_SIL(94U); 
+profileStart_GNC_codegen_SIL(95U); memcpy(&(d_P[0]), &(P[0]), (121U) * sizeof(double)); profileEnd_GNC_codegen_SIL(95U); 
+profileStart_GNC_codegen_SIL(96U); ekf_correct(h_x, d_P, (sens_in->board_mag).meas, bias->board_mag_earth, b_b, x, P); profileEnd_GNC_codegen_SIL(96U); 
 
 }  } { 
 if ((sens_in->mti_mag).status) { 
-profileStart_GNC_codegen_SIL(95U); memcpy(&(i_x[0]), &(x[0]), (11U) * sizeof(double)); profileEnd_GNC_codegen_SIL(95U); 
-profileStart_GNC_codegen_SIL(96U); memcpy(&(e_P[0]), &(P[0]), (121U) * sizeof(double)); profileEnd_GNC_codegen_SIL(96U); 
-profileStart_GNC_codegen_SIL(97U); ekf_correct(i_x, e_P, (sens_in->mti_mag).meas, bias->mti_mag_earth, b_b, x, P); profileEnd_GNC_codegen_SIL(97U); 
+profileStart_GNC_codegen_SIL(97U); memcpy(&(i_x[0]), &(x[0]), (11U) * sizeof(double)); profileEnd_GNC_codegen_SIL(97U); 
+profileStart_GNC_codegen_SIL(98U); memcpy(&(e_P[0]), &(P[0]), (121U) * sizeof(double)); profileEnd_GNC_codegen_SIL(98U); 
+profileStart_GNC_codegen_SIL(99U); ekf_correct(i_x, e_P, (sens_in->mti_mag).meas, bias->mti_mag_earth, b_b, x, P); profileEnd_GNC_codegen_SIL(99U); 
 
 }  } 
 *w_status_nav = (0); 
 }  } 
-profileStart_GNC_codegen_SIL(98U); k_a = b_norm(&(x[7])); profileEnd_GNC_codegen_SIL(98U); 
-profileStart_GNC_codegen_SIL(99U); airdata_atmos(x[10], &i_expl_temp, &t1_density, &j_expl_temp, &k_expl_temp, &l_expl_temp); profileEnd_GNC_codegen_SIL(99U); 
+profileStart_GNC_codegen_SIL(100U); k_a = b_norm(&(x[7])); profileEnd_GNC_codegen_SIL(100U); 
+profileStart_GNC_codegen_SIL(101U); airdata_atmos(x[10], &i_expl_temp, &t1_density, &j_expl_temp, &k_expl_temp, &l_expl_temp); profileEnd_GNC_codegen_SIL(101U); 
 
 *pdyn = ((0.5) * t1_density) * (k_a * k_a); 
 *cov_norm = (0.0); { 
@@ -4497,7 +4530,7 @@ for (b_i = 0; b_i < 11; b_i++) {
 double s; 
 s = (0.0); { 
 for (j = 0; j < 11; j++) { 
-profileStart_GNC_codegen_SIL(100U); s += fabs(P[b_i + 11 * j]); profileEnd_GNC_codegen_SIL(100U); 
+profileStart_GNC_codegen_SIL(102U); s += fabs(P[b_i + 11 * j]); profileEnd_GNC_codegen_SIL(102U); 
 }  } { 
 if (s > *cov_norm) { 
 *cov_norm = s; 
