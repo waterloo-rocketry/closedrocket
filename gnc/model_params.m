@@ -18,11 +18,18 @@ Cn_alpha = 10; % [-], pitch forcing coefficent
 Cn_omega = 0; % [-], pitch damping coefficent 
 
 %% Canards
-root_chord = 0.13;
-sweep = deg2rad(16);
-area_canard = root_chord^2 * tan(sweep); % [m^2], total canard area 
-length_canard = 0.203/2 + 0.02 + root_chord * tan(sweep) / 3; % [m], lever arm of canard to x-axis 
-c_canard = area_canard*length_canard; % precompute aero constants
+n_canards = 2;
+root_chord = 0.10;
+spine_width = 0.015;
+radial_offset = 0.02;
+sweep = deg2rad(74);
+spine_effectiveness = 0.5;
+area_spine_eff = spine_effectiveness * spine_width * root_chord;
+area_delta = 0.5 * root_chord^2 / tan(sweep);
+area_canards = n_canards * (area_delta + area_spine_eff);
+cp_offset = (area_delta * (root_chord / tan(sweep) / 3) - area_spine_eff * spine_width / 2) / (area_delta + area_spine_eff);
+arm_canard = 0.203 / 2 + radial_offset + cp_offset;
+c_canard = area_canards * arm_canard;
 
 %% Environment
 g = [-9.81; 0; 0]; % [m/s^2], gravitational acceleration in the geographic inertial frame

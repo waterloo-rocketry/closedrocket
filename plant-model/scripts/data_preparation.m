@@ -92,7 +92,9 @@ cd_data = cd_lookup_table(:, 2); % Cd
 
 % Canards 
 % [canard_pos_x, canard_Cnalfat, canard_Cnfdelta, canard_CndNi, canard_aspectratio, canard_area, canard_midchord_angle, canard_dist_chord_mean, canard_pos_r_mean, canard_leading_edge] = canards(canard_chord_root, canard_chord_tip, canard_height, canard_pos_x_roottip, canard_number, rocket_area_frontal, rocket_diameter);
-[canard_pos_x, canard_pos_r_mean, canard_area, canard_aspectratio, canard_midchord_angle, canard_factor, canard_pos_x_cp_mach2] = aerosurface(canard_chord_root, canard_chord_tip, canard_height, canard_sweep_angle, canard_pos_x_roottip, canard_number, rocket_diameter);
+% [canard_pos_x, canard_pos_r_mean, canard_area, canard_aspectratio, canard_midchord_angle, canard_factor, canard_pos_x_cp_mach2] = aerosurface(canard_chord_root, canard_chord_tip, canard_height, canard_sweep_angle, canard_pos_x_roottip, canard_number, rocket_diameter);
+[canard_pos_x, canard_pos_r_mean, canard_area] = aerosurface_canard(canard_chord_root, canard_height, canard_sweep_angle, canard_spine_width, canard_spine_effectiveness, canard_radial_offset, canard_pos_x_roottip, rocket_diameter);
+
 
 %% Canard CL GPR-smoothed lookup table
 % Transcribed from Python delta_wing GPR approach
