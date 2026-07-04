@@ -1,4 +1,4 @@
-function [meas_rotated] = imu_handler(meas, location)
+function [meas_rotated] = sensor_handler(meas, location, type)
     % Rotates IMU frame to body frame
     %#codegen
     
@@ -11,7 +11,12 @@ function [meas_rotated] = imu_handler(meas, location)
 
     if location == "board"
         % rotate into body coordinates from sensor coordinate
-        meas_rotated = param.S_board * meas;
+        if type == "imu"
+            meas_rotated = param.S_board_acc * meas;
+        end
+        if type == "mag"
+            meas_rotated = param.S_board_mag * meas;
+        end
     end
     if location == "mti"
         % rotate into body coordinates from sensor coordinate

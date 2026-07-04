@@ -11,22 +11,26 @@ rail_length = 11.28; % [m]
 %% Sensor mounting
 %%% _d : Mounting location relative to body frame [m]
 %%% _S : Mounting orientation relative to nosetip [rotation matrix]
+%%%      From body to sensor
 %%% Sensor group 1 (Onboard)
-sensor_1_d = [-1.83; 0.074; -0.027]; 
-sensor_1_S = [1, 0, 0;
-              0, 1, 0;
-              0, 0, 1]; 
+sensor_1_d = [-1.51; -0.03; -0.01]; 
+sensor_1_S_acc = [0, 1, 0;
+                  0, 0,-1;
+                 -1, 0, 0]; 
+sensor_1_S_mag = [0, 0, 1;
+                  0,-1, 0;
+                 -1, 0, 0]; 
 %%% Sensor group 2 (Movella MTi)
-sensor_2_d = [-1.83; 0.065; 0.047];
-sensor_2_S = [1, 0, 0;
-              0, 1, 0;
-              0, 0, 1]; 
-%%% Sensor group 3 (AD breakout)
-sensor_3_d = [-1.83; 0; 0]; 
-sensor_3_S = [1, 0, 0;
-              0, 1, 0;
-              0, 0, 1];
+sensor_2_d = [-1.52; 0.0; 0.0];
+sensor_2_S = [0, 1, 0;
+              0, 0, 1;
+              1, 0, 0]; 
 
+%%% Sensor group 3 (AD breakout)
+sensor_3_d = [-1.52; -0.03; 0.0]; 
+sensor_3_S = [0, 0, 1;
+              0,-1, 0;
+              1, 0, 0];
 %% Actuator parameters
 act_freq = 167; % natural frequency, approx 1/timeconstant [1/s]
 act_deadtime = 0.02; % delay in servo internal control loop [s]
