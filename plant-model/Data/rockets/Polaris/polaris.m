@@ -38,7 +38,7 @@ act_damping = 0.9; % damping ratio
 act_backlash = 0.3; % play [deg]
 act_anglelimit = 22; % max deflection [deg]
 act_ratelimit = 600; % max rate [deg/s]
-act_gear_ratio = 0.5; % speed ratio of gearing between motor and canard
+act_gear_ratio = - 0.5; % speed ratio of gearing between motor and canard
 
 %% Misc Rocket parameters
 engine_thrust_factor = 1; % perfomance gain

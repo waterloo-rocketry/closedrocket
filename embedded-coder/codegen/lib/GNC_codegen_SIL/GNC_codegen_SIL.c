@@ -326,7 +326,7 @@ static void controller_codegen_entry_init(GNC_codegen_SILStackData *b_SD) {
   }
   b_SD->pd->param.altitude_initial = 420.0;
   b_SD->pd->param.c_aero = -0.035602020206989993;
-  b_SD->pd->param.c_canard = 0.000649003220184504;
+  b_SD->pd->param.c_canard = 0.00054680328244827419;
   b_SD->pd->param.g[0] = -9.81;
   b_SD->pd->param.g[1] = 0.0;
   b_SD->pd->param.g[2] = 0.0;
@@ -341,7 +341,7 @@ static void dynamics_init(GNC_codegen_SILStackData *b_SD) {
   }
   b_SD->pd->c_param.altitude_initial = 420.0;
   b_SD->pd->c_param.c_aero = -0.035602020206989993;
-  b_SD->pd->c_param.c_canard = 0.000649003220184504;
+  b_SD->pd->c_param.c_canard = 0.00054680328244827419;
   b_SD->pd->c_param.g[0] = -9.81;
   b_SD->pd->c_param.g[1] = 0.0;
   b_SD->pd->c_param.g[2] = 0.0;
@@ -356,7 +356,7 @@ static void dynamics_jacobian_init(GNC_codegen_SILStackData *b_SD) {
   }
   b_SD->pd->d_param.altitude_initial = 420.0;
   b_SD->pd->d_param.c_aero = -0.035602020206989993;
-  b_SD->pd->d_param.c_canard = 0.000649003220184504;
+  b_SD->pd->d_param.c_canard = 0.00054680328244827419;
   b_SD->pd->d_param.g[0] = -9.81;
   b_SD->pd->d_param.g[1] = 0.0;
   b_SD->pd->d_param.g[2] = 0.0;
@@ -365,7 +365,7 @@ static void dynamics_jacobian_init(GNC_codegen_SILStackData *b_SD) {
 static void ekf_correct(const double x[11], const double P[121],
                         const double y[3], const double b[3], const double R[9],
                         double x_new[11], double P_new[121]) {
-  static const signed char iv[9] = {1, 0, 0, 0, 1, 0, 0, 0, 1};
+  static const signed char b_b[9] = {1, 0, 0, 0, 1, 0, 0, 0, 1};
   double E[121];
   double b_E[121];
   double c_E[121];
@@ -449,15 +449,15 @@ static void ekf_correct(const double x[11], const double P[121],
     H_tmp = x[i + 1];
     b_H_tmp = 3 * (i + 1);
     H[b_H_tmp] =
-        2.0 * (((b_x * (double)iv[3 * i] + x[1] * b[i]) - b[0] * H_tmp) +
+        2.0 * (((b_x * (double)b_b[3 * i] + x[1] * b[i]) - b[0] * H_tmp) +
                b_dv[3 * i]);
     c_H_tmp = 3 * i + 1;
     H[b_H_tmp + 1] =
-        2.0 * (((b_x * (double)iv[c_H_tmp] + x[2] * b[i]) - b[1] * H_tmp) +
+        2.0 * (((b_x * (double)b_b[c_H_tmp] + x[2] * b[i]) - b[1] * H_tmp) +
                b_dv[c_H_tmp]);
     d_H_tmp = 3 * i + 2;
     H[b_H_tmp + 2] =
-        2.0 * (((b_x * (double)iv[d_H_tmp] + x[3] * b[i]) - b[2] * H_tmp) +
+        2.0 * (((b_x * (double)b_b[d_H_tmp] + x[3] * b[i]) - b[2] * H_tmp) +
                b_dv[d_H_tmp]);
   }
   for (i1 = 0; i1 < 3; i1++) {
@@ -577,11 +577,11 @@ static void ekf_correct(const double x[11], const double P[121],
     int b_a_tmp;
     int c_a_tmp;
     a_tmp = x[i23 + 1];
-    c_a[3 * i23] = a * (double)iv[3 * i23] + 2.0 * x[1] * a_tmp;
+    c_a[3 * i23] = a * (double)b_b[3 * i23] + 2.0 * x[1] * a_tmp;
     b_a_tmp = 3 * i23 + 1;
-    c_a[b_a_tmp] = a * (double)iv[b_a_tmp] + 2.0 * x[2] * a_tmp;
+    c_a[b_a_tmp] = a * (double)b_b[b_a_tmp] + 2.0 * x[2] * a_tmp;
     c_a_tmp = 3 * i23 + 2;
-    c_a[c_a_tmp] = a * (double)iv[c_a_tmp] + 2.0 * x[3] * a_tmp;
+    c_a[c_a_tmp] = a * (double)b_b[c_a_tmp] + 2.0 * x[3] * a_tmp;
   }
   b_dv[0] = 0.0;
   b_dv[3] = b_a * -x[3];
@@ -718,7 +718,7 @@ static void pad_filter_init(GNC_codegen_SILStackData *b_SD) {
   }
   b_SD->pd->b_param.altitude_initial = 420.0;
   b_SD->pd->b_param.c_aero = -0.035602020206989993;
-  b_SD->pd->b_param.c_canard = 0.000649003220184504;
+  b_SD->pd->b_param.c_canard = 0.00054680328244827419;
   b_SD->pd->b_param.g[0] = -9.81;
   b_SD->pd->b_param.g[1] = 0.0;
   b_SD->pd->b_param.g[2] = 0.0;
@@ -740,8 +740,8 @@ void controller_codegen_entry(GNC_codegen_SILStackData *b_SD, double b_time,
                               double where_it_isnt[2],
                               boolean_T *w_status_ctrl) {
   static const double b_dv[5] = {-1.5707963267948966, 0.0, 0.0, 0.0, 0.0};
-  static const signed char iv[5] = {7, 15, 25, 35, 45};
-  static const signed char iv1[5] = {0, 0, 1, -1, 0};
+  static const signed char b_iv[5] = {7, 15, 25, 35, 45};
+  static const signed char b_iv1[5] = {0, 0, 1, -1, 0};
   double P[4];
   double b_K[4];
   double b_dv1[4];
@@ -783,14 +783,14 @@ void controller_codegen_entry(GNC_codegen_SILStackData *b_SD, double b_time,
   r_w = 0.0;
   for (step_idx = 0; step_idx < 5; step_idx++) {
     int i;
-    i = iv[step_idx];
+    i = b_iv[step_idx];
     if (b_time >= i) {
       double d;
       double q;
       double r;
       double x;
       d = b_dv[step_idx];
-      x = ((double)iv1[step_idx] + (b_time - (double)i) * d) +
+      x = ((double)b_iv1[step_idx] + (b_time - (double)i) * d) +
           3.1415926535897931;
       q = fabs(x / 6.2831853071795862);
       if (fabs(q - floor(q + 0.5)) > 2.2204460492503131E-16 * q) {
@@ -809,7 +809,7 @@ void controller_codegen_entry(GNC_codegen_SILStackData *b_SD, double b_time,
   }
   where_it_isnt[0] = r_phi;
   where_it_isnt[1] = r_w;
-  delta = delta_encoder / 2.0;
+  delta = delta_encoder / -2.0;
   pdyn_params = pdyn * b_SD->pd->param.c_canard;
   if (fabs(delta) < 0.005) {
     delta = 0.0;
@@ -818,10 +818,10 @@ void controller_codegen_entry(GNC_codegen_SILStackData *b_SD, double b_time,
   w_dot_lp = 0.75 * ctrl_mem->w_dot_lp +
              0.25 * (where_it_is[1] - ctrl_mem->w) / dt_ctrl;
   r_idx_0 = pdyn_params * delta_lp;
-  P[0] = ctrl_mem->P[0] + 1.0E-5;
+  P[0] = ctrl_mem->P[0] + 5.0E-5;
   P[1] = ctrl_mem->P[1];
   P[2] = ctrl_mem->P[2];
-  P[3] = ctrl_mem->P[3] + 1.0E-9;
+  P[3] = ctrl_mem->P[3] + 5.0E-9;
   memset(&b_r[0], 0, sizeof(double) << 1);
   d1 = r_idx_0 * P[0];
   d2 = pdyn_params * P[3];
@@ -910,7 +910,7 @@ void controller_codegen_entry(GNC_codegen_SILStackData *b_SD, double b_time,
                                deviation_idx_1,
                        -0.17453292519943295),
                   0.17453292519943295) *
-             2.0;
+             -2.0;
   if (pdyn < 500.0) {
     *u_motor = 0.0;
     *w_status_ctrl = false;
