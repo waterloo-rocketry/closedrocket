@@ -12,7 +12,7 @@ function ctrl_mem = controller_estimator(dt_ctrl, w, delta, pdyn_params, ctrl_me
 
     %% tuning parameters
     %%% covariance
-    Q = diag([1e-5, 1e-9]);
+    Q = diag([5e-5, 5e-9]);
 
     %%% small angle cutoff
     if abs(delta) < 0.005 % prevents high noise density for small delta from affecting estimate
