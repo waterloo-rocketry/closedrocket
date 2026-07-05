@@ -33,7 +33,7 @@ sensor_3_S = [0, 0, 1;
               1, 0, 0];
 %% Actuator parameters
 act_freq = 167; % natural frequency, approx 1/timeconstant [1/s]
-act_deadtime = 0.02; % delay in servo internal control loop [s]
+act_deadtime = 0.003; % delay in servo internal control loop [s]
 act_damping = 0.9; % damping ratio
 act_backlash = 0.3; % play [deg]
 act_anglelimit = 22; % max deflection [deg]
