@@ -3,10 +3,10 @@ or_data = readtable('plant-model/data/rockets/Polaris/polaris_cycle_2.csv');
 
 %% Initial values
 location = [420; 43.47; -80.54]; % launch location on earth. Altitude, Latitude, Longitude [m, deg, deg]
-rail_angle_pitch = deg2rad(-5); % Rail pitch angle. Negative is pitched downrange [rad]
+rail_angle_pitch = deg2rad(-6); % Rail pitch angle. Negative is pitched downrange [rad]
 rail_angle_yaw = deg2rad(0); % Rail yaw angle. Negative is yawed downrange [rad]
 rail_angle_roll = deg2rad(0); % Rocket clocking angle [rad]
-rail_length = 11.28; % [m]
+rail_length = 8.23; % [m]
 
 %% Sensor mounting
 %%% _d : Mounting location relative to body frame [m]
