@@ -31,6 +31,13 @@ sensor_3_d = [-1.52; -0.03; 0.0];
 sensor_3_S = [0, 0, 1;
               0,-1, 0;
               1, 0, 0];
+
+% %% OVERRIDE
+% sensor_1_S_acc = eye(3);
+% sensor_1_S_mag = eye(3); 
+% sensor_2_S = eye(3); 
+% sensor_3_S = eye(3);
+
 %% Actuator parameters
 act_freq = 167; % natural frequency, approx 1/timeconstant [1/s]
 act_deadtime = 0.003; % delay in servo internal control loop [s]
