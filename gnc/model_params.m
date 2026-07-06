@@ -38,19 +38,24 @@ g = [-9.81; 0; 0]; % [m/s^2], gravitational acceleration in the geographic inert
 %%% S: [1], rotation transform from sensor frame to body frame
 %%% d: [m], center of sensor frame relative to body frame
 
-S_board = [1 0, 0;
-           0, 1, 0;
-           0, 0, 1]; % Onboard STM IMU
-S_mti = [1, 0, 0;
-         0, 1, 0;
-         0, 0, 1]; % Movella MTi
-S_ad = [1, 0, 0;
-         0, 1, 0;
-         0, 0, 1]; % AD breakout board
+S_board_acc = [0, 0,-1;
+               1, 0, 0;
+               0,-1, 0]; % Onboard STM IMU
+S_board_mag = [0, 0,-1;
+               0,-1, 0;
+               1, 0, 0]; % Onboard STM IMU
 
-d_board = [1.21; 0; 0]; % Onboard STM IMU
-d_mti = [1.21; 0; 0]; % Movella MTi
-d_ad = [1.21; 0; 0]; % AD breakout board
+S_mti = [0, 0, 1;
+         1, 0, 0;
+         0, 1, 0]; % Movella MTi
+
+S_ad = [0, 0, 1;
+        0,-1, 0;
+        1, 0, 0]; % AD breakout board
+
+d_board = [1.73; -0.03; -0.01]; % Onboard STM IMU
+d_mti = [1.74; 0; 0]; % Movella MTi
+d_ad = [1.74; -0.03; 0]; % AD breakout board
 
 %% save and export
 save("gnc/model_params.mat");

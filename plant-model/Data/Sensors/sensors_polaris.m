@@ -7,10 +7,11 @@
 % input the noise value as (noise density)^2, or (RMS)^2/bandwidth = (RMS)^2*samplingrate.
 
 %% Processor values
-samplingrate_nav = 0.002; % sampling period of navigation
-samplingrate_ctrl = 0.01; % sampling period of controller
-samplingrate_imu = 0.002; % sampling period of imu
-samplingrate_other = 0.02; % sampling period baro and mag
+samplingtime_nav = 0.0025; % sampling period of navigation
+samplingtime_ctrl = 0.01; % sampling period of controller
+samplingtime_imu = 0.0025; % sampling period imu
+samplingtime_other = 0.01; % sampling period baro and mag
+samplingtime_motor = 0.005;
 
 %% Sensor group 1 (Onboard)
 
@@ -23,11 +24,11 @@ imu1_gyro_bias = deg2rad(1);
 imu1_gyro_noise = (deg2rad(3.8e-3))^2;
 
 imu1_mag_limit = 16; 
-imu1_mag_noise = (4.1e-3)^2 * samplingrate_other;
+imu1_mag_noise = (4.1e-3)^2 * samplingtime_other;
 
 imu1_baro_limit = [1000, 120e3]; % not yet used in Sim
 imu1_baro_bias = 9;
-imu1_baro_noise = (0.0034e2)^2 * samplingrate_other;
+imu1_baro_noise = (0.0034e2)^2 * samplingtime_other;
 
 
 %% Sensor group 2 values (Movella MTi)
@@ -41,11 +42,11 @@ imu2_gyro_bias = deg2rad(8/3600);
 imu2_gyro_noise = (deg2rad(0.007))^2;
 
 imu2_mag_limit = 8;
-imu2_mag_noise = (1e-3)^2 * samplingrate_other;
+imu2_mag_noise = (1e-3)^2 * samplingtime_other;
 
 imu2_baro_limit = [2000, 110e3]; % not yet used in Sim
 imu2_baro_bias = 8;
-imu2_baro_noise = (1.2)^2 * samplingrate_other;
+imu2_baro_noise = (1.2)^2 * samplingtime_other;
 
 
 %% Sensor group 3 (AD breakout)
