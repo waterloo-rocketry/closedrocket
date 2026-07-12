@@ -53,6 +53,11 @@ S_ad = [0, 0, 1;
         0,-1, 0;
         1, 0, 0]; % AD breakout board
 
+S_board_acc = eye(3);
+S_board_mag = eye(3);
+S_mti = eye(3);
+S_ad = eye(3);
+
 d_board = [1.73; -0.03; -0.01]; % Onboard STM IMU
 d_mti = [1.74; 0; 0]; % Movella MTi
 d_ad = [1.74; -0.03; 0]; % AD breakout board
