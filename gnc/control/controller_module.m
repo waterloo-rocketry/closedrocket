@@ -20,7 +20,7 @@ function [cmd, ref, C_l_delta] = controller_module(time, xR, pdyn, encoder)
         ctrl_mem.w_dot_lp = 0;
     end
 
-    time_launch = 20; % (s) pad delay time
+    time_launch = 30; % (s) pad delay time
     time_actuate = 7; % (s) time to actuation
 
     flight_time = time - time_launch;

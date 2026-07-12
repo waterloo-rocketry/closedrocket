@@ -39,7 +39,7 @@ function [state, cov_norm, roll_state, pdyn] = navigation_module(timestamp, boar
     end
 
     %% config settings
-    idle_time = 15; % [s], wait time to handover from pad to flight, 5s before liftoff
+    idle_time = 25; % [s], wait time to handover from pad to flight, 5s before liftoff
     sampling_imu = 0.0025; % [s], sampling period of imu
     sampling_other = 0.01; % [s], sampling period of baro, mag
 

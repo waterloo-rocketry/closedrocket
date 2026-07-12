@@ -9,7 +9,7 @@ run('plant-model/data/sensors/sensors_polaris.m')
 
 %%% flight config
 chute_enable = [1, 0]; % bool, no recovery is = 0
-time_idle = 20; % [s], wait time on the rail before launch
+time_idle = 30; % [s], wait time on the rail before launch
 
 %% Choose environment
 % enable wind disturbances
