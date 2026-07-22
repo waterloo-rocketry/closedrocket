@@ -12,8 +12,8 @@ function [x, P, bias, sens_filt, cov_norm, roll_state, pdyn, w_status_nav] = nav
 
     %% Flight filter iteration
     if flight_phase == true % in flight
-        [x, P] = flight_filter(dt, x, P, bias, sens_in);
-        w_status_nav = false;
+        [x, P, status] = flight_filter(dt, x, P, bias, sens_in);
+        w_status_nav = status;
     end
 
     %% Compute air data
