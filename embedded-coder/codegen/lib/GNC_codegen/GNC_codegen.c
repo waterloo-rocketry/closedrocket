@@ -37,6 +37,8 @@ static void ekf_correct(const double x[11], const double P[121],
                         const double y[3], const double b[3], const double R[9],
                         double x_new[11], double P_new[121]);
 
+static void ekf_prefilter_imu_init(GNC_codegenStackData *SD);
+
 static void mrdiv(const double A[33], const double B[9], double Y[33]);
 
 static void pad_filter_init(GNC_codegenStackData *SD);
@@ -399,27 +401,21 @@ static void controller_codegen_entry_init(GNC_codegenStackData *SD) {
   SD->pd->param.altitude_initial = 420.0;
   SD->pd->param.c_aero = -0.035602020206989993;
   SD->pd->param.c_canard = 0.00054680328244827419;
+  SD->pd->param.d_ad[0] = 1.72;
+  SD->pd->param.d_board[0] = 1.71;
+  SD->pd->param.d_mti[0] = 1.72;
   SD->pd->param.g[0] = -9.81;
+  SD->pd->param.d_ad[1] = -0.03;
+  SD->pd->param.d_board[1] = -0.03;
+  SD->pd->param.d_mti[1] = 0.0;
   SD->pd->param.g[1] = 0.0;
+  SD->pd->param.d_ad[2] = 0.0;
+  SD->pd->param.d_board[2] = -0.01;
+  SD->pd->param.d_mti[2] = 0.0;
   SD->pd->param.g[2] = 0.0;
 }
 
 static void dynamics_init(GNC_codegenStackData *SD) {
-  int i;
-  SD->pd->c_param.Cn_alpha = 10.0;
-  for (i = 0; i < 9; i++) {
-    SD->pd->c_param.J[i] = dv[i];
-    SD->pd->c_param.Jinv[i] = dv1[i];
-  }
-  SD->pd->c_param.altitude_initial = 420.0;
-  SD->pd->c_param.c_aero = -0.035602020206989993;
-  SD->pd->c_param.c_canard = 0.00054680328244827419;
-  SD->pd->c_param.g[0] = -9.81;
-  SD->pd->c_param.g[1] = 0.0;
-  SD->pd->c_param.g[2] = 0.0;
-}
-
-static void dynamics_jacobian_init(GNC_codegenStackData *SD) {
   int i;
   SD->pd->d_param.Cn_alpha = 10.0;
   for (i = 0; i < 9; i++) {
@@ -429,9 +425,42 @@ static void dynamics_jacobian_init(GNC_codegenStackData *SD) {
   SD->pd->d_param.altitude_initial = 420.0;
   SD->pd->d_param.c_aero = -0.035602020206989993;
   SD->pd->d_param.c_canard = 0.00054680328244827419;
+  SD->pd->d_param.d_ad[0] = 1.72;
+  SD->pd->d_param.d_board[0] = 1.71;
+  SD->pd->d_param.d_mti[0] = 1.72;
   SD->pd->d_param.g[0] = -9.81;
+  SD->pd->d_param.d_ad[1] = -0.03;
+  SD->pd->d_param.d_board[1] = -0.03;
+  SD->pd->d_param.d_mti[1] = 0.0;
   SD->pd->d_param.g[1] = 0.0;
+  SD->pd->d_param.d_ad[2] = 0.0;
+  SD->pd->d_param.d_board[2] = -0.01;
+  SD->pd->d_param.d_mti[2] = 0.0;
   SD->pd->d_param.g[2] = 0.0;
+}
+
+static void dynamics_jacobian_init(GNC_codegenStackData *SD) {
+  int i;
+  SD->pd->e_param.Cn_alpha = 10.0;
+  for (i = 0; i < 9; i++) {
+    SD->pd->e_param.J[i] = dv[i];
+    SD->pd->e_param.Jinv[i] = dv1[i];
+  }
+  SD->pd->e_param.altitude_initial = 420.0;
+  SD->pd->e_param.c_aero = -0.035602020206989993;
+  SD->pd->e_param.c_canard = 0.00054680328244827419;
+  SD->pd->e_param.d_ad[0] = 1.72;
+  SD->pd->e_param.d_board[0] = 1.71;
+  SD->pd->e_param.d_mti[0] = 1.72;
+  SD->pd->e_param.g[0] = -9.81;
+  SD->pd->e_param.d_ad[1] = -0.03;
+  SD->pd->e_param.d_board[1] = -0.03;
+  SD->pd->e_param.d_mti[1] = 0.0;
+  SD->pd->e_param.g[1] = 0.0;
+  SD->pd->e_param.d_ad[2] = 0.0;
+  SD->pd->e_param.d_board[2] = -0.01;
+  SD->pd->e_param.d_mti[2] = 0.0;
+  SD->pd->e_param.g[2] = 0.0;
 }
 
 static void ekf_correct(const double x[11], const double P[121],
@@ -759,6 +788,30 @@ static void ekf_correct(const double x[11], const double P[121],
   x_new[3] /= q_mag;
 }
 
+static void ekf_prefilter_imu_init(GNC_codegenStackData *SD) {
+  int i;
+  SD->pd->c_param.Cn_alpha = 10.0;
+  for (i = 0; i < 9; i++) {
+    SD->pd->c_param.J[i] = dv[i];
+    SD->pd->c_param.Jinv[i] = dv1[i];
+  }
+  SD->pd->c_param.altitude_initial = 420.0;
+  SD->pd->c_param.c_aero = -0.035602020206989993;
+  SD->pd->c_param.c_canard = 0.00054680328244827419;
+  SD->pd->c_param.d_ad[0] = 1.72;
+  SD->pd->c_param.d_board[0] = 1.71;
+  SD->pd->c_param.d_mti[0] = 1.72;
+  SD->pd->c_param.g[0] = -9.81;
+  SD->pd->c_param.d_ad[1] = -0.03;
+  SD->pd->c_param.d_board[1] = -0.03;
+  SD->pd->c_param.d_mti[1] = 0.0;
+  SD->pd->c_param.g[1] = 0.0;
+  SD->pd->c_param.d_ad[2] = 0.0;
+  SD->pd->c_param.d_board[2] = -0.01;
+  SD->pd->c_param.d_mti[2] = 0.0;
+  SD->pd->c_param.g[2] = 0.0;
+}
+
 static void mrdiv(const double A[33], const double B[9], double Y[33]) {
   double b_A[9];
   double a21;
@@ -826,14 +879,24 @@ static void pad_filter_init(GNC_codegenStackData *SD) {
   SD->pd->b_param.altitude_initial = 420.0;
   SD->pd->b_param.c_aero = -0.035602020206989993;
   SD->pd->b_param.c_canard = 0.00054680328244827419;
+  SD->pd->b_param.d_ad[0] = 1.72;
+  SD->pd->b_param.d_board[0] = 1.71;
+  SD->pd->b_param.d_mti[0] = 1.72;
   SD->pd->b_param.g[0] = -9.81;
+  SD->pd->b_param.d_ad[1] = -0.03;
+  SD->pd->b_param.d_board[1] = -0.03;
+  SD->pd->b_param.d_mti[1] = 0.0;
   SD->pd->b_param.g[1] = 0.0;
+  SD->pd->b_param.d_ad[2] = 0.0;
+  SD->pd->b_param.d_board[2] = -0.01;
+  SD->pd->b_param.d_mti[2] = 0.0;
   SD->pd->b_param.g[2] = 0.0;
 }
 
 void GNC_codegen_initialize(GNC_codegenStackData *SD) {
   controller_codegen_entry_init(SD);
   pad_filter_init(SD);
+  ekf_prefilter_imu_init(SD);
   dynamics_init(SD);
   dynamics_jacobian_init(SD);
 }
@@ -1015,7 +1078,7 @@ void controller_codegen_entry(GNC_codegenStackData *SD, double b_time,
     *u_motor = 0.0;
     *w_status_ctrl = false;
   }
-  if (b_time < 6.0) {
+  if (b_time < 7.0) {
     *u_motor = 0.0;
     *w_status_ctrl = false;
   }
@@ -1055,25 +1118,27 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
   double b_W_dt[16];
   double c_b[16];
   double d_b[16];
-  double b_x[11];
-  double c_x[11];
   double d_x[11];
   double e_x[11];
+  double f_x[11];
+  double g_x[11];
   double b_dv[9];
   double b_n_tilde[9];
   double b_w_exp_tilde[9];
   double c_skewed_exp_w_tmp[9];
+  double w_tilde_sq[9];
   double c_q[4];
   double q[4];
+  double b_ST[3];
   double b_dt[3];
   double c_dt[3];
   double c_w_exp_tilde[3];
   double dv3[3];
   double b_a;
   double b_expl_temp;
+  double b_x;
   double c_expl_temp;
-  double d;
-  double d1;
+  double c_x;
   double d_expl_temp;
   double e_expl_temp;
   double expl_temp;
@@ -1092,98 +1157,101 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
   int b_i;
   int e_k;
   int h_k;
-  int i;
-  int i1;
-  int i10;
+  int i100;
+  int i101;
+  int i102;
+  int i103;
+  int i11;
   int i12;
   int i14;
-  int i16;
+  int i15;
+  int i17;
   int i18;
+  int i2;
   int i20;
   int i22;
   int i24;
-  int i25;
-  int i29;
-  int i3;
+  int i26;
+  int i28;
   int i30;
-  int i33;
-  int i34;
+  int i31;
   int i35;
-  int i37;
+  int i36;
+  int i39;
+  int i4;
   int i40;
-  int i44;
-  int i45;
-  int i47;
-  int i48;
-  int i49;
-  int i5;
+  int i41;
+  int i43;
+  int i46;
   int i50;
-  int i52;
+  int i51;
   int i53;
-  int i57;
+  int i54;
+  int i55;
+  int i56;
+  int i58;
   int i59;
   int i6;
-  int i61;
-  int i62;
+  int i63;
   int i65;
-  int i66;
+  int i67;
   int i68;
   int i7;
-  int i70;
+  int i71;
   int i72;
   int i74;
-  int i75;
-  int i77;
+  int i76;
   int i78;
-  int i79;
+  int i8;
+  int i80;
   int i81;
   int i83;
-  int i86;
+  int i84;
+  int i85;
   int i87;
   int i89;
   int i9;
-  int i90;
-  int i91;
   int i92;
   int i93;
-  int i94;
   int i95;
   int i96;
   int i97;
+  int i98;
+  int i99;
   int j;
   int k_k;
   int m_k;
   signed char d_I[121];
-  d = b_norm(sens_in->board_mag.meas);
-  if (d != 0.0) {
-    sens_in->board_mag.meas[0] /= d;
-    sens_in->board_mag.meas[1] /= d;
-    sens_in->board_mag.meas[2] /= d;
+  b_x = b_norm(sens_in->board_mag.meas);
+  if (fabs(b_x) >= 1.0E-6) {
+    sens_in->board_mag.meas[0] /= b_x;
+    sens_in->board_mag.meas[1] /= b_x;
+    sens_in->board_mag.meas[2] /= b_x;
   }
-  d1 = b_norm(sens_in->mti_mag.meas);
-  if (d1 != 0.0) {
-    sens_in->mti_mag.meas[0] /= d1;
-    sens_in->mti_mag.meas[1] /= d1;
-    sens_in->mti_mag.meas[2] /= d1;
+  c_x = b_norm(sens_in->mti_mag.meas);
+  if (fabs(c_x) >= 1.0E-6) {
+    sens_in->mti_mag.meas[0] /= c_x;
+    sens_in->mti_mag.meas[1] /= c_x;
+    sens_in->mti_mag.meas[2] /= c_x;
   }
   if (!((int)flight_phase)) {
     double ST[9];
-    double g_a[9];
+    double e_a[9];
     double a[3];
-    double b_filtered[3];
     double a_norm;
-    double c_filtered;
-    double d10;
-    double d11;
-    double d3;
-    double d4;
-    double d9;
-    double e_a;
-    double f_a;
+    double b_filtered;
+    double c_a;
+    double d17;
+    double d18;
+    double d19;
+    double d22;
+    double d23;
+    double d24;
+    double d_a;
     double filtered;
-    int i11;
-    int i4;
-    int i8;
+    int i13;
+    int i16;
+    int i5;
     if (sens_in->board_accel.status) {
       sens_filt->board_accel[0] = (0.0005 * sens_in->board_accel.meas[0]) +
                                   (0.9995 * sens_filt->board_accel[0]);
@@ -1238,60 +1306,40 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
                  (0.9995 * sens_filt->board_baro);
     }
     sens_filt->board_baro = filtered;
-    b_filtered[0] = sens_filt->board_mag[0];
-    b_filtered[1] = sens_filt->board_mag[1];
-    b_filtered[2] = sens_filt->board_mag[2];
     if (sens_in->board_mag.status) {
-      b_filtered[0] = (0.0005 * sens_in->board_mag.meas[0]) +
-                      (0.9995 * sens_filt->board_mag[0]);
-      b_filtered[1] = (0.0005 * sens_in->board_mag.meas[1]) +
-                      (0.9995 * sens_filt->board_mag[1]);
-      b_filtered[2] = (0.0005 * sens_in->board_mag.meas[2]) +
-                      (0.9995 * sens_filt->board_mag[2]);
+      sens_filt->board_mag[0] = (0.0005 * sens_in->board_mag.meas[0]) +
+                                (0.9995 * sens_filt->board_mag[0]);
+      sens_filt->board_mag[1] = (0.0005 * sens_in->board_mag.meas[1]) +
+                                (0.9995 * sens_filt->board_mag[1]);
+      sens_filt->board_mag[2] = (0.0005 * sens_in->board_mag.meas[2]) +
+                                (0.9995 * sens_filt->board_mag[2]);
     }
-    d3 = b_norm(b_filtered);
-    if (d3 == 0.0) {
-      sens_filt->board_mag[0] = b_filtered[0];
-      sens_filt->board_mag[1] = b_filtered[1];
-      sens_filt->board_mag[2] = b_filtered[2];
-    } else {
-      sens_filt->board_mag[0] = b_filtered[0] / d3;
-      sens_filt->board_mag[1] = b_filtered[1] / d3;
-      sens_filt->board_mag[2] = b_filtered[2] / d3;
-    }
-    c_filtered = sens_filt->mti_baro;
+    b_filtered = sens_filt->mti_baro;
     if (sens_in->mti_baro.status) {
-      c_filtered =
+      b_filtered =
           (0.0005 * sens_in->mti_baro.meas) + (0.9995 * sens_filt->mti_baro);
     }
-    sens_filt->mti_baro = c_filtered;
-    b_filtered[0] = sens_filt->mti_mag[0];
-    b_filtered[1] = sens_filt->mti_mag[1];
-    b_filtered[2] = sens_filt->mti_mag[2];
+    sens_filt->mti_baro = b_filtered;
     if (sens_in->mti_mag.status) {
-      b_filtered[0] = (0.0005 * sens_in->mti_mag.meas[0]) +
-                      (0.9995 * sens_filt->mti_mag[0]);
-      b_filtered[1] = (0.0005 * sens_in->mti_mag.meas[1]) +
-                      (0.9995 * sens_filt->mti_mag[1]);
-      b_filtered[2] = (0.0005 * sens_in->mti_mag.meas[2]) +
-                      (0.9995 * sens_filt->mti_mag[2]);
+      sens_filt->mti_mag[0] = (0.0005 * sens_in->mti_mag.meas[0]) +
+                              (0.9995 * sens_filt->mti_mag[0]);
+      sens_filt->mti_mag[1] = (0.0005 * sens_in->mti_mag.meas[1]) +
+                              (0.9995 * sens_filt->mti_mag[1]);
+      sens_filt->mti_mag[2] = (0.0005 * sens_in->mti_mag.meas[2]) +
+                              (0.9995 * sens_filt->mti_mag[2]);
     }
-    d4 = b_norm(b_filtered);
-    if (d4 == 0.0) {
-      sens_filt->mti_mag[0] = b_filtered[0];
-      sens_filt->mti_mag[1] = b_filtered[1];
-      sens_filt->mti_mag[2] = b_filtered[2];
-    } else {
-      sens_filt->mti_mag[0] = b_filtered[0] / d4;
-      sens_filt->mti_mag[1] = b_filtered[1] / d4;
-      sens_filt->mti_mag[2] = b_filtered[2] / d4;
-    }
-    a[0] = (sens_filt->board_accel[0] + sens_filt->mti_accel[0]) +
-           sens_filt->ad_accel[0];
-    a[1] = (sens_filt->board_accel[1] + sens_filt->mti_accel[1]) +
-           sens_filt->ad_accel[1];
-    a[2] = (sens_filt->board_accel[2] + sens_filt->mti_accel[2]) +
-           sens_filt->ad_accel[2];
+    a[0] =
+        ((sens_filt->board_accel[0] * ((double)sens_in->board_accel.status)) +
+         (sens_filt->mti_accel[0] * ((double)sens_in->mti_accel.status))) +
+        (sens_filt->ad_accel[0] * ((double)sens_in->ad_accel.status));
+    a[1] =
+        ((sens_filt->board_accel[1] * ((double)sens_in->board_accel.status)) +
+         (sens_filt->mti_accel[1] * ((double)sens_in->mti_accel.status))) +
+        (sens_filt->ad_accel[1] * ((double)sens_in->ad_accel.status));
+    a[2] =
+        ((sens_filt->board_accel[2] * ((double)sens_in->board_accel.status)) +
+         (sens_filt->mti_accel[2] * ((double)sens_in->mti_accel.status))) +
+        (sens_filt->ad_accel[2] * ((double)sens_in->ad_accel.status));
     *w_status_nav = true;
     a_norm = b_norm(a);
     if (a_norm < 1.0E-6) {
@@ -1301,7 +1349,7 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
       q[3] = 0.0;
       *w_status_nav = false;
     } else {
-      double d6;
+      double d1;
       double qw;
       double qy;
       double qz;
@@ -1317,11 +1365,11 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
       q[1] = 0.0;
       q[2] = qy;
       q[3] = qz;
-      d6 = c_norm(q);
-      q[0] = qw / d6;
-      q[1] = 0.0 / d6;
-      q[2] = qy / d6;
-      q[3] = qz / d6;
+      d1 = c_norm(q);
+      q[0] = qw / d1;
+      q[1] = 0.0 / d1;
+      q[2] = qy / d1;
+      q[3] = qz / d1;
     }
     x[0] = q[0];
     x[1] = q[1];
@@ -1330,76 +1378,91 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
     x[10] = SD->pd->b_param.altitude_initial;
     x[4] = 0.0;
     x[7] = 0.0;
-    bias->board_gyro[0] = sens_filt->board_gyro[0];
-    bias->mti_gyro[0] = sens_filt->mti_gyro[0];
-    bias->ad_gyro[0] = sens_filt->ad_gyro[0];
+    bias->board_gyro[0] =
+        sens_filt->board_gyro[0] * ((double)sens_in->board_gyro.status);
+    bias->mti_gyro[0] =
+        sens_filt->mti_gyro[0] * ((double)sens_in->mti_gyro.status);
+    bias->ad_gyro[0] =
+        sens_filt->ad_gyro[0] * ((double)sens_in->ad_gyro.status);
     x[5] = 0.0;
     x[8] = 0.0;
-    bias->board_gyro[1] = sens_filt->board_gyro[1];
-    bias->mti_gyro[1] = sens_filt->mti_gyro[1];
-    bias->ad_gyro[1] = sens_filt->ad_gyro[1];
+    bias->board_gyro[1] =
+        sens_filt->board_gyro[1] * ((double)sens_in->board_gyro.status);
+    bias->mti_gyro[1] =
+        sens_filt->mti_gyro[1] * ((double)sens_in->mti_gyro.status);
+    bias->ad_gyro[1] =
+        sens_filt->ad_gyro[1] * ((double)sens_in->ad_gyro.status);
     x[6] = 0.0;
     x[9] = 0.0;
-    bias->board_gyro[2] = sens_filt->board_gyro[2];
-    bias->mti_gyro[2] = sens_filt->mti_gyro[2];
-    bias->ad_gyro[2] = sens_filt->ad_gyro[2];
-    e_a = (q[0] * q[0]) - (((q[1] * q[1]) + (q[2] * q[2])) + (q[3] * q[3]));
-    f_a = 2.0 * q[0];
-    i4 = 0;
-    for (i5 = 0; i5 < 3; i5++) {
-      double d_a_tmp;
-      d_a_tmp = 2.0 * q[i5 + 1];
-      g_a[i4] = (e_a * b[i5]) + (d_a_tmp * q[1]);
-      g_a[i4 + 1] = (e_a * b[i5 + 3]) + (d_a_tmp * q[2]);
-      g_a[i4 + 2] = (e_a * b[i5 + 6]) + (d_a_tmp * q[3]);
-      i4 += 3;
+    bias->board_gyro[2] =
+        sens_filt->board_gyro[2] * ((double)sens_in->board_gyro.status);
+    bias->mti_gyro[2] =
+        sens_filt->mti_gyro[2] * ((double)sens_in->mti_gyro.status);
+    bias->ad_gyro[2] =
+        sens_filt->ad_gyro[2] * ((double)sens_in->ad_gyro.status);
+    c_a = (q[0] * q[0]) - (((q[1] * q[1]) + (q[2] * q[2])) + (q[3] * q[3]));
+    d_a = 2.0 * q[0];
+    i5 = 0;
+    for (i6 = 0; i6 < 3; i6++) {
+      double a_tmp;
+      a_tmp = 2.0 * q[i6 + 1];
+      e_a[i5] = (c_a * b[i6]) + (a_tmp * q[1]);
+      e_a[i5 + 1] = (c_a * b[i6 + 3]) + (a_tmp * q[2]);
+      e_a[i5 + 2] = (c_a * b[i6 + 6]) + (a_tmp * q[3]);
+      i5 += 3;
     }
     b_dv[0] = 0.0;
-    b_dv[1] = f_a * (-q[3]);
-    b_dv[2] = f_a * q[2];
-    b_dv[3] = f_a * q[3];
+    b_dv[1] = d_a * (-q[3]);
+    b_dv[2] = d_a * q[2];
+    b_dv[3] = d_a * q[3];
     b_dv[4] = 0.0;
-    b_dv[5] = f_a * (-q[1]);
-    b_dv[6] = f_a * (-q[2]);
-    b_dv[7] = f_a * q[1];
+    b_dv[5] = d_a * (-q[1]);
+    b_dv[6] = d_a * (-q[2]);
+    b_dv[7] = d_a * q[1];
     b_dv[8] = 0.0;
-    for (i7 = 0; i7 < 9; i7++) {
-      ST[i7] = g_a[i7] - b_dv[i7];
+    for (i12 = 0; i12 < 9; i12++) {
+      ST[i12] = e_a[i12] - b_dv[i12];
     }
-    bias->board_mag_earth[0] = 0.0;
-    bias->board_mag_earth[1] = 0.0;
-    bias->board_mag_earth[2] = 0.0;
-    i8 = 0;
-    for (i10 = 0; i10 < 3; i10++) {
-      double d8;
-      d8 = sens_filt->board_mag[i10];
-      bias->board_mag_earth[0] += ST[i8] * d8;
-      bias->board_mag_earth[1] += ST[i8 + 1] * d8;
-      bias->board_mag_earth[2] += ST[i8 + 2] * d8;
-      bias->mti_mag_earth[i10] = 0.0;
-      i8 += 3;
+    memset(&b_ST[0], 0, 3U * (sizeof(double)));
+    i13 = 0;
+    d17 = b_ST[0];
+    d18 = b_ST[1];
+    d19 = b_ST[2];
+    for (i14 = 0; i14 < 3; i14++) {
+      double d21;
+      d21 = sens_filt->board_mag[i14];
+      d17 += ST[i13] * d21;
+      d18 += ST[i13 + 1] * d21;
+      d19 += ST[i13 + 2] * d21;
+      i13 += 3;
     }
-    i11 = 0;
-    d9 = bias->mti_mag_earth[0];
-    d10 = bias->mti_mag_earth[1];
-    d11 = bias->mti_mag_earth[2];
-    for (i12 = 0; i12 < 3; i12++) {
-      double d12;
-      d12 = sens_filt->mti_mag[i12];
-      d9 += ST[i11] * d12;
-      d10 += ST[i11 + 1] * d12;
-      d11 += ST[i11 + 2] * d12;
-      i11 += 3;
+    bias->board_mag_earth[0] = d17 * ((double)sens_in->board_mag.status);
+    bias->board_mag_earth[1] = d18 * ((double)sens_in->board_mag.status);
+    bias->board_mag_earth[2] = d19 * ((double)sens_in->board_mag.status);
+    memset(&b_ST[0], 0, 3U * (sizeof(double)));
+    i16 = 0;
+    d22 = b_ST[0];
+    d23 = b_ST[1];
+    d24 = b_ST[2];
+    for (i17 = 0; i17 < 3; i17++) {
+      double d25;
+      d25 = sens_filt->mti_mag[i17];
+      d22 += ST[i16] * d25;
+      d23 += ST[i16 + 1] * d25;
+      d24 += ST[i16 + 2] * d25;
+      i16 += 3;
     }
     double t1_pressure;
-    bias->mti_mag_earth[2] = d11;
-    bias->mti_mag_earth[1] = d10;
-    bias->mti_mag_earth[0] = d9;
+    bias->mti_mag_earth[0] = d22 * ((double)sens_in->mti_mag.status);
+    bias->mti_mag_earth[1] = d23 * ((double)sens_in->mti_mag.status);
+    bias->mti_mag_earth[2] = d24 * ((double)sens_in->mti_mag.status);
     t1_pressure =
         airdata_atmos(SD->pd->b_param.altitude_initial, &i_expl_temp,
                       &t1_density, &j_expl_temp, &k_expl_temp, &l_expl_temp);
-    bias->board_baro = filtered - t1_pressure;
-    bias->mti_baro = c_filtered - t1_pressure;
+    bias->board_baro =
+        (filtered - t1_pressure) * ((double)sens_in->board_baro.status);
+    bias->mti_baro =
+        (b_filtered - t1_pressure) * ((double)sens_in->mti_baro.status);
   } else {
     double C_total_a[3];
     double C_total_w[3];
@@ -1411,10 +1474,10 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
     double b_C_total_a_tmp_tmp;
     double b_C_total_w_tmp_tmp;
     double c_C_total_a_tmp_tmp;
-    double d2;
     double w_idx_0;
     double w_idx_1;
     double w_idx_2;
+    int i;
     int k;
     bool exitg1;
     bool status_fast;
@@ -1422,7 +1485,7 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
     status_fast = false;
     a[0] = 0.0;
     w_idx_0 = 0.0;
-    d2 = 9.9999999999999981E+9 * ((double)sens_in->ad_gyro.status);
+    i = 1000000 * ((int)sens_in->ad_gyro.status);
     C_total_a_tmp_tmp =
         1.0000000000000002E+14 * ((double)sens_in->board_accel.status);
     b_C_total_a_tmp_tmp =
@@ -1437,7 +1500,7 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
     b_C_total_w_tmp_tmp =
         9.9999999999999981E+9 * ((double)sens_in->mti_gyro.status);
     C_total_w_tmp = C_total_w_tmp_tmp + b_C_total_w_tmp_tmp;
-    C_total_w[0] = C_total_w_tmp + d2;
+    C_total_w[0] = C_total_w_tmp + ((double)i);
     a[1] = 0.0;
     w_idx_1 = 0.0;
     C_total_a[1] = C_total_a_tmp;
@@ -1472,44 +1535,99 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
         }
       }
       if (!((int)b_y)) {
-        double a_tmp;
-        double b_a_tmp;
+        double w_tilde[9];
         double b_w_idx_1_tmp;
-        double c_a_tmp;
-        double d5;
+        double d;
+        double d10;
+        double d11;
+        double d2;
+        double d3;
+        double d4;
+        double d6;
+        double d7;
+        double d8;
+        double d9;
         double w_idx_1_tmp;
+        int i1;
         status_fast = true;
         w_idx_0 = (((C_total_w_tmp_tmp / C_total_w[0]) *
                     (sens_in->board_gyro.meas[0] - bias->board_gyro[0])) +
                    ((b_C_total_w_tmp_tmp / C_total_w[0]) *
                     (sens_in->mti_gyro.meas[0] - bias->mti_gyro[0]))) +
-                  ((d2 / C_total_w[0]) *
+                  ((((double)i) / C_total_w[0]) *
                    (sens_in->ad_gyro.meas[0] - bias->ad_gyro[0]));
-        a_tmp = C_total_a_tmp_tmp / C_total_a_tmp;
-        b_a_tmp = b_C_total_a_tmp_tmp / C_total_a_tmp;
-        c_a_tmp = c_C_total_a_tmp_tmp / C_total_a_tmp;
-        a[0] = ((a_tmp * sens_in->board_accel.meas[0]) +
-                (b_a_tmp * sens_in->mti_accel.meas[0])) +
-               (c_a_tmp * sens_in->ad_accel.meas[0]);
-        d5 = 0.0 / C_total_w_tmp;
+        d = 0.0 / C_total_w_tmp;
         w_idx_1_tmp = C_total_w_tmp_tmp / C_total_w_tmp;
         b_w_idx_1_tmp = b_C_total_w_tmp_tmp / C_total_w_tmp;
         w_idx_1 = ((w_idx_1_tmp *
                     (sens_in->board_gyro.meas[1] - bias->board_gyro[1])) +
                    (b_w_idx_1_tmp *
                     (sens_in->mti_gyro.meas[1] - bias->mti_gyro[1]))) +
-                  (d5 * (sens_in->ad_gyro.meas[1] - bias->ad_gyro[1]));
-        a[1] = ((a_tmp * sens_in->board_accel.meas[1]) +
-                (b_a_tmp * sens_in->mti_accel.meas[1])) +
-               (c_a_tmp * sens_in->ad_accel.meas[1]);
+                  (d * (sens_in->ad_gyro.meas[1] - bias->ad_gyro[1]));
         w_idx_2 = ((w_idx_1_tmp *
                     (sens_in->board_gyro.meas[2] - bias->board_gyro[2])) +
                    (b_w_idx_1_tmp *
                     (sens_in->mti_gyro.meas[2] - bias->mti_gyro[2]))) +
-                  (d5 * (sens_in->ad_gyro.meas[2] - bias->ad_gyro[2]));
-        a[2] = ((a_tmp * sens_in->board_accel.meas[2]) +
-                (b_a_tmp * sens_in->mti_accel.meas[2])) +
-               (c_a_tmp * sens_in->ad_accel.meas[2]);
+                  (d * (sens_in->ad_gyro.meas[2] - bias->ad_gyro[2]));
+        w_tilde[0] = 0.0;
+        w_tilde[3] = -w_idx_2;
+        w_tilde[6] = w_idx_1;
+        w_tilde[1] = w_idx_2;
+        w_tilde[4] = 0.0;
+        w_tilde[7] = -w_idx_0;
+        w_tilde[2] = -w_idx_1;
+        w_tilde[5] = w_idx_0;
+        w_tilde[8] = 0.0;
+        memset(&w_tilde_sq[0], 0, 9U * (sizeof(double)));
+        i1 = 0;
+        for (i2 = 0; i2 < 3; i2++) {
+          int i3;
+          i3 = 0;
+          for (i4 = 0; i4 < 3; i4++) {
+            double d5;
+            d5 = w_tilde[i4 + i1];
+            w_tilde_sq[i1] += w_tilde[i3] * d5;
+            w_tilde_sq[i1 + 1] += w_tilde[i3 + 1] * d5;
+            w_tilde_sq[i1 + 2] += w_tilde[i3 + 2] * d5;
+            i3 += 3;
+          }
+          i1 += 3;
+        }
+        d2 = SD->pd->c_param.d_board[0];
+        d3 = SD->pd->c_param.d_mti[0];
+        d4 = SD->pd->c_param.d_ad[0];
+        d6 = SD->pd->c_param.d_board[1];
+        d7 = SD->pd->c_param.d_mti[1];
+        d8 = SD->pd->c_param.d_ad[1];
+        d9 = SD->pd->c_param.d_board[2];
+        d10 = SD->pd->c_param.d_mti[2];
+        d11 = SD->pd->c_param.d_ad[2];
+        for (i8 = 0; i8 < 3; i8++) {
+          double d12;
+          double d13;
+          double d14;
+          double d15;
+          double d20;
+          d12 = w_tilde_sq[i8];
+          d13 = d12 * d2;
+          d14 = d12 * d3;
+          d15 = d12 * d4;
+          d12 = w_tilde_sq[i8 + 3];
+          d13 += d12 * d6;
+          d14 += d12 * d7;
+          d15 += d12 * d8;
+          d12 = w_tilde_sq[i8 + 6];
+          d13 += d12 * d9;
+          d14 += d12 * d10;
+          d15 += d12 * d11;
+          d20 = C_total_a[i8];
+          a[i8] = (((C_total_a_tmp_tmp / d20) *
+                    (sens_in->board_accel.meas[i8] - d13)) +
+                   ((b_C_total_a_tmp_tmp / d20) *
+                    (sens_in->mti_accel.meas[i8] - d14))) +
+                  ((c_C_total_a_tmp_tmp / d20) *
+                   (sens_in->ad_accel.meas[i8] - d15));
+        }
       }
     }
     *w_status_nav = status_fast;
@@ -1526,7 +1644,7 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
       double b_P_pred[9];
       double b_skewed_exp_w_tmp[9];
       double dv4[9];
-      double g_a[9];
+      double e_a[9];
       double n_tilde[9];
       double skewed_exp_w_tmp[9];
       double w_exp_tilde[9];
@@ -1536,35 +1654,35 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
       double c_r_q_tmp[3];
       double dn[3];
       double dv2[3];
-      double i_x[3];
+      double k_x[3];
       double b_b;
       double b_dphi_tmp;
       double b_r_q_tmp;
-      double c_a;
-      double d15;
-      double d16;
-      double d17;
-      double d18;
-      double d19;
-      double d20;
-      double d21;
-      double d22;
-      double d23;
-      double d24;
-      double d25;
-      double d26;
+      double d28;
       double d29;
+      double d30;
       double d31;
       double d32;
+      double d33;
       double d34;
+      double d35;
+      double d36;
+      double d37;
+      double d38;
+      double d39;
+      double d42;
+      double d44;
+      double d45;
+      double d47;
       double dphi;
       double dphi_tmp;
-      double f_x;
-      double g_x;
+      double f_a;
       double h_a;
       double h_x;
       double i_a;
+      double i_x;
       double j_a;
+      double j_x;
       double k_a;
       double l_a;
       double n_a;
@@ -1578,30 +1696,30 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
       int d_k;
       int f_k;
       int g_k;
-      int i13;
-      int i17;
       int i19;
-      int i21;
-      int i26;
+      int i23;
+      int i25;
       int i27;
-      int i31;
       int i32;
+      int i33;
+      int i37;
       int i38;
-      int i39;
-      int i41;
-      int i43;
-      int i51;
-      int i55;
-      int i56;
-      int i58;
+      int i44;
+      int i45;
+      int i47;
+      int i49;
+      int i57;
+      int i61;
+      int i62;
       int i64;
-      int i67;
-      int i71;
+      int i70;
       int i73;
-      int i76;
-      int i80;
-      int i84;
-      int i85;
+      int i77;
+      int i79;
+      int i82;
+      int i86;
+      int i90;
+      int i91;
       int i_k;
       int j_k;
       int l_k;
@@ -1640,51 +1758,51 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
       n_tilde[2] = -n_idx_1;
       n_tilde[5] = n_idx_0;
       n_tilde[8] = 0.0;
-      c_a = sin(b_dphi_tmp);
-      f_x = cos(b_dphi_tmp);
-      for (b_i = 0; b_i < 9; b_i++) {
-        b_I[b_i] = (signed char)0;
+      f_a = sin(b_dphi_tmp);
+      h_x = cos(b_dphi_tmp);
+      for (i7 = 0; i7 < 9; i7++) {
+        b_I[i7] = (signed char)0;
       }
       memset(&b_n_tilde[0], 0, 9U * (sizeof(double)));
       c_k = 0;
       d_k = 0;
       for (e_k = 0; e_k < 3; e_k++) {
-        int i2;
+        int i10;
         b_I[c_k] = (signed char)1;
-        i2 = 0;
-        for (i3 = 0; i3 < 3; i3++) {
-          double d7;
-          d7 = n_tilde[i3 + d_k];
-          b_n_tilde[d_k] += n_tilde[i2] * d7;
-          b_n_tilde[d_k + 1] += n_tilde[i2 + 1] * d7;
-          b_n_tilde[d_k + 2] += n_tilde[i2 + 2] * d7;
-          i2 += 3;
+        i10 = 0;
+        for (i11 = 0; i11 < 3; i11++) {
+          double d16;
+          d16 = n_tilde[i11 + d_k];
+          b_n_tilde[d_k] += n_tilde[i10] * d16;
+          b_n_tilde[d_k + 1] += n_tilde[i10 + 1] * d16;
+          b_n_tilde[d_k + 2] += n_tilde[i10 + 2] * d16;
+          i10 += 3;
         }
         c_k += 4;
         d_k += 3;
       }
-      for (i1 = 0; i1 < 9; i1++) {
-        w_exp_tilde[i1] = (((double)b_I[i1]) - (c_a * n_tilde[i1])) +
-                          ((1.0 - f_x) * b_n_tilde[i1]);
+      for (i9 = 0; i9 < 9; i9++) {
+        w_exp_tilde[i9] = (((double)b_I[i9]) - (f_a * n_tilde[i9])) +
+                          ((1.0 - h_x) * b_n_tilde[i9]);
       }
-      double d_a;
-      d_a = b_norm(&x[7]);
+      double g_a;
+      g_a = b_norm(&x[7]);
       airdata_atmos(x[10], &e_expl_temp, &t1_density, &f_expl_temp,
                     &g_expl_temp, &h_expl_temp);
-      h_a = (0.5 * t1_density) * (d_a * d_a);
-      i_a = SD->pd->c_param.c_aero * SD->pd->c_param.Cn_alpha;
+      h_a = (0.5 * t1_density) * (g_a * g_a);
+      i_a = SD->pd->d_param.c_aero * SD->pd->d_param.Cn_alpha;
       j_a = (x[0] * x[0]) - (((x[1] * x[1]) + (x[2] * x[2])) + (x[3] * x[3]));
       k_a = 2.0 * x[0];
-      for (i6 = 0; i6 < 3; i6++) {
-        double e_a_tmp;
-        int f_a_tmp;
-        int g_a_tmp;
-        e_a_tmp = x[i6 + 1];
-        g_a[3 * i6] = (j_a * b[3 * i6]) + ((2.0 * x[1]) * e_a_tmp);
-        f_a_tmp = (3 * i6) + 1;
-        g_a[f_a_tmp] = (j_a * b[f_a_tmp]) + ((2.0 * x[2]) * e_a_tmp);
-        g_a_tmp = (3 * i6) + 2;
-        g_a[g_a_tmp] = (j_a * b[g_a_tmp]) + ((2.0 * x[3]) * e_a_tmp);
+      for (i15 = 0; i15 < 3; i15++) {
+        double b_a_tmp;
+        int c_a_tmp;
+        int d_a_tmp;
+        b_a_tmp = x[i15 + 1];
+        e_a[3 * i15] = (j_a * b[3 * i15]) + ((2.0 * x[1]) * b_a_tmp);
+        c_a_tmp = (3 * i15) + 1;
+        e_a[c_a_tmp] = (j_a * b[c_a_tmp]) + ((2.0 * x[2]) * b_a_tmp);
+        d_a_tmp = (3 * i15) + 2;
+        e_a[d_a_tmp] = (j_a * b[d_a_tmp]) + ((2.0 * x[3]) * b_a_tmp);
       }
       b_dv[0] = 0.0;
       b_dv[3] = k_a * (-x[3]);
@@ -1695,8 +1813,8 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
       b_dv[2] = k_a * (-x[2]);
       b_dv[5] = k_a * x[1];
       b_dv[8] = 0.0;
-      for (i9 = 0; i9 < 9; i9++) {
-        S[i9] = g_a[i9] - b_dv[i9];
+      for (i18 = 0; i18 < 9; i18++) {
+        S[i18] = e_a[i18] - b_dv[i18];
       }
       b_q[0] = q[0];
       b_q[4] = -q[1];
@@ -1717,25 +1835,25 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
       b_dv1[0] = cos(dphi);
       memset(&b_w_exp_tilde[0], 0, 9U * (sizeof(double)));
       memset(&c_w_exp_tilde[0], 0, 3U * (sizeof(double)));
-      i13 = 0;
-      for (i14 = 0; i14 < 3; i14++) {
-        int i15;
-        b_dv1[i14 + 1] = dn[i14] * b_b;
-        i15 = 0;
-        for (i16 = 0; i16 < 3; i16++) {
-          double d14;
-          d14 = SD->pd->c_param.J[i16 + i13];
-          b_w_exp_tilde[i13] += w_exp_tilde[i15] * d14;
-          b_w_exp_tilde[i13 + 1] += w_exp_tilde[i15 + 1] * d14;
-          b_w_exp_tilde[i13 + 2] += w_exp_tilde[i15 + 2] * d14;
-          i15 += 3;
+      i19 = 0;
+      for (i20 = 0; i20 < 3; i20++) {
+        int i21;
+        b_dv1[i20 + 1] = dn[i20] * b_b;
+        i21 = 0;
+        for (i22 = 0; i22 < 3; i22++) {
+          double d27;
+          d27 = SD->pd->d_param.J[i22 + i19];
+          b_w_exp_tilde[i19] += w_exp_tilde[i21] * d27;
+          b_w_exp_tilde[i19 + 1] += w_exp_tilde[i21 + 1] * d27;
+          b_w_exp_tilde[i19 + 2] += w_exp_tilde[i21 + 2] * d27;
+          i21 += 3;
         }
-        double d13;
-        d13 = x[i14 + 4];
-        c_w_exp_tilde[0] += b_w_exp_tilde[i13] * d13;
-        c_w_exp_tilde[1] += b_w_exp_tilde[i13 + 1] * d13;
-        c_w_exp_tilde[2] += b_w_exp_tilde[i13 + 2] * d13;
-        i13 += 3;
+        double d26;
+        d26 = x[i20 + 4];
+        c_w_exp_tilde[0] += b_w_exp_tilde[i19] * d26;
+        c_w_exp_tilde[1] += b_w_exp_tilde[i19 + 1] * d26;
+        c_w_exp_tilde[2] += b_w_exp_tilde[i19 + 2] * d26;
+        i19 += 3;
       }
       dv2[0] = 0.0;
       dv2[1] = h_a * (i_a * sin(atan2(x[9], x[7])));
@@ -1743,77 +1861,77 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
       memset(&dv3[0], 0, 3U * (sizeof(double)));
       memset(&b_dt[0], 0, 3U * (sizeof(double)));
       memset(&c_dt[0], 0, 3U * (sizeof(double)));
-      i17 = 0;
-      d15 = dv3[0];
-      d16 = dv3[1];
-      d17 = dv3[2];
-      d18 = b_dt[0];
-      d19 = b_dt[1];
-      d20 = b_dt[2];
-      d21 = x[7];
-      d22 = x[8];
-      d23 = x[9];
-      d24 = c_dt[0];
-      d25 = c_dt[1];
-      d26 = c_dt[2];
-      for (i18 = 0; i18 < 3; i18++) {
-        double d27;
-        double d28;
-        double d30;
-        double d33;
-        double d35;
-        d27 = SD->pd->c_param.Jinv[i17];
-        d28 = c_w_exp_tilde[i18];
-        d15 += d27 * d28;
-        d30 = dv2[i18];
-        d18 += (dt * d27) * d30;
-        d33 = S[i17];
-        d24 += (dt * d33) * SD->pd->c_param.g[i18];
-        d35 = d33 * d21;
-        d27 = SD->pd->c_param.Jinv[i17 + 1];
-        d16 += d27 * d28;
-        d19 += (dt * d27) * d30;
-        d33 = S[i17 + 1];
-        d25 += (dt * d33) * SD->pd->c_param.g[i18];
-        d35 += d33 * d22;
-        d27 = SD->pd->c_param.Jinv[i17 + 2];
-        d17 += d27 * d28;
-        d20 += (dt * d27) * d30;
-        d33 = S[i17 + 2];
-        d26 += (dt * d33) * SD->pd->c_param.g[i18];
-        d35 += d33 * d23;
-        c_w_exp_tilde[i18] =
-            (((w_exp_tilde[i18] * d21) + (w_exp_tilde[i18 + 3] * d22)) +
-             (w_exp_tilde[i18 + 6] * d23)) +
-            (dt * a[i18]);
-        b_S[i18] = d35;
-        i17 += 3;
+      i23 = 0;
+      d28 = dv3[0];
+      d29 = dv3[1];
+      d30 = dv3[2];
+      d31 = b_dt[0];
+      d32 = b_dt[1];
+      d33 = b_dt[2];
+      d34 = x[7];
+      d35 = x[8];
+      d36 = x[9];
+      d37 = c_dt[0];
+      d38 = c_dt[1];
+      d39 = c_dt[2];
+      for (i24 = 0; i24 < 3; i24++) {
+        double d40;
+        double d41;
+        double d43;
+        double d46;
+        double d48;
+        d40 = SD->pd->d_param.Jinv[i23];
+        d41 = c_w_exp_tilde[i24];
+        d28 += d40 * d41;
+        d43 = dv2[i24];
+        d31 += (dt * d40) * d43;
+        d46 = S[i23];
+        d37 += (dt * d46) * SD->pd->d_param.g[i24];
+        d48 = d46 * d34;
+        d40 = SD->pd->d_param.Jinv[i23 + 1];
+        d29 += d40 * d41;
+        d32 += (dt * d40) * d43;
+        d46 = S[i23 + 1];
+        d38 += (dt * d46) * SD->pd->d_param.g[i24];
+        d48 += d46 * d35;
+        d40 = SD->pd->d_param.Jinv[i23 + 2];
+        d30 += d40 * d41;
+        d33 += (dt * d40) * d43;
+        d46 = S[i23 + 2];
+        d39 += (dt * d46) * SD->pd->d_param.g[i24];
+        d48 += d46 * d36;
+        c_w_exp_tilde[i24] =
+            (((w_exp_tilde[i24] * d34) + (w_exp_tilde[i24 + 3] * d35)) +
+             (w_exp_tilde[i24 + 6] * d36)) +
+            (dt * a[i24]);
+        b_S[i24] = d48;
+        i23 += 3;
       }
       memset(&c_q[0], 0, (sizeof(double)) << 2);
-      i19 = 0;
-      d29 = c_q[0];
-      d31 = c_q[1];
-      d32 = c_q[2];
-      d34 = c_q[3];
-      for (i20 = 0; i20 < 4; i20++) {
-        double d36;
-        d36 = b_dv1[i20];
-        d29 += b_q[i19] * d36;
-        d31 += b_q[i19 + 1] * d36;
-        d32 += b_q[i19 + 2] * d36;
-        d34 += b_q[i19 + 3] * d36;
-        i19 += 4;
+      i25 = 0;
+      d42 = c_q[0];
+      d44 = c_q[1];
+      d45 = c_q[2];
+      d47 = c_q[3];
+      for (i26 = 0; i26 < 4; i26++) {
+        double d49;
+        d49 = b_dv1[i26];
+        d42 += b_q[i25] * d49;
+        d44 += b_q[i25 + 1] * d49;
+        d45 += b_q[i25 + 2] * d49;
+        d47 += b_q[i25 + 3] * d49;
+        i25 += 4;
       }
-      x_pred[0] = d29;
-      x_pred[1] = d31;
-      x_pred[2] = d32;
-      x_pred[3] = d34;
-      x_pred[4] = d15 + d18;
-      x_pred[7] = c_w_exp_tilde[0] + d24;
-      x_pred[5] = d16 + d19;
-      x_pred[8] = c_w_exp_tilde[1] + d25;
-      x_pred[6] = d17 + d20;
-      x_pred[9] = c_w_exp_tilde[2] + d26;
+      x_pred[0] = d42;
+      x_pred[1] = d44;
+      x_pred[2] = d45;
+      x_pred[3] = d47;
+      x_pred[4] = d28 + d31;
+      x_pred[7] = c_w_exp_tilde[0] + d37;
+      x_pred[5] = d29 + d32;
+      x_pred[8] = c_w_exp_tilde[1] + d38;
+      x_pred[6] = d30 + d33;
+      x_pred[9] = c_w_exp_tilde[2] + d39;
       x_pred[10] = x[10] + (dt * b_S[0]);
       memset(&F[0], 0, 121U * (sizeof(double)));
       l_a = 0.5 * dt;
@@ -1834,110 +1952,110 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
       W_dt[11] = l_a * (-x[4]);
       W_dt[15] = 0.0;
       memset(&c_b[0], 0, (sizeof(double)) << 4);
-      i21 = 0;
-      for (i22 = 0; i22 < 4; i22++) {
-        int i23;
-        i23 = 0;
-        for (i25 = 0; i25 < 4; i25++) {
-          double d37;
-          d37 = W_dt[i25 + i21];
-          c_b[i21] += W_dt[i23] * d37;
-          c_b[i21 + 1] += W_dt[i23 + 1] * d37;
-          c_b[i21 + 2] += W_dt[i23 + 2] * d37;
-          c_b[i21 + 3] += W_dt[i23 + 3] * d37;
-          i23 += 4;
+      i27 = 0;
+      for (i28 = 0; i28 < 4; i28++) {
+        int i29;
+        i29 = 0;
+        for (i31 = 0; i31 < 4; i31++) {
+          double d50;
+          d50 = W_dt[i31 + i27];
+          c_b[i27] += W_dt[i29] * d50;
+          c_b[i27 + 1] += W_dt[i29 + 1] * d50;
+          c_b[i27 + 2] += W_dt[i29 + 2] * d50;
+          c_b[i27 + 3] += W_dt[i29 + 3] * d50;
+          i29 += 4;
         }
-        i21 += 4;
+        i27 += 4;
       }
-      for (i24 = 0; i24 < 16; i24++) {
-        c_I[i24] = (signed char)0;
+      for (i30 = 0; i30 < 16; i30++) {
+        c_I[i30] = (signed char)0;
       }
       memset(&b_W_dt[0], 0, (sizeof(double)) << 4);
       memset(&d_b[0], 0, (sizeof(double)) << 4);
       f_k = 0;
       g_k = 0;
       for (h_k = 0; h_k < 4; h_k++) {
-        int i28;
+        int i34;
         c_I[f_k] = (signed char)1;
-        i28 = 0;
-        for (i30 = 0; i30 < 4; i30++) {
-          double d38;
-          d38 = c_b[i30 + g_k];
-          b_W_dt[g_k] += W_dt[i28] * d38;
-          d_b[g_k] += c_b[i28] * d38;
-          b_W_dt[g_k + 1] += W_dt[i28 + 1] * d38;
-          d_b[g_k + 1] += c_b[i28 + 1] * d38;
-          b_W_dt[g_k + 2] += W_dt[i28 + 2] * d38;
-          d_b[g_k + 2] += c_b[i28 + 2] * d38;
-          b_W_dt[g_k + 3] += W_dt[i28 + 3] * d38;
-          d_b[g_k + 3] += c_b[i28 + 3] * d38;
-          i28 += 4;
+        i34 = 0;
+        for (i36 = 0; i36 < 4; i36++) {
+          double d51;
+          d51 = c_b[i36 + g_k];
+          b_W_dt[g_k] += W_dt[i34] * d51;
+          d_b[g_k] += c_b[i34] * d51;
+          b_W_dt[g_k + 1] += W_dt[i34 + 1] * d51;
+          d_b[g_k + 1] += c_b[i34 + 1] * d51;
+          b_W_dt[g_k + 2] += W_dt[i34 + 2] * d51;
+          d_b[g_k + 2] += c_b[i34 + 2] * d51;
+          b_W_dt[g_k + 3] += W_dt[i34 + 3] * d51;
+          d_b[g_k + 3] += c_b[i34 + 3] * d51;
+          i34 += 4;
         }
         f_k += 5;
         g_k += 4;
       }
-      i26 = 0;
-      i27 = 0;
-      for (i29 = 0; i29 < 4; i29++) {
-        F[i26] = (((((double)c_I[i27]) + W_dt[i27]) + (0.5 * c_b[i27])) +
-                  (0.16666666666666666 * b_W_dt[i27])) +
-                 (0.041666666666666664 * d_b[i27]);
-        F[i26 + 1] =
-            (((((double)c_I[i27 + 1]) + W_dt[i27 + 1]) + (0.5 * c_b[i27 + 1])) +
-             (0.16666666666666666 * b_W_dt[i27 + 1])) +
-            (0.041666666666666664 * d_b[i27 + 1]);
-        F[i26 + 2] =
-            (((((double)c_I[i27 + 2]) + W_dt[i27 + 2]) + (0.5 * c_b[i27 + 2])) +
-             (0.16666666666666666 * b_W_dt[i27 + 2])) +
-            (0.041666666666666664 * d_b[i27 + 2]);
-        F[i26 + 3] =
-            (((((double)c_I[i27 + 3]) + W_dt[i27 + 3]) + (0.5 * c_b[i27 + 3])) +
-             (0.16666666666666666 * b_W_dt[i27 + 3])) +
-            (0.041666666666666664 * d_b[i27 + 3]);
-        i26 += 11;
-        i27 += 4;
+      i32 = 0;
+      i33 = 0;
+      for (i35 = 0; i35 < 4; i35++) {
+        F[i32] = (((((double)c_I[i33]) + W_dt[i33]) + (0.5 * c_b[i33])) +
+                  (0.16666666666666666 * b_W_dt[i33])) +
+                 (0.041666666666666664 * d_b[i33]);
+        F[i32 + 1] =
+            (((((double)c_I[i33 + 1]) + W_dt[i33 + 1]) + (0.5 * c_b[i33 + 1])) +
+             (0.16666666666666666 * b_W_dt[i33 + 1])) +
+            (0.041666666666666664 * d_b[i33 + 1]);
+        F[i32 + 2] =
+            (((((double)c_I[i33 + 2]) + W_dt[i33 + 2]) + (0.5 * c_b[i33 + 2])) +
+             (0.16666666666666666 * b_W_dt[i33 + 2])) +
+            (0.041666666666666664 * d_b[i33 + 2]);
+        F[i32 + 3] =
+            (((((double)c_I[i33 + 3]) + W_dt[i33 + 3]) + (0.5 * c_b[i33 + 3])) +
+             (0.16666666666666666 * b_W_dt[i33 + 3])) +
+            (0.041666666666666664 * d_b[i33 + 3]);
+        i32 += 11;
+        i33 += 4;
       }
+      double e_a_tmp;
+      double f_a_tmp;
+      double g_a_tmp;
       double h_a_tmp;
       double i_a_tmp;
       double j_a_tmp;
       double k_a_tmp;
-      double l_a_tmp;
-      double m_a_tmp;
-      double n_a_tmp;
-      h_a_tmp = l_a * q[0];
-      m_a[0] = h_a_tmp;
-      i_a_tmp = l_a * (-q[1]);
-      m_a[4] = i_a_tmp;
-      j_a_tmp = l_a * (-q[2]);
-      m_a[8] = j_a_tmp;
-      k_a_tmp = l_a * (-q[3]);
-      m_a[12] = k_a_tmp;
-      l_a_tmp = l_a * q[1];
-      m_a[1] = l_a_tmp;
-      m_a[5] = h_a_tmp;
-      m_a[9] = k_a_tmp;
-      m_a_tmp = l_a * q[2];
-      m_a[13] = m_a_tmp;
-      m_a[2] = m_a_tmp;
-      n_a_tmp = l_a * q[3];
-      m_a[6] = n_a_tmp;
-      m_a[10] = h_a_tmp;
-      m_a[14] = i_a_tmp;
-      m_a[3] = n_a_tmp;
-      m_a[7] = j_a_tmp;
-      m_a[11] = l_a_tmp;
-      m_a[15] = h_a_tmp;
-      i31 = 0;
-      i32 = 0;
-      for (i33 = 0; i33 < 3; i33++) {
-        F[i31 + 44] = m_a[i32 + 4];
-        F[i31 + 45] = m_a[i32 + 5];
-        F[i31 + 46] = m_a[i32 + 6];
-        F[i31 + 47] = m_a[i32 + 7];
-        i31 += 11;
-        i32 += 4;
+      e_a_tmp = l_a * q[0];
+      m_a[0] = e_a_tmp;
+      f_a_tmp = l_a * (-q[1]);
+      m_a[4] = f_a_tmp;
+      g_a_tmp = l_a * (-q[2]);
+      m_a[8] = g_a_tmp;
+      h_a_tmp = l_a * (-q[3]);
+      m_a[12] = h_a_tmp;
+      i_a_tmp = l_a * q[1];
+      m_a[1] = i_a_tmp;
+      m_a[5] = e_a_tmp;
+      m_a[9] = h_a_tmp;
+      j_a_tmp = l_a * q[2];
+      m_a[13] = j_a_tmp;
+      m_a[2] = j_a_tmp;
+      k_a_tmp = l_a * q[3];
+      m_a[6] = k_a_tmp;
+      m_a[10] = e_a_tmp;
+      m_a[14] = f_a_tmp;
+      m_a[3] = k_a_tmp;
+      m_a[7] = g_a_tmp;
+      m_a[11] = i_a_tmp;
+      m_a[15] = e_a_tmp;
+      i37 = 0;
+      i38 = 0;
+      for (i39 = 0; i39 < 3; i39++) {
+        F[i37 + 44] = m_a[i38 + 4];
+        F[i37 + 45] = m_a[i38 + 5];
+        F[i37 + 46] = m_a[i38 + 6];
+        F[i37 + 47] = m_a[i38 + 7];
+        i37 += 11;
+        i38 += 4;
       }
-      n_a = (0.5 * SD->pd->d_param.c_aero) * SD->pd->d_param.Cn_alpha;
+      n_a = (0.5 * SD->pd->e_param.c_aero) * SD->pd->e_param.Cn_alpha;
       airdata_atmos(x[10], &m_expl_temp, &t1_density, &n_expl_temp,
                     &o_expl_temp, &p_expl_temp);
       if (dphi_tmp == 0.0) {
@@ -1958,64 +2076,64 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
       n_tilde[2] = -n_idx_1;
       n_tilde[5] = n_idx_0;
       n_tilde[8] = 0.0;
-      for (i34 = 0; i34 < 9; i34++) {
-        b_I[i34] = (signed char)0;
+      for (i40 = 0; i40 < 9; i40++) {
+        b_I[i40] = (signed char)0;
       }
       memset(&b_n_tilde[0], 0, 9U * (sizeof(double)));
       i_k = 0;
       j_k = 0;
       for (k_k = 0; k_k < 3; k_k++) {
-        int i36;
+        int i42;
         b_I[i_k] = (signed char)1;
-        i36 = 0;
-        for (i37 = 0; i37 < 3; i37++) {
-          double d39;
-          d39 = n_tilde[i37 + j_k];
-          b_n_tilde[j_k] += n_tilde[i36] * d39;
-          b_n_tilde[j_k + 1] += n_tilde[i36 + 1] * d39;
-          b_n_tilde[j_k + 2] += n_tilde[i36 + 2] * d39;
-          i36 += 3;
+        i42 = 0;
+        for (i43 = 0; i43 < 3; i43++) {
+          double d52;
+          d52 = n_tilde[i43 + j_k];
+          b_n_tilde[j_k] += n_tilde[i42] * d52;
+          b_n_tilde[j_k + 1] += n_tilde[i42 + 1] * d52;
+          b_n_tilde[j_k + 2] += n_tilde[i42 + 2] * d52;
+          i42 += 3;
         }
         i_k += 4;
         j_k += 3;
       }
-      for (i35 = 0; i35 < 9; i35++) {
-        w_exp_tilde[i35] = (((double)b_I[i35]) - (c_a * n_tilde[i35])) +
-                           ((1.0 - f_x) * b_n_tilde[i35]);
+      for (i41 = 0; i41 < 9; i41++) {
+        w_exp_tilde[i41] = (((double)b_I[i41]) - (f_a * n_tilde[i41])) +
+                           ((1.0 - h_x) * b_n_tilde[i41]);
       }
       memset(&b_dv[0], 0, 9U * (sizeof(double)));
-      i38 = 0;
-      i39 = 0;
-      for (i40 = 0; i40 < 3; i40++) {
-        int i42;
-        i42 = 0;
-        for (i44 = 0; i44 < 3; i44++) {
-          double d40;
-          d40 = w_exp_tilde[i44 + i38];
-          b_dv[i38] += SD->pd->d_param.Jinv[i42] * d40;
-          b_dv[i38 + 1] += SD->pd->d_param.Jinv[i42 + 1] * d40;
-          b_dv[i38 + 2] += SD->pd->d_param.Jinv[i42 + 2] * d40;
-          F[(i44 + i39) + 48] = 0.0;
-          i42 += 3;
+      i44 = 0;
+      i45 = 0;
+      for (i46 = 0; i46 < 3; i46++) {
+        int i48;
+        i48 = 0;
+        for (i50 = 0; i50 < 3; i50++) {
+          double d53;
+          d53 = w_exp_tilde[i50 + i44];
+          b_dv[i44] += SD->pd->e_param.Jinv[i48] * d53;
+          b_dv[i44 + 1] += SD->pd->e_param.Jinv[i48 + 1] * d53;
+          b_dv[i44 + 2] += SD->pd->e_param.Jinv[i48 + 2] * d53;
+          F[(i50 + i45) + 48] = 0.0;
+          i48 += 3;
         }
-        i38 += 3;
-        i39 += 11;
+        i44 += 3;
+        i45 += 11;
       }
-      i41 = 0;
-      i43 = 0;
-      for (i45 = 0; i45 < 3; i45++) {
-        int i46;
-        i46 = 0;
-        for (i47 = 0; i47 < 3; i47++) {
-          double d41;
-          d41 = SD->pd->d_param.J[i47 + i41];
-          F[i43 + 48] += b_dv[i46] * d41;
-          F[i43 + 49] += b_dv[i46 + 1] * d41;
-          F[i43 + 50] += b_dv[i46 + 2] * d41;
-          i46 += 3;
+      i47 = 0;
+      i49 = 0;
+      for (i51 = 0; i51 < 3; i51++) {
+        int i52;
+        i52 = 0;
+        for (i53 = 0; i53 < 3; i53++) {
+          double d54;
+          d54 = SD->pd->e_param.J[i53 + i47];
+          F[i49 + 48] += b_dv[i52] * d54;
+          F[i49 + 49] += b_dv[i52 + 1] * d54;
+          F[i49 + 50] += b_dv[i52 + 2] * d54;
+          i52 += 3;
         }
-        i41 += 3;
-        i43 += 11;
+        i47 += 3;
+        i49 += 11;
       }
       b_dv[1] = t1_density * (n_a * x[9]);
       b_dv[4] = 0.0;
@@ -2023,41 +2141,41 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
       b_dv[2] = t1_density * (n_a * (-x[8]));
       b_dv[5] = t1_density * (n_a * (-x[7]));
       b_dv[8] = 0.0;
-      g_x = 0.0;
-      for (i48 = 0; i48 < 3; i48++) {
-        double d42;
-        double d43;
-        double d44;
+      i_x = 0.0;
+      for (i54 = 0; i54 < 3; i54++) {
+        double d55;
+        double d56;
+        double d57;
         int F_tmp;
-        b_dv[3 * i48] = 0.0;
-        F_tmp = 11 * (i48 + 7);
-        d42 = 0.0;
-        d43 = 0.0;
-        d44 = 0.0;
-        for (i49 = 0; i49 < 3; i49++) {
-          double d45;
-          d45 = b_dv[i49 + (3 * i48)];
-          d42 += (dt * SD->pd->d_param.Jinv[3 * i49]) * d45;
-          d43 += (dt * SD->pd->d_param.Jinv[(3 * i49) + 1]) * d45;
-          d44 += (dt * SD->pd->d_param.Jinv[(3 * i49) + 2]) * d45;
+        b_dv[3 * i54] = 0.0;
+        F_tmp = 11 * (i54 + 7);
+        d55 = 0.0;
+        d56 = 0.0;
+        d57 = 0.0;
+        for (i55 = 0; i55 < 3; i55++) {
+          double d58;
+          d58 = b_dv[i55 + (3 * i54)];
+          d55 += (dt * SD->pd->e_param.Jinv[3 * i55]) * d58;
+          d56 += (dt * SD->pd->e_param.Jinv[(3 * i55) + 1]) * d58;
+          d57 += (dt * SD->pd->e_param.Jinv[(3 * i55) + 2]) * d58;
         }
-        F[F_tmp + 6] = d44;
-        F[F_tmp + 5] = d43;
-        F[F_tmp + 4] = d42;
-        g_x += x[i48 + 1] * SD->pd->d_param.g[i48];
+        F[F_tmp + 6] = d57;
+        F[F_tmp + 5] = d56;
+        F[F_tmp + 4] = d55;
+        i_x += x[i54 + 1] * SD->pd->e_param.g[i54];
       }
-      h_x = x[0];
-      i_x[0] = (x[2] * SD->pd->d_param.g[2]) - (SD->pd->d_param.g[1] * x[3]);
-      i_x[1] = (SD->pd->d_param.g[0] * x[3]) - (x[1] * SD->pd->d_param.g[2]);
-      i_x[2] = (x[1] * SD->pd->d_param.g[1]) - (SD->pd->d_param.g[0] * x[2]);
+      j_x = x[0];
+      k_x[0] = (x[2] * SD->pd->e_param.g[2]) - (SD->pd->e_param.g[1] * x[3]);
+      k_x[1] = (SD->pd->e_param.g[0] * x[3]) - (x[1] * SD->pd->e_param.g[2]);
+      k_x[2] = (x[1] * SD->pd->e_param.g[1]) - (SD->pd->e_param.g[0] * x[2]);
       dv4[0] = 0.0;
-      dv4[3] = x[0] * (-SD->pd->d_param.g[2]);
-      dv4[6] = x[0] * SD->pd->d_param.g[1];
-      dv4[1] = x[0] * SD->pd->d_param.g[2];
+      dv4[3] = x[0] * (-SD->pd->e_param.g[2]);
+      dv4[6] = x[0] * SD->pd->e_param.g[1];
+      dv4[1] = x[0] * SD->pd->e_param.g[2];
       dv4[4] = 0.0;
-      dv4[7] = x[0] * (-SD->pd->d_param.g[0]);
-      dv4[2] = x[0] * (-SD->pd->d_param.g[1]);
-      dv4[5] = x[0] * SD->pd->d_param.g[0];
+      dv4[7] = x[0] * (-SD->pd->e_param.g[0]);
+      dv4[2] = x[0] * (-SD->pd->e_param.g[1]);
+      dv4[5] = x[0] * SD->pd->e_param.g[0];
       dv4[8] = 0.0;
       skewed_exp_w_tmp[0] = 0.0;
       skewed_exp_w_tmp[3] = -x[9];
@@ -2082,97 +2200,97 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
       memset(&b_dv[0], 0, 9U * (sizeof(double)));
       r_q_tmp[0] = x[0];
       b_r_q_tmp = 0.0;
-      for (i50 = 0; i50 < 3; i50++) {
+      for (i56 = 0; i56 < 3; i56++) {
         double b_F_tmp;
-        double d46;
-        double d47;
+        double d59;
+        double d60;
         int c_F_tmp;
         int d_F_tmp;
         int e_F_tmp;
-        F[i50 + 7] = dt * (2.0 * ((h_x * SD->pd->d_param.g[i50]) - i_x[i50]));
-        b_F_tmp = x[i50 + 1];
-        c_F_tmp = 11 * (i50 + 1);
+        F[i56 + 7] = dt * (2.0 * ((j_x * SD->pd->e_param.g[i56]) - k_x[i56]));
+        b_F_tmp = x[i56 + 1];
+        c_F_tmp = 11 * (i56 + 1);
         F[c_F_tmp + 7] =
             dt *
-            (2.0 * ((((g_x * b[3 * i50]) + (x[1] * SD->pd->d_param.g[i50])) -
-                     (SD->pd->d_param.g[0] * b_F_tmp)) +
-                    dv4[3 * i50]));
-        d_F_tmp = (3 * i50) + 1;
+            (2.0 * ((((i_x * b[3 * i56]) + (x[1] * SD->pd->e_param.g[i56])) -
+                     (SD->pd->e_param.g[0] * b_F_tmp)) +
+                    dv4[3 * i56]));
+        d_F_tmp = (3 * i56) + 1;
         F[c_F_tmp + 8] =
             dt *
-            (2.0 * ((((g_x * b[d_F_tmp]) + (x[2] * SD->pd->d_param.g[i50])) -
-                     (SD->pd->d_param.g[1] * b_F_tmp)) +
+            (2.0 * ((((i_x * b[d_F_tmp]) + (x[2] * SD->pd->e_param.g[i56])) -
+                     (SD->pd->e_param.g[1] * b_F_tmp)) +
                     dv4[d_F_tmp]));
-        e_F_tmp = (3 * i50) + 2;
+        e_F_tmp = (3 * i56) + 2;
         F[c_F_tmp + 9] =
             dt *
-            (2.0 * ((((g_x * b[e_F_tmp]) + (x[3] * SD->pd->d_param.g[i50])) -
-                     (SD->pd->d_param.g[2] * b_F_tmp)) +
+            (2.0 * ((((i_x * b[e_F_tmp]) + (x[3] * SD->pd->e_param.g[i56])) -
+                     (SD->pd->e_param.g[2] * b_F_tmp)) +
                     dv4[e_F_tmp]));
-        d46 = c_skewed_exp_w_tmp[3 * i50];
-        d47 = b_dv[3 * i50];
-        for (i53 = 0; i53 < 3; i53++) {
-          double d48;
-          double d49;
+        d59 = c_skewed_exp_w_tmp[3 * i56];
+        d60 = b_dv[3 * i56];
+        for (i59 = 0; i59 < 3; i59++) {
+          double d61;
+          double d62;
           int b_skewed_exp_w_tmp_tmp;
-          int i54;
+          int i60;
           int skewed_exp_w_tmp_tmp;
-          i54 = i53 + (3 * i50);
-          d48 = b_skewed_exp_w_tmp[i54];
-          d49 = skewed_exp_w_tmp[i54];
-          d46 += skewed_exp_w_tmp[3 * i53] * d48;
-          d47 += (2.0 * b_skewed_exp_w_tmp[3 * i53]) * d49;
-          skewed_exp_w_tmp_tmp = (3 * i53) + 1;
+          i60 = i59 + (3 * i56);
+          d61 = b_skewed_exp_w_tmp[i60];
+          d62 = skewed_exp_w_tmp[i60];
+          d59 += skewed_exp_w_tmp[3 * i59] * d61;
+          d60 += (2.0 * b_skewed_exp_w_tmp[3 * i59]) * d62;
+          skewed_exp_w_tmp_tmp = (3 * i59) + 1;
           c_skewed_exp_w_tmp[d_F_tmp] +=
-              skewed_exp_w_tmp[skewed_exp_w_tmp_tmp] * d48;
+              skewed_exp_w_tmp[skewed_exp_w_tmp_tmp] * d61;
           b_dv[d_F_tmp] +=
-              (2.0 * b_skewed_exp_w_tmp[skewed_exp_w_tmp_tmp]) * d49;
-          b_skewed_exp_w_tmp_tmp = (3 * i53) + 2;
+              (2.0 * b_skewed_exp_w_tmp[skewed_exp_w_tmp_tmp]) * d62;
+          b_skewed_exp_w_tmp_tmp = (3 * i59) + 2;
           c_skewed_exp_w_tmp[e_F_tmp] +=
-              skewed_exp_w_tmp[b_skewed_exp_w_tmp_tmp] * d48;
+              skewed_exp_w_tmp[b_skewed_exp_w_tmp_tmp] * d61;
           b_dv[e_F_tmp] +=
-              (2.0 * b_skewed_exp_w_tmp[b_skewed_exp_w_tmp_tmp]) * d49;
+              (2.0 * b_skewed_exp_w_tmp[b_skewed_exp_w_tmp_tmp]) * d62;
         }
         int f_F_tmp;
         int g_F_tmp;
-        b_dv[3 * i50] = d47;
-        c_skewed_exp_w_tmp[3 * i50] = d46;
-        f_F_tmp = 11 * (i50 + 4);
-        F[f_F_tmp + 7] = (dt * skewed_exp_w_tmp[3 * i50]) + (o_a * (d46 - d47));
-        g_F_tmp = 11 * (i50 + 7);
-        F[g_F_tmp + 7] = w_exp_tilde[3 * i50];
+        b_dv[3 * i56] = d60;
+        c_skewed_exp_w_tmp[3 * i56] = d59;
+        f_F_tmp = 11 * (i56 + 4);
+        F[f_F_tmp + 7] = (dt * skewed_exp_w_tmp[3 * i56]) + (o_a * (d59 - d60));
+        g_F_tmp = 11 * (i56 + 7);
+        F[g_F_tmp + 7] = w_exp_tilde[3 * i56];
         F[f_F_tmp + 8] = (dt * skewed_exp_w_tmp[d_F_tmp]) +
                          (o_a * (c_skewed_exp_w_tmp[d_F_tmp] - b_dv[d_F_tmp]));
         F[g_F_tmp + 8] = w_exp_tilde[d_F_tmp];
         F[f_F_tmp + 9] = (dt * skewed_exp_w_tmp[e_F_tmp]) +
                          (o_a * (c_skewed_exp_w_tmp[e_F_tmp] - b_dv[e_F_tmp]));
         F[g_F_tmp + 9] = w_exp_tilde[e_F_tmp];
-        r_q_tmp[i50 + 1] = -b_F_tmp;
-        b_r_q_tmp += (-b_F_tmp) * x[i50 + 7];
+        r_q_tmp[i56 + 1] = -b_F_tmp;
+        b_r_q_tmp += (-b_F_tmp) * x[i56 + 7];
       }
       c_r_q_tmp[0] = (r_q_tmp[2] * x[9]) - (r_q_tmp[3] * x[8]);
       c_r_q_tmp[1] = (r_q_tmp[3] * x[7]) - (r_q_tmp[1] * x[9]);
       c_r_q_tmp[2] = (r_q_tmp[1] * x[8]) - (r_q_tmp[2] * x[7]);
-      i51 = 0;
-      for (i52 = 0; i52 < 3; i52++) {
+      i57 = 0;
+      for (i58 = 0; i58 < 3; i58++) {
         double b_dt_tmp;
         double dt_tmp;
-        dt_tmp = x[i52 + 7];
-        d_dt[i52] = dt * (2.0 * ((r_q_tmp[0] * dt_tmp) - c_r_q_tmp[i52]));
-        b_dt_tmp = r_q_tmp[i52 + 1];
-        d_dt[i51 + 3] =
-            dt * (2.0 * ((((b_r_q_tmp * b[i51]) + (r_q_tmp[1] * dt_tmp)) -
+        dt_tmp = x[i58 + 7];
+        d_dt[i58] = dt * (2.0 * ((r_q_tmp[0] * dt_tmp) - c_r_q_tmp[i58]));
+        b_dt_tmp = r_q_tmp[i58 + 1];
+        d_dt[i57 + 3] =
+            dt * (2.0 * ((((b_r_q_tmp * b[i57]) + (r_q_tmp[1] * dt_tmp)) -
                           (x[7] * b_dt_tmp)) +
-                         (r_q_tmp[0] * skewed_exp_w_tmp[i51])));
-        d_dt[i51 + 4] =
-            dt * (2.0 * ((((b_r_q_tmp * b[i51 + 1]) + (r_q_tmp[2] * dt_tmp)) -
+                         (r_q_tmp[0] * skewed_exp_w_tmp[i57])));
+        d_dt[i57 + 4] =
+            dt * (2.0 * ((((b_r_q_tmp * b[i57 + 1]) + (r_q_tmp[2] * dt_tmp)) -
                           (x[8] * b_dt_tmp)) +
-                         (r_q_tmp[0] * skewed_exp_w_tmp[i51 + 1])));
-        d_dt[i51 + 5] =
-            dt * (2.0 * ((((b_r_q_tmp * b[i51 + 2]) + (r_q_tmp[3] * dt_tmp)) -
+                         (r_q_tmp[0] * skewed_exp_w_tmp[i57 + 1])));
+        d_dt[i57 + 5] =
+            dt * (2.0 * ((((b_r_q_tmp * b[i57 + 2]) + (r_q_tmp[3] * dt_tmp)) -
                           (x[9] * b_dt_tmp)) +
-                         (r_q_tmp[0] * skewed_exp_w_tmp[i51 + 2])));
-        i51 += 3;
+                         (r_q_tmp[0] * skewed_exp_w_tmp[i57 + 2])));
+        i57 += 3;
       }
       double q_a;
       F[10] = d_dt[0];
@@ -2192,62 +2310,62 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
       b_dv[2] = q_a * (-r_q_tmp[2]);
       b_dv[5] = q_a * r_q_tmp[1];
       b_dv[8] = 0.0;
-      i55 = 0;
-      i56 = 0;
-      for (i57 = 0; i57 < 3; i57++) {
-        double o_a_tmp;
-        o_a_tmp = r_q_tmp[i57 + 1];
-        g_a[i55] = (p_a * b[i55]) + ((2.0 * r_q_tmp[1]) * o_a_tmp);
-        g_a[i55 + 1] = (p_a * b[i55 + 1]) + ((2.0 * r_q_tmp[2]) * o_a_tmp);
-        g_a[i55 + 2] = (p_a * b[i55 + 2]) + ((2.0 * r_q_tmp[3]) * o_a_tmp);
-        F[i56 + 87] = dt * (g_a[i55] - b_dv[i55]);
-        i55 += 3;
-        i56 += 11;
+      i61 = 0;
+      i62 = 0;
+      for (i63 = 0; i63 < 3; i63++) {
+        double l_a_tmp;
+        l_a_tmp = r_q_tmp[i63 + 1];
+        e_a[i61] = (p_a * b[i61]) + ((2.0 * r_q_tmp[1]) * l_a_tmp);
+        e_a[i61 + 1] = (p_a * b[i61 + 1]) + ((2.0 * r_q_tmp[2]) * l_a_tmp);
+        e_a[i61 + 2] = (p_a * b[i61 + 2]) + ((2.0 * r_q_tmp[3]) * l_a_tmp);
+        F[i62 + 87] = dt * (e_a[i61] - b_dv[i61]);
+        i61 += 3;
+        i62 += 11;
       }
       F[120] = 1.0;
       memset(&b_F[0], 0, 121U * (sizeof(double)));
-      i58 = 0;
-      for (i59 = 0; i59 < 11; i59++) {
-        int i60;
-        i60 = 0;
-        for (i62 = 0; i62 < 11; i62++) {
-          double d50;
-          d50 = P[i62 + i58];
-          for (i66 = 0; i66 < 11; i66++) {
+      i64 = 0;
+      for (i65 = 0; i65 < 11; i65++) {
+        int i66;
+        i66 = 0;
+        for (i68 = 0; i68 < 11; i68++) {
+          double d63;
+          d63 = P[i68 + i64];
+          for (i72 = 0; i72 < 11; i72++) {
             int h_F_tmp;
-            h_F_tmp = i66 + i58;
-            b_F[h_F_tmp] += F[i66 + i60] * d50;
+            h_F_tmp = i72 + i64;
+            b_F[h_F_tmp] += F[i72 + i66] * d63;
           }
-          i60 += 11;
+          i66 += 11;
         }
-        i58 += 11;
+        i64 += 11;
       }
-      for (i61 = 0; i61 < 11; i61++) {
-        int i63;
-        i63 = 0;
-        for (i65 = 0; i65 < 11; i65++) {
-          double d51;
-          int i69;
-          d51 = 0.0;
-          i69 = 0;
-          for (i70 = 0; i70 < 11; i70++) {
-            d51 += b_F[i69 + i61] * F[i69 + i65];
-            i69 += 11;
+      for (i67 = 0; i67 < 11; i67++) {
+        int i69;
+        i69 = 0;
+        for (i71 = 0; i71 < 11; i71++) {
+          double d64;
+          int i75;
+          d64 = 0.0;
+          i75 = 0;
+          for (i76 = 0; i76 < 11; i76++) {
+            d64 += b_F[i75 + i67] * F[i75 + i71];
+            i75 += 11;
           }
           int P_pred_tmp;
-          P_pred_tmp = i63 + i61;
-          P_pred[P_pred_tmp] = d51 + Q[P_pred_tmp];
-          i63 += 11;
+          P_pred_tmp = i69 + i67;
+          P_pred[P_pred_tmp] = d64 + Q[P_pred_tmp];
+          i69 += 11;
         }
       }
-      i64 = 0;
-      i67 = 0;
-      for (i68 = 0; i68 < 3; i68++) {
-        b_P_pred[i64] = P_pred[i67 + 48] + R[i64];
-        b_P_pred[i64 + 1] = P_pred[i67 + 49] + R[i64 + 1];
-        b_P_pred[i64 + 2] = P_pred[i67 + 50] + R[i64 + 2];
-        i64 += 3;
-        i67 += 11;
+      i70 = 0;
+      i73 = 0;
+      for (i74 = 0; i74 < 3; i74++) {
+        b_P_pred[i70] = P_pred[i73 + 48] + R[i70];
+        b_P_pred[i70 + 1] = P_pred[i73 + 49] + R[i70 + 1];
+        b_P_pred[i70 + 2] = P_pred[i73 + 50] + R[i70 + 2];
+        i70 += 3;
+        i73 += 11;
       }
       mrdiv(&P_pred[44], b_P_pred, K);
       memset(&d_I[0], 0, 121U * (sizeof(signed char)));
@@ -2256,100 +2374,101 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
         d_I[l_k] = (signed char)1;
         l_k += 12;
       }
-      i71 = 0;
-      for (i72 = 0; i72 < 4; i72++) {
-        for (i74 = 0; i74 < 11; i74++) {
+      i77 = 0;
+      for (i78 = 0; i78 < 4; i78++) {
+        for (i80 = 0; i80 < 11; i80++) {
           int E_tmp;
-          E_tmp = i74 + i71;
+          E_tmp = i80 + i77;
           E[E_tmp] = (double)d_I[E_tmp];
         }
-        i71 += 11;
+        i77 += 11;
       }
-      i73 = 0;
-      for (i75 = 0; i75 < 3; i75++) {
-        for (i77 = 0; i77 < 11; i77++) {
+      i79 = 0;
+      for (i81 = 0; i81 < 3; i81++) {
+        for (i83 = 0; i83 < 11; i83++) {
           int b_E_tmp;
-          b_E_tmp = i77 + i73;
+          b_E_tmp = i83 + i79;
           E[b_E_tmp + 44] = ((double)d_I[b_E_tmp + 44]) - K[b_E_tmp];
         }
-        i73 += 11;
+        i79 += 11;
       }
-      i76 = 0;
-      for (i78 = 0; i78 < 4; i78++) {
-        for (i79 = 0; i79 < 11; i79++) {
+      i82 = 0;
+      for (i84 = 0; i84 < 4; i84++) {
+        for (i85 = 0; i85 < 11; i85++) {
           int c_E_tmp;
-          c_E_tmp = (i79 + i76) + 77;
+          c_E_tmp = (i85 + i82) + 77;
           E[c_E_tmp] = (double)d_I[c_E_tmp];
         }
-        i76 += 11;
+        i82 += 11;
       }
       memset(&b_E[0], 0, 121U * (sizeof(double)));
-      i80 = 0;
-      for (i81 = 0; i81 < 11; i81++) {
-        int i82;
-        i82 = 0;
-        for (i83 = 0; i83 < 11; i83++) {
-          double d52;
-          d52 = P_pred[i83 + i80];
-          for (i87 = 0; i87 < 11; i87++) {
-            int d_E_tmp;
-            d_E_tmp = i87 + i80;
-            b_E[d_E_tmp] += E[i87 + i82] * d52;
-          }
-          i82 += 11;
-        }
-        i80 += 11;
-      }
-      memset(&b_K[0], 0, 33U * (sizeof(double)));
-      i84 = 0;
-      i85 = 0;
-      for (i86 = 0; i86 < 3; i86++) {
+      i86 = 0;
+      for (i87 = 0; i87 < 11; i87++) {
         int i88;
         i88 = 0;
-        for (i89 = 0; i89 < 3; i89++) {
-          double d53;
-          d53 = R[i89 + i84];
-          for (i91 = 0; i91 < 11; i91++) {
-            int K_tmp;
-            K_tmp = i91 + i85;
-            b_K[K_tmp] += K[i91 + i88] * d53;
+        for (i89 = 0; i89 < 11; i89++) {
+          double d65;
+          d65 = P_pred[i89 + i86];
+          for (i93 = 0; i93 < 11; i93++) {
+            int d_E_tmp;
+            d_E_tmp = i93 + i86;
+            b_E[d_E_tmp] += E[i93 + i88] * d65;
           }
           i88 += 11;
         }
-        i84 += 3;
-        i85 += 11;
+        i86 += 11;
+      }
+      memset(&b_K[0], 0, 33U * (sizeof(double)));
+      i90 = 0;
+      i91 = 0;
+      for (i92 = 0; i92 < 3; i92++) {
+        int i94;
+        i94 = 0;
+        for (i95 = 0; i95 < 3; i95++) {
+          double d66;
+          d66 = R[i95 + i90];
+          for (i97 = 0; i97 < 11; i97++) {
+            int K_tmp;
+            K_tmp = i97 + i91;
+            b_K[K_tmp] += K[i97 + i94] * d66;
+          }
+          i94 += 11;
+        }
+        i90 += 3;
+        i91 += 11;
       }
       memset(&c_E[0], 0, 121U * (sizeof(double)));
       memset(&c_K[0], 0, 121U * (sizeof(double)));
-      for (i90 = 0; i90 < 11; i90++) {
-        for (i93 = 0; i93 < 11; i93++) {
-          double d54;
-          d54 = E[i90 + (11 * i93)];
-          for (i95 = 0; i95 < 11; i95++) {
+      for (i96 = 0; i96 < 11; i96++) {
+        for (i99 = 0; i99 < 11; i99++) {
+          double d67;
+          d67 = E[i96 + (11 * i99)];
+          for (i101 = 0; i101 < 11; i101++) {
             int e_E_tmp;
-            e_E_tmp = i95 + (11 * i90);
-            c_E[e_E_tmp] += b_E[i95 + (11 * i93)] * d54;
+            e_E_tmp = i101 + (11 * i96);
+            c_E[e_E_tmp] += b_E[i101 + (11 * i99)] * d67;
           }
         }
-        for (i94 = 0; i94 < 3; i94++) {
-          double d55;
-          d55 = K[i90 + (11 * i94)];
-          for (i97 = 0; i97 < 11; i97++) {
+        for (i100 = 0; i100 < 3; i100++) {
+          double d68;
+          d68 = K[i96 + (11 * i100)];
+          for (i103 = 0; i103 < 11; i103++) {
             int b_K_tmp;
-            b_K_tmp = i97 + (11 * i90);
-            c_K[b_K_tmp] += b_K[i97 + (11 * i94)] * d55;
+            b_K_tmp = i103 + (11 * i96);
+            c_K[b_K_tmp] += b_K[i103 + (11 * i100)] * d68;
           }
         }
       }
-      for (i92 = 0; i92 < 121; i92++) {
-        P[i92] = c_E[i92] + c_K[i92];
+      for (i98 = 0; i98 < 121; i98++) {
+        P[i98] = c_E[i98] + c_K[i98];
       }
       w_idx_0 -= x_pred[4];
       w_idx_1 -= x_pred[5];
       w_idx_2 -= x_pred[6];
-      for (i96 = 0; i96 < 11; i96++) {
-        x[i96] = x_pred[i96] + (((K[i96] * w_idx_0) + (K[i96 + 11] * w_idx_1)) +
-                                (K[i96 + 22] * w_idx_2));
+      for (i102 = 0; i102 < 11; i102++) {
+        x[i102] =
+            x_pred[i102] + (((K[i102] * w_idx_0) + (K[i102 + 11] * w_idx_1)) +
+                            (K[i102 + 22] * w_idx_2));
       }
       double b_q_mag;
       b_q_mag = c_norm(&x[0]);
@@ -2359,25 +2478,25 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
       x[3] /= b_q_mag;
     }
     if (sens_in->board_baro.status) {
-      memcpy(&b_x[0], &x[0], 11U * (sizeof(double)));
+      memcpy(&d_x[0], &x[0], 11U * (sizeof(double)));
       memcpy(&b_P[0], &P[0], 121U * (sizeof(double)));
-      b_ekf_correct(b_x, b_P, sens_in->board_baro.meas, bias->board_baro, x, P);
+      b_ekf_correct(d_x, b_P, sens_in->board_baro.meas, bias->board_baro, x, P);
     }
     if (sens_in->mti_baro.status) {
-      memcpy(&c_x[0], &x[0], 11U * (sizeof(double)));
+      memcpy(&e_x[0], &x[0], 11U * (sizeof(double)));
       memcpy(&c_P[0], &P[0], 121U * (sizeof(double)));
-      b_ekf_correct(c_x, c_P, sens_in->mti_baro.meas, bias->mti_baro, x, P);
+      b_ekf_correct(e_x, c_P, sens_in->mti_baro.meas, bias->mti_baro, x, P);
     }
     if (sens_in->board_mag.status) {
-      memcpy(&d_x[0], &x[0], 11U * (sizeof(double)));
+      memcpy(&f_x[0], &x[0], 11U * (sizeof(double)));
       memcpy(&d_P[0], &P[0], 121U * (sizeof(double)));
-      ekf_correct(d_x, d_P, sens_in->board_mag.meas, bias->board_mag_earth, b,
+      ekf_correct(f_x, d_P, sens_in->board_mag.meas, bias->board_mag_earth, b,
                   x, P);
     }
     if (sens_in->mti_mag.status) {
-      memcpy(&e_x[0], &x[0], 11U * (sizeof(double)));
+      memcpy(&g_x[0], &x[0], 11U * (sizeof(double)));
       memcpy(&e_P[0], &P[0], 121U * (sizeof(double)));
-      ekf_correct(e_x, e_P, sens_in->mti_mag.meas, bias->mti_mag_earth, b, x,
+      ekf_correct(g_x, e_P, sens_in->mti_mag.meas, bias->mti_mag_earth, b, x,
                   P);
     }
   }
@@ -2386,11 +2505,11 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
                 &d_expl_temp);
   *pdyn = (0.5 * t1_density) * (b_a * b_a);
   *cov_norm = 0.0;
-  for (i = 0; i < 11; i++) {
+  for (b_i = 0; b_i < 11; b_i++) {
     double s;
     s = 0.0;
     for (j = 0; j < 11; j++) {
-      s += fabs(P[i + (11 * j)]);
+      s += fabs(P[b_i + (11 * j)]);
     }
     if (s > (*cov_norm)) {
       *cov_norm = s;
