@@ -23,9 +23,9 @@ function [x_init, bias, sens_filt, status] = pad_filter(sens_in, sens_filt)
     sens_filt.ad_accel = pad_lowpass(sens_filt.ad_accel, sens_in.ad_accel, alpha);
     sens_filt.ad_gyro = pad_lowpass(sens_filt.ad_gyro, sens_in.ad_gyro, alpha);
     sens_filt.board_baro = pad_lowpass(sens_filt.board_baro, sens_in.board_baro, alpha);
-    sens_filt.board_mag = pad_lowpass(sens_filt.board_mag, sens_in.board_mag, alpha);
+    sens_filt.board_mag = vec_norm(pad_lowpass(sens_filt.board_mag, sens_in.board_mag, alpha));
     sens_filt.mti_baro = pad_lowpass(sens_filt.mti_baro, sens_in.mti_baro, alpha);
-    sens_filt.mti_mag = pad_lowpass(sens_filt.mti_mag, sens_in.mti_mag, alpha);
+    sens_filt.mti_mag = vec_norm(pad_lowpass(sens_filt.mti_mag, sens_in.mti_mag, alpha));
 
     %% Initial state determination
     %%% Orientation
