@@ -1,12 +1,15 @@
-function [q] = pad_inclinometer(a)
+function [q, status] = pad_inclinometer(a)
     %%% computes initial orientation of stationary body from gravity acceleration
     %%% Input: 3D acceleration vector
     %%% Output: Orientation quaternion
+
+    status = true;
 
     %%% normed gravity vector in body-fixed frame
     a_norm = norm(a);
     if a_norm < 1e-6
         q = [1; 0; 0; 0]; % fallback: assume exactly vertical
+        status = false;
         return;
     end
     A = a / a_norm; % unit vector of gravity direction

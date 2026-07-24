@@ -84,6 +84,9 @@ typedef struct {
   double altitude_initial;
   double c_aero;
   double c_canard;
+  double d_ad[3];
+  double d_board[3];
+  double d_mti[3];
   double g[3];
 } struct_T;
 #endif
@@ -95,6 +98,7 @@ typedef struct {
   struct_T b_param;
   struct_T c_param;
   struct_T d_param;
+  struct_T e_param;
 } GNC_codegen_SILPersistentData;
 #endif
 

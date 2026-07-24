@@ -1,4 +1,4 @@
-function [state, cov_norm, roll_state, pdyn] = navigation_module(timestamp, board_accel, board_gyro, mti_accel, mti_gyro, ad_accel, ad_gyro, board_baro, board_mag, mti_baro, mti_mag)
+function [state, cov_norm, roll_state, pdyn, logs] = navigation_module(timestamp, board_accel, board_gyro, mti_accel, mti_gyro, ad_accel, ad_gyro, board_baro, board_mag, mti_baro, mti_mag)
     % Top-level navigation module. Calls code generation entry point.
     % Mocks firmware higher-level stuff
 
@@ -26,9 +26,9 @@ function [state, cov_norm, roll_state, pdyn] = navigation_module(timestamp, boar
         sens_filt.ad_accel = ad_accel.meas;
         sens_filt.ad_gyro = ad_gyro.meas;
         sens_filt.board_baro = board_baro.meas;
-        sens_filt.board_mag = board_mag.meas;
+        sens_filt.board_mag = vec_norm(board_mag.meas);
         sens_filt.mti_baro = mti_baro.meas;
-        sens_filt.mti_mag = mti_mag.meas;
+        sens_filt.mti_mag = vec_norm(mti_mag.meas);
         bias.board_gyro = zeros(3,1);
         bias.mti_gyro = zeros(3,1);
         bias.ad_gyro = zeros(3,1);
@@ -39,7 +39,7 @@ function [state, cov_norm, roll_state, pdyn] = navigation_module(timestamp, boar
     end
 
     %% config settings
-    idle_time = 15; % [s], wait time to handover from pad to flight, 5s before liftoff
+    idle_time = 25; % [s], wait time to handover from pad to flight, 5s before liftoff
     sampling_imu = 0.0025; % [s], sampling period of imu
     sampling_other = 0.01; % [s], sampling period of baro, mag
 
@@ -84,6 +84,14 @@ function [state, cov_norm, roll_state, pdyn] = navigation_module(timestamp, boar
     sens_in.board_mag = board_mag;
     sens_in.mti_baro = mti_baro;
     sens_in.mti_mag = mti_mag;
+
+    logs.dt = dt;
+    logs.flight_phase = flight_phase;
+    logs.x = x;
+    logs.P = P;
+    logs.bias = bias;
+    logs.sens_filt = sens_filt;
+    logs.sens_in = sens_in;
 
     [x, P, bias, sens_filt, cov_norm, roll_state, pdyn] = navigation_codegen_entry(dt, flight_phase, x, P, bias, sens_filt, sens_in);
 

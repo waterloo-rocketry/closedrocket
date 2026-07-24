@@ -13,7 +13,7 @@ rail_length = 8.23; % [m]
 %%% _S : Mounting orientation relative to nosetip [rotation matrix]
 %%%      From body to sensor
 %%% Sensor group 1 (Onboard)
-sensor_1_d = [-1.51; -0.03; -0.01]; 
+sensor_1_d = [-1.50; -0.03; -0.01]; 
 sensor_1_S_acc = [0, 1, 0;
                   0, 0,-1;
                  -1, 0, 0]; 
@@ -21,27 +21,27 @@ sensor_1_S_mag = [0, 0, 1;
                   0,-1, 0;
                  -1, 0, 0]; 
 %%% Sensor group 2 (Movella MTi)
-sensor_2_d = [-1.52; 0.0; 0.0];
+sensor_2_d = [-1.51; 0.0; 0.0];
 sensor_2_S = [0, 1, 0;
               0, 0, 1;
               1, 0, 0]; 
 
 %%% Sensor group 3 (AD breakout)
-sensor_3_d = [-1.52; -0.03; 0.0]; 
+sensor_3_d = [-1.51; -0.03; 0.0]; 
 sensor_3_S = [0, 0, 1;
               0,-1, 0;
               1, 0, 0];
 
-% %% OVERRIDE
+% % OVERRIDE
 % sensor_1_S_acc = eye(3);
 % sensor_1_S_mag = eye(3); 
 % sensor_2_S = eye(3); 
 % sensor_3_S = eye(3);
 
 %% Actuator parameters
-act_freq = 167; % natural frequency, approx 1/timeconstant [1/s]
+act_freq = 160; % natural frequency, approx 1/timeconstant [1/s]
 act_deadtime = 0.003; % delay in servo internal control loop [s]
-act_damping = 0.9; % damping ratio
+act_damping = 0.84; % damping ratio
 act_backlash = 0.3; % play [deg]
 act_anglelimit = 22; % max deflection [deg]
 act_ratelimit = 600; % max rate [deg/s]
@@ -56,7 +56,7 @@ canard_roll_reversal_factor = 1; % coefficient gain
 %Reference parameters   
 rocket_diameter = 0.203; % reference length [m]
 rocket_area_frontal = pi * rocket_diameter^2 / 4; % reference area [m^2]
-rocket_length = 5.58; % rocket length [m]
+rocket_length = 5.44; % rocket length [m]
 
 %Parachutes
 chute_pos_x = -1.1; % chute attachment [m]
@@ -67,13 +67,13 @@ chute_main_time = 0; % time after threshold altitude [s]
 chute_main_threshold = 2000; % threshold altitude [m]
 
 %Nosecone parameters
-nosecone_length = 1.02; % nosecone length [m]
+nosecone_length = 0.972; % nosecone length [m]
 nosecone_radius = rocket_diameter / 2; % nosecone radius [m]
 
 %Tail parameters
 tail_radius_outer = 0.203 / 2; % tail radius [m]
-tail_length = 0.0254; % tail length [m]
-tail_radius_smallest = 0.19 / 2; % smallest tail radius(?) [m]
+tail_length = 0.0269; % tail length [m]
+tail_radius_smallest = 0.185 / 2; % smallest tail radius(?) [m]
 tail_pos_x_roottip = -rocket_length + tail_length; % tail position measured from nosecone
 
 %Body parameters
@@ -100,5 +100,5 @@ canard_spine_width = 0.015;
 canard_spine_effectiveness = 0.5;
 canard_radial_offset = 0.02;
 canard_delta_max = deg2rad(12); % Canard maximum angle of attack
-canard_pos_x_roottip = - (nosecone_length + 0.508 + 0.102 / 2 - 0.03); % approximate position of the most forward tip of the canards
+canard_pos_x_roottip = - (nosecone_length + 0.521 - 0.01); % approximate position of the most forward tip of the canards
 canard_cant_zero = deg2rad(0.2); % zero roll not perfect
