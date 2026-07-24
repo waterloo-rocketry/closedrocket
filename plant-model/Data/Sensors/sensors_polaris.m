@@ -16,19 +16,19 @@ samplingtime_motor = 0.005;
 %% Sensor group 1 (Onboard)
 
 imu1_accel_limit = 32*9.81;
-imu1_accel_bias = 20e-3*9.81;
-imu1_accel_noise = (110e-6*9.81)^2;
+imu1_accel_bias = 12e-3*9.81; 
+imu1_accel_noise = (130e-6*9.81)^2; 
 
 imu1_gyro_limit = deg2rad(4000);
 imu1_gyro_bias = deg2rad(1);
-imu1_gyro_noise = (deg2rad(3.8e-3))^2;
+imu1_gyro_noise = (deg2rad(2.8e-3))^2;
 
-imu1_mag_limit = 16; 
-imu1_mag_noise = (4.1e-3)^2 * samplingtime_other;
+imu1_mag_limit = 49.152; 
+imu1_mag_noise = (3e-3)^2 * samplingtime_other;
 
 imu1_baro_limit = [1000, 120e3]; % not yet used in Sim
-imu1_baro_bias = 9;
-imu1_baro_noise = (0.0034e2)^2 * samplingtime_other;
+imu1_baro_bias = 150;
+imu1_baro_noise = 250;
 
 
 %% Sensor group 2 values (Movella MTi)
@@ -44,7 +44,7 @@ imu2_gyro_noise = (deg2rad(0.007))^2;
 imu2_mag_limit = 8;
 imu2_mag_noise = (1e-3)^2 * samplingtime_other;
 
-imu2_baro_limit = [2000, 110e3]; % not yet used in Sim
+imu2_baro_limit = [30e3, 125e3]; % not yet used in Sim
 imu2_baro_bias = 8;
 imu2_baro_noise = (1.2)^2 * samplingtime_other;
 
@@ -52,9 +52,9 @@ imu2_baro_noise = (1.2)^2 * samplingtime_other;
 %% Sensor group 3 (AD breakout)
 
 imu3_accel_limit = 16*9.81;
-imu3_accel_bias = 15e-6*9.81;
-imu3_accel_noise = (60e-6*9.81)^2;
+imu3_accel_bias = 60e-3*9.81;
+imu3_accel_noise = (27e-6*9.81)^2; 
 
-imu3_gyro_limit = deg2rad(50000);
-imu3_gyro_bias = deg2rad(8/3600);
-imu3_gyro_noise = (deg2rad(0.007))^2;
+imu3_gyro_limit = deg2rad(20000);
+imu3_gyro_bias = deg2rad(2.5/100);
+imu3_gyro_noise = (deg2rad(0.25))^2;
