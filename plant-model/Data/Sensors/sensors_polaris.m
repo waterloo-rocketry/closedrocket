@@ -44,7 +44,7 @@ imu2_gyro_noise = (deg2rad(0.007))^2;
 imu2_mag_limit = 8;
 imu2_mag_noise = (1e-3)^2 * samplingtime_other;
 
-imu2_baro_limit = [30e3, 125e3]; % not yet used in Sim
+imu2_baro_limit = [2000, 125e3]; % not yet used in Sim
 imu2_baro_bias = 8;
 imu2_baro_noise = (1.2)^2 * samplingtime_other;
 
