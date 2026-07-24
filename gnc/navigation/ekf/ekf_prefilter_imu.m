@@ -1,6 +1,17 @@
-function [a, w] = ekf_prefilter_imu(bias, sens_in)
+function [a, w, status_fast] = ekf_prefilter_imu(bias, sens_in)
     %%% computes average acceleration and angular rates from multiple IMUs.
     %%% includes correction of gyroscope bias and centrifugal acceleration.
+
+    status_fast = false;
+    a = zeros(3, 1);
+    w = zeros(3, 1);
+    
+    %% parameters
+    persistent param
+    if isempty(param)
+        param = coder.load("gnc/model_params.mat");
+    end
+
 
     %% confidences
     %%% base confidences (tune per sensor)
@@ -26,12 +37,11 @@ function [a, w] = ekf_prefilter_imu(bias, sens_in)
     C_total_a = C_board_a + C_mti_a + C_ad_a;
     C_total_w = C_board_w + C_mti_w + C_ad_w;
 
-    if any(C_total_a == 0)
-        error('No accel confidence on at least one axis.');
+    if any(C_total_a == 0) || any(C_total_w == 0)
+        return;
     end
-    if any(C_total_w == 0)
-        error('No gyro confidence on at least one axis.');
-    end
+
+    status_fast = true;
 
     % normalize (Hadamard division)
     C_board_a = C_board_a ./ C_total_a;
@@ -41,11 +51,6 @@ function [a, w] = ekf_prefilter_imu(bias, sens_in)
     C_mti_w = C_mti_w ./ C_total_w;
     C_ad_w = C_ad_w ./ C_total_w;
 
-    %% parameters
-    persistent param
-    if isempty(param)
-        param = coder.load("gnc/model_params.mat");
-    end
 
     %% averaging
     % gyro bias correction
@@ -65,4 +70,5 @@ function [a, w] = ekf_prefilter_imu(bias, sens_in)
 
     % weighted acceleration
     a = C_board_a .* a_board + C_mti_a .* a_mti + C_ad_a .* a_ad; % [m/s^2]
+
 end

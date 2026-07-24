@@ -1,4 +1,4 @@
-function [cmd, ref, C_l_delta] = controller_module(time, xR, pdyn, encoder)
+function [cmd, ref, C_l_delta, mem] = controller_module(time, xR, pdyn, encoder)
     % Top-level controller module.
     % cmd : (rad) control command, desired motor angle
     % ref : (rad) roll angle target
@@ -25,6 +25,7 @@ function [cmd, ref, C_l_delta] = controller_module(time, xR, pdyn, encoder)
 
     flight_time = time - time_launch;
     dt_ctrl = time - time_prev;
+    mem = ctrl_mem;
 
     [cmd, ref, ctrl_mem] = controller_codegen_entry(flight_time, dt_ctrl, xR, pdyn, encoder, ctrl_mem);
 

@@ -7,6 +7,11 @@ run('plant-model/data/rockets/Polaris/polaris.m')
 %%% sensors
 run('plant-model/data/sensors/sensors_polaris.m')
 
+%%% logging
+logging_ctrl = false;
+logging_nav = false;
+log_freq = 5; % period, in seconds :P
+
 %%% flight config
 chute_enable = [1, 0]; % bool, no recovery is = 0
 time_idle = 30; % [s], wait time on the rail before launch

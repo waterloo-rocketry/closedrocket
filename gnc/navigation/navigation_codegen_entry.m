@@ -4,16 +4,20 @@ function [x, P, bias, sens_filt, cov_norm, roll_state, pdyn, w_status_nav] = nav
 
     w_status_nav = false;
 
+    %% normalize mag measurements
+    sens_in.board_mag.meas = vec_norm(sens_in.board_mag.meas);
+    sens_in.mti_mag.meas = vec_norm(sens_in.mti_mag.meas);
+
     %% Pad filter iteration
     if flight_phase == false || isempty(bias) % only before ignition (or if not run before)
-        [x, bias, sens_filt] = pad_filter(sens_in, sens_filt);
-        w_status_nav = true;
+        [x, bias, sens_filt, status] = pad_filter(sens_in, sens_filt);
+        w_status_nav = status;
     end
 
     %% Flight filter iteration
     if flight_phase == true % in flight
-        [x, P] = flight_filter(dt, x, P, bias, sens_in);
-        w_status_nav = false;
+        [x, P, status] = flight_filter(dt, x, P, bias, sens_in);
+        w_status_nav = status;
     end
 
     %% Compute air data
