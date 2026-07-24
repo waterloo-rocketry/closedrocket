@@ -6,8 +6,8 @@ function [x, P, bias, sens_filt, cov_norm, roll_state, pdyn, w_status_nav] = nav
 
     %% Pad filter iteration
     if flight_phase == false || isempty(bias) % only before ignition (or if not run before)
-        [x, bias, sens_filt] = pad_filter(sens_in, sens_filt);
-        w_status_nav = true;
+        [x, bias, sens_filt, status] = pad_filter(sens_in, sens_filt);
+        w_status_nav = status;
     end
 
     %% Flight filter iteration

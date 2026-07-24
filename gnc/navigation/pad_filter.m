@@ -1,10 +1,11 @@
-function [x_init, bias, sens_filt] = pad_filter(sens_in, sens_filt)
+function [x_init, bias, sens_filt, status] = pad_filter(sens_in, sens_filt)
     % Computes on pad: inital state for flight filter, and bias values for the sensors
     % Outputs: initial state x, sensor biases bias
     %#codegen
 
     %% Settings
     alpha = 0.0005; % [s], low pass time constant
+
 
     %% parameters
     persistent param
@@ -29,7 +30,7 @@ function [x_init, bias, sens_filt] = pad_filter(sens_in, sens_filt)
     %% Initial state determination
     %%% Orientation
     a = sens_filt.board_accel + sens_filt.mti_accel + sens_filt.ad_accel;
-    q = pad_inclinometer(a); % a gets normed inside function
+    [q, status] = pad_inclinometer(a); % a gets normed inside function
 
     %%% launch altitude
     alt = param.altitude_initial;

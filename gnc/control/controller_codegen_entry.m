@@ -72,4 +72,9 @@ function [u_motor, where_it_isnt, ctrl_mem, w_status_ctrl] = controller_codegen_
         w_status_ctrl = false;
     end
 
+    if time < 6
+        u_motor = 0;
+        w_status_ctrl = false;
+    end
+
 end
