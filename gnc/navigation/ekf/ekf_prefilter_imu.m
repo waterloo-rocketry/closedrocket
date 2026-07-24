@@ -23,7 +23,7 @@ function [a, w, status_fast] = ekf_prefilter_imu(bias, sens_in)
     % use gyroscope noise standard deviation
     C0_board_w = [1; 1; 1] / (1e-5)^2;
     C0_mti_w = [1; 1; 1] / (1e-5)^2;
-    C0_ad_w = [1; 0; 0] / (1e-5)^2;
+    C0_ad_w = [1; 0; 0] / (1e-3)^2;
 
     %% confidence calculations
     % sensor status
@@ -62,11 +62,11 @@ function [a, w, status_fast] = ekf_prefilter_imu(bias, sens_in)
     w = C_board_w .* w_board + C_mti_w .* w_mti + C_ad_w .* w_ad; % [rad/s]
 
     % centrifugal acceleration correction
-    % w_tilde = math_tilde(w);
-    % w_tilde_sq = w_tilde * w_tilde;
-    a_board = sens_in.board_accel.meas;% - w_tilde_sq * param.d_board;
-    a_mti = sens_in.mti_accel.meas;% - w_tilde_sq * param.d_mti;
-    a_ad = sens_in.ad_accel.meas;% - w_tilde_sq * param.d_ad;
+    w_tilde = math_tilde(w);
+    w_tilde_sq = w_tilde * w_tilde;
+    a_board = sens_in.board_accel.meas - w_tilde_sq * param.d_board;
+    a_mti = sens_in.mti_accel.meas - w_tilde_sq * param.d_mti;
+    a_ad = sens_in.ad_accel.meas - w_tilde_sq * param.d_ad;
 
     % weighted acceleration
     a = C_board_a .* a_board + C_mti_a .* a_mti + C_ad_a .* a_ad; % [m/s^2]
