@@ -2,8 +2,10 @@ function [a, w, status_fast] = ekf_prefilter_imu(bias, sens_in)
     %%% computes average acceleration and angular rates from multiple IMUs.
     %%% includes correction of gyroscope bias and centrifugal acceleration.
 
-    status_fast = true;
-
+    status_fast = false;
+    a = zeros(3, 1);
+    w = zeros(3, 1);
+    
     %% parameters
     persistent param
     if isempty(param)
@@ -36,11 +38,10 @@ function [a, w, status_fast] = ekf_prefilter_imu(bias, sens_in)
     C_total_w = C_board_w + C_mti_w + C_ad_w;
 
     if any(C_total_a == 0) || any(C_total_w == 0)
-        status_fast = false;
-        a = zeros(3, 1);
-        w = zeros(3, 1);
         return;
     end
+
+    status_fast = true;
 
     % normalize (Hadamard division)
     C_board_a = C_board_a ./ C_total_a;
