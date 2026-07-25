@@ -6,15 +6,20 @@ function err = signal_difference(actual, estimate, variableName)
         return;
     end
 
-    [~, actualValues] = signal_data(actual);
-    estimate = retime(estimate, actual.Time, "linear");
-    [~, estimateValues] = signal_data(estimate);
+    [actualTime, actualValues] = signal_data(actual);
+    [estimateTime, estimateValues] = signal_data(estimate);
+    if ~isequal(actualTime, estimateTime)
+        estimateValues = interp1(estimateTime, estimateValues, ...
+            actualTime, "linear", NaN);
+    end
     width = min(size(actualValues, 2), size(estimateValues, 2));
 
     if width < 1
         return;
     end
 
-    err = timetable(actual.Time, actualValues(:, 1:width) - estimateValues(:, 1:width), ...
-        'VariableNames', cellstr(variableName));
+    err = struct( ...
+        "Time", actualTime, ...
+        "Values", actualValues(:, 1:width) - estimateValues(:, 1:width), ...
+        "Name", string(variableName));
 end

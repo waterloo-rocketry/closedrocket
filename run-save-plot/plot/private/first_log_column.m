@@ -5,9 +5,8 @@ function signal = first_log_column(signal)
         return;
     end
 
-    name = signal.Properties.VariableNames{1};
-    values = signal.(name);
+    [time, values] = signal_data(signal);
     if size(values, 2) > 1
-        signal = timetable(signal.Time, values(:, 1), 'VariableNames', {name});
+        signal = struct("Time", time, "Values", values(:, 1));
     end
 end

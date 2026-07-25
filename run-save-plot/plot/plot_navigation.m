@@ -35,6 +35,7 @@ function figs = plot_navigation(source, varargin)
 end
 
 function fig = plotNavigationDashboard(data, tlim)
+    colors = navigationColors();
     q = get_log_signal(data, "q");
     qEst = get_log_signal(data, "q_est");
     v = get_log_signal(data, "v");
@@ -53,20 +54,20 @@ function fig = plotNavigationDashboard(data, tlim)
     layout = tiledlayout(fig, 2, 2, "TileSpacing", "compact", "Padding", "compact");
 
     ax = nexttile(layout);
-    plot_signal_group(ax, {q, qEst}, ["q", "q\_est"], ...
-        "Attitude Quaternion", "", tlim);
+    plot_signal_group(ax, {q, qEst}, ["q", "q_est"], ...
+        "Attitude Quaternion", "", tlim, {colors.wxyz, colors.wxyz});
 
     ax = nexttile(layout);
-    plot_signal_group(ax, {v, vEst}, ["v", "v\_est"], ...
-        "Velocity", "m/s", tlim);
+    plot_signal_group(ax, {v, vEst}, ["v", "v_est"], ...
+        "Body-Frame Velocity", "m/s", tlim, {colors.xyz, colors.xyz});
 
     ax = nexttile(layout);
-    plot_signal_group(ax, {w, wEst}, ["w", "w\_est"], ...
-        "Angular Rates", "rad/s", tlim);
+    plot_signal_group(ax, {w, wEst}, ["w", "w_est"], ...
+        "Angular Rates", "rad/s", tlim, {colors.xyz, colors.xyz});
 
     ax = nexttile(layout);
-    plot_signal_group(ax, {r, altEst}, ["r", "alt\_est"], ...
-        "Position", "m", tlim);
+    plot_signal_group(ax, {r, altEst}, ["r", "alt_est"], ...
+        "Position", "m", tlim, {colors.xyz, colors.x});
 end
 
 function fig = plotCovarianceDashboard(data, tlim)
@@ -78,10 +79,11 @@ function fig = plotCovarianceDashboard(data, tlim)
 
     fig = figure("Name", "Navigation Covariance");
     ax = axes(fig);
-    plot_signal_group(ax, {covNorm}, "cov\_norm", "Covariance Norm", "", tlim);
+    plot_signal_group(ax, {covNorm}, "cov_norm", "Covariance Norm", "", tlim);
 end
 
 function fig = plotErrorDashboard(data, tlim)
+    colors = navigationColors();
     qErr = signal_difference(get_log_signal(data, "q"), ...
         get_log_signal(data, "q_est"), "q_error");
     vErr = signal_difference(get_log_signal(data, "v"), ...
@@ -100,14 +102,27 @@ function fig = plotErrorDashboard(data, tlim)
     layout = tiledlayout(fig, 2, 2, "TileSpacing", "compact", "Padding", "compact");
 
     ax = nexttile(layout);
-    plot_signal_group(ax, {qErr}, "q\_error", "Quaternion Error", "", tlim);
+    plot_signal_group(ax, {qErr}, "q_error", ...
+        "Quaternion Error", "", tlim, {colors.wxyz});
 
     ax = nexttile(layout);
-    plot_signal_group(ax, {vErr}, "v\_error", "Velocity Error", "m/s", tlim);
+    plot_signal_group(ax, {vErr}, "v_error", ...
+        "Velocity Error", "m/s", tlim, {colors.xyz});
 
     ax = nexttile(layout);
-    plot_signal_group(ax, {wErr}, "w\_error", "Angular Rate Error", "rad/s", tlim);
+    plot_signal_group(ax, {wErr}, "w_error", ...
+        "Angular Rate Error", "rad/s", tlim, {colors.xyz});
 
     ax = nexttile(layout);
-    plot_signal_group(ax, {altErr}, "alt\_error", "Altitude Error", "m", tlim);
+    plot_signal_group(ax, {altErr}, "alt_error", ...
+        "Altitude Error", "m", tlim, {colors.x});
+end
+
+function colors = navigationColors()
+    colors.x = [0.8500, 0.3250, 0.0980];
+    colors.y = [0.4660, 0.6740, 0.1880];
+    colors.z = [0.0000, 0.4470, 0.7410];
+    colors.w = [0.1000, 0.1000, 0.1000];
+    colors.xyz = [colors.x; colors.y; colors.z];
+    colors.wxyz = [colors.w; colors.xyz];
 end

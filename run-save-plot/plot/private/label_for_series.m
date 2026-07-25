@@ -1,12 +1,21 @@
 function labels = label_for_series(base, width)
-%LABEL_FOR_SERIES Build Simulink-scope-like legend labels.
+%LABEL_FOR_SERIES Build component-based legend labels.
 
-    labels = strings(1, width);
     if width == 1
-        labels(1) = base;
-    else
-        for i = 1:width
-            labels(i) = base + ":" + i;
-        end
+        labels = string(base);
+        return;
     end
+
+    switch width
+        case 2
+            components = ["x", "y"];
+        case 3
+            components = ["x", "y", "z"];
+        case 4
+            components = ["w", "x", "y", "z"];
+        otherwise
+            components = string(1:width);
+    end
+
+    labels = string(base) + "_" + components;
 end
