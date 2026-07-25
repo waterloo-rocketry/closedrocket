@@ -1,4 +1,4 @@
-load wall_step_log.mat
+load(fullfile(fileparts(mfilename("fullpath")), "wall_step_log.mat"));
 
 figure;
 plot(sim_time, ratio);
@@ -6,7 +6,7 @@ grid on;
 xlabel("Simulation time [s]");
 ylabel("Wall dt / expected Ts");
 title("Per-step real-time factor");
-yline(1, "--");
+yline(1);
 
 slow_idx = ratio > 1.0;
 

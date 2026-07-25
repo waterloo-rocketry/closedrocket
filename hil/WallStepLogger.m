@@ -5,7 +5,7 @@ classdef WallStepLogger < matlab.System
     properties (Nontunable)
         Ts = 0.0025                 % expected real-time step, seconds
         MaxSamples = 50000          % enough for 60 s at 400 Hz = 24000
-        FileName = "wall_step_log.mat"
+        FileName = "hil/wall_step_log.mat"
     end
 
     properties (Access = private)
@@ -48,9 +48,13 @@ classdef WallStepLogger < matlab.System
             sim_time = obj.SimTimeLog(1:n);
             wall_dt  = obj.WallDtLog(1:n);
             ratio    = obj.RatioLog(1:n);
-            Ts       = obj.Ts;
 
-            save(obj.FileName, "sim_time", "wall_dt", "ratio", "Ts");
+            logData = struct( ...
+                "sim_time", sim_time, ...
+                "wall_dt", wall_dt, ...
+                "ratio", ratio, ...
+                "Ts", obj.Ts);
+            save(obj.FileName, "-struct", "logData");
         end
 
         function sts = getSampleTimeImpl(obj)
