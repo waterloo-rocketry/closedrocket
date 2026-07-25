@@ -7,8 +7,8 @@ stop_time = 220; % 55 is apogee, 240 is after main deploy
 %% load baseline
 clearvars -except batch_name number_simulations P_threshold stop_time
 run('configure_plant_model');
-mkdir(sprintf('monte-carlo/batch%s/', batch_name))
-save(sprintf('monte-carlo/batch%s/plant_model_baseline.mat', batch_name))
+mkdir(sprintf('results/monte-carlo/batch%s/', batch_name))
+save(sprintf('results/monte-carlo/batch%s/plant_model_baseline.mat', batch_name))
 clearvars -except batch_name number_simulations P_threshold stop_time
 model_name = 'plant-model/CC_Flight_Simulation';
 
@@ -40,7 +40,7 @@ for i = 1:number_simulations
     simin(i) = Simulink.SimulationInput(model_name);
     simin(i) = setModelParameter(simin(i),"StopTime", num2str(stop_time));
 
-    simin(i) = simin(i).loadVariablesFromMATFile(sprintf('monte-carlo/batch%s/plant_model_baseline.mat', batch_name));
+    simin(i) = simin(i).loadVariablesFromMATFile(sprintf('results/monte-carlo/batch%s/plant_model_baseline.mat', batch_name));
 
     simin(i) = simin(i).setVariable('engine_thrust_factor', normalsampling(rocket_thrust_var, rocket_thrust_exp));
     simin(i) = simin(i).setVariable('wind_const_strength',normalsampling(wind_const_var, wind_const_exp));
@@ -78,9 +78,9 @@ error_id = [];
 unstable_count = 0;
 unstable_id = [];
 for k = 1:number_simulations
-    [in_vars] = mc_postprocessor_in(simin(k), load(sprintf('monte-carlo/batch%s/plant_model_baseline.mat', batch_name)));
+    [in_vars] = mc_postprocessor_in(simin(k), load(sprintf('results/monte-carlo/batch%s/plant_model_baseline.mat', batch_name)));
     [sdt, sdt_vars] = mc_postprocessor(simout(k));
-    filename = sprintf('monte-carlo/batch%s/sim_%d.mat', batch_name, k);
+    filename = sprintf('results/monte-carlo/batch%s/sim_%d.mat', batch_name, k);
     save(filename, 'sdt', 'in_vars');
     if ~isempty(simout(k).ErrorMessage)
         error_id(end+1) = k;
@@ -97,5 +97,5 @@ unstable_count = length(unstable_id)
 unstable_ratio = unstable_count / number_simulations
 
 
-filename = sprintf('monte-carlo/batch%s/result_summary.mat', batch_name);
+filename = sprintf('results/monte-carlo/batch%s/result_summary.mat', batch_name);
 save(filename, 'number_simulations', 'error_id', 'error_count', 'error_ratio', 'unstable_id', 'unstable_count', 'unstable_ratio');

@@ -1,6 +1,6 @@
 function [plots] = plot_stats_state(sdt_array, type, percentiles, varargin)
 % Plot statistical envelopes (median, percentile bounds) across multiple datasets
-% Follows the same structure and plotting style as plot_state()
+% Follows the same structure and plotting style as the legacy plot_state_old()
 
     %% Colors 
     colors(1,:) = [0, 0, 0];      % Black
