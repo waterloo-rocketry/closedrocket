@@ -7,5 +7,5 @@ function roll_reversal_factor = rev_grid(v, a)
     d = exp(-x^2/100);
     e = 10*(x/(10+log(v+1)));
     
-    roll_reversal_factor = 3 * (b + c) * d * (sin(e)^2 + 2)/2 * cos(f);
+    roll_reversal_factor = 3 * (b + c) * d * (sin(e)^2 + 2)/2 * cos(e);
 end
