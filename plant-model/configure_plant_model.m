@@ -18,6 +18,7 @@ wind_discrete_enable = 0;   % bool, toggle for wind type: historic layered wind 
 wind_layer_threshold = 100; % [m/s] threshold windspeed at any altitude where launch would not happen
 run('plant-model/data/wind/wind_discrete.m')
 [wind_heights, wind_vectors] = wind_historic(wind_layer_threshold);
+roll_rev_grid_active = true;
 
 %% data pre-processing
 run('plant-model/scripts/data_preparation.m')
