@@ -10,7 +10,7 @@ function [x, P, status] = flight_filter(dt, x, P, bias, sens_in)
     %%% x = [   q(4),           w(3),         v(3),    alt(1)]
     %%% Q is a square 11 matrix, tuning for expected dynamics noise magnitude E(noise)
     %%% R is a square 3 matrix, tuning for expected measurement noise magnitude E(noise) of the gyroscope
-    Q = diag([[1,1,1,1]*1e-10, [1, 1, 1]*1e-2, [1,1,1]*1e-4, 1e-3]);
+    Q = diag([[1,1,1,1]*1e-10, [1, 1, 1]*1e-3, [1,1,1]*1e-4, 1e-3]);
     R = diag([1, 1, 1])*1e-9;
 
     [a, w, status_fast] = ekf_prefilter_imu(bias, sens_in);
