@@ -8,11 +8,11 @@ percentiles = [80, 95];
 
 %% Load statistical
 sdt_array = cell(1, number_plots);
-filename = sprintf('monte-carlo/batch%s/result_summary.mat', batch_name);
+filename = sprintf('results/monte-carlo/batch%s/result_summary.mat', batch_name);
 load(filename);
 %unstable_id
 for k = 1:number_plots
-    filename = sprintf('monte-carlo/batch%s/sim_%d.mat', batch_name, k);
+    filename = sprintf('results/monte-carlo/batch%s/sim_%d.mat', batch_name, k);
     load(filename);  % loads variables: sdt, in_vars
     % if any(sdt.est.v(:,1) > limit_velocity) 
     if ismember(k, unstable_id) 
@@ -51,11 +51,11 @@ set(groot, 'DefaultTextInterpreter', 'remove')
 
 %% save statistical
 % set(f_sim, 'Units', 'normalized', 'WindowState', 'maximized');
-% exportgraphics(f_sim, sprintf('monte-carlo/batch%s/sim_mc_stats_sim%s.pdf', batch_name, batch_name), 'ContentType', 'vector')
+% exportgraphics(f_sim, sprintf('results/monte-carlo/batch%s/sim_mc_stats_sim%s.pdf', batch_name, batch_name), 'ContentType', 'vector')
 % set(f_est, 'Units', 'normalized', 'WindowState', 'maximized');
-% exportgraphics(f_est, sprintf('monte-carlo/batch%s/sim_mc_stats_est%s.pdf', batch_name, batch_name), 'ContentType', 'vector')
+% exportgraphics(f_est, sprintf('results/monte-carlo/batch%s/sim_mc_stats_est%s.pdf', batch_name, batch_name), 'ContentType', 'vector')
 % set(f_err, 'Units', 'normalized', 'WindowState', 'maximized');
-% exportgraphics(f_err, sprintf('monte-carlo/batch%s/sim_mc_stats_error%s.pdf', batch_name, batch_name), 'ContentType', 'vector')
+% exportgraphics(f_err, sprintf('results/monte-carlo/batch%s/sim_mc_stats_error%s.pdf', batch_name, batch_name), 'ContentType', 'vector')
 % set(f_control, 'Units', 'normalized', 'WindowState', 'maximized');
-% exportgraphics(f_control, sprintf('monte-carlo/batch%s/sim_mc_stats_control%s.pdf', batch_name, batch_name), 'ContentType', 'vector')
-% exportgraphics(f_cov, sprintf('monte-carlo/batch%s/sim_mc_stats_cov%s.pdf', batch_name, batch_name), 'ContentType', 'vector');
+% exportgraphics(f_control, sprintf('results/monte-carlo/batch%s/sim_mc_stats_control%s.pdf', batch_name, batch_name), 'ContentType', 'vector')
+% exportgraphics(f_cov, sprintf('results/monte-carlo/batch%s/sim_mc_stats_cov%s.pdf', batch_name, batch_name), 'ContentType', 'vector');

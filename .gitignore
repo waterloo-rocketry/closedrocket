@@ -34,6 +34,7 @@ octave-workspace
 monte-carlo/*/*.mat.DS_Store
 monte-carlo/*/*.mat
 hil/*/*.mat
+results/**/*.mat
 
 # Plots
 *.pdf

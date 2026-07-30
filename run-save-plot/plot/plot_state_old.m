@@ -1,4 +1,4 @@
-function [plots] = plot_state(dataset, varargin)
+function [plots] = plot_state_old(dataset, varargin)
     % inputs: dataset, [time limits, time start], plot indices. Plot simulation data on a dashboard for estimator visualization. 
     
     colors(1,:) = [0, 0, 0];  % Black
