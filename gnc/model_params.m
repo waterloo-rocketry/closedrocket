@@ -15,7 +15,8 @@ length_cp = -1.1; % [m], center of pressure (negative is aft of cg)
 area_reference = pi*(0.203/2)^2; % [m^2], cross section of body tube
 c_aero = area_reference * (length_cp-length_cg); % precompute aero constants
 Cn_alpha = 10; % [-], pitch forcing coefficent 
-Cn_omega = 0; % [-], pitch damping coefficent 
+c_aero_damping = area_reference * (length_cp-length_cg)^2; % [m^4], rate damping geometry
+Cn_omega = 10; % [-], pitch/yaw rate damping coefficient
 
 %% Canards
 n_canards = 2;
