@@ -3381,7 +3381,7 @@ P[121], struct1_T *bias, struct2_T *
 sens_filt, struct3_T *sens_in, double *
 cov_norm, double roll_state[2], double *
 pdyn, boolean_T *w_status_nav) { 
-static const double Q[121] = {(1.0E-10), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (1.0E-10), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (1.0E-10), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (1.0E-10), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.01), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.01), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.01), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0001), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0001), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0001), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.001)}; 
+static const double Q[121] = {(1.0E-10), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (1.0E-10), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (1.0E-10), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (1.0E-10), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.001), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.001), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.001), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0001), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0001), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0001), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.0), (0.001)}; 
 #line 1051
 static const double R[9] = {(1.0E-9), (0.0), (0.0), (0.0), (1.0E-9), (0.0), (0.0), (0.0), (1.0E-9)}; 
 
@@ -3527,51 +3527,51 @@ double d26;
 double d_a; 
 double filtered; { 
 if ((sens_in->board_accel).status) { 
-sens_filt->board_accel[0] = (0.0005) * (sens_in->board_accel).meas[0] + (0.9995) * sens_filt->board_accel[0]; 
+sens_filt->board_accel[0] = (0.0001) * (sens_in->board_accel).meas[0] + (0.9999) * sens_filt->board_accel[0]; 
 
-sens_filt->board_accel[1] = (0.0005) * (sens_in->board_accel).meas[1] + (0.9995) * sens_filt->board_accel[1]; 
+sens_filt->board_accel[1] = (0.0001) * (sens_in->board_accel).meas[1] + (0.9999) * sens_filt->board_accel[1]; 
 
-sens_filt->board_accel[2] = (0.0005) * (sens_in->board_accel).meas[2] + (0.9995) * sens_filt->board_accel[2]; 
+sens_filt->board_accel[2] = (0.0001) * (sens_in->board_accel).meas[2] + (0.9999) * sens_filt->board_accel[2]; 
 
 }  } { 
 if ((sens_in->board_gyro).status) { 
-sens_filt->board_gyro[0] = (0.0005) * (sens_in->board_gyro).meas[0] + (0.9995) * sens_filt->board_gyro[0]; 
+sens_filt->board_gyro[0] = (0.0001) * (sens_in->board_gyro).meas[0] + (0.9999) * sens_filt->board_gyro[0]; 
 
-sens_filt->board_gyro[1] = (0.0005) * (sens_in->board_gyro).meas[1] + (0.9995) * sens_filt->board_gyro[1]; 
+sens_filt->board_gyro[1] = (0.0001) * (sens_in->board_gyro).meas[1] + (0.9999) * sens_filt->board_gyro[1]; 
 
-sens_filt->board_gyro[2] = (0.0005) * (sens_in->board_gyro).meas[2] + (0.9995) * sens_filt->board_gyro[2]; 
+sens_filt->board_gyro[2] = (0.0001) * (sens_in->board_gyro).meas[2] + (0.9999) * sens_filt->board_gyro[2]; 
 
 }  } { 
 if ((sens_in->mti_accel).status) { 
-sens_filt->mti_accel[0] = (0.0005) * (sens_in->mti_accel).meas[0] + (0.9995) * sens_filt->mti_accel[0]; 
+sens_filt->mti_accel[0] = (0.0001) * (sens_in->mti_accel).meas[0] + (0.9999) * sens_filt->mti_accel[0]; 
 
-sens_filt->mti_accel[1] = (0.0005) * (sens_in->mti_accel).meas[1] + (0.9995) * sens_filt->mti_accel[1]; 
+sens_filt->mti_accel[1] = (0.0001) * (sens_in->mti_accel).meas[1] + (0.9999) * sens_filt->mti_accel[1]; 
 
-sens_filt->mti_accel[2] = (0.0005) * (sens_in->mti_accel).meas[2] + (0.9995) * sens_filt->mti_accel[2]; 
+sens_filt->mti_accel[2] = (0.0001) * (sens_in->mti_accel).meas[2] + (0.9999) * sens_filt->mti_accel[2]; 
 
 }  } { 
 if ((sens_in->mti_gyro).status) { 
-sens_filt->mti_gyro[0] = (0.0005) * (sens_in->mti_gyro).meas[0] + (0.9995) * sens_filt->mti_gyro[0]; 
+sens_filt->mti_gyro[0] = (0.0001) * (sens_in->mti_gyro).meas[0] + (0.9999) * sens_filt->mti_gyro[0]; 
 
-sens_filt->mti_gyro[1] = (0.0005) * (sens_in->mti_gyro).meas[1] + (0.9995) * sens_filt->mti_gyro[1]; 
+sens_filt->mti_gyro[1] = (0.0001) * (sens_in->mti_gyro).meas[1] + (0.9999) * sens_filt->mti_gyro[1]; 
 
-sens_filt->mti_gyro[2] = (0.0005) * (sens_in->mti_gyro).meas[2] + (0.9995) * sens_filt->mti_gyro[2]; 
+sens_filt->mti_gyro[2] = (0.0001) * (sens_in->mti_gyro).meas[2] + (0.9999) * sens_filt->mti_gyro[2]; 
 
 }  } { 
 if ((sens_in->ad_accel).status) { 
-sens_filt->ad_accel[0] = (0.0005) * (sens_in->ad_accel).meas[0] + (0.9995) * sens_filt->ad_accel[0]; 
+sens_filt->ad_accel[0] = (0.0001) * (sens_in->ad_accel).meas[0] + (0.9999) * sens_filt->ad_accel[0]; 
 
-sens_filt->ad_accel[1] = (0.0005) * (sens_in->ad_accel).meas[1] + (0.9995) * sens_filt->ad_accel[1]; 
+sens_filt->ad_accel[1] = (0.0001) * (sens_in->ad_accel).meas[1] + (0.9999) * sens_filt->ad_accel[1]; 
 
-sens_filt->ad_accel[2] = (0.0005) * (sens_in->ad_accel).meas[2] + (0.9995) * sens_filt->ad_accel[2]; 
+sens_filt->ad_accel[2] = (0.0001) * (sens_in->ad_accel).meas[2] + (0.9999) * sens_filt->ad_accel[2]; 
 
 }  } { 
 if ((sens_in->ad_gyro).status) { 
-sens_filt->ad_gyro[0] = (0.0005) * (sens_in->ad_gyro).meas[0] + (0.9995) * sens_filt->ad_gyro[0]; 
+sens_filt->ad_gyro[0] = (0.0001) * (sens_in->ad_gyro).meas[0] + (0.9999) * sens_filt->ad_gyro[0]; 
 
-sens_filt->ad_gyro[1] = (0.0005) * (sens_in->ad_gyro).meas[1] + (0.9995) * sens_filt->ad_gyro[1]; 
+sens_filt->ad_gyro[1] = (0.0001) * (sens_in->ad_gyro).meas[1] + (0.9999) * sens_filt->ad_gyro[1]; 
 
-sens_filt->ad_gyro[2] = (0.0005) * (sens_in->ad_gyro).meas[2] + (0.9995) * sens_filt->ad_gyro[2]; 
+sens_filt->ad_gyro[2] = (0.0001) * (sens_in->ad_gyro).meas[2] + (0.9999) * sens_filt->ad_gyro[2]; 
 
 }  } 
 filtered = sens_filt->board_baro; { 

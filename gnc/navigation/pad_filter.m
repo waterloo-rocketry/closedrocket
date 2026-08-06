@@ -4,7 +4,8 @@ function [x_init, bias, sens_filt, status] = pad_filter(sens_in, sens_filt)
     %#codegen
 
     %% Settings
-    alpha = 0.0005; % [s], low pass time constant
+    alpha = 0.0001; % [s], low pass time constant
+    alpha_slow = 0.0005;
 
     %% parameters
     persistent param
@@ -21,10 +22,10 @@ function [x_init, bias, sens_filt, status] = pad_filter(sens_in, sens_filt)
     sens_filt.mti_gyro = pad_lowpass(sens_filt.mti_gyro, sens_in.mti_gyro, alpha);
     sens_filt.ad_accel = pad_lowpass(sens_filt.ad_accel, sens_in.ad_accel, alpha);
     sens_filt.ad_gyro = pad_lowpass(sens_filt.ad_gyro, sens_in.ad_gyro, alpha);
-    sens_filt.board_baro = pad_lowpass(sens_filt.board_baro, sens_in.board_baro, alpha);
-    sens_filt.board_mag = pad_lowpass(sens_filt.board_mag, sens_in.board_mag, alpha);
-    sens_filt.mti_baro = pad_lowpass(sens_filt.mti_baro, sens_in.mti_baro, alpha);
-    sens_filt.mti_mag = pad_lowpass(sens_filt.mti_mag, sens_in.mti_mag, alpha);
+    sens_filt.board_baro = pad_lowpass(sens_filt.board_baro, sens_in.board_baro, alpha_slow);
+    sens_filt.board_mag = pad_lowpass(sens_filt.board_mag, sens_in.board_mag, alpha_slow);
+    sens_filt.mti_baro = pad_lowpass(sens_filt.mti_baro, sens_in.mti_baro, alpha_slow);
+    sens_filt.mti_mag = pad_lowpass(sens_filt.mti_mag, sens_in.mti_mag, alpha_slow);
 
     %% Initial state determination
     %%% Orientation
