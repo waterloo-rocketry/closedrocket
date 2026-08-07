@@ -7076,6 +7076,229 @@
                   </Size>
                   <Size type="coderapp.internal.codertype.Dimension"/>
                 </Types>
+                <Types id="1540" type="coderapp.internal.codertype.PrimitiveType">
+                  <ClassName>double</ClassName>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                </Types>
+                <Types id="1541" type="coderapp.internal.codertype.PrimitiveType">
+                  <ClassName>double</ClassName>
+                  <Size type="coderapp.internal.codertype.Dimension">
+                    <Length>2</Length>
+                  </Size>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                </Types>
+                <Types id="1542" type="coderapp.internal.codertype.PrimitiveType">
+                  <ClassName>double</ClassName>
+                  <Size type="coderapp.internal.codertype.Dimension">
+                    <Length>2</Length>
+                  </Size>
+                  <Size type="coderapp.internal.codertype.Dimension">
+                    <Length>2</Length>
+                  </Size>
+                </Types>
+                <Types id="1543" type="coderapp.internal.codertype.StructType">
+                  <Fields id="1544" type="coderapp.internal.codertype.Property">
+                    <Name>coeffs</Name>
+                    <Type id="1541" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="1545" type="coderapp.internal.codertype.Property">
+                    <Name>w</Name>
+                    <Type id="1540" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="1546" type="coderapp.internal.codertype.Property">
+                    <Name>P</Name>
+                    <Type id="1542" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="1547" type="coderapp.internal.codertype.Property">
+                    <Name>delta_lp</Name>
+                    <Type id="1540" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="1548" type="coderapp.internal.codertype.Property">
+                    <Name>w_dot_lp</Name>
+                    <Type id="1540" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <ClassName>struct</ClassName>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                </Types>
+                <Types id="1549" type="coderapp.internal.codertype.PrimitiveType">
+                  <ClassName>logical</ClassName>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                </Types>
+                <Types id="1550" type="coderapp.internal.codertype.PrimitiveType">
+                  <ClassName>double</ClassName>
+                  <Size type="coderapp.internal.codertype.Dimension">
+                    <Length>3</Length>
+                  </Size>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                </Types>
+                <Types id="1551" type="coderapp.internal.codertype.StructType">
+                  <Fields id="1552" type="coderapp.internal.codertype.Property">
+                    <Name>board_accel</Name>
+                    <Type id="1550" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="1553" type="coderapp.internal.codertype.Property">
+                    <Name>board_gyro</Name>
+                    <Type id="1550" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="1554" type="coderapp.internal.codertype.Property">
+                    <Name>mti_accel</Name>
+                    <Type id="1550" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="1555" type="coderapp.internal.codertype.Property">
+                    <Name>mti_gyro</Name>
+                    <Type id="1550" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="1556" type="coderapp.internal.codertype.Property">
+                    <Name>ad_accel</Name>
+                    <Type id="1550" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="1557" type="coderapp.internal.codertype.Property">
+                    <Name>ad_gyro</Name>
+                    <Type id="1550" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="1558" type="coderapp.internal.codertype.Property">
+                    <Name>board_baro</Name>
+                    <Type id="1540" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="1559" type="coderapp.internal.codertype.Property">
+                    <Name>board_mag</Name>
+                    <Type id="1550" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="1560" type="coderapp.internal.codertype.Property">
+                    <Name>mti_baro</Name>
+                    <Type id="1540" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="1561" type="coderapp.internal.codertype.Property">
+                    <Name>mti_mag</Name>
+                    <Type id="1550" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <ClassName>struct</ClassName>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                </Types>
+                <Types id="1562" type="coderapp.internal.codertype.StructType">
+                  <Fields id="1563" type="coderapp.internal.codertype.Property">
+                    <Name>board_gyro</Name>
+                    <Type id="1550" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="1564" type="coderapp.internal.codertype.Property">
+                    <Name>mti_gyro</Name>
+                    <Type id="1550" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="1565" type="coderapp.internal.codertype.Property">
+                    <Name>ad_gyro</Name>
+                    <Type id="1550" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="1566" type="coderapp.internal.codertype.Property">
+                    <Name>board_mag_earth</Name>
+                    <Type id="1550" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="1567" type="coderapp.internal.codertype.Property">
+                    <Name>mti_mag_earth</Name>
+                    <Type id="1550" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="1568" type="coderapp.internal.codertype.Property">
+                    <Name>board_baro</Name>
+                    <Type id="1540" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="1569" type="coderapp.internal.codertype.Property">
+                    <Name>mti_baro</Name>
+                    <Type id="1540" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <ClassName>struct</ClassName>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                </Types>
+                <Types id="1570" type="coderapp.internal.codertype.StructType">
+                  <Fields id="1571" type="coderapp.internal.codertype.Property">
+                    <Name>meas</Name>
+                    <Type id="1550" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="1572" type="coderapp.internal.codertype.Property">
+                    <Name>status</Name>
+                    <Type id="1549" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <ClassName>struct</ClassName>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                </Types>
+                <Types id="1573" type="coderapp.internal.codertype.StructType">
+                  <Fields id="1574" type="coderapp.internal.codertype.Property">
+                    <Name>meas</Name>
+                    <Type id="1540" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <Fields id="1575" type="coderapp.internal.codertype.Property">
+                    <Name>status</Name>
+                    <Type id="1549" type="coderapp.internal.codertype.PrimitiveType"/>
+                  </Fields>
+                  <ClassName>struct</ClassName>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                </Types>
+                <Types id="1576" type="coderapp.internal.codertype.StructType">
+                  <Fields id="1577" type="coderapp.internal.codertype.Property">
+                    <Name>board_accel</Name>
+                    <Type id="1570" type="coderapp.internal.codertype.StructType"/>
+                  </Fields>
+                  <Fields id="1578" type="coderapp.internal.codertype.Property">
+                    <Name>board_gyro</Name>
+                    <Type id="1570" type="coderapp.internal.codertype.StructType"/>
+                  </Fields>
+                  <Fields id="1579" type="coderapp.internal.codertype.Property">
+                    <Name>mti_accel</Name>
+                    <Type id="1570" type="coderapp.internal.codertype.StructType"/>
+                  </Fields>
+                  <Fields id="1580" type="coderapp.internal.codertype.Property">
+                    <Name>mti_gyro</Name>
+                    <Type id="1570" type="coderapp.internal.codertype.StructType"/>
+                  </Fields>
+                  <Fields id="1581" type="coderapp.internal.codertype.Property">
+                    <Name>ad_accel</Name>
+                    <Type id="1570" type="coderapp.internal.codertype.StructType"/>
+                  </Fields>
+                  <Fields id="1582" type="coderapp.internal.codertype.Property">
+                    <Name>ad_gyro</Name>
+                    <Type id="1570" type="coderapp.internal.codertype.StructType"/>
+                  </Fields>
+                  <Fields id="1583" type="coderapp.internal.codertype.Property">
+                    <Name>board_baro</Name>
+                    <Type id="1573" type="coderapp.internal.codertype.StructType"/>
+                  </Fields>
+                  <Fields id="1584" type="coderapp.internal.codertype.Property">
+                    <Name>board_mag</Name>
+                    <Type id="1570" type="coderapp.internal.codertype.StructType"/>
+                  </Fields>
+                  <Fields id="1585" type="coderapp.internal.codertype.Property">
+                    <Name>mti_baro</Name>
+                    <Type id="1573" type="coderapp.internal.codertype.StructType"/>
+                  </Fields>
+                  <Fields id="1586" type="coderapp.internal.codertype.Property">
+                    <Name>mti_mag</Name>
+                    <Type id="1570" type="coderapp.internal.codertype.StructType"/>
+                  </Fields>
+                  <ClassName>struct</ClassName>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                </Types>
+                <Types id="1587" type="coderapp.internal.codertype.PrimitiveType">
+                  <ClassName>double</ClassName>
+                  <Size type="coderapp.internal.codertype.Dimension">
+                    <Length>11</Length>
+                  </Size>
+                  <Size type="coderapp.internal.codertype.Dimension">
+                    <Length>11</Length>
+                  </Size>
+                </Types>
+                <Types id="1588" type="coderapp.internal.codertype.PrimitiveType">
+                  <ClassName>double</ClassName>
+                  <Size type="coderapp.internal.codertype.Dimension">
+                    <Length>11</Length>
+                  </Size>
+                  <Size type="coderapp.internal.codertype.Dimension"/>
+                </Types>
               </Types>
             </coderapp.internal.interface.project.Interface>
           </MF0>
@@ -7124,7 +7347,7 @@
                 </Artifacts>
                 <BuildFolder type="coderapp.internal.util.mfz.FileSpec"/>
                 <Success>true</Success>
-                <Timestamp>2026-07-30T15:00:14</Timestamp>
+                <Timestamp>2026-08-07T00:18:42</Timestamp>
               </MainBuildResult>
             </coderapp.internal.mlc.mfz.MatlabCoderProjectState>
           </MF0>

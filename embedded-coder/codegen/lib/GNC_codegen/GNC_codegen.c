@@ -394,12 +394,14 @@ static double c_norm(const double x[4]) {
 static void controller_codegen_entry_init(GNC_codegenStackData *SD) {
   int i;
   SD->pd->param.Cn_alpha = 10.0;
+  SD->pd->param.Cn_omega = 10.0;
   for (i = 0; i < 9; i++) {
     SD->pd->param.J[i] = dv[i];
     SD->pd->param.Jinv[i] = dv1[i];
   }
   SD->pd->param.altitude_initial = 420.0;
   SD->pd->param.c_aero = -0.035602020206989993;
+  SD->pd->param.c_aero_damping = 0.039162222227688996;
   SD->pd->param.c_canard = 0.00054680328244827419;
   SD->pd->param.d_ad[0] = 1.72;
   SD->pd->param.d_board[0] = 1.71;
@@ -418,12 +420,14 @@ static void controller_codegen_entry_init(GNC_codegenStackData *SD) {
 static void dynamics_init(GNC_codegenStackData *SD) {
   int i;
   SD->pd->d_param.Cn_alpha = 10.0;
+  SD->pd->d_param.Cn_omega = 10.0;
   for (i = 0; i < 9; i++) {
     SD->pd->d_param.J[i] = dv[i];
     SD->pd->d_param.Jinv[i] = dv1[i];
   }
   SD->pd->d_param.altitude_initial = 420.0;
   SD->pd->d_param.c_aero = -0.035602020206989993;
+  SD->pd->d_param.c_aero_damping = 0.039162222227688996;
   SD->pd->d_param.c_canard = 0.00054680328244827419;
   SD->pd->d_param.d_ad[0] = 1.72;
   SD->pd->d_param.d_board[0] = 1.71;
@@ -442,12 +446,14 @@ static void dynamics_init(GNC_codegenStackData *SD) {
 static void dynamics_jacobian_init(GNC_codegenStackData *SD) {
   int i;
   SD->pd->e_param.Cn_alpha = 10.0;
+  SD->pd->e_param.Cn_omega = 10.0;
   for (i = 0; i < 9; i++) {
     SD->pd->e_param.J[i] = dv[i];
     SD->pd->e_param.Jinv[i] = dv1[i];
   }
   SD->pd->e_param.altitude_initial = 420.0;
   SD->pd->e_param.c_aero = -0.035602020206989993;
+  SD->pd->e_param.c_aero_damping = 0.039162222227688996;
   SD->pd->e_param.c_canard = 0.00054680328244827419;
   SD->pd->e_param.d_ad[0] = 1.72;
   SD->pd->e_param.d_board[0] = 1.71;
@@ -791,12 +797,14 @@ static void ekf_correct(const double x[11], const double P[121],
 static void ekf_prefilter_imu_init(GNC_codegenStackData *SD) {
   int i;
   SD->pd->c_param.Cn_alpha = 10.0;
+  SD->pd->c_param.Cn_omega = 10.0;
   for (i = 0; i < 9; i++) {
     SD->pd->c_param.J[i] = dv[i];
     SD->pd->c_param.Jinv[i] = dv1[i];
   }
   SD->pd->c_param.altitude_initial = 420.0;
   SD->pd->c_param.c_aero = -0.035602020206989993;
+  SD->pd->c_param.c_aero_damping = 0.039162222227688996;
   SD->pd->c_param.c_canard = 0.00054680328244827419;
   SD->pd->c_param.d_ad[0] = 1.72;
   SD->pd->c_param.d_board[0] = 1.71;
@@ -872,12 +880,14 @@ static void mrdiv(const double A[33], const double B[9], double Y[33]) {
 static void pad_filter_init(GNC_codegenStackData *SD) {
   int i;
   SD->pd->b_param.Cn_alpha = 10.0;
+  SD->pd->b_param.Cn_omega = 10.0;
   for (i = 0; i < 9; i++) {
     SD->pd->b_param.J[i] = dv[i];
     SD->pd->b_param.Jinv[i] = dv1[i];
   }
   SD->pd->b_param.altitude_initial = 420.0;
   SD->pd->b_param.c_aero = -0.035602020206989993;
+  SD->pd->b_param.c_aero_damping = 0.039162222227688996;
   SD->pd->b_param.c_canard = 0.00054680328244827419;
   SD->pd->b_param.d_ad[0] = 1.72;
   SD->pd->b_param.d_board[0] = 1.71;
@@ -1091,20 +1101,23 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
                               double roll_state[2], double *pdyn,
                               bool *w_status_nav) {
   static const double Q[121] = {
-      1.0E-10, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-      1.0E-10, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-      1.0E-10, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-      1.0E-10, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-      0.001,   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-      0.001,   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-      0.001,   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      1.0E-12, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      1.0E-12, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      1.0E-12, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      1.0E-12, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.01,    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.01,    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.01,    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
       0.0001,  0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
       0.0001,  0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
       0.0001,  0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
       0.001};
-  static const double R[9] = {1.0E-9, 0.0, 0.0, 0.0,   1.0E-9,
-                              0.0,    0.0, 0.0, 1.0E-9};
+  static const double R[9] = {1.0E-7, 0.0, 0.0, 0.0,   1.0E-7,
+                              0.0,    0.0, 0.0, 1.0E-7};
   static const double b[9] = {1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0};
+  static const signed char d_b[16] = {1, 0, 0,  0, 0, -1, 0, 0,
+                                      0, 0, -1, 0, 0, 0,  0, -1};
+  static const signed char c_b[9] = {0, 0, 0, 0, 1, 0, 0, 0, 1};
   double F[121];
   double b_E[121];
   double b_F[121];
@@ -1115,17 +1128,17 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
   double d_P[121];
   double e_P[121];
   double b_K[33];
-  double b_W_dt[16];
-  double c_b[16];
-  double d_b[16];
+  double e_dt[12];
   double d_x[11];
   double e_x[11];
   double f_x[11];
   double g_x[11];
   double b_dv[9];
   double b_n_tilde[9];
+  double b_skewed_exp_w_tmp[9];
   double b_w_exp_tilde[9];
-  double c_skewed_exp_w_tmp[9];
+  double b_w_w_tmp[9];
+  double n_a[9];
   double w_tilde_sq[9];
   double c_q[4];
   double q[4];
@@ -1133,7 +1146,9 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
   double b_dt[3];
   double c_dt[3];
   double c_w_exp_tilde[3];
-  double dv3[3];
+  double c_y[3];
+  double dv2[3];
+  double airdata_density;
   double b_a;
   double b_expl_temp;
   double b_x;
@@ -1149,18 +1164,19 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
   double j_expl_temp;
   double k_expl_temp;
   double l_expl_temp;
-  double m_expl_temp;
-  double n_expl_temp;
-  double o_expl_temp;
-  double p_expl_temp;
   double t1_density;
   int b_i;
   int e_k;
   int h_k;
-  int i100;
   int i101;
   int i102;
   int i103;
+  int i104;
+  int i105;
+  int i106;
+  int i107;
+  int i108;
+  int i109;
   int i11;
   int i12;
   int i14;
@@ -1172,56 +1188,54 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
   int i22;
   int i24;
   int i26;
-  int i28;
+  int i27;
   int i30;
-  int i31;
+  int i32;
   int i35;
   int i36;
+  int i37;
   int i39;
   int i4;
   int i40;
   int i41;
   int i43;
-  int i46;
+  int i45;
+  int i49;
   int i50;
   int i51;
+  int i52;
   int i53;
   int i54;
   int i55;
-  int i56;
   int i58;
-  int i59;
   int i6;
+  int i60;
   int i63;
   int i65;
-  int i67;
-  int i68;
+  int i69;
   int i7;
   int i71;
-  int i72;
+  int i73;
   int i74;
-  int i76;
+  int i77;
   int i78;
   int i8;
   int i80;
-  int i81;
-  int i83;
+  int i82;
   int i84;
-  int i85;
+  int i86;
   int i87;
   int i89;
   int i9;
-  int i92;
+  int i90;
+  int i91;
   int i93;
   int i95;
-  int i96;
-  int i97;
   int i98;
   int i99;
   int j;
-  int k_k;
-  int m_k;
-  signed char d_I[121];
+  int j_k;
+  signed char g_I[121];
   b_x = b_norm(sens_in->board_mag.meas);
   if (fabs(b_x) >= 1.0E-6) {
     sens_in->board_mag.meas[0] /= b_x;
@@ -1420,8 +1434,8 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
     b_dv[6] = d_a * (-q[2]);
     b_dv[7] = d_a * q[1];
     b_dv[8] = 0.0;
-    for (i12 = 0; i12 < 9; i12++) {
-      ST[i12] = e_a[i12] - b_dv[i12];
+    for (i11 = 0; i11 < 9; i11++) {
+      ST[i11] = e_a[i11] - b_dv[i11];
     }
     memset(&b_ST[0], 0, 3U * (sizeof(double)));
     i13 = 0;
@@ -1635,29 +1649,32 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
       double E[121];
       double P_pred[121];
       double K[33];
-      double W_dt[16];
       double b_q[16];
-      double m_a[16];
+      double d_I[16];
+      double dq[16];
       double d_dt[12];
       double x_pred[11];
       double S[9];
       double b_P_pred[9];
-      double b_skewed_exp_w_tmp[9];
-      double dv4[9];
+      double dv3[9];
       double e_a[9];
+      double f_I[9];
       double n_tilde[9];
       double skewed_exp_w_tmp[9];
       double w_exp_tilde[9];
-      double b_dv1[4];
+      double w_w_tmp[9];
+      double j_x[4];
       double r_q_tmp[4];
       double b_S[3];
+      double b_dv1[3];
       double c_r_q_tmp[3];
       double dn[3];
-      double dv2[3];
-      double k_x[3];
+      double m_x[3];
+      double b_a_tmp;
       double b_b;
       double b_dphi_tmp;
       double b_r_q_tmp;
+      double c_a_tmp;
       double d28;
       double d29;
       double d30;
@@ -1674,18 +1691,27 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
       double d44;
       double d45;
       double d47;
+      double d51;
+      double d52;
+      double d53;
       double dphi;
       double dphi_tmp;
+      double dq_idx_0;
+      double dq_idx_1;
+      double dq_idx_2;
+      double dq_idx_3;
       double f_a;
+      double g_a;
       double h_a;
       double h_x;
       double i_a;
       double i_x;
       double j_a;
-      double j_x;
       double k_a;
+      double k_x;
       double l_a;
-      double n_a;
+      double l_x;
+      double m_a;
       double n_idx_0;
       double n_idx_1;
       double n_idx_2;
@@ -1699,32 +1725,33 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
       int i19;
       int i23;
       int i25;
-      int i27;
-      int i32;
+      int i28;
+      int i29;
       int i33;
-      int i37;
+      int i34;
       int i38;
       int i44;
-      int i45;
-      int i47;
-      int i49;
-      int i57;
+      int i46;
+      int i48;
+      int i56;
+      int i59;
       int i61;
       int i62;
-      int i64;
+      int i67;
+      int i68;
       int i70;
-      int i73;
-      int i77;
+      int i76;
       int i79;
-      int i82;
-      int i86;
-      int i90;
-      int i91;
+      int i83;
+      int i85;
+      int i88;
+      int i92;
+      int i96;
+      int i97;
       int i_k;
-      int j_k;
-      int l_k;
       signed char c_I[16];
       signed char b_I[9];
+      signed char e_I[9];
       q_mag = c_norm(&x[0]);
       q[0] = x[0] / q_mag;
       q[1] = x[1] / q_mag;
@@ -1749,6 +1776,7 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
         n_idx_2 = x[6] / dphi_tmp;
       }
       b_b = sin(dphi);
+      h_x = cos(dphi);
       n_tilde[0] = 0.0;
       n_tilde[3] = -n_idx_2;
       n_tilde[6] = n_idx_1;
@@ -1759,7 +1787,7 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
       n_tilde[5] = n_idx_0;
       n_tilde[8] = 0.0;
       f_a = sin(b_dphi_tmp);
-      h_x = cos(b_dphi_tmp);
+      i_x = cos(b_dphi_tmp);
       for (i7 = 0; i7 < 9; i7++) {
         b_I[i7] = (signed char)0;
       }
@@ -1770,9 +1798,9 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
         int i10;
         b_I[c_k] = (signed char)1;
         i10 = 0;
-        for (i11 = 0; i11 < 3; i11++) {
+        for (i12 = 0; i12 < 3; i12++) {
           double d16;
-          d16 = n_tilde[i11 + d_k];
+          d16 = n_tilde[i12 + d_k];
           b_n_tilde[d_k] += n_tilde[i10] * d16;
           b_n_tilde[d_k + 1] += n_tilde[i10 + 1] * d16;
           b_n_tilde[d_k + 2] += n_tilde[i10 + 2] * d16;
@@ -1783,35 +1811,36 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
       }
       for (i9 = 0; i9 < 9; i9++) {
         w_exp_tilde[i9] = (((double)b_I[i9]) - (f_a * n_tilde[i9])) +
-                          ((1.0 - h_x) * b_n_tilde[i9]);
+                          ((1.0 - i_x) * b_n_tilde[i9]);
       }
-      double g_a;
-      g_a = b_norm(&x[7]);
-      airdata_atmos(x[10], &e_expl_temp, &t1_density, &f_expl_temp,
+      airdata_atmos(x[10], &e_expl_temp, &airdata_density, &f_expl_temp,
                     &g_expl_temp, &h_expl_temp);
-      h_a = (0.5 * t1_density) * (g_a * g_a);
-      i_a = SD->pd->d_param.c_aero * SD->pd->d_param.Cn_alpha;
-      j_a = (x[0] * x[0]) - (((x[1] * x[1]) + (x[2] * x[2])) + (x[3] * x[3]));
-      k_a = 2.0 * x[0];
+      b_a_tmp = 0.5 * airdata_density;
+      g_a = (b_a_tmp * SD->pd->d_param.c_aero) * SD->pd->d_param.Cn_alpha;
+      c_a_tmp = (-0.5 * airdata_density) * b_norm(&x[7]);
+      h_a =
+          (c_a_tmp * SD->pd->d_param.c_aero_damping) * SD->pd->d_param.Cn_omega;
+      i_a = (x[0] * x[0]) - (((x[1] * x[1]) + (x[2] * x[2])) + (x[3] * x[3]));
+      j_a = 2.0 * x[0];
       for (i15 = 0; i15 < 3; i15++) {
-        double b_a_tmp;
-        int c_a_tmp;
-        int d_a_tmp;
-        b_a_tmp = x[i15 + 1];
-        e_a[3 * i15] = (j_a * b[3 * i15]) + ((2.0 * x[1]) * b_a_tmp);
-        c_a_tmp = (3 * i15) + 1;
-        e_a[c_a_tmp] = (j_a * b[c_a_tmp]) + ((2.0 * x[2]) * b_a_tmp);
-        d_a_tmp = (3 * i15) + 2;
-        e_a[d_a_tmp] = (j_a * b[d_a_tmp]) + ((2.0 * x[3]) * b_a_tmp);
+        double d_a_tmp;
+        int e_a_tmp;
+        int f_a_tmp;
+        d_a_tmp = x[i15 + 1];
+        e_a[3 * i15] = (i_a * b[3 * i15]) + ((2.0 * x[1]) * d_a_tmp);
+        e_a_tmp = (3 * i15) + 1;
+        e_a[e_a_tmp] = (i_a * b[e_a_tmp]) + ((2.0 * x[2]) * d_a_tmp);
+        f_a_tmp = (3 * i15) + 2;
+        e_a[f_a_tmp] = (i_a * b[f_a_tmp]) + ((2.0 * x[3]) * d_a_tmp);
       }
       b_dv[0] = 0.0;
-      b_dv[3] = k_a * (-x[3]);
-      b_dv[6] = k_a * x[2];
-      b_dv[1] = k_a * x[3];
+      b_dv[3] = j_a * (-x[3]);
+      b_dv[6] = j_a * x[2];
+      b_dv[1] = j_a * x[3];
       b_dv[4] = 0.0;
-      b_dv[7] = k_a * (-x[1]);
-      b_dv[2] = k_a * (-x[2]);
-      b_dv[5] = k_a * x[1];
+      b_dv[7] = j_a * (-x[1]);
+      b_dv[2] = j_a * (-x[2]);
+      b_dv[5] = j_a * x[1];
       b_dv[8] = 0.0;
       for (i18 = 0; i18 < 9; i18++) {
         S[i18] = e_a[i18] - b_dv[i18];
@@ -1832,13 +1861,19 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
       b_q[7] = -q[2];
       b_q[11] = q[1];
       b_q[15] = q[0];
-      b_dv1[0] = cos(dphi);
+      j_x[0] = h_x;
       memset(&b_w_exp_tilde[0], 0, 9U * (sizeof(double)));
       memset(&c_w_exp_tilde[0], 0, 3U * (sizeof(double)));
+      b_dv1[0] = 0.0;
+      b_dv1[1] = g_a * (x[7] * x[9]);
+      b_dv1[2] = g_a * ((-x[7]) * x[8]);
+      dv2[0] = 0.0;
+      dv2[1] = h_a * x[5];
+      dv2[2] = h_a * x[6];
       i19 = 0;
       for (i20 = 0; i20 < 3; i20++) {
         int i21;
-        b_dv1[i20 + 1] = dn[i20] * b_b;
+        j_x[i20 + 1] = dn[i20] * b_b;
         i21 = 0;
         for (i22 = 0; i22 < 3; i22++) {
           double d27;
@@ -1853,18 +1888,16 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
         c_w_exp_tilde[0] += b_w_exp_tilde[i19] * d26;
         c_w_exp_tilde[1] += b_w_exp_tilde[i19 + 1] * d26;
         c_w_exp_tilde[2] += b_w_exp_tilde[i19 + 2] * d26;
+        b_dv1[i20] += dv2[i20];
         i19 += 3;
       }
-      dv2[0] = 0.0;
-      dv2[1] = h_a * (i_a * sin(atan2(x[9], x[7])));
-      dv2[2] = h_a * (i_a * (-sin(atan2(x[8], x[7]))));
-      memset(&dv3[0], 0, 3U * (sizeof(double)));
+      memset(&dv2[0], 0, 3U * (sizeof(double)));
       memset(&b_dt[0], 0, 3U * (sizeof(double)));
       memset(&c_dt[0], 0, 3U * (sizeof(double)));
       i23 = 0;
-      d28 = dv3[0];
-      d29 = dv3[1];
-      d30 = dv3[2];
+      d28 = dv2[0];
+      d29 = dv2[1];
+      d30 = dv2[2];
       d31 = b_dt[0];
       d32 = b_dt[1];
       d33 = b_dt[2];
@@ -1883,7 +1916,7 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
         d40 = SD->pd->d_param.Jinv[i23];
         d41 = c_w_exp_tilde[i24];
         d28 += d40 * d41;
-        d43 = dv2[i24];
+        d43 = b_dv1[i24];
         d31 += (dt * d40) * d43;
         d46 = S[i23];
         d37 += (dt * d46) * SD->pd->d_param.g[i24];
@@ -1915,7 +1948,7 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
       d47 = c_q[3];
       for (i26 = 0; i26 < 4; i26++) {
         double d49;
-        d49 = b_dv1[i26];
+        d49 = j_x[i26];
         d42 += b_q[i25] * d49;
         d44 += b_q[i25 + 1] * d49;
         d45 += b_q[i25 + 2] * d49;
@@ -1934,130 +1967,95 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
       x_pred[9] = c_w_exp_tilde[2] + d39;
       x_pred[10] = x[10] + (dt * b_S[0]);
       memset(&F[0], 0, 121U * (sizeof(double)));
-      l_a = 0.5 * dt;
-      W_dt[0] = 0.0;
-      W_dt[4] = l_a * (-x[4]);
-      W_dt[8] = l_a * (-x[5]);
-      W_dt[12] = l_a * (-x[6]);
-      W_dt[1] = l_a * x[4];
-      W_dt[5] = 0.0;
-      W_dt[9] = l_a * x[6];
-      W_dt[13] = l_a * (-x[5]);
-      W_dt[2] = l_a * x[5];
-      W_dt[6] = l_a * (-x[6]);
-      W_dt[10] = 0.0;
-      W_dt[14] = l_a * x[4];
-      W_dt[3] = l_a * x[6];
-      W_dt[7] = l_a * x[5];
-      W_dt[11] = l_a * (-x[4]);
-      W_dt[15] = 0.0;
-      memset(&c_b[0], 0, (sizeof(double)) << 4);
-      i27 = 0;
-      for (i28 = 0; i28 < 4; i28++) {
-        int i29;
-        i29 = 0;
-        for (i31 = 0; i31 < 4; i31++) {
+      if (dphi_tmp > 0.0) {
+        dq_idx_0 = h_x;
+        dq_idx_1 = (x[4] / dphi_tmp) * b_b;
+        dq_idx_2 = (x[5] / dphi_tmp) * b_b;
+        dq_idx_3 = (x[6] / dphi_tmp) * b_b;
+      } else {
+        dq_idx_0 = 1.0;
+        dq_idx_1 = 0.0;
+        dq_idx_2 = 0.0;
+        dq_idx_3 = 0.0;
+      }
+      for (i27 = 0; i27 < 16; i27++) {
+        c_I[i27] = (signed char)0;
+      }
+      c_I[0] = (signed char)1;
+      c_I[5] = (signed char)1;
+      c_I[10] = (signed char)1;
+      c_I[15] = (signed char)1;
+      dq[0] = dq_idx_0;
+      dq[4] = -dq_idx_1;
+      dq[8] = -dq_idx_2;
+      dq[12] = -dq_idx_3;
+      dq[1] = dq_idx_1;
+      dq[5] = dq_idx_0;
+      dq[9] = dq_idx_3;
+      dq[13] = -dq_idx_2;
+      dq[2] = dq_idx_2;
+      dq[6] = -dq_idx_3;
+      dq[10] = dq_idx_0;
+      dq[14] = dq_idx_1;
+      dq[3] = dq_idx_3;
+      dq[7] = dq_idx_2;
+      dq[11] = -dq_idx_1;
+      dq[15] = dq_idx_0;
+      i28 = 0;
+      i29 = 0;
+      for (i30 = 0; i30 < 4; i30++) {
+        int i31;
+        d_I[i28] = (((double)c_I[i28]) - (q[0] * q[i30])) / q_mag;
+        F[i29] = 0.0;
+        d_I[i28 + 1] = (((double)c_I[i28 + 1]) - (q[1] * q[i30])) / q_mag;
+        F[i29 + 1] = 0.0;
+        d_I[i28 + 2] = (((double)c_I[i28 + 2]) - (q[2] * q[i30])) / q_mag;
+        F[i29 + 2] = 0.0;
+        d_I[i28 + 3] = (((double)c_I[i28 + 3]) - (q[3] * q[i30])) / q_mag;
+        F[i29 + 3] = 0.0;
+        i31 = 0;
+        for (i32 = 0; i32 < 4; i32++) {
           double d50;
-          d50 = W_dt[i31 + i27];
-          c_b[i27] += W_dt[i29] * d50;
-          c_b[i27 + 1] += W_dt[i29 + 1] * d50;
-          c_b[i27 + 2] += W_dt[i29 + 2] * d50;
-          c_b[i27 + 3] += W_dt[i29 + 3] * d50;
-          i29 += 4;
+          d50 = d_I[i32 + i28];
+          F[i29] += dq[i31] * d50;
+          F[i29 + 1] += dq[i31 + 1] * d50;
+          F[i29 + 2] += dq[i31 + 2] * d50;
+          F[i29 + 3] += dq[i31 + 3] * d50;
+          i31 += 4;
         }
-        i27 += 4;
+        i28 += 4;
+        i29 += 11;
       }
-      for (i30 = 0; i30 < 16; i30++) {
-        c_I[i30] = (signed char)0;
-      }
-      memset(&b_W_dt[0], 0, (sizeof(double)) << 4);
-      memset(&d_b[0], 0, (sizeof(double)) << 4);
-      f_k = 0;
-      g_k = 0;
-      for (h_k = 0; h_k < 4; h_k++) {
-        int i34;
-        c_I[f_k] = (signed char)1;
-        i34 = 0;
-        for (i36 = 0; i36 < 4; i36++) {
-          double d51;
-          d51 = c_b[i36 + g_k];
-          b_W_dt[g_k] += W_dt[i34] * d51;
-          d_b[g_k] += c_b[i34] * d51;
-          b_W_dt[g_k + 1] += W_dt[i34 + 1] * d51;
-          d_b[g_k + 1] += c_b[i34 + 1] * d51;
-          b_W_dt[g_k + 2] += W_dt[i34 + 2] * d51;
-          d_b[g_k + 2] += c_b[i34 + 2] * d51;
-          b_W_dt[g_k + 3] += W_dt[i34 + 3] * d51;
-          d_b[g_k + 3] += c_b[i34 + 3] * d51;
-          i34 += 4;
-        }
-        f_k += 5;
-        g_k += 4;
-      }
-      i32 = 0;
+      k_a = 0.5 * dt;
+      b_q[0] = q[0];
+      b_q[4] = -q[1];
+      b_q[8] = -q[2];
+      b_q[12] = -q[3];
+      b_q[1] = q[1];
+      b_q[5] = q[0];
+      b_q[9] = -q[3];
+      b_q[13] = q[2];
+      b_q[2] = q[2];
+      b_q[6] = q[3];
+      b_q[10] = q[0];
+      b_q[14] = -q[1];
+      b_q[3] = q[3];
+      b_q[7] = -q[2];
+      b_q[11] = q[1];
+      b_q[15] = q[0];
       i33 = 0;
-      for (i35 = 0; i35 < 4; i35++) {
-        F[i32] = (((((double)c_I[i33]) + W_dt[i33]) + (0.5 * c_b[i33])) +
-                  (0.16666666666666666 * b_W_dt[i33])) +
-                 (0.041666666666666664 * d_b[i33]);
-        F[i32 + 1] =
-            (((((double)c_I[i33 + 1]) + W_dt[i33 + 1]) + (0.5 * c_b[i33 + 1])) +
-             (0.16666666666666666 * b_W_dt[i33 + 1])) +
-            (0.041666666666666664 * d_b[i33 + 1]);
-        F[i32 + 2] =
-            (((((double)c_I[i33 + 2]) + W_dt[i33 + 2]) + (0.5 * c_b[i33 + 2])) +
-             (0.16666666666666666 * b_W_dt[i33 + 2])) +
-            (0.041666666666666664 * d_b[i33 + 2]);
-        F[i32 + 3] =
-            (((((double)c_I[i33 + 3]) + W_dt[i33 + 3]) + (0.5 * c_b[i33 + 3])) +
-             (0.16666666666666666 * b_W_dt[i33 + 3])) +
-            (0.041666666666666664 * d_b[i33 + 3]);
-        i32 += 11;
-        i33 += 4;
+      i34 = 0;
+      for (i35 = 0; i35 < 3; i35++) {
+        F[i33 + 44] = k_a * b_q[i34 + 4];
+        F[i33 + 45] = k_a * b_q[i34 + 5];
+        F[i33 + 46] = k_a * b_q[i34 + 6];
+        F[i33 + 47] = k_a * b_q[i34 + 7];
+        i33 += 11;
+        i34 += 4;
       }
-      double e_a_tmp;
-      double f_a_tmp;
-      double g_a_tmp;
-      double h_a_tmp;
-      double i_a_tmp;
-      double j_a_tmp;
-      double k_a_tmp;
-      e_a_tmp = l_a * q[0];
-      m_a[0] = e_a_tmp;
-      f_a_tmp = l_a * (-q[1]);
-      m_a[4] = f_a_tmp;
-      g_a_tmp = l_a * (-q[2]);
-      m_a[8] = g_a_tmp;
-      h_a_tmp = l_a * (-q[3]);
-      m_a[12] = h_a_tmp;
-      i_a_tmp = l_a * q[1];
-      m_a[1] = i_a_tmp;
-      m_a[5] = e_a_tmp;
-      m_a[9] = h_a_tmp;
-      j_a_tmp = l_a * q[2];
-      m_a[13] = j_a_tmp;
-      m_a[2] = j_a_tmp;
-      k_a_tmp = l_a * q[3];
-      m_a[6] = k_a_tmp;
-      m_a[10] = e_a_tmp;
-      m_a[14] = f_a_tmp;
-      m_a[3] = k_a_tmp;
-      m_a[7] = g_a_tmp;
-      m_a[11] = i_a_tmp;
-      m_a[15] = e_a_tmp;
-      i37 = 0;
-      i38 = 0;
-      for (i39 = 0; i39 < 3; i39++) {
-        F[i37 + 44] = m_a[i38 + 4];
-        F[i37 + 45] = m_a[i38 + 5];
-        F[i37 + 46] = m_a[i38 + 6];
-        F[i37 + 47] = m_a[i38 + 7];
-        i37 += 11;
-        i38 += 4;
-      }
-      n_a = (0.5 * SD->pd->e_param.c_aero) * SD->pd->e_param.Cn_alpha;
-      airdata_atmos(x[10], &m_expl_temp, &t1_density, &n_expl_temp,
-                    &o_expl_temp, &p_expl_temp);
+      l_a = (b_a_tmp * SD->pd->e_param.c_aero) * SD->pd->e_param.Cn_alpha;
+      m_a =
+          (c_a_tmp * SD->pd->e_param.c_aero_damping) * SD->pd->e_param.Cn_omega;
       if (dphi_tmp == 0.0) {
         n_idx_0 = 0.0;
         n_idx_1 = 0.0;
@@ -2076,107 +2074,168 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
       n_tilde[2] = -n_idx_1;
       n_tilde[5] = n_idx_0;
       n_tilde[8] = 0.0;
-      for (i40 = 0; i40 < 9; i40++) {
-        b_I[i40] = (signed char)0;
+      for (i36 = 0; i36 < 9; i36++) {
+        b_I[i36] = (signed char)0;
       }
-      memset(&b_n_tilde[0], 0, 9U * (sizeof(double)));
-      i_k = 0;
-      j_k = 0;
-      for (k_k = 0; k_k < 3; k_k++) {
+      b_I[0] = (signed char)1;
+      b_I[4] = (signed char)1;
+      b_I[8] = (signed char)1;
+      for (i37 = 0; i37 < 9; i37++) {
+        w_w_tmp[i37] = dt * SD->pd->e_param.Jinv[i37];
+      }
+      memset(&c_y[0], 0, 3U * (sizeof(double)));
+      i38 = 0;
+      d51 = c_y[0];
+      d52 = c_y[1];
+      d53 = c_y[2];
+      for (i39 = 0; i39 < 3; i39++) {
+        double d54;
+        d54 = x[i39 + 4];
+        d51 += SD->pd->e_param.J[i38] * d54;
+        d52 += SD->pd->e_param.J[i38 + 1] * d54;
+        d53 += SD->pd->e_param.J[i38 + 2] * d54;
+        i38 += 3;
+      }
+      e_a[0] = 0.0;
+      e_a[3] = -x[6];
+      e_a[6] = x[5];
+      e_a[1] = x[6];
+      e_a[4] = 0.0;
+      e_a[7] = -x[4];
+      e_a[2] = -x[5];
+      e_a[5] = x[4];
+      e_a[8] = 0.0;
+      for (i40 = 0; i40 < 9; i40++) {
+        e_I[i40] = (signed char)0;
+      }
+      b_dv[0] = 0.0;
+      b_dv[3] = -d53;
+      b_dv[6] = d52;
+      b_dv[1] = d53;
+      b_dv[4] = 0.0;
+      b_dv[7] = -d51;
+      b_dv[2] = -d52;
+      b_dv[5] = d51;
+      b_dv[8] = 0.0;
+      memset(&n_a[0], 0, 9U * (sizeof(double)));
+      f_k = 0;
+      g_k = 0;
+      for (h_k = 0; h_k < 3; h_k++) {
         int i42;
-        b_I[i_k] = (signed char)1;
+        e_I[f_k] = (signed char)1;
         i42 = 0;
         for (i43 = 0; i43 < 3; i43++) {
-          double d52;
-          d52 = n_tilde[i43 + j_k];
-          b_n_tilde[j_k] += n_tilde[i42] * d52;
-          b_n_tilde[j_k + 1] += n_tilde[i42 + 1] * d52;
-          b_n_tilde[j_k + 2] += n_tilde[i42 + 2] * d52;
+          double d55;
+          d55 = SD->pd->e_param.J[i43 + g_k];
+          n_a[g_k] += e_a[i42] * d55;
+          n_a[g_k + 1] += e_a[i42 + 1] * d55;
+          n_a[g_k + 2] += e_a[i42 + 2] * d55;
           i42 += 3;
         }
-        i_k += 4;
-        j_k += 3;
+        f_k += 4;
+        g_k += 3;
       }
       for (i41 = 0; i41 < 9; i41++) {
-        w_exp_tilde[i41] = (((double)b_I[i41]) - (f_a * n_tilde[i41])) +
-                           ((1.0 - h_x) * b_n_tilde[i41]);
+        b_dv[i41] -= n_a[i41];
       }
-      memset(&b_dv[0], 0, 9U * (sizeof(double)));
+      memset(&b_w_w_tmp[0], 0, 9U * (sizeof(double)));
       i44 = 0;
-      i45 = 0;
-      for (i46 = 0; i46 < 3; i46++) {
-        int i48;
-        i48 = 0;
-        for (i50 = 0; i50 < 3; i50++) {
-          double d53;
-          d53 = w_exp_tilde[i50 + i44];
-          b_dv[i44] += SD->pd->e_param.Jinv[i48] * d53;
-          b_dv[i44 + 1] += SD->pd->e_param.Jinv[i48 + 1] * d53;
-          b_dv[i44 + 2] += SD->pd->e_param.Jinv[i48 + 2] * d53;
-          F[(i50 + i45) + 48] = 0.0;
-          i48 += 3;
+      for (i45 = 0; i45 < 3; i45++) {
+        int i47;
+        i47 = 0;
+        for (i49 = 0; i49 < 3; i49++) {
+          double d56;
+          int I_tmp;
+          d56 = m_a * ((double)c_b[i49 + i44]);
+          b_w_w_tmp[i44] += w_w_tmp[i47] * d56;
+          b_w_w_tmp[i44 + 1] += w_w_tmp[i47 + 1] * d56;
+          b_w_w_tmp[i44 + 2] += w_w_tmp[i47 + 2] * d56;
+          I_tmp = i47 + i45;
+          f_I[I_tmp] =
+              ((double)e_I[I_tmp]) + (((w_w_tmp[i45] * b_dv[i47]) +
+                                       (w_w_tmp[i45 + 3] * b_dv[i47 + 1])) +
+                                      (w_w_tmp[i45 + 6] * b_dv[i47 + 2]));
+          i47 += 3;
         }
         i44 += 3;
-        i45 += 11;
       }
-      i47 = 0;
-      i49 = 0;
-      for (i51 = 0; i51 < 3; i51++) {
-        int i52;
-        i52 = 0;
-        for (i53 = 0; i53 < 3; i53++) {
-          double d54;
-          d54 = SD->pd->e_param.J[i53 + i47];
-          F[i49 + 48] += b_dv[i52] * d54;
-          F[i49 + 49] += b_dv[i52 + 1] * d54;
-          F[i49 + 50] += b_dv[i52 + 2] * d54;
-          i52 += 3;
-        }
-        i47 += 3;
-        i49 += 11;
+      i46 = 0;
+      i48 = 0;
+      for (i50 = 0; i50 < 3; i50++) {
+        F[i46 + 48] = f_I[i48] + b_w_w_tmp[i48];
+        F[i46 + 49] = f_I[i48 + 1] + b_w_w_tmp[i48 + 1];
+        F[i46 + 50] = f_I[i48 + 2] + b_w_w_tmp[i48 + 2];
+        i46 += 11;
+        i48 += 3;
       }
-      b_dv[1] = t1_density * (n_a * x[9]);
+      b_dv[1] = l_a * x[9];
       b_dv[4] = 0.0;
-      b_dv[7] = t1_density * (n_a * x[7]);
-      b_dv[2] = t1_density * (n_a * (-x[8]));
-      b_dv[5] = t1_density * (n_a * (-x[7]));
+      b_dv[7] = l_a * x[7];
+      b_dv[2] = l_a * (-x[8]);
+      b_dv[5] = l_a * (-x[7]);
       b_dv[8] = 0.0;
-      i_x = 0.0;
-      for (i54 = 0; i54 < 3; i54++) {
-        double d55;
-        double d56;
+      k_x = 0.0;
+      for (i51 = 0; i51 < 3; i51++) {
         double d57;
+        double d58;
+        double d59;
         int F_tmp;
-        b_dv[3 * i54] = 0.0;
-        F_tmp = 11 * (i54 + 7);
-        d55 = 0.0;
-        d56 = 0.0;
+        b_dv[3 * i51] = 0.0;
+        F_tmp = 11 * (i51 + 7);
         d57 = 0.0;
-        for (i55 = 0; i55 < 3; i55++) {
-          double d58;
-          d58 = b_dv[i55 + (3 * i54)];
-          d55 += (dt * SD->pd->e_param.Jinv[3 * i55]) * d58;
-          d56 += (dt * SD->pd->e_param.Jinv[(3 * i55) + 1]) * d58;
-          d57 += (dt * SD->pd->e_param.Jinv[(3 * i55) + 2]) * d58;
+        d58 = 0.0;
+        d59 = 0.0;
+        for (i52 = 0; i52 < 3; i52++) {
+          double d60;
+          d60 = b_dv[i52 + (3 * i51)];
+          d57 += w_w_tmp[3 * i52] * d60;
+          d58 += w_w_tmp[(3 * i52) + 1] * d60;
+          d59 += w_w_tmp[(3 * i52) + 2] * d60;
         }
-        F[F_tmp + 6] = d57;
-        F[F_tmp + 5] = d56;
-        F[F_tmp + 4] = d55;
-        i_x += x[i54 + 1] * SD->pd->e_param.g[i54];
+        F[F_tmp + 6] = d59;
+        F[F_tmp + 5] = d58;
+        F[F_tmp + 4] = d57;
+        k_x += x[i51 + 1] * SD->pd->e_param.g[i51];
       }
-      j_x = x[0];
-      k_x[0] = (x[2] * SD->pd->e_param.g[2]) - (SD->pd->e_param.g[1] * x[3]);
-      k_x[1] = (SD->pd->e_param.g[0] * x[3]) - (x[1] * SD->pd->e_param.g[2]);
-      k_x[2] = (x[1] * SD->pd->e_param.g[1]) - (SD->pd->e_param.g[0] * x[2]);
-      dv4[0] = 0.0;
-      dv4[3] = x[0] * (-SD->pd->e_param.g[2]);
-      dv4[6] = x[0] * SD->pd->e_param.g[1];
-      dv4[1] = x[0] * SD->pd->e_param.g[2];
-      dv4[4] = 0.0;
-      dv4[7] = x[0] * (-SD->pd->e_param.g[0]);
-      dv4[2] = x[0] * (-SD->pd->e_param.g[1]);
-      dv4[5] = x[0] * SD->pd->e_param.g[0];
-      dv4[8] = 0.0;
+      l_x = x[0];
+      m_x[0] = (x[2] * SD->pd->e_param.g[2]) - (SD->pd->e_param.g[1] * x[3]);
+      m_x[1] = (SD->pd->e_param.g[0] * x[3]) - (x[1] * SD->pd->e_param.g[2]);
+      m_x[2] = (x[1] * SD->pd->e_param.g[1]) - (SD->pd->e_param.g[0] * x[2]);
+      dv3[0] = 0.0;
+      dv3[3] = x[0] * (-SD->pd->e_param.g[2]);
+      dv3[6] = x[0] * SD->pd->e_param.g[1];
+      dv3[1] = x[0] * SD->pd->e_param.g[2];
+      dv3[4] = 0.0;
+      dv3[7] = x[0] * (-SD->pd->e_param.g[0]);
+      dv3[2] = x[0] * (-SD->pd->e_param.g[1]);
+      dv3[5] = x[0] * SD->pd->e_param.g[0];
+      dv3[8] = 0.0;
+      for (i53 = 0; i53 < 3; i53++) {
+        double b_F_tmp;
+        int c_F_tmp;
+        int d_F_tmp;
+        int e_F_tmp;
+        F[i53 + 7] = dt * (2.0 * ((l_x * SD->pd->e_param.g[i53]) - m_x[i53]));
+        b_F_tmp = x[i53 + 1];
+        c_F_tmp = 11 * (i53 + 1);
+        F[c_F_tmp + 7] =
+            dt *
+            (2.0 * ((((k_x * b[3 * i53]) + (x[1] * SD->pd->e_param.g[i53])) -
+                     (SD->pd->e_param.g[0] * b_F_tmp)) +
+                    dv3[3 * i53]));
+        d_F_tmp = (3 * i53) + 1;
+        F[c_F_tmp + 8] =
+            dt *
+            (2.0 * ((((k_x * b[d_F_tmp]) + (x[2] * SD->pd->e_param.g[i53])) -
+                     (SD->pd->e_param.g[1] * b_F_tmp)) +
+                    dv3[d_F_tmp]));
+        e_F_tmp = (3 * i53) + 2;
+        F[c_F_tmp + 9] =
+            dt *
+            (2.0 * ((((k_x * b[e_F_tmp]) + (x[3] * SD->pd->e_param.g[i53])) -
+                     (SD->pd->e_param.g[2] * b_F_tmp)) +
+                    dv3[e_F_tmp]));
+      }
       skewed_exp_w_tmp[0] = 0.0;
       skewed_exp_w_tmp[3] = -x[9];
       skewed_exp_w_tmp[6] = x[8];
@@ -2186,117 +2245,126 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
       skewed_exp_w_tmp[2] = -x[8];
       skewed_exp_w_tmp[5] = x[7];
       skewed_exp_w_tmp[8] = 0.0;
-      b_skewed_exp_w_tmp[0] = 0.0;
-      b_skewed_exp_w_tmp[3] = -x[6];
-      b_skewed_exp_w_tmp[6] = x[5];
-      b_skewed_exp_w_tmp[1] = x[6];
-      b_skewed_exp_w_tmp[4] = 0.0;
-      b_skewed_exp_w_tmp[7] = -x[4];
-      b_skewed_exp_w_tmp[2] = -x[5];
-      b_skewed_exp_w_tmp[5] = x[4];
-      b_skewed_exp_w_tmp[8] = 0.0;
       o_a = 0.5 * (dt * dt);
-      memset(&c_skewed_exp_w_tmp[0], 0, 9U * (sizeof(double)));
+      memset(&b_skewed_exp_w_tmp[0], 0, 9U * (sizeof(double)));
       memset(&b_dv[0], 0, 9U * (sizeof(double)));
+      memset(&b_n_tilde[0], 0, 9U * (sizeof(double)));
       r_q_tmp[0] = x[0];
       b_r_q_tmp = 0.0;
-      for (i56 = 0; i56 < 3; i56++) {
-        double b_F_tmp;
-        double d59;
-        double d60;
-        int c_F_tmp;
-        int d_F_tmp;
-        int e_F_tmp;
-        F[i56 + 7] = dt * (2.0 * ((j_x * SD->pd->e_param.g[i56]) - k_x[i56]));
-        b_F_tmp = x[i56 + 1];
-        c_F_tmp = 11 * (i56 + 1);
-        F[c_F_tmp + 7] =
-            dt *
-            (2.0 * ((((i_x * b[3 * i56]) + (x[1] * SD->pd->e_param.g[i56])) -
-                     (SD->pd->e_param.g[0] * b_F_tmp)) +
-                    dv4[3 * i56]));
-        d_F_tmp = (3 * i56) + 1;
-        F[c_F_tmp + 8] =
-            dt *
-            (2.0 * ((((i_x * b[d_F_tmp]) + (x[2] * SD->pd->e_param.g[i56])) -
-                     (SD->pd->e_param.g[1] * b_F_tmp)) +
-                    dv4[d_F_tmp]));
-        e_F_tmp = (3 * i56) + 2;
-        F[c_F_tmp + 9] =
-            dt *
-            (2.0 * ((((i_x * b[e_F_tmp]) + (x[3] * SD->pd->e_param.g[i56])) -
-                     (SD->pd->e_param.g[2] * b_F_tmp)) +
-                    dv4[e_F_tmp]));
-        d59 = c_skewed_exp_w_tmp[3 * i56];
-        d60 = b_dv[3 * i56];
-        for (i59 = 0; i59 < 3; i59++) {
-          double d61;
-          double d62;
-          int b_skewed_exp_w_tmp_tmp;
-          int i60;
-          int skewed_exp_w_tmp_tmp;
-          i60 = i59 + (3 * i56);
-          d61 = b_skewed_exp_w_tmp[i60];
-          d62 = skewed_exp_w_tmp[i60];
-          d59 += skewed_exp_w_tmp[3 * i59] * d61;
-          d60 += (2.0 * b_skewed_exp_w_tmp[3 * i59]) * d62;
-          skewed_exp_w_tmp_tmp = (3 * i59) + 1;
-          c_skewed_exp_w_tmp[d_F_tmp] +=
-              skewed_exp_w_tmp[skewed_exp_w_tmp_tmp] * d61;
-          b_dv[d_F_tmp] +=
-              (2.0 * b_skewed_exp_w_tmp[skewed_exp_w_tmp_tmp]) * d62;
-          b_skewed_exp_w_tmp_tmp = (3 * i59) + 2;
-          c_skewed_exp_w_tmp[e_F_tmp] +=
-              skewed_exp_w_tmp[b_skewed_exp_w_tmp_tmp] * d61;
-          b_dv[e_F_tmp] +=
-              (2.0 * b_skewed_exp_w_tmp[b_skewed_exp_w_tmp_tmp]) * d62;
+      for (i54 = 0; i54 < 3; i54++) {
+        double d61;
+        double d62;
+        double d64;
+        int b_n_tilde_tmp;
+        int b_skewed_exp_w_tmp_tmp;
+        int n_tilde_tmp;
+        int skewed_exp_w_tmp_tmp;
+        d61 = b_skewed_exp_w_tmp[3 * i54];
+        d62 = b_dv[3 * i54];
+        skewed_exp_w_tmp_tmp = (3 * i54) + 1;
+        b_skewed_exp_w_tmp_tmp = (3 * i54) + 2;
+        for (i55 = 0; i55 < 3; i55++) {
+          double d63;
+          double d65;
+          int c_skewed_exp_w_tmp_tmp;
+          int d_skewed_exp_w_tmp_tmp;
+          int i57;
+          i57 = i55 + (3 * i54);
+          d63 = e_a[i57];
+          d65 = skewed_exp_w_tmp[i57];
+          d61 += skewed_exp_w_tmp[3 * i55] * d63;
+          d62 += (2.0 * e_a[3 * i55]) * d65;
+          c_skewed_exp_w_tmp_tmp = (3 * i55) + 1;
+          b_skewed_exp_w_tmp[skewed_exp_w_tmp_tmp] +=
+              skewed_exp_w_tmp[c_skewed_exp_w_tmp_tmp] * d63;
+          b_dv[skewed_exp_w_tmp_tmp] +=
+              (2.0 * e_a[c_skewed_exp_w_tmp_tmp]) * d65;
+          d_skewed_exp_w_tmp_tmp = (3 * i55) + 2;
+          b_skewed_exp_w_tmp[b_skewed_exp_w_tmp_tmp] +=
+              skewed_exp_w_tmp[d_skewed_exp_w_tmp_tmp] * d63;
+          b_dv[b_skewed_exp_w_tmp_tmp] +=
+              (2.0 * e_a[d_skewed_exp_w_tmp_tmp]) * d65;
         }
-        int f_F_tmp;
+        b_dv[3 * i54] = d62;
+        b_skewed_exp_w_tmp[3 * i54] = d61;
+        d64 = b_n_tilde[3 * i54];
+        n_tilde_tmp = (3 * i54) + 1;
+        b_n_tilde_tmp = (3 * i54) + 2;
+        for (i60 = 0; i60 < 3; i60++) {
+          double d66;
+          int f_F_tmp;
+          f_F_tmp = i60 + (3 * i54);
+          F[(i60 + (11 * (i54 + 4))) + 7] =
+              (dt * skewed_exp_w_tmp[f_F_tmp]) +
+              (o_a * (b_skewed_exp_w_tmp[f_F_tmp] - b_dv[f_F_tmp]));
+          d66 = n_tilde[f_F_tmp];
+          d64 += n_tilde[3 * i60] * d66;
+          b_n_tilde[n_tilde_tmp] += n_tilde[(3 * i60) + 1] * d66;
+          b_n_tilde[b_n_tilde_tmp] += n_tilde[(3 * i60) + 2] * d66;
+        }
+        double d67;
         int g_F_tmp;
-        b_dv[3 * i56] = d60;
-        c_skewed_exp_w_tmp[3 * i56] = d59;
-        f_F_tmp = 11 * (i56 + 4);
-        F[f_F_tmp + 7] = (dt * skewed_exp_w_tmp[3 * i56]) + (o_a * (d59 - d60));
-        g_F_tmp = 11 * (i56 + 7);
-        F[g_F_tmp + 7] = w_exp_tilde[3 * i56];
-        F[f_F_tmp + 8] = (dt * skewed_exp_w_tmp[d_F_tmp]) +
-                         (o_a * (c_skewed_exp_w_tmp[d_F_tmp] - b_dv[d_F_tmp]));
-        F[g_F_tmp + 8] = w_exp_tilde[d_F_tmp];
-        F[f_F_tmp + 9] = (dt * skewed_exp_w_tmp[e_F_tmp]) +
-                         (o_a * (c_skewed_exp_w_tmp[e_F_tmp] - b_dv[e_F_tmp]));
-        F[g_F_tmp + 9] = w_exp_tilde[e_F_tmp];
-        r_q_tmp[i56 + 1] = -b_F_tmp;
-        b_r_q_tmp += (-b_F_tmp) * x[i56 + 7];
+        int h_F_tmp;
+        int i_F_tmp;
+        b_n_tilde[3 * i54] = d64;
+        g_F_tmp = 11 * (i54 + 7);
+        F[g_F_tmp + 7] = (((double)b_I[3 * i54]) - (f_a * n_tilde[3 * i54])) +
+                         ((1.0 - i_x) * d64);
+        h_F_tmp = (3 * i54) + 1;
+        F[g_F_tmp + 8] = (((double)b_I[h_F_tmp]) - (f_a * n_tilde[h_F_tmp])) +
+                         ((1.0 - i_x) * b_n_tilde[h_F_tmp]);
+        i_F_tmp = (3 * i54) + 2;
+        F[g_F_tmp + 9] = (((double)b_I[i_F_tmp]) - (f_a * n_tilde[i_F_tmp])) +
+                         ((1.0 - i_x) * b_n_tilde[i_F_tmp]);
+        d67 = -x[i54 + 1];
+        r_q_tmp[i54 + 1] = d67;
+        b_r_q_tmp += d67 * x[i54 + 7];
       }
       c_r_q_tmp[0] = (r_q_tmp[2] * x[9]) - (r_q_tmp[3] * x[8]);
       c_r_q_tmp[1] = (r_q_tmp[3] * x[7]) - (r_q_tmp[1] * x[9]);
       c_r_q_tmp[2] = (r_q_tmp[1] * x[8]) - (r_q_tmp[2] * x[7]);
-      i57 = 0;
+      i56 = 0;
       for (i58 = 0; i58 < 3; i58++) {
         double b_dt_tmp;
         double dt_tmp;
         dt_tmp = x[i58 + 7];
         d_dt[i58] = dt * (2.0 * ((r_q_tmp[0] * dt_tmp) - c_r_q_tmp[i58]));
         b_dt_tmp = r_q_tmp[i58 + 1];
-        d_dt[i57 + 3] =
-            dt * (2.0 * ((((b_r_q_tmp * b[i57]) + (r_q_tmp[1] * dt_tmp)) -
+        d_dt[i56 + 3] =
+            dt * (2.0 * ((((b_r_q_tmp * b[i56]) + (r_q_tmp[1] * dt_tmp)) -
                           (x[7] * b_dt_tmp)) +
-                         (r_q_tmp[0] * skewed_exp_w_tmp[i57])));
-        d_dt[i57 + 4] =
-            dt * (2.0 * ((((b_r_q_tmp * b[i57 + 1]) + (r_q_tmp[2] * dt_tmp)) -
+                         (r_q_tmp[0] * skewed_exp_w_tmp[i56])));
+        d_dt[i56 + 4] =
+            dt * (2.0 * ((((b_r_q_tmp * b[i56 + 1]) + (r_q_tmp[2] * dt_tmp)) -
                           (x[8] * b_dt_tmp)) +
-                         (r_q_tmp[0] * skewed_exp_w_tmp[i57 + 1])));
-        d_dt[i57 + 5] =
-            dt * (2.0 * ((((b_r_q_tmp * b[i57 + 2]) + (r_q_tmp[3] * dt_tmp)) -
+                         (r_q_tmp[0] * skewed_exp_w_tmp[i56 + 1])));
+        d_dt[i56 + 5] =
+            dt * (2.0 * ((((b_r_q_tmp * b[i56 + 2]) + (r_q_tmp[3] * dt_tmp)) -
                           (x[9] * b_dt_tmp)) +
-                         (r_q_tmp[0] * skewed_exp_w_tmp[i57 + 2])));
-        i57 += 3;
+                         (r_q_tmp[0] * skewed_exp_w_tmp[i56 + 2])));
+        i56 += 3;
+      }
+      memset(&e_dt[0], 0, 12U * (sizeof(double)));
+      i59 = 0;
+      i61 = 0;
+      i62 = 0;
+      for (i63 = 0; i63 < 4; i63++) {
+        int i64;
+        i64 = 0;
+        for (i65 = 0; i65 < 4; i65++) {
+          int i66;
+          i66 = (int)d_b[i65 + i62];
+          e_dt[i61] += d_dt[i64] * ((double)i66);
+          e_dt[i61 + 1] += d_dt[i64 + 1] * ((double)i66);
+          e_dt[i61 + 2] += d_dt[i64 + 2] * ((double)i66);
+          i64 += 3;
+        }
+        F[i59 + 10] = e_dt[i61];
+        i59 += 11;
+        i61 += 3;
+        i62 += 4;
       }
       double q_a;
-      F[10] = d_dt[0];
-      F[21] = d_dt[3];
-      F[32] = d_dt[6];
-      F[43] = d_dt[9];
       p_a = (r_q_tmp[0] * r_q_tmp[0]) -
             (((r_q_tmp[1] * r_q_tmp[1]) + (r_q_tmp[2] * r_q_tmp[2])) +
              (r_q_tmp[3] * r_q_tmp[3]));
@@ -2310,165 +2378,165 @@ void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
       b_dv[2] = q_a * (-r_q_tmp[2]);
       b_dv[5] = q_a * r_q_tmp[1];
       b_dv[8] = 0.0;
-      i61 = 0;
-      i62 = 0;
-      for (i63 = 0; i63 < 3; i63++) {
-        double l_a_tmp;
-        l_a_tmp = r_q_tmp[i63 + 1];
-        e_a[i61] = (p_a * b[i61]) + ((2.0 * r_q_tmp[1]) * l_a_tmp);
-        e_a[i61 + 1] = (p_a * b[i61 + 1]) + ((2.0 * r_q_tmp[2]) * l_a_tmp);
-        e_a[i61 + 2] = (p_a * b[i61 + 2]) + ((2.0 * r_q_tmp[3]) * l_a_tmp);
-        F[i62 + 87] = dt * (e_a[i61] - b_dv[i61]);
-        i61 += 3;
-        i62 += 11;
+      i67 = 0;
+      i68 = 0;
+      for (i69 = 0; i69 < 3; i69++) {
+        double g_a_tmp;
+        g_a_tmp = r_q_tmp[i69 + 1];
+        e_a[i67] = (p_a * b[i67]) + ((2.0 * r_q_tmp[1]) * g_a_tmp);
+        e_a[i67 + 1] = (p_a * b[i67 + 1]) + ((2.0 * r_q_tmp[2]) * g_a_tmp);
+        e_a[i67 + 2] = (p_a * b[i67 + 2]) + ((2.0 * r_q_tmp[3]) * g_a_tmp);
+        F[i68 + 87] = dt * (e_a[i67] - b_dv[i67]);
+        i67 += 3;
+        i68 += 11;
       }
       F[120] = 1.0;
       memset(&b_F[0], 0, 121U * (sizeof(double)));
-      i64 = 0;
-      for (i65 = 0; i65 < 11; i65++) {
-        int i66;
-        i66 = 0;
-        for (i68 = 0; i68 < 11; i68++) {
-          double d63;
-          d63 = P[i68 + i64];
-          for (i72 = 0; i72 < 11; i72++) {
-            int h_F_tmp;
-            h_F_tmp = i72 + i64;
-            b_F[h_F_tmp] += F[i72 + i66] * d63;
+      i70 = 0;
+      for (i71 = 0; i71 < 11; i71++) {
+        int i72;
+        i72 = 0;
+        for (i74 = 0; i74 < 11; i74++) {
+          double d68;
+          d68 = P[i74 + i70];
+          for (i78 = 0; i78 < 11; i78++) {
+            int j_F_tmp;
+            j_F_tmp = i78 + i70;
+            b_F[j_F_tmp] += F[i78 + i72] * d68;
           }
-          i66 += 11;
+          i72 += 11;
         }
-        i64 += 11;
+        i70 += 11;
       }
-      for (i67 = 0; i67 < 11; i67++) {
-        int i69;
-        i69 = 0;
-        for (i71 = 0; i71 < 11; i71++) {
-          double d64;
-          int i75;
-          d64 = 0.0;
-          i75 = 0;
-          for (i76 = 0; i76 < 11; i76++) {
-            d64 += b_F[i75 + i67] * F[i75 + i71];
-            i75 += 11;
+      for (i73 = 0; i73 < 11; i73++) {
+        int i75;
+        i75 = 0;
+        for (i77 = 0; i77 < 11; i77++) {
+          double d69;
+          int i81;
+          d69 = 0.0;
+          i81 = 0;
+          for (i82 = 0; i82 < 11; i82++) {
+            d69 += b_F[i81 + i73] * F[i81 + i77];
+            i81 += 11;
           }
           int P_pred_tmp;
-          P_pred_tmp = i69 + i67;
-          P_pred[P_pred_tmp] = d64 + Q[P_pred_tmp];
-          i69 += 11;
+          P_pred_tmp = i75 + i73;
+          P_pred[P_pred_tmp] = d69 + Q[P_pred_tmp];
+          i75 += 11;
         }
       }
-      i70 = 0;
-      i73 = 0;
-      for (i74 = 0; i74 < 3; i74++) {
-        b_P_pred[i70] = P_pred[i73 + 48] + R[i70];
-        b_P_pred[i70 + 1] = P_pred[i73 + 49] + R[i70 + 1];
-        b_P_pred[i70 + 2] = P_pred[i73 + 50] + R[i70 + 2];
-        i70 += 3;
-        i73 += 11;
-      }
-      mrdiv(&P_pred[44], b_P_pred, K);
-      memset(&d_I[0], 0, 121U * (sizeof(signed char)));
-      l_k = 0;
-      for (m_k = 0; m_k < 11; m_k++) {
-        d_I[l_k] = (signed char)1;
-        l_k += 12;
-      }
-      i77 = 0;
-      for (i78 = 0; i78 < 4; i78++) {
-        for (i80 = 0; i80 < 11; i80++) {
-          int E_tmp;
-          E_tmp = i80 + i77;
-          E[E_tmp] = (double)d_I[E_tmp];
-        }
-        i77 += 11;
-      }
+      i76 = 0;
       i79 = 0;
-      for (i81 = 0; i81 < 3; i81++) {
-        for (i83 = 0; i83 < 11; i83++) {
-          int b_E_tmp;
-          b_E_tmp = i83 + i79;
-          E[b_E_tmp + 44] = ((double)d_I[b_E_tmp + 44]) - K[b_E_tmp];
-        }
+      for (i80 = 0; i80 < 3; i80++) {
+        b_P_pred[i76] = P_pred[i79 + 48] + R[i76];
+        b_P_pred[i76 + 1] = P_pred[i79 + 49] + R[i76 + 1];
+        b_P_pred[i76 + 2] = P_pred[i79 + 50] + R[i76 + 2];
+        i76 += 3;
         i79 += 11;
       }
-      i82 = 0;
+      mrdiv(&P_pred[44], b_P_pred, K);
+      memset(&g_I[0], 0, 121U * (sizeof(signed char)));
+      i_k = 0;
+      for (j_k = 0; j_k < 11; j_k++) {
+        g_I[i_k] = (signed char)1;
+        i_k += 12;
+      }
+      i83 = 0;
       for (i84 = 0; i84 < 4; i84++) {
-        for (i85 = 0; i85 < 11; i85++) {
-          int c_E_tmp;
-          c_E_tmp = (i85 + i82) + 77;
-          E[c_E_tmp] = (double)d_I[c_E_tmp];
+        for (i86 = 0; i86 < 11; i86++) {
+          int E_tmp;
+          E_tmp = i86 + i83;
+          E[E_tmp] = (double)g_I[E_tmp];
         }
-        i82 += 11;
+        i83 += 11;
+      }
+      i85 = 0;
+      for (i87 = 0; i87 < 3; i87++) {
+        for (i89 = 0; i89 < 11; i89++) {
+          int b_E_tmp;
+          b_E_tmp = i89 + i85;
+          E[b_E_tmp + 44] = ((double)g_I[b_E_tmp + 44]) - K[b_E_tmp];
+        }
+        i85 += 11;
+      }
+      i88 = 0;
+      for (i90 = 0; i90 < 4; i90++) {
+        for (i91 = 0; i91 < 11; i91++) {
+          int c_E_tmp;
+          c_E_tmp = (i91 + i88) + 77;
+          E[c_E_tmp] = (double)g_I[c_E_tmp];
+        }
+        i88 += 11;
       }
       memset(&b_E[0], 0, 121U * (sizeof(double)));
-      i86 = 0;
-      for (i87 = 0; i87 < 11; i87++) {
-        int i88;
-        i88 = 0;
-        for (i89 = 0; i89 < 11; i89++) {
-          double d65;
-          d65 = P_pred[i89 + i86];
-          for (i93 = 0; i93 < 11; i93++) {
-            int d_E_tmp;
-            d_E_tmp = i93 + i86;
-            b_E[d_E_tmp] += E[i93 + i88] * d65;
-          }
-          i88 += 11;
-        }
-        i86 += 11;
-      }
-      memset(&b_K[0], 0, 33U * (sizeof(double)));
-      i90 = 0;
-      i91 = 0;
-      for (i92 = 0; i92 < 3; i92++) {
+      i92 = 0;
+      for (i93 = 0; i93 < 11; i93++) {
         int i94;
         i94 = 0;
-        for (i95 = 0; i95 < 3; i95++) {
-          double d66;
-          d66 = R[i95 + i90];
-          for (i97 = 0; i97 < 11; i97++) {
-            int K_tmp;
-            K_tmp = i97 + i91;
-            b_K[K_tmp] += K[i97 + i94] * d66;
+        for (i95 = 0; i95 < 11; i95++) {
+          double d70;
+          d70 = P_pred[i95 + i92];
+          for (i99 = 0; i99 < 11; i99++) {
+            int d_E_tmp;
+            d_E_tmp = i99 + i92;
+            b_E[d_E_tmp] += E[i99 + i94] * d70;
           }
           i94 += 11;
         }
-        i90 += 3;
-        i91 += 11;
+        i92 += 11;
+      }
+      memset(&b_K[0], 0, 33U * (sizeof(double)));
+      i96 = 0;
+      i97 = 0;
+      for (i98 = 0; i98 < 3; i98++) {
+        int i100;
+        i100 = 0;
+        for (i101 = 0; i101 < 3; i101++) {
+          double d71;
+          d71 = R[i101 + i96];
+          for (i103 = 0; i103 < 11; i103++) {
+            int K_tmp;
+            K_tmp = i103 + i97;
+            b_K[K_tmp] += K[i103 + i100] * d71;
+          }
+          i100 += 11;
+        }
+        i96 += 3;
+        i97 += 11;
       }
       memset(&c_E[0], 0, 121U * (sizeof(double)));
       memset(&c_K[0], 0, 121U * (sizeof(double)));
-      for (i96 = 0; i96 < 11; i96++) {
-        for (i99 = 0; i99 < 11; i99++) {
-          double d67;
-          d67 = E[i96 + (11 * i99)];
-          for (i101 = 0; i101 < 11; i101++) {
+      for (i102 = 0; i102 < 11; i102++) {
+        for (i105 = 0; i105 < 11; i105++) {
+          double d72;
+          d72 = E[i102 + (11 * i105)];
+          for (i107 = 0; i107 < 11; i107++) {
             int e_E_tmp;
-            e_E_tmp = i101 + (11 * i96);
-            c_E[e_E_tmp] += b_E[i101 + (11 * i99)] * d67;
+            e_E_tmp = i107 + (11 * i102);
+            c_E[e_E_tmp] += b_E[i107 + (11 * i105)] * d72;
           }
         }
-        for (i100 = 0; i100 < 3; i100++) {
-          double d68;
-          d68 = K[i96 + (11 * i100)];
-          for (i103 = 0; i103 < 11; i103++) {
+        for (i106 = 0; i106 < 3; i106++) {
+          double d73;
+          d73 = K[i102 + (11 * i106)];
+          for (i109 = 0; i109 < 11; i109++) {
             int b_K_tmp;
-            b_K_tmp = i103 + (11 * i96);
-            c_K[b_K_tmp] += b_K[i103 + (11 * i100)] * d68;
+            b_K_tmp = i109 + (11 * i102);
+            c_K[b_K_tmp] += b_K[i109 + (11 * i106)] * d73;
           }
         }
       }
-      for (i98 = 0; i98 < 121; i98++) {
-        P[i98] = c_E[i98] + c_K[i98];
+      for (i104 = 0; i104 < 121; i104++) {
+        P[i104] = c_E[i104] + c_K[i104];
       }
       w_idx_0 -= x_pred[4];
       w_idx_1 -= x_pred[5];
       w_idx_2 -= x_pred[6];
-      for (i102 = 0; i102 < 11; i102++) {
-        x[i102] =
-            x_pred[i102] + (((K[i102] * w_idx_0) + (K[i102 + 11] * w_idx_1)) +
-                            (K[i102 + 22] * w_idx_2));
+      for (i108 = 0; i108 < 11; i108++) {
+        x[i108] =
+            x_pred[i108] + (((K[i108] * w_idx_0) + (K[i108 + 11] * w_idx_1)) +
+                            (K[i108 + 22] * w_idx_2));
       }
       double b_q_mag;
       b_q_mag = c_norm(&x[0]);

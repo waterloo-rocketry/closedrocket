@@ -79,10 +79,12 @@ typedef struct {
 #define typedef_struct_T
 typedef struct {
   double Cn_alpha;
+  double Cn_omega;
   double J[9];
   double Jinv[9];
   double altitude_initial;
   double c_aero;
+  double c_aero_damping;
   double c_canard;
   double d_ad[3];
   double d_board[3];
