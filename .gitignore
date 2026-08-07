@@ -45,3 +45,6 @@ design-support/*/*
 
 # Large data files
 analysis/*/*
+
+# VS Code workspace
+*.code-workspace

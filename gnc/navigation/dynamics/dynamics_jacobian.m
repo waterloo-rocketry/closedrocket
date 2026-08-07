@@ -23,10 +23,11 @@ function [J_x] = dynamics_jacobian(dt, x)
     J_x(1:4, 5:7) = q_w; % column w (rates)
 
     %% angular rate rows (w, 5:7)
-    [torque_v] = dynamics_aero_jacobian(v, alt, param);
+    [torque_w, torque_v] = dynamics_aero_jacobian(v, alt, param);
 
     w_exp_tilde = math_rotate(w, dt);
-    w_w = param.Jinv * w_exp_tilde * param.J;
+    w_w = eye(3) + dt * param.Jinv * (math_tilde(param.J*w) - math_tilde(w)*param.J);
+    w_w = w_w + dt * param.Jinv * torque_w;
     w_v = dt * param.Jinv * torque_v;
 
     J_x(5:7,5:7) = w_w; % column w
@@ -45,6 +46,7 @@ function [J_x] = dynamics_jacobian(dt, x)
 
     %% altitude row (alt, 11)
     r_q = dt * quaternion_rotate_jacobian(quaternion_inv(q), v);
+    r_q = r_q * diag([1, -1, -1, -1]); % chain rule through q inverse
     alt_q = r_q(1,:); % only use altitude from position vector
     r_v = dt * quaternion_rotmatrix(quaternion_inv(q));
     alt_v = r_v(1,:);
