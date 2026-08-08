@@ -9,23 +9,40 @@ It probably isn't, so at that point you should ask someone for help.
 
 # How to use
 
-## Running the Sim 
+## Running the Sim
 
-0. run Simulinkcanards.prj (if the folders and subfolders are not yet added to your path)
+0. Open `Simulinkcanards.prj` in MATLAB so that the repository folders are added to the path
 
-#### Option A 
-1. run `configure_plant_model`
-2. open the `CC_Flight_Simulation.slx` in the `plant-model` folder 
-3. when everything has loaded and simulink is open, click the big green start button in center of the top header
-4. plot access: scope blocks in subsystems `/visualization_estimator`, or `/plant_combined/visualization_sim`
+#### Option A: `run_save_plot` (preferred)
 
-#### Option B
-1. run `sim_call` (in `monte-carlo/`) to simulate a single sim and plot
+1. Run `run_save_plot` from the MATLAB command window. This configures and runs the SIL simulation, saves the log to `results/sil/result.mat`, and displays both the live and saved-log plots.
 
-#### Option C
-1. configure a batch run by editing `sim_call_sweep` (in `monte-carlo/`)
-2. run `sim_call_sweep` to simulate a batch of sims
-3. (edit and) run `plot_sweep` to plot results 
+Common variants:
+
+```matlab
+run_save_plot                                  % Run SIL for 180 seconds
+run_save_plot("hil", 120)                      % Run HIL for 120 seconds
+run_save_plot("sil", 120, "PlotMode", "log")   % Only plot the saved log
+run_save_plot("sil", 120, "PlotMode", "none")  % Run and save without plotting
+```
+
+Arguments:
+
+| Argument | Kind | Default | Description |
+| --- | --- | --- | --- |
+| `mode` | Positional | `"sil"` | Simulation mode: `"sil"` or `"hil"`. |
+| `StopTime` | Positional | `180` | Simulation duration in seconds. |
+| `ResultPath` | Name-value | Value of `mode` | Subdirectory beneath `results/` in which to save the output. |
+| `FileName` | Name-value | `"result.mat"` | Name of the saved log file. |
+| `PlotMode` | Name-value | `"both"` | Plot behavior: `"live"`, `"log"`, `"both"`, or `"none"`. |
+| `ParameterOverrides` | Name-value | `struct()` | Scalar struct containing per-run overrides for configured model parameters. |
+
+#### Option B: Run from Simulink
+
+1. Run `configure_plant_model` in MATLAB.
+2. Open `plant-model/CC_Flight_Simulation.slx`.
+3. After the model has loaded, click **Run** in the Simulink toolbar.
+4. View the scope blocks in `/visualization_estimator` or `/plant_combined/visualization_sim`.
 
 ## Setup
 1. Clone the repo `git clone https://github.com/waterloo-rocketry/closedrocket.git`
@@ -40,8 +57,3 @@ It probably isn't, so at that point you should ask someone for help.
     - Signal Processing Toolbox
     - Simulink
 4. In Matlab run `mex -setup C` and `mex -setup C++`
-
-
-# Documentation
-Most up to date internal documentation is [here](https://www.overleaf.com/project/67239de67b73b702d3233692). \
-A backup is on the `documentation` [branch](https://github.com/FinnBreu/WR-Controller-and-Estimator-Design/tree/main).
