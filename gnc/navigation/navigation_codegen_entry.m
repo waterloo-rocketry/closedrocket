@@ -8,6 +8,9 @@ function [x, P, bias, sens_filt, cov_norm, roll_state, pdyn, w_status_nav] = nav
     sens_in.board_mag.meas = vec_norm(sens_in.board_mag.meas);
     sens_in.mti_mag.meas = vec_norm(sens_in.mti_mag.meas);
 
+    sens_in.board_mag.status = false;
+    sens_in.ad_accel.status = false;
+
     %% Pad filter iteration
     if flight_phase == false || isempty(bias) % only before ignition (or if not run before)
         [x, bias, sens_filt, status] = pad_filter(sens_in, sens_filt);

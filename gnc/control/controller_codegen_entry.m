@@ -25,9 +25,9 @@ function [u_motor, where_it_isnt, ctrl_mem, w_status_ctrl] = controller_codegen_
     %% Reference signal
     %%% Generates reference signal r for roll program
     %%% includes multiple roll angle steps
-    roll_step_times = [0, 8, 18, 28, 38] + time_program;
-    roll_step_targets = [0, 0, 1, -1, 0]; % Starting angle
-    roll_step_rate = [-0.25, 0, 0, 0, 0] * 2 * pi; % Rotation frequency
+    roll_step_times = [0, 6, 14, 24, 34] + time_program;
+    roll_step_targets = [0, 0, 1.5, -1.5, 0]; % Starting angle
+    roll_step_rate = [-1/3, 0, 0, 0, 0] * 2 * pi; % Rotation frequency
     
     r_phi = 0;
     r_w = 0;
