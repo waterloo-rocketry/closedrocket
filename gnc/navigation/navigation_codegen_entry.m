@@ -10,6 +10,7 @@ function [x, P, bias, sens_filt, cov_norm, roll_state, pdyn, w_status_nav] = nav
 
     sens_in.board_mag.status = false;
     sens_in.ad_accel.status = false;
+    sens_in.mti_mag.status = false;
 
     %% Pad filter iteration
     if flight_phase == false || isempty(bias) % only before ignition (or if not run before)

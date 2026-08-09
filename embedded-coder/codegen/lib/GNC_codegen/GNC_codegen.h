@@ -24,9 +24,10 @@ extern void controller_codegen_entry(GNC_codegenStackData *SD, double b_time,
 extern void navigation_codegen_entry(GNC_codegenStackData *SD, double dt,
                                      bool flight_phase, double x[11],
                                      double P[121], struct1_T *bias,
-                                     struct2_T *sens_filt, struct3_T *sens_in,
-                                     double *cov_norm, double roll_state[2],
-                                     double *pdyn, bool *w_status_nav);
+                                     struct2_T *sens_filt,
+                                     const struct3_T *sens_in, double *cov_norm,
+                                     double roll_state[2], double *pdyn,
+                                     bool *w_status_nav);
 
 #ifdef __cplusplus
 }
