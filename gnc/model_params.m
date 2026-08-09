@@ -21,7 +21,7 @@ Cn_omega = 10; % [-], pitch/yaw rate damping coefficient
 %% Canards
 n_canards = 2;
 root_chord = 0.10;
-spine_width = 0.015;
+spine_width = 0.02;
 radial_offset = 0.02;
 sweep = deg2rad(74);
 spine_effectiveness = 0.5;

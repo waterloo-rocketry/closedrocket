@@ -183,7 +183,7 @@ static void controller_codegen_entry_init(GNC_codegenStackData *SD) {
   SD->pd->param.altitude_initial = 420.0;
   SD->pd->param.c_aero = -0.035602020206989993;
   SD->pd->param.c_aero_damping = 0.039162222227688996;
-  SD->pd->param.c_canard = 0.00054680328244827419;
+  SD->pd->param.c_canard = 0.00059880328244827426;
   SD->pd->param.d_ad[0] = 1.72;
   SD->pd->param.d_board[0] = 1.71;
   SD->pd->param.d_mti[0] = 1.72;
@@ -209,7 +209,7 @@ static void dynamics_init(GNC_codegenStackData *SD) {
   SD->pd->d_param.altitude_initial = 420.0;
   SD->pd->d_param.c_aero = -0.035602020206989993;
   SD->pd->d_param.c_aero_damping = 0.039162222227688996;
-  SD->pd->d_param.c_canard = 0.00054680328244827419;
+  SD->pd->d_param.c_canard = 0.00059880328244827426;
   SD->pd->d_param.d_ad[0] = 1.72;
   SD->pd->d_param.d_board[0] = 1.71;
   SD->pd->d_param.d_mti[0] = 1.72;
@@ -235,7 +235,7 @@ static void dynamics_jacobian_init(GNC_codegenStackData *SD) {
   SD->pd->e_param.altitude_initial = 420.0;
   SD->pd->e_param.c_aero = -0.035602020206989993;
   SD->pd->e_param.c_aero_damping = 0.039162222227688996;
-  SD->pd->e_param.c_canard = 0.00054680328244827419;
+  SD->pd->e_param.c_canard = 0.00059880328244827426;
   SD->pd->e_param.d_ad[0] = 1.72;
   SD->pd->e_param.d_board[0] = 1.71;
   SD->pd->e_param.d_mti[0] = 1.72;
@@ -476,7 +476,7 @@ static void ekf_prefilter_imu_init(GNC_codegenStackData *SD) {
   SD->pd->c_param.altitude_initial = 420.0;
   SD->pd->c_param.c_aero = -0.035602020206989993;
   SD->pd->c_param.c_aero_damping = 0.039162222227688996;
-  SD->pd->c_param.c_canard = 0.00054680328244827419;
+  SD->pd->c_param.c_canard = 0.00059880328244827426;
   SD->pd->c_param.d_ad[0] = 1.72;
   SD->pd->c_param.d_board[0] = 1.71;
   SD->pd->c_param.d_mti[0] = 1.72;
@@ -559,7 +559,7 @@ static void pad_filter_init(GNC_codegenStackData *SD) {
   SD->pd->b_param.altitude_initial = 420.0;
   SD->pd->b_param.c_aero = -0.035602020206989993;
   SD->pd->b_param.c_aero_damping = 0.039162222227688996;
-  SD->pd->b_param.c_canard = 0.00054680328244827419;
+  SD->pd->b_param.c_canard = 0.00059880328244827426;
   SD->pd->b_param.d_ad[0] = 1.72;
   SD->pd->b_param.d_board[0] = 1.71;
   SD->pd->b_param.d_mti[0] = 1.72;
