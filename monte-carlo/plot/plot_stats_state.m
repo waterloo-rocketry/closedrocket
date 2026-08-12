@@ -2,6 +2,8 @@ function [plots] = plot_stats_state(sdt_array, type, percentiles, varargin)
 % Plot statistical envelopes (median, percentile bounds) across multiple datasets
 % Follows the same structure and plotting style as the legacy plot_state_old()
 
+    plots = struct();
+
     %% Colors 
     colors(1,:) = [0, 0, 0];      % Black
     colors(2,:) = [0.9, 0.3, 0.1];% Red
@@ -10,23 +12,28 @@ function [plots] = plot_stats_state(sdt_array, type, percentiles, varargin)
 
     %% Extract valid datasets and reference time
     N = numel(sdt_array);
-    valid_idx = [];
+    valid_idx = zeros(1, N);
+    valid_count = 0;
     T_ref = [];
     tlim = [0 0];
 
     for n = 1:N
-        if ~isfield(sdt_array{n}, type) || isempty(sdt_array{n}.(type))
+        sdt = sdt_array{n};
+        if ~isstruct(sdt) || ~isfield(sdt, type) || ...
+                ~istimetable(sdt.(type)) || isempty(sdt.(type))
             continue
         end
-        T_now = seconds(sdt_array{n}.(type).Time);
+        T_now = seconds(sdt.(type).Time);
         if isempty(T_now), continue; end
-        valid_idx(end+1) = n;
+        valid_count = valid_count + 1;
+        valid_idx(valid_count) = n;
 
         if isempty(T_ref) || length(T_now) > length(T_ref)
             T_ref = T_now;
         end
         tlim(2) = max(tlim(2), T_now(end));
     end
+    valid_idx = valid_idx(1:valid_count);
 
     if isempty(valid_idx)
         warning("No valid simulations for type '%s'.", type);
@@ -51,11 +58,14 @@ function [plots] = plot_stats_state(sdt_array, type, percentiles, varargin)
     end
 
     %% Collect data
-    for i = 1:numel(valid_idx)
-        k = valid_idx(i);
+    for run_pos = 1:numel(valid_idx)
+        k = valid_idx(run_pos);
         data = sdt_array{k}.(type);
-        for i = 1:numel(fields)
-            fld = fields{i};
+        for field_pos = 1:numel(fields)
+            fld = fields{field_pos};
+            if ~any(strcmp(data.Properties.VariableNames, fld))
+                continue;
+            end
             D = data.(fld);
             %%% Special unit conversions
             if strcmp(fld,'alt')
@@ -66,7 +76,7 @@ function [plots] = plot_stats_state(sdt_array, type, percentiles, varargin)
                 % rad → deg
                 D = rad2deg(D);
             end
-            all_data.(fld)(1:length(D),:,k) = D;
+            all_data.(fld)(1:length(D),:,run_pos) = D;
         end
     end
     
@@ -90,7 +100,6 @@ function [plots] = plot_stats_state(sdt_array, type, percentiles, varargin)
     end
 
     %% Tile mapping
-    dims_plot = 1;
     for i = idx
         switch i
             case 1, plots.q     = nexttile;
