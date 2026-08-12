@@ -50,7 +50,7 @@ act_gear_ratio = - 0.5; % speed ratio of gearing between motor and canard
 %% Misc Rocket parameters
 engine_thrust_factor = 1; % perfomance gain
 drag_factor = 1; % drag gain
-canard_roll_reversal_factor = 1; % coefficient gain
+canard_roll_reversal_factor = -1; % coefficient gain
 
 %% Aerodynamics Reference Geometry
 %Reference parameters   
