@@ -29,6 +29,8 @@ classdef MonteCarloOptionsTest < matlab.unittest.TestCase
             opts = mc_default_options();
             geometry_fields = string(fieldnames(opts.geometry));
 
+            testCase.verifyEqual(opts.stop_time, 120);
+            testCase.verifyEqual(opts.plot.time_limits, [0, 100]);
             testCase.verifyTrue(ismember( ...
                 "canard_spine_effectiveness", geometry_fields));
             testCase.verifyTrue(ismember("cp_shift_m", geometry_fields));
@@ -49,17 +51,17 @@ classdef MonteCarloOptionsTest < matlab.unittest.TestCase
             testCase.verifyEqual( ...
                 opts.performance.engine_thrust_factor.range, [0.8, 1.1]);
             testCase.verifyEqual( ...
-                opts.performance.act_backlash_deg.range, [0, 0.5]);
+                opts.performance.act_backlash_deg.range, [0, 0.6]);
             testCase.verifyEqual( ...
-                opts.geometry.canard_cant_zero_deg.range, [0, 2]);
+                opts.geometry.canard_cant_zero_deg.range, [-2, 2]);
             testCase.verifyEqual( ...
                 opts.geometry.canard_spine_effectiveness.range, [0.3, 1]);
             testCase.verifyEqual( ...
                 opts.geometry.cp_shift_m.range, [-0.1, 0.1]);
             testCase.verifyEqual( ...
-                opts.geometry.canard_radial_cp_offset_m.range, [-0.01, 0.02]);
+                opts.geometry.canard_radial_cp_offset_m.range, [-0.02, 0.02]);
             testCase.verifyEqual(opts.roll_reversal.probability, 0.5);
-            testCase.verifyEqual(opts.roll_reversal.factor_range, [-1, 2]);
+            testCase.verifyEqual(opts.roll_reversal.factor_range, [-3, 1.5]);
             testCase.verifyEqual( ...
                 opts.roll_reversal.time_after_takeoff_s, [0, 40]);
         end

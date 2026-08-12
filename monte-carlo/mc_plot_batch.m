@@ -41,7 +41,7 @@ function figs = mc_plot_batch(opts)
     figs.control = figure("Name", "Monte Carlo Control", ...
         "Visible", opts.plot.visible);
     plot_stats_control(sdt_array, "control", "Controller", ...
-        opts.plot.percentiles);
+        opts.plot.percentiles, opts.plot.time_limits);
 
     if opts.plot.export
         plot_dir = fullfile(batch_dir, "plots");

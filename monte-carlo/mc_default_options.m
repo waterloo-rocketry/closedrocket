@@ -7,7 +7,7 @@ function opts = mc_default_options()
     opts.batch_name = "_polaris_mc";
     opts.output_root = "monte-carlo";
     opts.number_simulations = 100;
-    opts.stop_time = 220;
+    opts.stop_time = 120;
     opts.P_threshold = 5000;
     opts.seed = 42026;
     opts.run_parallel = true;
@@ -19,7 +19,7 @@ function opts = mc_default_options()
     opts.plot.export = true;
     opts.plot.visible = "on";
     opts.plot.percentiles = [80, 95];
-    opts.plot.time_limits = [0, 80];
+    opts.plot.time_limits = [0, 100];
     opts.plot.max_runs = inf;
 
     opts.wind = struct();

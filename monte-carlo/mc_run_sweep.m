@@ -64,18 +64,23 @@ function summary = mc_run_sweep(opts)
 
     %% Save each run and identify errors or unstable results
     error_id = [];
+    error_messages = strings(1, number_simulations);
     unstable_id = [];
 
     for k = 1:number_simulations
-        if ~isempty(simout(k).ErrorMessage)
-            error_id(end + 1) = k; %#ok<AGROW>
-            continue;
-        end
-
         filename = fullfile(batch_dir, sprintf("sim_%d.mat", k));
         parameter_overrides = struct( ...
             "sampled", samples(k).parameters, ...
             "modelVariables", samples(k).vars);
+
+        if ~isempty(simout(k).ErrorMessage)
+            error_id(end + 1) = k; %#ok<AGROW>
+            error_messages(k) = string(simout(k).ErrorMessage);
+            save_failed_run(simout(k), filename, parameter_overrides, ...
+                baseline_file, opts);
+            continue;
+        end
+
         log = save_log(simout(k), filename, opts.sample_rate_hz, ...
             "ParameterOverrides", parameter_overrides, ...
             "ParameterFile", baseline_file, ...
@@ -99,6 +104,7 @@ function summary = mc_run_sweep(opts)
     summary.baseline_file = baseline_file;
     summary.number_simulations = number_simulations;
     summary.error_id = error_id;
+    summary.error_messages = error_messages;
     summary.error_count = error_count;
     summary.error_ratio = error_ratio;
     summary.unstable_id = unstable_id;
@@ -107,11 +113,70 @@ function summary = mc_run_sweep(opts)
 
     filename = fullfile(batch_dir, "result_summary.mat");
     save(filename, ...
-        "number_simulations", "error_id", "error_count", "error_ratio", ...
+        "number_simulations", "error_id", "error_messages", ...
+        "error_count", "error_ratio", ...
         "unstable_id", "unstable_count", "unstable_ratio", ...
         "samples", "opts", "summary");
 
     if opts.plot.enable
         mc_plot_batch(opts);
+    end
+end
+
+function save_failed_run(simout, filename, parameter_overrides, ...
+        baseline_file, opts)
+% Save diagnostics and any partial signals produced by a failed run.
+
+    log = [];
+    logging_error = "";
+
+    try
+        log = save_log(simout.logsout, filename, opts.sample_rate_hz, ...
+            "ParameterOverrides", parameter_overrides, ...
+            "ParameterFile", baseline_file, ...
+            "Mode", "sil", ...
+            "ModelName", opts.model_name);
+    catch err
+        logging_error = string(err.message);
+    end
+
+    if isempty(log)
+        [~, name, extension] = fileparts(filename);
+        relative_folder = fullfile(char(opts.output_root), ...
+            "batch" + string(opts.batch_name));
+
+        log = struct();
+        log.format = "closedrocket-log";
+        log.formatVersion = 1;
+        log.createdOn = datetime("now");
+        log.filePath = string(relative_folder);
+        log.fileName = string(name) + string(extension);
+        log.sampleRateHz = opts.sample_rate_hz;
+        log.stopTime = NaN;
+        log.time = zeros(0, 1);
+        log.signalNames = strings(0, 1);
+        log.signals = struct();
+        log.mode = "sil";
+        log.modelName = string(opts.model_name);
+        log.parameterFile = fullfile(relative_folder, ...
+            "plant_model_baseline.mat");
+        log.parameterOverrides = parameter_overrides;
+    end
+
+    log.status = "failed";
+    log.errorMessage = string(simout.ErrorMessage);
+    log.partialSignalsAvailable = ~isempty(fieldnames(log.signals));
+    if strlength(logging_error) > 0
+        log.loggingError = logging_error;
+    end
+
+    simulation_output = simout;
+    try
+        save(filename, "log", "simulation_output", "-v7.3");
+    catch err
+        warning("mc_run_sweep:SimulationOutputNotSaved", ...
+            "Could not save the raw output for failed run '%s': %s", ...
+            filename, err.message);
+        save(filename, "log", "-v7.3");
     end
 end

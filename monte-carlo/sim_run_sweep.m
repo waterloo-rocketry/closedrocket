@@ -5,7 +5,7 @@ opts = mc_default_options();
 
 opts.batch_name = "_polaris_mc";
 opts.number_simulations = 1000;
-opts.stop_time = 220; % 55 is apogee, 240 is after main deploy
+opts.stop_time = 120;
 opts.P_threshold = 5000;
 opts.seed = 42026;
 

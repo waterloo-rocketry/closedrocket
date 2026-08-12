@@ -1,4 +1,5 @@
-function plots = plot_stats_control(sdt_array, type, commontitle, percentiles)
+function plots = plot_stats_control(sdt_array, type, commontitle, ...
+        percentiles, time_limits)
 %PLOT_STATS_CONTROL Plot control envelopes across Monte Carlo simulations.
 
     fields = {'ref', 'err', 'cmd', 'roll', 'rate', 'delta'};
@@ -63,6 +64,7 @@ function plots = plot_stats_control(sdt_array, type, commontitle, percentiles)
         title(ax, names{f}, "FontWeight", "Normal");
         grid(ax, "on");
         xlabel(ax, "Time [s]");
+        xlim(ax, time_limits);
     end
 
     title(tlo, commontitle);
