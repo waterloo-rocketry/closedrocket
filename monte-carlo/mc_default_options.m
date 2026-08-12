@@ -31,23 +31,23 @@ function opts = mc_default_options()
 
     opts.geometry = struct();
     opts.geometry.canard_cant_zero_deg = struct( ...
-        "mean", 0.2, "range", [0, 2]);
+        "mean", 0.2, "range", [-2, 2]);
     opts.geometry.canard_spine_effectiveness = struct( ...
         "mean", 0.5, "range", [0.3, 1]);
     opts.geometry.cp_shift_m = struct( ...
         "mean", 0, "range", [-0.1, 0.1]);
     opts.geometry.canard_radial_cp_offset_m = struct( ...
-        "mean", 0, "range", [-0.01, 0.02]);
+        "mean", 0, "range", [-0.02, 0.02]);
 
     opts.performance = struct();
     opts.performance.engine_thrust_factor = struct( ...
         "mean", 1, "range", [0.8, 1.1]);
     opts.performance.act_backlash_deg = struct( ...
-        "mean", 0.25, "range", [0, 0.5]);
+        "mean", 0.2, "range", [0, 0.6]);
 
     opts.roll_reversal = struct();
     opts.roll_reversal.probability = 0.5;
-    opts.roll_reversal.factor_range = [-1, 2];
+    opts.roll_reversal.factor_range = [-3, 1.5];
     opts.roll_reversal.time_after_takeoff_s = [0, 40];
 
 end
