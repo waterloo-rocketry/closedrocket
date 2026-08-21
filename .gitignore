@@ -45,6 +45,7 @@ design-support/*/*
 
 # Large data files
 analysis/*/*
+!analysis/polaris/*.m
 
 # VS Code workspace
 *.code-workspace
