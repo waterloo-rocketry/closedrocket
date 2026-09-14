@@ -19,6 +19,7 @@ wind_layer_threshold = 100; % [m/s] threshold windspeed at any altitude where la
 run('plant-model/data/wind/wind_discrete.m')
 [wind_heights, wind_vectors] = wind_historic(wind_layer_threshold);
 roll_rev_grid_active = false;
+canard_roll_reversal_time = 1e9;
 
 %% data pre-processing
 run('plant-model/scripts/data_preparation.m')
