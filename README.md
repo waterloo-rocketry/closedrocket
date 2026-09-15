@@ -46,7 +46,7 @@ Arguments:
 
 ## Setup
 1. Clone the repo `git clone https://github.com/waterloo-rocketry/closedrocket.git`
-2. Make sure you have MATLAB **2025b** installed (The specific version matters cause Simulink ;-;)
+2. Make sure you have MATLAB **2026a** installed (The specific version matters cause Simulink ;-;)
 3. Install (do this with Matlab install when you can select multiple at once, if possible):
     - Aerospace Blockset
     - Aerospace Toolbox
@@ -54,6 +54,8 @@ Arguments:
     - DSP System Toolbox
     - Instrument Control Toolbox
     - MATLAB Support for MinGW-w64 C/C++/Fortran Compiler
+    - Parallel Computing Toolbox
     - Signal Processing Toolbox
+    - Statistics and Machine Learning Toolbox
     - Simulink
 4. In Matlab run `mex -setup C` and `mex -setup C++`
