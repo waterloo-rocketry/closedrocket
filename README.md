@@ -52,7 +52,9 @@ Arguments:
     - Aerospace Toolbox
     - Control System Toolbox
     - DSP System Toolbox
+    - Embedded Coder
     - Instrument Control Toolbox
+    - MATLAB Coder
     - MATLAB Support for MinGW-w64 C/C++/Fortran Compiler
     - Parallel Computing Toolbox
     - Signal Processing Toolbox
