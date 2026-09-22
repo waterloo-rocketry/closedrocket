@@ -1,7 +1,11 @@
 # Summary
 
-This project contains the estimator and controller for the canards that flew on the 2025 rocket, Aurora, and further development towards the 2026 Waterloo Rocketry flight. 
+This project contains the estimator and controller for the canards that flew on the 2026 rocket, Polaris. Further development for the 2027 rocket has been made private. 
+
+This repository is left as a public release of the GNC work done for Polaris, last updated in September 2026. Occasional QOL updates may be released here, publically.
+
 Additionally, it contains a 6DOF rocket plant model designed to enable closed loop simulation, including sensor dynamics. 
+
 There are a number of setup and support scripts for the main model (such as evaluating the Barrowman equations from input geometry). 
 
 Ideally, setting the rocket to simulate should be as easy as changing the first line in `configure_plant_model.m` to run the appropriate script. 
